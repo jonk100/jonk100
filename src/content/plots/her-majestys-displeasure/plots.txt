@@ -1,0 +1,610 @@
+=== File: main-crown-covert-war.mdx ===
+
+---
+title: The Crown's Covert War
+project: her-majestys-displeasure
+plotType: main
+plotLevel: A
+summary: Prince Philip and Mountbatten initiate a covert operation to fracture the Beatles, whom they perceive as a cultural threat to institutional authority.
+themes:
+  - institutional-paranoia
+  - cultural-insurgency
+  - power-vs-youth
+---
+
+# Operation Minuet → Operation Elegy
+
+The Crown's covert campaign against the Beatles begins with Prince Philip's personal outrage at the MBE ceremony and the "more popular than Jesus" controversy. What starts as psychological manipulation (Operation Minuet) escalates to assassination (Operation Elegy).
+
+## Key Elements
+
+- **Inciting incident:** Philip perceives the Beatles' cultural authority as a threat to institutional dignity
+- **Chain of command:** Philip → Mountbatten → Finchley → Nigel & Clive
+- **Tactics evolution:** From manufactured outrage to direct elimination
+- **Institutional escalation:** Each perceived success justifies more extreme measures
+- **Ultimate failure:** The conspiracy collapses while the Beatles' dissolution was already inevitable
+
+## Relationship to Other Plots
+
+- **Parent to:** Klaus Infiltration (F-subplot), Press as Weapon (G-subplot)
+- **Drives:** Nigel & Clive's moral divergence (B-plot)
+- **Opposes:** John Lennon's radicalization (C-plot) and Queen Elizabeth's passive resistance (D-plot)
+
+
+=== File: main-lennon-radicalization.mdx ===
+
+---
+title: John Lennon's Radicalization
+project: her-majestys-displeasure
+plotType: main
+plotLevel: C
+summary: John Lennon evolves from pop star to political dissident, his honesty and intellectual restlessness making him both the target of institutional warfare and an unwitting symbol of resistance.
+themes:
+  - artistic-evolution
+  - political-awakening
+  - honesty-as-provocation
+---
+
+# The Target's Evolution: From Beatle to Dissident
+
+John Lennon's journey from pop phenomenon to political symbol, driven by intellectual restlessness and the need for authentic expression—even when it becomes institutional ammunition.
+
+## Key Elements
+
+### Early Phase: Spiritual and Intellectual Questioning
+- Reads widely, questions celebrity, seeks meaning beyond pop fame
+- The Cleave interview becomes the "Jesus" controversy that launches the covert operation
+- Retreat from touring into studio experimentation and artistic radicalization
+
+### Middle Phase: Personal and Political Transformation
+- Yoko Ono arrives as mirror and collaborator, not disruptor
+- Domestic unraveling with Cynthia parallels artistic deconstruction
+- Apple Corps represents naive bid for control that becomes another cage
+
+### Late Phase: Political Symbolism
+- Returns MBE as explicit political act (Vietnam/Biafra + chart joke)
+- Peace activism and bed-ins turn personal evolution into public theater
+- Becomes the specific target of assassination while remaining largely unaware of the conspiracy
+
+## Irony and Awareness
+
+- **Unknowing target:** John never learns about the full scale of the operation against him
+- **Institutional blindness:** The Crown mistakes organic artistic evolution for conspiracy-worthy threat
+- **Personal cost:** John's authenticity destroys his first marriage while making him politically significant
+
+## Relationship to Other Plots
+
+- **Target of:** The Crown's Covert War (A-plot) and Operatives' Divergence (B-plot)
+- **Drives:** Beatles Creative Fracture (E-subplot) through his artistic evolution
+- **Parallel to:** Queen Elizabeth's wisdom (D-plot) in understanding institutional limits
+
+
+=== File: main-operatives-divergence.mdx ===
+
+---
+title: The Operatives' Diverging Paths
+project: her-majestys-displeasure
+plotType: main
+plotLevel: B
+summary: Two MI5 agents execute the Crown's covert operation; one descends into delusional zealotry while the other's conscience awakens, leading to sabotage.
+themes:
+  - moral-compromise
+  - bureaucratic-conscience
+  - delusion-vs-reality
+---
+
+# Nigel Finch & Clive Barrow: Execution and Sabotage
+
+The operational heart of the Crown's conspiracy, told through the contrasting trajectories of two MI5 agents assigned to fracture the Beatles.
+
+## Key Elements
+
+### Clive Barrow: Delusional Auteur
+- Begins as professional operative, evolves into self-styled "artist of state power"
+- Creates Klaus persona and manufactures outrage through psychological operations
+- Views the assignment as an ideological artwork, then as an assassination "composition"
+- Ends broken and deluded in the Falklands, still believing in his mission
+
+### Nigel Finch: Reluctant Saboteur
+- Starts as weary empiricist doing a job
+- Gradually recognizes the moral bankruptcy of the operation
+- Uses professional language as ethical shield while actively undermining the mission
+- Ultimately saves John Lennon by ensuring "too much light" at the assassination attempt
+
+## Moral Evolution
+
+- **Early phase:** Both follow orders, with Clive showing enthusiasm and Nigel showing resignation
+- **Middle phase:** Clive's methods become increasingly unhinged; Nigel begins passive resistance
+- **Climax:** Assassination authorization splits them completely—Clive eager, Nigel sabotaging
+- **Resolution:** Clive exiled to desk job, Nigel vindicated but haunted
+
+## Relationship to Other Plots
+
+- **Executes:** The Crown's Covert War (A-plot)
+- **Monitors:** John Lennon's Journey (C-plot) and Beatles Fracture (E-subplot)
+- **Contains:** Klaus Infiltration (F-subplot) as Clive's pet project
+
+
+=== File: main-queen-passive-resistance.mdx ===
+
+---
+title: The Queen's Passive Resistance
+project: her-majestys-displeasure
+plotType: main
+plotLevel: D
+summary: Queen Elizabeth observes Philip's conspiracy with patient wisdom, understanding that institutions cannot control organic cultural change and that time will resolve what force cannot.
+themes:
+  - institutional-wisdom
+  - patience-vs-urgency
+  - cosmic-indifference
+---
+
+# The Institutional Brake: Elizabeth's Long View
+
+While Philip escalates his covert war against the Beatles, Queen Elizabeth represents institutional wisdom and the understanding that systems cannot control organic cultural evolution.
+
+## Key Elements
+
+### Observational Wisdom
+- Recognizes Philip's obsession as personal, not institutional
+- Understands that youth culture and artistic evolution are beyond institutional control
+- Maintains silent resistance through inaction and patience
+
+### Marital Strain as Metaphor
+- Philip's obsession with the Beatles mirrors broader institutional dysfunction
+- Elizabeth's calm acceptance contrasts with Philip's escalating urgency
+- Their private conversations reveal the tension between personal grudge and institutional responsibility
+
+### Thematic Judgment
+- Represents the moral center that knows this will fail
+- Embodies the idea that time and indifference are more powerful than conspiracy
+- Delivers the ultimate verdict: institutions endure, but they cannot direct culture
+
+## Relationship to Other Plots
+
+- **Counterpoint to:** The Crown's Covert War (A-plot) and Philip's obsession
+- **Parallel to:** John Lennon's authenticity (C-plot) in understanding institutional limits
+- **Resolution:** Vindicated when the conspiracy collapses and Philip is corrected
+
+## Dramatic Function
+
+- Provides the philosophical anchor when chaos peaks
+- Shows institutional memory and patience as alternative to Philip's urgency
+- Delivers the thematic judgment that individual conscience matters more than systems
+
+
+=== File: sub-apple-corporate-cage.mdx ===
+
+---
+title: Apple Corps as Cage
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: sub-beatles-creative-fracture
+summary: The Beatles' attempt to create corporate freedom becomes another pressure system and infiltration surface, demonstrating how organizational structures inevitably recreate the constraints they were meant to escape.
+themes:
+  - freedom-vs-control
+  - corporate-irony
+  - institutional-trap
+---
+
+# Apple Corps: Freedom as New Cage
+
+The Beatles' naive bid for artistic and business control creates a new bureaucracy that becomes another pressure system and vulnerability surface for external manipulation.
+
+## Key Elements
+
+### Formation Optimism
+- **"Western communism":** Initial vision of creative freedom and collective ownership
+- **Business naivete:** Artists attempting to run business without experience or discipline
+- **Escape from record labels:** Desire for control that ironically creates new constraints
+
+### Bureaucratic Reality
+- **Sprawl and chaos:** Apple grows beyond the band's capacity to manage effectively
+- **Financial pressures:** The need for revenue creates artistic compromises
+- **Infiltration surface:** Complex organization provides access points for external manipulation
+
+### Symbolic Function
+- **Boardroom setting:** The final dissolution occurs in Apple's boardroom, not creative space
+- **Legal language:** The band's end is articulated through corporate documents
+- **Institutional irony:** The attempt to escape institutions ends in institutional dissolution
+
+## Relationship to Conspiracy
+
+- **Vulnerability:** Apple's complexity provides cover for covert operations
+- **Justification:** The band's business difficulties are cited as evidence of chaos requiring intervention
+- **Setting:** Apple offices become locations for clandestine meetings and operations
+
+## Relationship to Other Plots
+
+- **Enables:** The Crown's Covert War (A-plot) by providing operational cover
+- **Accelerates:** Beatles Creative Fracture (E-subplot) through business pressures
+- **Contrasts with:** The creative freedom the band sought to achieve
+
+
+=== File: sub-beatles-creative-fracture.mdx ===
+
+---
+title: The Beatles' Creative Fracture
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: main-lennon-radicalization
+summary: The band's extraordinary creative partnership becomes the mechanism of their emotional injuries, leading to artistic evolution, personal conflicts, and eventual dissolution.
+themes:
+  - creative-symbiosis
+  - artistic-evolution
+  - partnership-strain
+---
+
+# Band Ecosystem: Creative Symbiosis → Breakdown
+
+The Beatles' internal dynamics as a four-person system, where their creative genius also contains the seeds of their dissolution.
+
+## Key Elements
+
+### Creative Partnership Evolution
+- **Touring ends:** Choose studio over circus, beginning new creative phase
+- **Sgt. Pepper peak:** Artistic achievement creates new pressures and expectations
+- **India journey:** Spiritual seeking reveals growing divergences in personal paths
+
+### Relationship Geometry
+- **John/Paul dyad:** Creative engine and emotional rivalry, increasingly competitive
+- **George:** Under-credited third force seeking artistic recognition and spiritual meaning
+- **Ringo:** Emotional baseline and stabilizer, increasingly isolated by others' conflicts
+
+### Structural Collapse
+- **Epstein's death:** Loss of external discipline and protection ("Daddy's gone away")
+- **Apple formation:** Naive bid for control becomes another pressure system
+- **Twickenham sessions:** Cameras and pressure expose existing fractures
+- **Billy Preston arrival:** Outsider temporarily restores joy and function
+- **Boardroom dissolution:** Formal acknowledgment of what's already emotionally true
+
+## Irony
+
+- The conspiracy claims credit for fractures that were happening organically
+- The band's artistic evolution makes them more vulnerable, not more powerful
+- Their greatest creative period (Sgt. Pepper) coincides with growing personal distance
+
+## Relationship to Other Plots
+
+- **Target of:** The Crown's Covert War (A-plot) and Operatives' Divergence (B-plot)
+- **Context for:** John Lennon's Radicalization (C-plot)
+- **Contains:** Individual character arcs (Paul's control, George's exit, Ringo's immunity)
+
+
+=== File: sub-cynthia-exit.mdx ===
+
+---
+title: Cynthia Lennon's Quiet Exit
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: main-lennon-radicalization
+summary: Cynthia Lennon's journey from neglected wife to independent mother, choosing survival without melodrama and maintaining the human connection to Julian through institutional channels.
+themes:
+  - quiet-dignity
+  - maternal-continuity
+  - survival
+---
+
+# Cynthia: The Exit Without Drama
+
+Cynthia Lennon's story of survival and dignity, choosing to leave a disappearing marriage and maintaining connection to her son through the institution that destroyed her family.
+
+## Key Elements
+
+### Emotional Distancing
+- **Kenwood unraveling:** Cynthia recognizes John's emotional withdrawal before he does
+- **Yoko's arrival:** Not seen as rival but as confirmation that the marriage is already over
+- **Quiet observation:** Cynthia watches the dissolution without public complaint or blame
+
+### Decision to Leave
+- **Visit to Mimi:** Seeking perspective from John's aunt, understanding the pattern
+- **Choice of dignity:** Cynthia decides to leave rather than compete or fight
+- **Maternal priority:** Julian's well-being becomes her primary concern
+
+### Institutional Connection
+- **Postbox motif:** Cynthia maintains connection to Julian through institutional channels
+- **Letter to son:** Communication continues through the systems that separated them
+- **Survival strategy:** Using institutional structures rather than fighting them
+
+## Character Strength
+
+- **No melodrama:** Cynthia refuses to be the wronged wife in public narrative
+- **Practical adaptation:** She builds a life independent of John's fame or presence
+- **Maternal continuity:** Cynthia ensures Julian has connection to both parents despite separation
+
+## Relationship to Other Plots
+
+- **Casualty of:** John Lennon's Radicalization (C-plot) and Beatles Creative Fracture (E-subplot)
+- **Contrasts with:** Yoko Ono's public partnership with John
+- **Demonstrates:** The personal cost of artistic evolution and institutional warfare
+
+
+=== File: sub-epstein-collapse.mdx ===
+
+---
+title: Brian Epstein's Collapse
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: sub-beatles-creative-fracture
+summary: Brian Epstein functions as the disciplinary and protective layer that keeps the band's internal politics survivable—his death removes the external stabilizer and accelerates the band's structural collapse.
+themes:
+  - paternal-discipline
+  - structural-support
+  - institutional-absence
+---
+
+# Brian Epstein: The Father's Death
+
+The disappearance of the band's external discipline and protection, creating the structural vacuum that makes their internal conflicts unmanageable.
+
+## Key Elements
+
+### Discipline and Protection
+- **External stabilizer:** Epstein provides the authority and structure the band lacks internally
+- **Business buffer:** Handles the commercial pressures that would otherwise distract from creativity
+- **Personal manager:** Mediates conflicts and maintains professional boundaries
+
+### Mounting Strain
+- **Jesus fallout:** Epstein manages the first major crisis while hiding his own stress
+- **Business sprawl:** Apple Corps expansion creates pressures beyond Epstein's capacity
+- **Personal isolation:** Epstein's homosexuality and drug use increase under professional pressure
+
+### Death as Structural Collapse
+- **"Daddy's gone away":** The band explicitly acknowledges the loss of paternal authority
+- **Vacuum of power:** No single figure can replace Epstein's combination of skills and personal connection
+- **Accelerated dissolution:** Without external discipline, internal fractures become irreparable
+
+## Symbolic Function
+
+- **Father figure:** Epstein represents the adult supervision that allows creative children to thrive
+- **Institutional anchor:** His connection to business and legal structures protects the band from themselves
+- **Tragic necessity:** The band must outgrow Epstein to evolve, but the timing proves catastrophic
+
+## Relationship to Other Plots
+
+- **Enables:** Beatles Creative Fracture (E-subplot) through removal of external control
+- **Creates vulnerability:** The Crown's Covert War (A-plot) exploits the post-Epstein chaos
+- **Personal cost:** John Lennon's Radicalization (C-plot) includes grief and guilt
+
+
+=== File: sub-george-spiritual-exit.mdx ===
+
+---
+title: George's Spiritual Exit
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: sub-beatles-creative-fracture
+summary: George Harrison's search for meaning becomes both genuine personal evolution and a strategic exit vector from the band, with his sitar path guided and his growing withdrawal from band identity creating the first explicit fracture.
+themes:
+  - spiritual-seeking
+  - artistic-recognition
+  - exit-strategy
+---
+
+# George: The Spiritual Exit Ramp
+
+George Harrison's journey from under-credited third force to spiritual seeker, using sitar music and Eastern philosophy as both genuine evolution and strategic distance from the band.
+
+## Key Elements
+
+### Sitar Path Seeded
+- **Nigel's nudge:** The operation subtly encourages George's interest in Indian music
+- **Ravi Shankar apprenticeship:** George's musical evolution becomes spiritual journey
+- **"Maya" concept:** George adopts philosophical framework for dismissing band identity
+
+### Growing Withdrawal
+- **Musical contributions:** Increasingly sophisticated but unacknowledged within band
+- **Private victory:** George solves musical problems alone, highlighting band dysfunction
+- **India journey:** Spiritual seeking becomes geographic and emotional distance
+
+### First Explicit Fracture
+- **Twickenham exit:** George's "I'm leaving" is the band's first explicit breakup moment
+- **Artistic recognition:** George needs respect the band structure cannot provide
+- **Post-band resolution:** Garden, simplicity, sitar as ordinary object rather than spiritual quest
+
+## Dual Meaning
+
+- **Genuine evolution:** George's spiritual and musical growth is authentic
+- **Strategic exit:** The spiritual journey provides legitimate reason to distance himself
+- **Artistic independence:** George's songwriting evolution requires freedom from band constraints
+
+## Relationship to Other Plots
+
+- **Exploited by:** The Crown's Covert War (A-plot) through cultural manipulation
+- **Demonstrates:** Beatles Creative Fracture (E-subplot) through explicit departure
+- **Contrasts with:** Paul's need for structure and John's political awakening
+
+
+=== File: sub-klaus-infiltration.mdx ===
+
+---
+title: Klaus Infiltration
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: main-operatives-divergence
+summary: Clive Barrow's delusional masterpiece of psychological operations, using a fabricated persona to manufacture outrage and demonstrate the absurdity of institutional power.
+themes:
+  - delusional-authority
+  - manufactured-outrage
+  - comedy-as-danger
+---
+
+# Klaus: Clive's Delusional Masterpiece
+
+Clive Barrow's pet project within the larger operation—a fabricated persona used to manipulate public opinion and demonstrate his belief that psychological operations can shape reality.
+
+## Key Elements
+
+### The Klaus Persona
+- Fabricated identity used to write letters to newspapers and magazines
+- Embodies "respectable mouths" that Clive believes can manufacture public outrage
+- Represents Clive's view of the operation as artistic rather than merely political
+
+### Methods and Escalation
+- **Letters campaign:** Manufactures the appearance of moral majority opposition
+- **Context stripping:** Takes Beatles statements out of context to create controversy
+- **Psychological manipulation:** Attempts to influence band dynamics through rumor and pressure
+- **Yellow Submarine sabotage:** Vandalizes animation cels as artistic statement
+
+### Delusion vs. Reality
+- Clive believes Klaus is a brilliant operation changing public opinion
+- In reality, Klaus has minimal impact on the Beatles' trajectory
+- The disconnect between Clive's perception and actual results shows his descent into delusion
+
+## Comic and Dangerous Elements
+
+- **Comedy:** The absurdity of a grown man creating fake personas to write letters
+- **Danger:** Clive's belief in his own genius leads him to support assassination
+- **Tragedy:** Klaus represents institutional resources wasted on meaningless operations
+
+## Relationship to Other Plots
+
+- **Part of:** Operatives' Divergence (B-plot), specifically Clive's trajectory
+- **Supports:** The Crown's Covert War (A-plot) through manufactured justification
+- **Contrasts with:** Nigel's empirical approach and growing conscience
+
+
+=== File: sub-paul-establishment-pull.mdx ===
+
+---
+title: Paul's Establishment Pull
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: sub-beatles-creative-fracture
+summary: Paul McCartney is positioned as the organizer who "keeps it together," which transforms into control, resentment, and vulnerability to establishment praise that ultimately isolates him from his bandmates.
+themes:
+  - organizational-burden
+  - establishment-cooptation
+  - control-fear
+---
+
+# Paul: The Organizer's Burden
+
+Paul McCartney's evolution from collaborative bassist to reluctant boss, his need for structure making him vulnerable to establishment praise and paranoid about his role in the band's dissolution.
+
+## Key Elements
+
+### The Organizer's Role
+- **"Tune you can whistle":** Nigel's flattery positions Paul as the stabilizer and commercial anchor
+- **Family Way prestige:** Establishment praise shifts Paul's center of gravity toward respectability
+- **Control fear:** Paul's anxiety about being "the boss" masks deeper fear of the band's collapse
+
+### Establishment Grooming
+- **Knighthood anticipation:** Paul's desire for recognition makes him susceptible to manipulation
+- **Forged letter:** The fake knighthood letter functions as paranoia accelerant
+- **Institutional validation:** Paul seeks the approval the conspiracy can provide
+
+### Twickenham Collapse
+- **Need for support:** Paul's requests for "support" reveal his isolation
+- **Fatherless band:** Paul explicitly acknowledges the loss of Epstein's discipline
+- **Boardroom arrival:** Paul arrives to fight "infiltration" but the band is already over
+
+## Tragic Irony
+
+- Paul's attempts to save the band make him appear controlling
+- His desire for respectability makes him vulnerable to establishment manipulation
+- His organizational skills become a burden that isolates him from creative collaboration
+
+## Relationship to Other Plots
+
+- **Target of:** Operatives' Divergence (B-plot) through establishment manipulation
+- **Drives:** Beatles Creative Fracture (E-subplot) through control dynamics
+- **Contrasts with:** John Lennon's rejection of establishment values
+
+
+=== File: sub-press-as-weapon.mdx ===
+
+---
+title: Press as Weapon
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: main-crown-covert-war
+summary: Media institutions don't just report events—they manufacture the "public" that the Crown claims to obey, creating a feedback loop of outrage and amplification.
+themes:
+  - media-manipulation
+  - manufactured-consent
+  - context-stripping
+---
+
+# The Press: Amplification and Manufacture
+
+The media's role in transforming private statements into public scandals, creating the appearance of popular outrage that justifies institutional action.
+
+## Key Elements
+
+### Context Stripping
+- **Editor selection:** Pull quotes chosen for maximum controversy, not accuracy
+- **Headline fabrication:** Sensationalism trumps factual reporting
+- **Geographic amplification:** Local stories become national scandals through reprinting
+
+### Outrage Supply Chain
+- **Letters to editor:** Coordinated campaigns create appearance of spontaneous response
+- **Moral majority illusion:** Small but vocal opposition presented as mainstream consensus
+- **International replication:** UK stories picked up by US Bible Belt and vice versa
+
+### Institutional Complicity
+- **Press conferences:** Turn conversations into trials (Chicago press conference)
+- **Deadline pressure:** Forces reporting before context or verification possible
+- **Access journalism:** Reporters protect sources who provide exclusive information
+
+## Irony and Impact
+
+- The press believes it's serving public interest while manufacturing public opinion
+- Individual journalists may be ethical, but the system incentivizes sensationalism
+- The Beatles' actual words matter less than how they're framed and distributed
+
+## Relationship to Other Plots
+
+- **Enables:** The Crown's Covert War (A-plot) by providing justification
+- **Amplifies:** Klaus Infiltration (F-subplot) through publication
+- **Targets:** John Lennon's Radicalization (C-plot) through selective quoting
+
+
+=== File: sub-ringo-immunity.mdx ===
+
+---
+title: Ringo's Subject Immunity
+project: her-majestys-displeasure
+plotType: sub
+parentPlot: sub-beatles-creative-fracture
+summary: Ringo Starr functions as the unmanipulable baseline whose contentment and stability reveal the distortion in everyone else, making him immune to psychological operations and the ultimate barometer of the band's health.
+themes:
+  - authenticity
+  - emotional-baseline
+  - institutional-immunity
+---
+
+# Ringo: The Uncorruptible Control Group
+
+Ringo Starr's role as the emotional baseline who remains essentially human while everyone else descends into obsession, ambition, or delusion.
+
+## Key Elements
+
+### Immunity to Manipulation
+- **Pub locals:** Ringo's normal life and connections make him psychologically grounded
+- **Poisoned tea gag:** The operation's attempt to manipulate Ringo fails because contentment can't be manufactured
+- **Registry payoff:** Ringo's MI5 file is blank, confirming his immunity to psychological operations
+
+### Emotional Barometer Function
+- **Canary in the coal mine:** Ringo's repeated phrases change meaning as the band deteriorates
+- **Stabilizing presence:** His steadiness provides contrast to John/Paul tensions and George's withdrawal
+- **Human scale:** Ringo represents ordinary values within extraordinary circumstances
+
+### Later-Life Resolution
+- **Film set:** Continues working and living normally after the band's dissolution
+- **Dissolution notice:** Reads the legal end with practical acceptance, not drama
+- **Survival:** Of all Beatles, Ringo is the least damaged by the experience
+
+## Symbolic Function
+
+- **Control group:** Demonstrates that the conspiracy's effects are selective, not universal
+- **Institutional failure:** Proves that not everyone can be psychologically manipulated
+- **Authenticity:** Ringo's lack of artistic ambition makes him immune to the pressures that destroy others
+
+## Relationship to Other Plots
+
+- **Resists:** The Crown's Covert War (A-plot) and Operatives' Divergence (B-plot)
+- **Measures:** Beatles Creative Fracture (E-subplot) through emotional stability
+- **Contrasts with:** John Lennon's Radicalization (C-plot) in response to pressure
+
+

@@ -1,0 +1,137 @@
+---
+interface Props {
+  sections: any[];
+}
+
+const { sections } = Astro.props;
+---
+
+{sections.length > 0 && (
+  <details>
+    <summary>
+      <span class="summary-title">Section Details</span>
+    </summary>
+    <section class="song-sections">
+      <div class="sections-grid">
+        {sections.map((section: any, index: number) => (
+          <div class="section-card">
+            <h3 class="section-name">{section.name}</h3>
+            <div class="section-info">
+              <span class="section-bars">{section.bars} bars</span>
+              <span class="section-repeats">{section.repeats}x repeat</span>
+            </div>
+            <div class="section-chords">
+              {section.chords.map((chord: string, chordIndex: number) => (
+                <span class="chord-box">{chord}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </details>
+)}
+
+<style>
+  .summary-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  summary {
+    cursor: pointer;
+  }
+
+  summary:hover .summary-title {
+    color: var(--accent);
+  }
+
+  .song-sections {
+    margin-bottom: var(--space-8);
+  }
+
+  .sections-grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+
+  .section-name {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin: 0 0 var(--space-3) 0;
+    color: var(--text-primary);
+    text-transform: capitalize;
+  }
+
+  .section-info {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .section-bars,
+  .section-repeats {
+    font-weight: 500;
+  }
+
+  .section-chords {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+  }
+
+  .chord-box {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    color: var(--text-primary);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .chord-box:hover {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .section-chords {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2);
+    }
+
+    .chord-box {
+      font-size: var(--text-base);
+      padding: var(--space-2);
+      min-height: 50px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-chords {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

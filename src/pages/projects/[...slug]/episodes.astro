@@ -1,0 +1,283 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../../layouts/BaseLayout.astro";
+import EpisodeCard from "../../../components/collection-cards/EpisodeCard.astro";
+import TensionGraph from "../../../components/TensionGraph.astro";
+import Breadcrumb from "../../../components/Breadcrumb.astro";
+import { extractEpisodeTensionData } from "../../../utils/tension";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const projectSlug = project.id;
+
+// Get all episodes for this project
+const episodes = await getCollection("episodes", 
+  (episode) => episode.data.project.id === projectSlug
+);
+
+// Sort episodes by episode number
+const sortedEpisodes = episodes.sort((a, b) => a.data.episodeNumber - b.data.episodeNumber);
+
+// Get all beats for this project to calculate episode-level tension
+const allBeats = await getCollection("beats", 
+  (beat) => beat.data.project.id === projectSlug
+);
+
+// Get all scenes for this project to map beats to episodes
+const allScenes = await getCollection("scenes", 
+  (scene) => scene.data.project.id === projectSlug
+);
+
+// Calculate episode-level tension data (one point per episode)
+const episodeTensionData = await Promise.all(
+  sortedEpisodes.map(async (episode) => {
+    // Get scenes for this episode
+    const episodeScenes = allScenes.filter(scene => 
+      scene.data.episode?.id === episode.id
+    );
+    
+    // Get beats for this episode by filtering beats that belong to this episode's scenes
+    const episodeBeats = allBeats.filter(beat => 
+      episodeScenes.some(scene => scene.id === beat.data.scene?.id)
+    );
+    
+    console.log(`Processing episode ${episode.data.episodeNumber}:`, {
+      episodeId: episode.id,
+      episodeScenes: episodeScenes.length,
+      episodeBeats: episodeBeats.length
+    });
+    
+    // Calculate average tension directly from the beats we already filtered
+    const avgTension = episodeBeats.length > 0 
+      ? Math.round(episodeBeats.reduce((sum, beat) => {
+          // Try to get tension from plot data first, then fallback to beat level
+          const tension = beat.data.plots?.[0]?.tension || beat.data.tension;
+          if (typeof tension === 'number') {
+            return sum + tension;
+          }
+          return sum;
+        }, 0) / episodeBeats.length)
+      : 0;
+    
+    console.log(`Episode ${episode.data.episodeNumber} tension:`, {
+      beatsWithTension: episodeBeats.filter(b => b.data.tension).length,
+      avgTension
+    });
+    
+    return {
+      label: `Episode ${episode.data.episodeNumber}`,
+      tension: avgTension,
+      overall: avgTension,
+      timestamp: `ep${episode.data.episodeNumber}`
+    };
+  })
+);
+
+console.log('Final episode tension data:', episodeTensionData);
+---
+
+<Layout title={`Episodes - ${project.data.title}`}>
+  <div class="container">
+    <header class="page-header">
+      <Breadcrumb 
+        items={[
+          { label: "Projects", href: "/projects" },
+          { label: project.data.title, href: `/projects/${project.id}` },
+          { label: "Episodes" }
+        ]} 
+      />
+      
+      <h1>Episodes: {project.data.title}</h1>
+      <p class="page-description">
+        Episode-by-episode tension analysis and narrative progression.
+      </p>
+    </header>
+
+    <!-- Series Overview -->
+    <section class="series-overview">
+      <h2>Series Overview</h2>
+      <div class="overview-stats">
+        <div class="stat-card">
+          <span class="stat-number">{episodes.length}</span>
+          <span class="stat-label">Total Episodes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">{project.data.episodeCount || episodes.length}</span>
+          <span class="stat-label">Planned Episodes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">{episodes.filter(ep => ep.data.status === 'locked').length}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Series Tension Graph -->
+    <section class="tension-overview">
+      <h2>Series Tension Arc</h2>
+      <div class="tension-graph-container">
+        <TensionGraph 
+          data={episodeTensionData}
+          title="Episode-Level Tension Progression"
+          width={800}
+          height={300}
+        />
+      </div>
+    </section>
+
+    <!-- Episode Cards -->
+    <section class="episodes-section">
+      <h2>Episode Details</h2>
+      <div class="episodes-grid">
+        {sortedEpisodes.map((episode) => (
+          <EpisodeCard 
+            episode={episode} 
+            projectSlug={projectSlug}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .series-overview {
+    margin-bottom: 3rem;
+  }
+
+  .series-overview h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .overview-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tension-overview {
+    margin-bottom: 3rem;
+  }
+
+  .tension-overview h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .tension-graph-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .episodes-section {
+    margin-bottom: 3rem;
+  }
+
+  .episodes-section h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+  }
+
+  .episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .overview-stats {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+    }
+
+    .episodes-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .tension-graph-container {
+      padding: 1rem;
+    }
+  }
+</style>

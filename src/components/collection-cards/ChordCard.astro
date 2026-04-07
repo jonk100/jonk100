@@ -1,0 +1,104 @@
+---
+/**
+ * ChordCard.astro
+ *
+ * Renders a single chord card using BaseCard as foundation.
+ * Works specifically with chord collection entries.
+ */
+
+import type { CollectionEntry } from "astro:content";
+import BaseCard from "./BaseCard.astro";
+
+interface Props {
+  entry: CollectionEntry<"chords">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+// Helper to format fret display
+function formatFrets(frets: (number | string)[]) {
+  return frets.map(fret => {
+    if (fret === -1 || fret === 'x') return 'x';
+    if (fret === 0 || fret === 'o') return 'o';
+    return fret.toString();
+  }).join('-');
+}
+
+// Helper to normalize title
+function getNormalizedTitle(displayName: string, voicingLabel: string) {
+  const shape = voicingLabel === 'open' ? 'Open' : 
+               voicingLabel.includes('e-shape') ? 'E-Shape' :
+               voicingLabel.includes('a-shape') ? 'A-Shape' :
+               voicingLabel;
+  return `${displayName} (${shape})`;
+}
+
+// Helper to get chord type from display name
+function getChordType(displayName: string) {
+  if (displayName.includes('m')) return 'minor';
+  if (displayName.includes('7')) return 'seventh';
+  if (displayName.includes('maj')) return 'major';
+  return 'major';
+}
+
+// Helper to get chord color
+function getChordColor(type: string) {
+  switch (type) {
+    case 'minor':
+      return 'var(--chord-minor)';
+    case 'seventh':
+      return 'var(--chord-seventh)';
+    case 'major':
+      return 'var(--chord-major)';
+    default:
+      return 'var(--accent)';
+  }
+}
+
+// Build meta array for BaseCard (just the fret pattern)
+const meta: string[] = [formatFrets(data.frets)];
+
+// Determine chord type and color
+const chordType = getChordType(data.displayName);
+const chordColor = getChordColor(chordType);
+const normalizedTitle = getNormalizedTitle(data.displayName, data.voicingLabel);
+---
+
+<BaseCard
+  href={`/chords/${entry.id}`}
+  title={normalizedTitle}
+  badge={chordType}
+  badgeColor={chordColor}
+  meta={meta}
+  class="chord-card"
+/>
+
+<style>
+  .chord-card {
+    /* Chord-specific styling */
+    --chord-major: #3b82f6;
+    --chord-minor: #ef4444;
+    --chord-seventh: #8b5cf6;
+  }
+
+  .chord-card .base-card__title {
+    font-family: var(--font-mono);
+    font-size: var(--text-xl);
+    font-weight: 700;
+  }
+
+  .chord-card .base-card__meta-item {
+    font-size: var(--text-lg);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-align: center;
+    color: lightgray;
+  }
+
+  .chord-card .base-card__badge {
+    font-size: var(--text-xs);
+    text-transform: lowercase;
+    font-weight: 600;
+  }
+</style>

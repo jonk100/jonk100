@@ -1,0 +1,271 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import Layout from "../../layouts/BaseLayout.astro";
+
+import Screenplay from "../../components/screenplay/Screenplay.astro";
+import Scene from "../../components/screenplay/Scene.astro";
+import Action from "../../components/screenplay/Action.astro";
+import Character from "../../components/screenplay/Character.astro";
+import Dialogue from "../../components/screenplay/Dialogue.astro";
+import Parenthetical from "../../components/screenplay/Parenthetical.astro";
+import Transition from "../../components/screenplay/Transition.astro";
+import ActBreak from "../../components/screenplay/ActBreak.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+
+/**
+ * Generate static paths for scenes
+ */
+export async function getStaticPaths() {
+  const scenes = await getCollection("scenes");
+
+  return scenes.map((scene) => {
+    const slug = scene.id
+      .replace("src/content/scenes/", "")
+      .replace(/\.(md|mdx)$/, "");
+
+    return {
+      params: { slug },
+      props: { scene },
+    };
+  });
+}
+
+const { scene } = Astro.props;
+const { Content } = await render(scene);
+
+// Extract project from scene data
+const project = scene.data.project.id || 'unknown';
+
+// Get project data for title
+let projectTitle = project;
+try {
+  if (project) {
+    const projectData = await getEntry(scene.data.project) as any;
+    projectTitle = projectData?.data?.title || project;
+  }
+} catch (error) {
+  // Use project slug as fallback
+  console.warn(`Could not load project data for ${project}:`, error);
+}
+
+/**
+ * Resolve character references
+ */
+const characters = await Promise.all(
+  scene.data.characters.map((charRef) => getEntry(charRef))
+);
+
+/**
+ * Resolve location references
+ */
+const location = await Promise.all(
+  scene.data.location.map((locRef) => getEntry(locRef))
+);
+
+/**
+ * Resolve episode reference to get episode number
+ */
+let episodeNumber = null;
+let episodeFilterValue = null;
+if (scene.data.episode) {
+  try {
+    const episodeData = await getEntry(scene.data.episode);
+    episodeNumber = episodeData?.data?.episodeNumber;
+    episodeFilterValue = `Episode ${episodeNumber}`;
+  } catch (error) {
+    console.warn(`Could not load episode data:`, error);
+  }
+}
+---
+
+<Layout title={`${scene.data.title} - Scenes`}>
+  <div class="container">
+    <Breadcrumb 
+      items={[
+        { label: projectTitle, href: `/projects/${project}` },
+        { label: "Scenes", href: `/projects/${project}/scenes` },
+        { label: scene.data.title }
+      ]} 
+    />
+    
+    <div class="header">
+      <h1>{scene.data.title}</h1>
+
+      <div class="meta">
+        {episodeNumber && episodeFilterValue && (
+          <a href={`/projects/${project}/scenes?episode=${encodeURIComponent(episodeFilterValue)}`} class="episode">
+            E{episodeNumber}
+          </a>
+        )}
+        <span class="scene-num">S{scene.data.sceneNumber}</span>
+
+        <span class="int-ext">{scene.data.intOrExt}</span>
+
+        {location && location.length > 0 && (
+          <a href={`/locations/${location[0].id}`} class="location">
+            {location.map((loc) => loc.data.name).join(", ")}
+          </a>
+        )}
+
+        <span class="time">{scene.data.timeOfDay}</span>
+
+        {characters && characters.length > 0 && (
+          <details class="characters-dropdown">
+            <summary class="characters-toggle">Characters</summary>
+
+            <div class="character-list">
+              {characters.map((character) => (
+                <a href={`/characters/${character.id}`} class="character-link">
+                  {character?.data.name}
+                </a>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+    </div>
+
+    <div class="content markdown">
+      <div class="screenplay-root">
+        <Content
+          components={{
+            Screenplay,
+            Scene,
+            Action,
+            Character,
+            Dialogue,
+            Parenthetical,
+            Transition,
+            ActBreak,
+          }}
+        />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .header {
+    position: relative; /* anchor dropdown */
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+  }
+
+  .header h1 {
+    margin: 0 0 1rem 0;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .episode,
+  .scene-num,
+  .int-ext,
+  .location,
+  .time,
+  .characters-toggle,
+  .character-link {
+    background: #f0f0f0;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+
+  .episode {
+    background: #bbddf3;
+    color: #1a5a8a;
+    text-decoration: none;
+  }
+
+  .episode:hover {
+    background: #a8c8e0;
+    text-decoration: underline;
+  }
+
+  .scene-num {
+    background: #e8f5e8;
+    color: #2e7d32;
+  }
+
+  .int-ext {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  .location {
+    background: #e3f2fd;
+    color: #1976d2;
+    text-decoration: none;
+  }
+
+  .time {
+    background: #f3e5f5;
+    color: #7b1fa2;
+  }
+
+  /* Characters toggle (inline, same as pills) */
+  .characters-dropdown {
+    position: static;
+  }
+
+  .characters-toggle {
+    list-style: none;
+    cursor: pointer;
+    color: #444;
+  }
+
+  .characters-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .characters-dropdown[open] .characters-toggle {
+    background: #e0e0e0;
+  }
+
+  /* Dropdown row (full-width, below header, does NOT shift layout) */
+  .character-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #eee;
+  }
+
+  .characters-dropdown[open] {
+    flex-basis: 100%;
+    
+  }
+
+  .characters-dropdown {
+    display: contents;
+  }
+
+  .character-link {
+    color: #444;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .character-link:hover {
+    background: #e0e0e0;
+  }
+
+  .content {
+    line-height: 1.6;
+  }
+</style>

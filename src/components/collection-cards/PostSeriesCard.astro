@@ -1,0 +1,29 @@
+---
+import BaseCard from './BaseCard.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  series: CollectionEntry<'post-series'>;
+  postCount?: number;
+}
+
+const { series, postCount = 0 } = Astro.props;
+
+const { title, description } = series.data;
+
+// Generate href for the series
+const href = `/post-series/${series.id}`;
+
+// Create meta array showing post count and sort method
+const meta = [
+  `${postCount} ${postCount === 1 ? 'post' : 'posts'}`,
+  `Sorted by ${series.data.sortBy}`
+];
+---
+
+<BaseCard
+  href={href}
+  title={title}
+  subtitle={description}
+  meta={meta}
+/>

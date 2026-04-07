@@ -1,0 +1,20 @@
+---
+// src/components/screenplay/Screenplay.astro
+/**
+ * Screenplay wrapper
+ *
+ * Inputs:
+ * - title?: optional screenplay title
+ *
+ * Output:
+ * - styled screenplay container
+ */
+import "./screenplay.css";
+import type { ScreenplayWrapperProps } from "./screenplay.types";
+
+const { title } = Astro.props;
+---
+<section class="screenplay">
+  {title && <h1 class="screenplay-title">{title}</h1>}
+  <slot />
+</section>

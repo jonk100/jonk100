@@ -1,0 +1,242 @@
+---
+/**
+ * SceneFilter.astro
+ * 
+ * Filter component for the scenes index page. Allows filtering by:
+ * - Episode (extracted from scene data)
+ * - Location (resolved from location references)
+ * - Characters present in the scene
+ */
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  scenes: any[];
+}
+
+const { scenes } = Astro.props;
+
+// Extract unique values for filters
+const episodes = [...new Set(scenes.map(scene => {
+  // Extract episode from scene data
+  if (scene.data.episode) {
+    const episodeRef = typeof scene.data.episode === 'string' ? scene.data.episode : scene.data.episode.id;
+    const episodeMatch = episodeRef.match(/episode-(\d+)/i);
+    return episodeMatch ? `Episode ${episodeMatch[1]}` : 'Unknown';
+  }
+  return 'Unknown';
+}))].sort();
+
+// Extract and resolve location names
+const locationNames: string[] = [];
+for (const scene of scenes) {
+  if (scene.data.location && Array.isArray(scene.data.location)) {
+    for (const locationRef of scene.data.location) {
+      // Extract name from the reference path
+      const refString = typeof locationRef === 'string' ? locationRef : locationRef.id;
+      const nameFromPath = refString.split('/').pop()?.replace(/-/g, ' ');
+      if (nameFromPath) {
+        locationNames.push(nameFromPath);
+      }
+    }
+  }
+}
+const locations = [...new Set(locationNames)].sort();
+
+// Extract all unique characters from all scenes
+const allCharacters = [...new Set(scenes.flatMap(scene => 
+  scene.data.characters.map((char: any) => char.id.split('/').pop())
+))].sort();
+---
+
+<div class="scene-filter">
+  <div class="filter-group">
+    <label for="episode-filter">Episode:</label>
+    <select id="episode-filter">
+      <option value="">All Episodes</option>
+      {episodes.map(episode => (
+        <option value={episode}>{episode}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="location-filter">Location:</label>
+    <select id="location-filter">
+      <option value="">All Locations</option>
+      {locations.map(location => (
+        <option value={location}>{location}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="character-filter">Character:</label>
+    <select id="character-filter">
+      <option value="">All Characters</option>
+      {allCharacters.map(character => (
+        <option value={character}>{character}</option>
+      ))}
+    </select>
+  </div>
+
+  <button id="clear-filters" class="clear-btn">Clear All</button>
+</div>
+
+<script>
+  // Filter functionality
+  const episodeFilter = document.getElementById('episode-filter') as HTMLSelectElement;
+  const locationFilter = document.getElementById('location-filter') as HTMLSelectElement;
+  const characterFilter = document.getElementById('character-filter') as HTMLSelectElement;
+  const clearBtn = document.getElementById('clear-filters') as HTMLButtonElement;
+  const sceneCards = document.querySelectorAll('.base-card');
+
+  // Read URL parameters for initial filtering
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialEpisode = urlParams.get('episode');
+
+  function filterScenes() {
+    const selectedEpisode = episodeFilter.value.toLowerCase();
+    const selectedLocation = locationFilter.value.toLowerCase();
+    const selectedCharacter = characterFilter.value.toLowerCase();
+
+    sceneCards.forEach((card: Element) => {
+      const cardElement = card as HTMLElement;
+      const listItem = cardElement.closest('li') as HTMLElement;
+      const title = cardElement.querySelector('.base-card__title')?.textContent || '';
+      const meta = cardElement.querySelector('.base-card__meta')?.textContent || '';
+      const footer = cardElement.querySelector('.base-card__footer')?.textContent || '';
+      
+      // Episode match - check if meta contains the episode
+      const episodeMatch = !selectedEpisode || 
+        meta.toLowerCase().includes(selectedEpisode.toLowerCase());
+      
+      // Location match - check meta for location names
+      const locationMatch = !selectedLocation || 
+        meta.toLowerCase().includes(selectedLocation.toLowerCase());
+      
+      // Character match - check footer for character names
+      const characterMatch = !selectedCharacter ||
+        footer.toLowerCase().includes(selectedCharacter.toLowerCase());
+
+      const shouldShow = episodeMatch && locationMatch && characterMatch;
+      listItem.style.display = shouldShow ? 'block' : 'none';
+    });
+
+    // Update URL to reflect current filter state
+    const currentParams = new URLSearchParams(window.location.search);
+    if (episodeFilter.value) {
+      currentParams.set('episode', episodeFilter.value);
+    } else {
+      currentParams.delete('episode');
+    }
+    if (locationFilter.value) {
+      currentParams.set('location', locationFilter.value);
+    } else {
+      currentParams.delete('location');
+    }
+    if (characterFilter.value) {
+      currentParams.set('character', characterFilter.value);
+    } else {
+      currentParams.delete('character');
+    }
+    
+    const newUrl = `${window.location.pathname}${currentParams.toString() ? '?' + currentParams.toString() : ''}`;
+    window.history.replaceState({}, '', newUrl);
+  }
+
+  function clearFilters() {
+    episodeFilter.value = '';
+    locationFilter.value = '';
+    characterFilter.value = '';
+    filterScenes();
+  }
+
+  // Set initial filter from URL parameters
+  if (initialEpisode) {
+    episodeFilter.value = initialEpisode;
+  }
+
+  // Event listeners
+  episodeFilter.addEventListener('change', filterScenes);
+  locationFilter.addEventListener('change', filterScenes);
+  characterFilter.addEventListener('change', filterScenes);
+  clearBtn.addEventListener('click', clearFilters);
+
+  // Apply initial filter
+  filterScenes();
+</script>
+
+<style>
+  .scene-filter {
+    display: flex;
+    gap: var(--space-4);
+    align-items: end;
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 120px;
+  }
+
+  .filter-group label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .filter-group select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .filter-group select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .filter-group select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  .clear-btn {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .clear-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-strong);
+  }
+
+  @media (max-width: 600px) {
+    .scene-filter {
+      gap: var(--space-3);
+    }
+    
+    .filter-group {
+      min-width: 100px;
+    }
+  }
+</style>

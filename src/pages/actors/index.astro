@@ -1,0 +1,59 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import IndexLayout from "../../layouts/IndexLayout.astro";
+import ActorCard from "../../components/collection-cards/ActorCard.astro";
+
+const actors = await getCollection("actors");
+const sorted = actors.sort((a, b) => a.data.name.localeCompare(b.data.name));
+---
+
+<IndexLayout
+  title="Actors"
+  count={sorted.length}
+  description="Actor profiles and filmography."
+>
+  {sorted.length === 0 ? (
+    <p class="empty">No actors yet.</p>
+  ) : (
+    <ul class="grid grid--cols-4">
+      {sorted.map((entry) => (
+        <li>
+          <ActorCard entry={entry} />
+        </li>
+      ))}
+    </ul>
+  )}
+</IndexLayout>
+
+<style>
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    padding: 0;
+    list-style: none;
+    margin: 0;
+  }
+
+  .grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* Responsive: collapse to fewer columns on smaller screens */
+  @media (max-width: 900px) {
+    .grid--cols-4 { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .grid--cols-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 400px) {
+    .grid--cols-4 { grid-template-columns: 1fr; }
+  }
+
+  .empty {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    font-style: italic;
+    padding: var(--space-8) 0;
+    text-align: center;
+  }
+</style>

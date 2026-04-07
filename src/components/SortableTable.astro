@@ -1,0 +1,103 @@
+---
+/**
+ * SortableTable Component
+ * Creates a sortable HTML table with click-to-sort functionality
+ * meant for use in MDX files
+ * 
+ * @param headers - Array of column headers
+ * @param rows - 2D array of table data
+ */
+interface Props {
+  headers: string[];
+  rows: string[][];
+}
+
+const { headers, rows } = Astro.props;
+---
+
+<div class="sortable-table">
+  <table>
+    <thead>
+      <tr>
+        {headers.map((header) => (
+          <th class="sortable" onclick="sortTable(this)">
+            {header}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          {row.map((cell) => (
+            <td set:html={cell}></td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .sortable-table {
+    overflow-x: auto;
+  }
+
+  .sortable-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-6) 0;
+  }
+
+  .sortable-table th,
+  .sortable-table td {
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sortable-table th {
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sortable-table th:hover {
+    background-color: var(--bg-secondary);
+  }
+</style>
+
+<script is:inline>
+  function sortTable(th) {
+    const table = th.closest('table');
+    const tbody = table?.querySelector('tbody');
+    if (!tbody) return;
+    
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const thIndex = Array.from(th.parentElement?.children || []).indexOf(th);
+    const isAsc = th.classList.contains('sorted-asc');
+    
+    // Sort rows
+    rows.sort((a, b) => {
+      const aText = a.children[thIndex]?.textContent?.trim() || '';
+      const bText = b.children[thIndex]?.textContent?.trim() || '';
+      
+      // Try numeric comparison first
+      const aNum = parseFloat(aText.replace(/[^0-9.-]/g, ''));
+      const bNum = parseFloat(bText.replace(/[^0-9.-]/g, ''));
+      
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        return isAsc ? aNum - bNum : bNum - aNum;
+      }
+      
+      // Text comparison
+      return isAsc 
+        ? aText.localeCompare(bText)
+        : bText.localeCompare(aText);
+    });
+    
+    // Re-append sorted rows
+    rows.forEach(row => tbody.appendChild(row));
+  }
+</script>

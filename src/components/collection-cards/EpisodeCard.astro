@@ -1,0 +1,74 @@
+---
+/**
+ * EpisodeCard.astro
+ * 
+ * A specialized card component for episodes that extends BaseCard
+ * with episode-specific styling and data structure.
+ */
+
+import BaseCard from "./BaseCard.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  episode: CollectionEntry<"episodes">;
+  projectSlug: string;
+}
+
+const { episode, projectSlug } = Astro.props;
+const { data } = episode;
+
+// Determine badge color based on status
+const getBadgeColor = (status: string) => {
+  switch (status) {
+    case "locked": return "#10b981";
+    case "revised": return "#3b82f6";
+    case "first-draft": return "#f59e0b";
+    case "outline": return "#6b7280";
+    default: return "var(--accent)";
+  }
+};
+
+// Format episode number for display
+const episodeDisplay = `Episode ${data.episodeNumber}`;
+
+// Create meta information
+const meta = [
+  `Status: ${data.status}`
+];
+
+// Create episode slug from episode id
+const episodeSlug = episode.id.replace('src/content/episodes/', '').replace(/\.(md|mdx)$/, '');
+
+// Create footer with link to episode details
+const footer = "View episode details →";
+---
+
+<BaseCard
+  href={`/projects/${projectSlug}/episodes/${episodeSlug}`}
+  title={episodeDisplay}
+  subtitle={data.title}
+  badge={data.status}
+  badgeColor={getBadgeColor(data.status)}
+  meta={meta}
+  footer={footer}
+  class="episode-card"
+/>
+
+<style>
+  .episode-card {
+    min-height: 280px;
+  }
+
+  .episode-card .base-card__title {
+    font-size: var(--text-xl);
+  }
+
+  .episode-card .base-card__subtitle {
+    font-weight: 500;
+  }
+
+  .episode-card .base-card__footer-text {
+    color: var(--accent);
+    font-weight: 500;
+  }
+</style>

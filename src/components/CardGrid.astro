@@ -1,0 +1,74 @@
+---
+/**
+ * CardGrid.astro
+ *
+ * Renders a grid of CollectionCard components from collection entries.
+ * Works directly with collection entries without additional mapping.
+ *
+ * @prop entries         - Raw collection entries from getCollection()
+ * @prop columns         - Grid column count hint (default: auto)
+ * @prop emptyMessage    - Text shown when entries is empty
+ */
+
+import type { CollectionEntry, CollectionKey } from "astro:content";
+import CollectionCard from "./CollectionCard.astro";
+
+interface Props {
+  entries: CollectionEntry<CollectionKey>[];
+  columns?: 2 | 3 | 4;
+  emptyMessage?: string;
+}
+
+const {
+  entries,
+  columns = 3,
+  emptyMessage = "Nothing here yet.",
+} = Astro.props;
+---
+
+{entries.length === 0 ? (
+  <p class="empty">{emptyMessage}</p>
+) : (
+  <ul class:list={["grid", `grid--cols-${columns}`]}>
+    {entries.map((entry) => (
+      <li>
+        <CollectionCard entry={entry} variant="auto" />
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    padding: 0;
+    list-style: none;
+    margin: 0;
+  }
+
+  /* Column variants */
+  .grid--cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* Responsive: collapse to fewer columns on smaller screens */
+  @media (max-width: 900px) {
+    .grid--cols-4 { grid-template-columns: repeat(3, 1fr); }
+    .grid--cols-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .grid--cols-4,
+    .grid--cols-3,
+    .grid--cols-2 { grid-template-columns: 1fr; }
+  }
+
+  .empty {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    font-style: italic;
+    padding: var(--space-8) 0;
+    text-align: center;
+  }
+</style>

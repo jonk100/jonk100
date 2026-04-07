@@ -1,0 +1,40 @@
+---
+/**
+ * ActorCard.astro
+ *
+ * Renders a single actor card using BaseCard as foundation.
+ * Works specifically with actor collection entries.
+ */
+
+import type { CollectionEntry } from "astro:content";
+import BaseCard from "./BaseCard.astro";
+
+interface Props {
+  entry: CollectionEntry<"actors">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+// Build meta array for BaseCard
+const meta: string[] = [];
+if (data.born) {
+  const birthYear = new Date(data.born).getFullYear();
+  meta.push(`Born: ${birthYear}`);
+}
+if (data.from) {
+  meta.push(data.from);
+}
+
+// Build footer text
+const footer = data.tmdbId ? `TMDB ID: ${data.tmdbId}` : undefined;
+---
+
+<BaseCard
+  href={`/actors/${entry.id}`}
+  title={data.name}
+  image={data.heroImage || undefined}
+  imageAlt={`${data.name} headshot`}
+  meta={meta}
+  footer={footer}
+/>

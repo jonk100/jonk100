@@ -1,0 +1,18 @@
+---
+// src/components/screenplay/Dialogue.astro
+/**
+ * Dialogue
+ *
+ * - Renders spoken dialogue
+ */
+
+interface Props {
+  speaker?: string;
+}
+
+const { speaker } = Astro.props;
+---
+
+<div class="dialogue">
+  <slot />
+</div>

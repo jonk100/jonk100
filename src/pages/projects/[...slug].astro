@@ -1,0 +1,258 @@
+---
+/**
+ * /projects/[...slug].astro
+ *
+ * Dynamic project detail page that shows project information
+ * and navigation to related collections (scenes, plots, beats, characters, locations).
+ */
+
+import { getCollection, getEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+
+// Get related collections for this project
+const [scenes, plots, beats, characters, locations, episodes] = await Promise.all([
+  getCollection("scenes", (scene) => scene.data.project.id === project.id),
+  getCollection("plots", (plot) => plot.data.project.id === project.id),
+  getCollection("beats", (beat) => beat.data.project.id === project.id),
+  getCollection("characters", (character) => character.data.project.id === project.id),
+  getCollection("locations", (location) => location.data.project.id === project.id),
+  getCollection("episodes", (episode) => episode.data.project.id === project.id),
+]);
+
+// Sort collections
+const sortedScenes = scenes.sort((a, b) => (a.data.sceneNumber || 0) - (b.data.sceneNumber || 0));
+const sortedPlots = plots.sort((a, b) => a.data.title.localeCompare(b.data.title));
+const sortedBeats = beats.sort((a, b) => (a.data.beatNumber || 0) - (b.data.beatNumber || 0));
+const sortedCharacters = characters.sort((a, b) => a.data.name.localeCompare(b.data.name));
+const sortedLocations = locations.sort((a, b) => a.data.name.localeCompare(b.data.name));
+const sortedEpisodes = episodes.sort((a, b) => (a.data.episodeNumber || 0) - (b.data.episodeNumber || 0));
+---
+
+<BaseLayout title={data.title}>
+  <div class="project-detail">
+    <header class="project-header">
+      <h1>{data.title}</h1>
+      {data.logline && <p class="logline">{data.logline}</p>}
+      
+      <div class="project-meta">
+        <span class="type">{data.type.replace('-', ' ')}</span>
+        {data.status && <span class="status status--{data.status}">{data.status}</span>}
+        {data.episodeCount && <span class="episodes">{data.episodeCount} episodes</span>}
+        {data.genres && data.genres.length > 0 && (
+          <span class="genres">{data.genres.join(', ')}</span>
+        )}
+      </div>
+
+      {data.themes && data.themes.length > 0 && (
+        <div class="themes">
+          <h3>Themes</h3>
+          <div class="theme-tags">
+            {data.themes.map((theme) => (
+              <span class="theme-tag">{theme.id.replace('-', ' ')}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+
+    <nav class="project-nav">
+      <h2>Collections</h2>
+      <div class="nav-grid">
+        <a href={`/projects/${project.id}/episodes`} class="nav-card">
+          <h3>Episodes</h3>
+          <p class="count">{sortedEpisodes.length} episodes</p>
+          <p class="description">Complete episodes with scenes, tension analysis, and narrative progression</p>
+        </a>
+        
+        <a href={`/projects/${project.id}/scenes`} class="nav-card">
+          <h3>Scenes</h3>
+          <p class="count">{sortedScenes.length} scenes</p>
+          <p class="description">Individual scene breakdowns with locations and characters</p>
+        </a>
+        
+        <a href={`/projects/${project.id}/plots`} class="nav-card">
+          <h3>Plots</h3>
+          <p class="count">{sortedPlots.length} plots</p>
+          <p class="description">Main and subplot threads</p>
+        </a>
+        
+        <a href={`/projects/${project.id}/beats`} class="nav-card">
+          <h3>Beats</h3>
+          <p class="count">{sortedBeats.length} beats</p>
+          <p class="description">Individual plot points and dramatic moments</p>
+        </a>
+        
+        <a href={`/projects/${project.id}/characters`} class="nav-card">
+          <h3>Characters</h3>
+          <p class="count">{sortedCharacters.length} characters</p>
+          <p class="description">Character profiles and arcs</p>
+        </a>
+        
+        <a href={`/projects/${project.id}/locations`} class="nav-card">
+          <h3>Locations</h3>
+          <p class="count">{sortedLocations.length} locations</p>
+          <p class="description">Physical settings and environments</p>
+        </a>
+      </div>
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .project-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8);
+  }
+
+  .project-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .project-header h1 {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .logline {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+    line-height: 1.6;
+  }
+
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .project-meta span {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+
+  .status {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status--development { background: var(--status-draft); color: white; }
+  .status--in-progress { background: var(--status-progress); color: white; }
+  .status--complete { background: var(--status-complete); color: white; }
+
+  .themes {
+    margin-top: var(--space-6);
+  }
+
+  .themes h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+  }
+
+  .theme-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .theme-tag {
+    font-size: var(--text-sm);
+    padding: var(--space-1) var(--space-2);
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-radius: var(--radius-full);
+    text-transform: capitalize;
+  }
+
+  .project-nav h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-6);
+    color: var(--text-primary);
+  }
+
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .nav-card {
+    display: block;
+    padding: var(--space-6);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-fast);
+  }
+
+  .nav-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .nav-card h3 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+  }
+
+  .nav-card .count {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: var(--space-2);
+  }
+
+  .nav-card .description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .project-detail {
+      padding: var(--space-6);
+    }
+
+    .project-header h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .logline {
+      font-size: var(--text-base);
+    }
+
+    .nav-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

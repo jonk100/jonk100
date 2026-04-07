@@ -1,0 +1,80 @@
+---
+/**
+ * /writings/index.astro
+ *
+ * Index page for all writings. Shows poems and short stories together.
+ * Uses PoemCard and ShortStoryCard components for consistent styling.
+ */
+
+import { getCollection, type CollectionEntry } from "astro:content";
+import IndexLayout from "../../layouts/IndexLayout.astro";
+import PoemCard from "../../components/collection-cards/PoemCard.astro";
+import ShortStoryCard from "../../components/collection-cards/ShortStoryCard.astro";
+
+const poems = await getCollection("poems");
+const shortStories = await getCollection("short-stories");
+
+// Combine all writings and sort by date (newest first)
+const allWritings = [...poems, ...shortStories].sort((a, b) => {
+  const dateA = new Date(a.data.writtenAt || 0);
+  const dateB = new Date(b.data.writtenAt || 0);
+  return dateB.getTime() - dateA.getTime();
+});
+---
+
+<IndexLayout
+  title="Writings"
+  count={allWritings.length}
+  description="All poems and short stories."
+>
+  {allWritings.length === 0 ? (
+    <p class="empty">No writings yet.</p>
+  ) : (
+    <ul class="grid grid--cols-3">
+      {allWritings.map((entry) => (
+        <li>
+          {entry.collection === "poems" ? (
+            <PoemCard entry={entry as CollectionEntry<"poems">} />
+          ) : (
+            <ShortStoryCard entry={entry as CollectionEntry<"short-stories">} />
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</IndexLayout>
+
+<style>
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    padding: 0;
+    list-style: none;
+    margin: 0;
+  }
+
+  .grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* Responsive: collapse to fewer columns on smaller screens */
+  @media (max-width: 900px) {
+    .grid--cols-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .grid--cols-3 { grid-template-columns: 1fr; }
+  }
+
+  .empty {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    font-style: italic;
+    padding: var(--space-8) 0;
+    text-align: center;
+  }
+
+  /* Writing-specific CSS variables */
+  :root {
+    --accent-purple: #8b5cf6;
+    --accent-green: #10b981;
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import { getCollection } from "astro:content";
+import TensionGraph from "./TensionGraph.astro";
+import { extractEpisodeTensionData, extractAllPlotTensionData } from "../utils/tension";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  episode: CollectionEntry<"episodes">;
+  width?: number;
+  height?: number;
+}
+
+const { episode, width = 800, height = 400 } = Astro.props;
+const projectSlug = episode.data.project.id;
+
+// Get all beats for this project
+const allBeats = await getCollection("beats", 
+  (beat) => beat.data.project.id === projectSlug
+);
+
+// Extract tension data for this specific episode
+const episodeTensionData = await extractEpisodeTensionData(allBeats, episode.data.episodeNumber.toString());
+
+// Get all plots for this episode
+const episodePlots = episode.data.activePlots || [];
+
+// Create focused data for episode's active plots
+const focusedTensionData = episodeTensionData.filter(point => 
+  point.label === 'Overall' || episodePlots.some(plot => plot.id === point.label)
+);
+---
+
+<div class="episode-tension-container">
+  <div class="episode-header">
+    <h3>Episode {episode.data.episodeNumber}: {episode.data.title}</h3>
+    <p class="episode-description">Tension dynamics across this episode's key moments</p>
+  </div>
+
+  <!-- Episode Overview Graph -->
+  <div class="graph-wrapper">
+    <TensionGraph 
+      data={focusedTensionData} 
+      title={`Episode ${episode.data.episodeNumber} Tension Arc`}
+      width={width}
+      height={height}
+      showOverall={true}
+    />
+  </div>
+
+  <!-- Episode Stats -->
+  <div class="episode-stats">
+    <div class="stat-item">
+      <span class="stat-label">Active Plots:</span>
+      <span class="stat-value">{episodePlots.length}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Tension Points:</span>
+      <span class="stat-value">{episodeTensionData.length}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Dominant Driver:</span>
+      <span class="stat-value">
+        {episode.data.dominantDriver ? episode.data.dominantDriver.data.title : 'None specified'}
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .episode-tension-container {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    margin: 2rem 0;
+  }
+
+  .episode-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .episode-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .episode-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .graph-wrapper {
+    margin-bottom: 1.5rem;
+  }
+
+  .episode-stats {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .episode-tension-container {
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .episode-stats {
+      gap: 1rem;
+    }
+
+    .stat-item {
+      min-width: 120px;
+    }
+  }
+</style>

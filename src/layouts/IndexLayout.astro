@@ -1,0 +1,107 @@
+---
+/**
+ * IndexLayout.astro
+ *
+ * Layout for collection index pages. Extends BaseLayout with a
+ * wider content area, a page header (title + optional count + description),
+ * and a slot for the grid content.
+ *
+ * Usage:
+ *   <IndexLayout title="Songs" count={songs.length}>
+ *     <CardGrid collectionName="songs" entries={songs} />
+ *   </IndexLayout>
+ *
+ * @prop title       - Page heading e.g. "Songs"
+ * @prop count       - Optional entry count shown next to the title
+ * @prop description - Optional sub-heading shown below the title
+ * @prop columns     - Passed through to CardGrid if using the default slot
+ */
+
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  count?: number;
+  description?: string;
+}
+
+const { title, count, description } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <main class="index-main">
+    <div class="index-header">
+      <div class="index-header__title-row">
+        <h1 class="index-header__title">{title}</h1>
+        {count !== undefined && (
+          <span class="index-header__count">{count}</span>
+        )}
+      </div>
+      {description && (
+        <p class="index-header__description">{description}</p>
+      )}
+    </div>
+
+    <div class="index-content">
+      <slot />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .index-main {
+    width: 100%;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-8) var(--space-16);
+  }
+
+  /* ── Page header ─────────────────────────────── */
+
+  .index-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .index-header__title-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  .index-header__title {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .index-header__count {
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.1em 0.5em;
+    letter-spacing: 0.04em;
+  }
+
+  .index-header__description {
+    margin: var(--space-3) 0 0;
+    color: var(--text-secondary);
+    font-size: var(--text-lg);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 720px) {
+    .index-main {
+      padding: var(--space-6) var(--space-4) var(--space-12);
+    }
+
+    .index-header__title {
+      font-size: var(--text-2xl);
+    }
+  }
+</style>

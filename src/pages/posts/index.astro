@@ -1,0 +1,27 @@
+---
+/**
+ * /posts/index.astro
+ *
+ * Posts hub — shows post-series as cards. Each card links to a
+ * series page that lists all posts in that series.
+ *
+ * Individual posts are accessed through their series, not directly
+ * from this page — consistent with how Projects works.
+ */
+
+import { getCollection } from "astro:content";
+import IndexLayout from "../../layouts/IndexLayout.astro";
+import CardGrid from "../../components/CardGrid.astro";
+
+const postSeries = await getCollection("post-series");
+
+const sorted = postSeries.sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<IndexLayout
+  title="Posts"
+  count={sorted.length}
+  description="Essays, reviews, courses, and other writing."
+>
+  <CardGrid collectionName="post-series" entries={sorted} columns={3} />
+</IndexLayout>

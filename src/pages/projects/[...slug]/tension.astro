@@ -1,0 +1,206 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../../layouts/BaseLayout.astro";
+import TensionGraph from "../../../components/TensionGraph.astro";
+import { extractAllPlotTensionData, extractTensionData, groupTensionByPlot } from "../../../utils/tension";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const projectSlug = project.id;
+
+// Get all beats for this project
+const allBeats = await getCollection("beats", 
+  (beat) => beat.data.project.id === projectSlug
+);
+
+// Get all plots for this project
+const allPlots = await getCollection("plots", 
+  (plot) => plot.data.project.id === projectSlug
+);
+
+// Extract tension data for all plots
+const allTensionData = await extractAllPlotTensionData(allBeats, getEntry);
+
+// Group data by plot for individual plot graphs
+const groupedTensionData = groupTensionByPlot(allTensionData);
+
+// Create overall tension data
+const overallTensionData = await extractTensionData(allBeats);
+---
+
+<Layout title={`Tension Analysis - ${project.data.title}`}>
+  <div class="container">
+    <header class="page-header">
+      <h1>Tension Analysis: {project.data.title}</h1>
+      <p class="page-description">
+        Visualizing tension dynamics across plots and scenes throughout the narrative.
+      </p>
+    </header>
+
+    <!-- Overall Tension Graph -->
+    <section class="graph-section">
+      <h2>Overall Tension Arc</h2>
+      <TensionGraph 
+        data={overallTensionData} 
+        title="Overall Story Tension"
+        showOverall={false}
+        colors={["#1f2937"]}
+      />
+    </section>
+
+    <!-- All Plots Combined -->
+    <section class="graph-section">
+      <h2>All Plot Tensions Combined</h2>
+      <TensionGraph 
+        data={allTensionData} 
+        title="All Plot Tensions Over Time"
+        showOverall={true}
+      />
+    </section>
+
+    <!-- Individual Plot Graphs -->
+    <section class="graph-section">
+      <h2>Individual Plot Tensions</h2>
+      <div class="plot-grid">
+        {
+          allPlots.map((plot) => {
+            const plotTensionData = groupedTensionData.get(plot.id);
+            if (!plotTensionData || plotTensionData.length === 0) return null;
+            
+            return (
+              <div class="plot-card">
+                <h3>{plot.data.title}</h3>
+                <p class="plot-type">{plot.data.plotType} Plot • Level {plot.data.plotLevel}</p>
+                <TensionGraph 
+                  data={plotTensionData} 
+                  title={plot.data.title}
+                  showOverall={false}
+                  width={600}
+                  height={300}
+                />
+                {plot.data.summary && (
+                  <p class="plot-summary">{plot.data.summary}</p>
+                )}
+              </div>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <!-- Scene-Level Tension -->
+    <section class="graph-section">
+      <h2>Scene-Level Tension Analysis</h2>
+      <TensionGraph 
+        data={overallTensionData.filter(d => d.timestamp?.includes('s'))} 
+        title="Tension by Scene"
+        showOverall={false}
+        colors={["#059669"]}
+      />
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  .page-description {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .graph-section {
+    margin-bottom: 4rem;
+  }
+
+  .graph-section h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+
+  .plot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .plot-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+  }
+
+  .plot-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .plot-type {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .plot-summary {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .plot-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .plot-card {
+      padding: 1rem;
+    }
+  }
+</style>

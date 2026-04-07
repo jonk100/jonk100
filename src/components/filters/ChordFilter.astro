@@ -1,0 +1,195 @@
+---
+/**
+ * ChordFilter.astro
+ * 
+ * Filter component for the chords index page. Allows filtering by:
+ * - Shape (open, e-shape, a-shape)
+ * - Root note (C, C#/Db, D, etc.)
+ * - Quality (major, minor)
+ */
+
+interface Props {
+  chords: any[];
+}
+
+const { chords } = Astro.props;
+
+// Extract unique values for filters
+const shapes = [...new Set(chords.map(chord => chord.data.voicingLabel))];
+const rootNotes = [...new Set(chords.map(chord => chord.data.displayName.replace(/m$/, '')))].sort();
+const qualities = [...new Set(chords.map(chord => 
+  chord.data.displayName.includes('m') ? 'minor' : 'major'
+))];
+
+// Helper to get root note from display name
+function getRootNote(displayName: string): string {
+  return displayName.replace(/m$/, '');
+}
+
+// Helper to get quality from display name  
+function getQuality(displayName: string): string {
+  return displayName.includes('m') ? 'minor' : 'major';
+}
+---
+
+<div class="chord-filter">
+  <div class="filter-group">
+    <label for="shape-filter">Shape:</label>
+    <select id="shape-filter">
+      <option value="">All Shapes</option>
+      {shapes.map(shape => (
+        <option value={shape}>{shape === 'open' ? 'Open' : 
+                            shape.includes('e-shape') ? 'E-Shape' :
+                            shape.includes('a-shape') ? 'A-Shape' : shape}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="root-filter">Root Note:</label>
+    <select id="root-filter">
+      <option value="">All Notes</option>
+      {rootNotes.map(note => (
+        <option value={note}>{note}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="quality-filter">Quality:</label>
+    <select id="quality-filter">
+      <option value="">All Qualities</option>
+      {qualities.map(quality => (
+        <option value={quality}>{quality === 'major' ? 'Major' : 'Minor'}</option>
+      ))}
+    </select>
+  </div>
+
+  <button id="clear-filters" class="clear-btn">Clear All</button>
+</div>
+
+<script>
+  // Filter functionality
+  const shapeFilter = document.getElementById('shape-filter') as HTMLSelectElement;
+  const rootFilter = document.getElementById('root-filter') as HTMLSelectElement;
+  const qualityFilter = document.getElementById('quality-filter') as HTMLSelectElement;
+  const clearBtn = document.getElementById('clear-filters') as HTMLButtonElement;
+  const chordCards = document.querySelectorAll('.chord-card');
+
+  function filterChords() {
+    const selectedShape = shapeFilter.value;
+    const selectedRoot = rootFilter.value.toLowerCase();
+    const selectedQuality = qualityFilter.value;
+
+    chordCards.forEach((card: Element) => {
+      const cardElement = card as HTMLElement;
+      const listItem = cardElement.closest('li') as HTMLElement;
+      const title = cardElement.querySelector('.base-card__title')?.textContent || '';
+      const badge = cardElement.querySelector('.base-card__badge')?.textContent || '';
+      
+      // Extract data from title and badge
+      const shapeMatch = !selectedShape || 
+        title.toLowerCase().includes(selectedShape.toLowerCase()) ||
+        (selectedShape === 'open' && title.includes('(Open)')) ||
+        (selectedShape.includes('e-shape') && title.includes('(E-Shape)')) ||
+        (selectedShape.includes('a-shape') && title.includes('(A-Shape)'));
+      
+      const rootMatch = !selectedRoot || 
+        title.toLowerCase().startsWith(selectedRoot);
+      
+      const qualityMatch = !selectedQuality ||
+        (selectedQuality === 'major' && !title.includes('m')) ||
+        (selectedQuality === 'minor' && title.includes('m'));
+
+      const shouldShow = shapeMatch && rootMatch && qualityMatch;
+      listItem.style.display = shouldShow ? 'block' : 'none';
+    });
+  }
+
+  function clearFilters() {
+    shapeFilter.value = '';
+    rootFilter.value = '';
+    qualityFilter.value = '';
+    filterChords();
+  }
+
+  // Event listeners
+  shapeFilter.addEventListener('change', filterChords);
+  rootFilter.addEventListener('change', filterChords);
+  qualityFilter.addEventListener('change', filterChords);
+  clearBtn.addEventListener('click', clearFilters);
+</script>
+
+<style>
+  .chord-filter {
+    display: flex;
+    gap: var(--space-4);
+    align-items: end;
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 120px;
+  }
+
+  .filter-group label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .filter-group select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .filter-group select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .filter-group select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  .clear-btn {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .clear-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-strong);
+  }
+
+  @media (max-width: 600px) {
+    .chord-filter {
+      gap: var(--space-3);
+    }
+    
+    .filter-group {
+      min-width: 100px;
+    }
+  }
+</style>

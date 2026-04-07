@@ -1,0 +1,148 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/collection-cards/PostCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  // Get all post-series and posts
+  const postSeries = await getCollection('post-series');
+  const posts = await getCollection('posts');
+  
+  // Group posts by their postSeries reference
+  const seriesGroups = new Map<string, { series: typeof postSeries[0]; posts: typeof posts }>();
+  
+  posts.forEach(post => {
+    const seriesId = post.data.postSeries.id; // e.g. "2026-nfl-draft"
+    const series = postSeries.find(s => s.id === seriesId);
+    
+    if (series) {
+      if (!seriesGroups.has(seriesId)) {
+        seriesGroups.set(seriesId, { series, posts: [] });
+      }
+      seriesGroups.get(seriesId)!.posts.push(post);
+    }
+  });
+
+  // Create paths for each series
+  return Array.from(seriesGroups.entries()).map(([seriesId, { series, posts }]) => ({
+    params: { slug: seriesId },
+    props: { 
+      series,
+      posts,
+      seriesId
+    }
+  }));
+}
+
+interface Props {
+  series: import('astro:content').CollectionEntry<'post-series'>;
+  posts: import('astro:content').CollectionEntry<'posts'>[];
+  seriesId: string;
+}
+
+const { series, posts, seriesId } = Astro.props;
+
+// Sort posts based on the series configuration
+const sortedPosts = posts.sort((a, b) => {
+  if (series.data.sortBy === 'position' && a.data.position && b.data.position) {
+    return a.data.position - b.data.position;
+  }
+  
+  // Default to date sorting (newest first)
+  const dateA = a.data.publishedAt ? new Date(a.data.publishedAt).getTime() : 0;
+  const dateB = b.data.publishedAt ? new Date(b.data.publishedAt).getTime() : 0;
+  
+  return dateB - dateA;
+});
+---
+
+<BaseLayout title={series.data.title}>
+  <main class="container">
+    <header class="page-header">
+      <h1>{series.data.title}</h1>
+      {series.data.description && (
+        <p class="series-description">{series.data.description}</p>
+      )}
+      <p class="post-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'} in this series</p>
+    </header>
+
+    <div class="posts-grid">
+      {sortedPosts.map(post => (
+        <PostCard post={post} />
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <div class="empty-state">
+        <p>No posts found in this series.</p>
+      </div>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .page-header h1 {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .series-description {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .post-count {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-16);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: var(--space-6) var(--space-4);
+    }
+
+    .page-header h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .series-description {
+      font-size: var(--text-base);
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>

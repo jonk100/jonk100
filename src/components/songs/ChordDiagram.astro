@@ -1,0 +1,177 @@
+---
+// src/components/songs/ChordDiagram.astro
+import { GUITAR_FRETBOARD } from '../../utils/music/instruments';
+
+interface Props {
+  displayName: string;
+  voicingLabel?: string;
+  baseFret: number;
+  fingering: (number | string)[];
+  frets: (number | 'x' | 0)[];
+  barre?: {
+    finger: number;
+    fret: number;
+    strings: [number, number];
+  };
+}
+
+const { displayName, baseFret, frets, fingering, barre } = Astro.props;
+
+const detailedNotes = frets.map((fret, index) => {
+  if (fret === 'x' || fret === -1 || fret === 0) return null;
+  const stringData = GUITAR_FRETBOARD[index];
+  return stringData ? stringData.notes[Number(fret)] : null;
+});
+
+// Settings for the SVG Grid - Adjusted for a "Squarer" look
+const width = 180;
+const height = 150;
+const marginX = 20; // Reduced horizontal margin
+const marginY = 15; // Drastically reduced vertical margin
+const stringSpacing = 24; // Increased from 20 to stretch horizontally
+const fretSpacing = 24;   // Decreased from 30 to compress vertically
+
+const getX = (i: number) => marginX + i * stringSpacing;
+const getY = (f: number) => {
+  const relativeFret = f - (baseFret === 1 ? 0 : baseFret - 1);
+  return marginY + (relativeFret * fretSpacing) - (fretSpacing / 2);
+};
+---
+
+<div class="chord-card">
+  <div class="header">
+    <strong>{displayName}</strong>
+  </div>
+
+  <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} class="chord-svg">
+    {/* Base Fret / Nut */}
+    {baseFret > 1 ? (
+      <text 
+        x={marginX + (5 * stringSpacing) + 12} 
+        y={marginY + (fretSpacing / 2) + 4} 
+        font-size="11" 
+        fill="currentColor" 
+        font-weight="600"
+      >
+        {baseFret}fr
+      </text>
+    ) : (
+      <line 
+        x1={marginX} y1={marginY} 
+        x2={marginX + (5 * stringSpacing)} y2={marginY} 
+        stroke="currentColor" stroke-width="4" 
+      />
+    )}
+
+    {/* Fret Lines */}
+    {[0, 1, 2, 3, 4, 5].map((i) => (
+      <line 
+        x1={marginX} 
+        y1={marginY + i * fretSpacing} 
+        x2={marginX + (5 * stringSpacing)} 
+        y2={marginY + i * fretSpacing} 
+        stroke="#ccc" 
+      />
+    ))}
+
+    {/* String Lines */}
+    {GUITAR_FRETBOARD.map((_, i) => (
+      <line 
+        x1={getX(i)} 
+        y1={marginY} 
+        x2={getX(i)} 
+        y2={marginY + (5 * fretSpacing)} 
+        stroke="#666" 
+      />
+    ))}
+
+    {/* Barre */}
+    {barre && (
+      <rect
+        x={getX(barre.strings[0] - 1) - 9}
+        y={getY(barre.fret) - 9}
+        width={(barre.strings[1] - barre.strings[0]) * stringSpacing + 18}
+        height="18"
+        rx="9"
+        fill="currentColor"
+        opacity="0.8"
+      />
+    )}
+
+    {/* Fretted Notes */}
+    {frets.map((fret, i) => {
+      if (fret === 'x' || fret === -1 || fret === 0) return null;
+      return (
+        <g class="fret-marker">
+          <title>{detailedNotes[i]}</title>
+          <circle 
+            cx={getX(i)} 
+            cy={getY(fret as number)} 
+            r="9" 
+            fill="currentColor" 
+          />
+          <text 
+            x={getX(i)} 
+            y={getY(fret as number) + 4} 
+            text-anchor="middle" 
+            fill="white" 
+            font-size="11"
+            font-weight="bold"
+            pointer-events="none"
+          >
+            {fingering[i]}
+          </text>
+        </g>
+      );
+    })}
+
+    {/* Open / Muted Indicators */}
+    {frets.map((fret, i) => (
+      <g>
+        <text 
+          x={getX(i)} 
+          y={marginY - 6} 
+          text-anchor="middle" 
+          font-size="14" 
+          font-weight="bold"
+          fill="currentColor"
+        >
+          {fret === 'x' || fret === -1 ? '×' : fret === 0 ? '○' : ''}
+        </text>
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .chord-card {
+    display: inline-block;
+    padding: 0.5rem; /* Drastically reduced overall card padding */
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+  }
+
+  .header {
+    margin-bottom: -5px; /* Negative margin to pull the title into the SVG area */
+    text-align: center;
+  }
+
+  .header strong {
+    font-size: 1.2rem;
+    display: block;
+    color: #000;
+    line-height: 1;
+  }
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    overflow: visible;
+  }
+
+  .fret-marker:hover circle {
+    fill: #3b82f6;
+  }
+</style>

@@ -1,0 +1,261 @@
+---
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ChordDiagram from "../../components/songs/ChordDiagram.astro";
+import ChordVoicingsSection from "../../components/songs/ChordVoicingsSection.astro";
+import SongStructureSection from "../../components/songs/SongStructureSection.astro";
+import SongSectionDetails from "../../components/songs/SongSectionDetails.astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const songs = await getCollection("songs");
+  return songs.map((entry) => ({
+    params: { slug: entry.id }, 
+    props: { entry },
+  }));
+};
+
+interface Props {
+  entry: any;
+}
+
+const { entry } = Astro.props as Props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+// Also fetch chords to resolve references
+const allChords = await getCollection("chords");
+const chordMap = new Map(allChords.map(chord => [chord.id, chord]));
+
+// Helper to format key signature
+function formatKey(keyRoot: string, keyMode: string) {
+  const modeSymbol = keyMode === 'minor' ? 'm' : '';
+  return `${keyRoot}${modeSymbol}`;
+}
+
+// Helper to format time signature
+function formatTimeSignature(top: number, bottom: number) {
+  return `${top}/${bottom}`;
+}
+
+// Helper to get key color
+function getKeyColor(keyMode: string) {
+  return keyMode === 'minor' ? 'var(--key-minor)' : 'var(--key-major)';
+}
+
+// Helper to calculate total bars
+function calculateTotalBars(sections: any[], structure: string[]) {
+  const sectionMap = new Map(sections.map((s: any) => [s.name, s]));
+  return structure.reduce((total: number, sectionName: string) => {
+    const section = sectionMap.get(sectionName);
+    return total + (section ? section.bars * section.repeats : 0);
+  }, 0);
+}
+---
+
+<BaseLayout
+  title={data.title}
+  description={`Song details for ${data.title} in ${formatKey(data.keyRoot, data.keyMode)}`}
+>
+  <article class="song-detail">
+    <header class="song-header">
+      <div class="song-info">
+        <h1 class="song-title">{data.title}</h1>
+        
+        <div class="song-meta">
+          <div class="meta-item">
+            <span class="meta-label">Key</span>
+            <span 
+              class="meta-value key-badge"
+              style={`background-color: ${getKeyColor(data.keyMode)}`}
+            >
+              {formatKey(data.keyRoot, data.keyMode)}
+            </span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Time Signature</span>
+            <span class="meta-value">{formatTimeSignature(data.timeSignatureTop, data.timeSignatureBottom)}</span>
+          </div>
+          
+          {data.tempo && (
+            <div class="meta-item">
+              <span class="meta-label">Tempo</span>
+              <span class="meta-value">{data.tempo} BPM</span>
+            </div>
+          )}
+          
+          <div class="meta-item">
+            <span class="meta-label">Chord Voicings</span>
+            <span class="meta-value">{data.chordVoicings.length}</span>
+          </div>
+          
+          {data.album && 'data' in data.album && data.album.data?.title && (
+            <div class="meta-item">
+              <span class="meta-label">Album</span>
+              <span class="meta-value">{data.album.data.title}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <SongStructureSection 
+      structure={data.structure}
+      sections={data.sections}
+    />
+
+    <ChordVoicingsSection 
+      chordVoicings={data.chordVoicings}
+      chordMap={chordMap}
+    />
+
+
+    <SongSectionDetails sections={data.sections} />
+
+    <section class="song-content">
+      <div class="content-body">
+        <Content />
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .song-detail {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-8) 0;
+  }
+
+  .song-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .song-title {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 var(--space-6) 0;
+    color: var(--text-primary);
+  }
+
+  .song-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .meta-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .meta-value {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .key-badge {
+    color: white;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
+  .chord-voicings,
+  .song-content {
+    margin-bottom: var(--space-8);
+  }
+
+  .chord-voicings h2,
+  .song-content h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-4) 0;
+    color: var(--text-primary);
+  }
+
+  .chord-voicings {
+    margin-bottom: var(--space-8);
+  }
+
+  .chord-voicings h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 var(--space-4) 0;
+    color: var(--text-primary);
+  }
+
+  .chord-diagrams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .chord-diagram-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    text-align: center;
+    transition: all var(--transition-fast);
+  }
+
+  .chord-ref:hover {
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+  }
+
+  .content-body {
+    font-size: var(--text-lg);
+    line-height: 1.4;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+  }
+
+  .content-body :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--text-primary);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .content-body p {
+    margin-bottom: var(--space-1);
+  }
+
+  /* Song-specific CSS variables */
+  :root {
+    --key-major: #3b82f6;
+    --key-minor: #ef4444;
+  }
+
+  @media (max-width: 768px) {
+    .song-detail {
+      padding: var(--space-6) 0;
+    }
+
+    .song-title {
+      font-size: var(--text-3xl);
+    }
+
+    .song-meta {
+      grid-template-columns: 1fr;
+    }
+
+    .chord-grid {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+  }
+</style>

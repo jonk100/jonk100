@@ -1,0 +1,107 @@
+---
+/**
+ * Navigation.astro
+ *
+ * Flat top navigation bar. Links are defined in collections.config.ts
+ * so adding/removing nav items never requires touching this component.
+ *
+ * Active state is derived from the current URL path.
+ */
+
+import { navItems } from "../collections.config";
+
+const currentPath = Astro.url.pathname;
+
+/**
+ * Determine if a nav item is active.
+ * Matches exact root path or any sub-path.
+ * e.g. /projects/her-majestys-displeasure → active for /projects
+ */
+function isActive(href: string): boolean {
+  if (href === "/") return currentPath === "/";
+  return currentPath === href || currentPath.startsWith(href + "/");
+}
+---
+
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav__inner">
+    <ul class="nav__list">
+      {navItems.map((item) => (
+        <li class="nav__item">
+          <a
+            href={item.href}
+            class:list={["nav__link", { "nav__link--active": isActive(item.href) }]}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav__inner {
+    width: 100%;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav__link {
+    display: block;
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .nav__link:hover {
+    color: var(--text-secondary);
+  }
+
+  .nav__link--active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .nav__link--active:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    .nav__inner {
+      padding: 0 var(--space-4);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav__inner::-webkit-scrollbar { display: none; }
+
+    .nav__link {
+      padding: var(--space-3) var(--space-4);
+    }
+  }
+</style>

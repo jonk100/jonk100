@@ -1,0 +1,59 @@
+---
+/**
+ * PoemCard.astro
+ *
+ * Renders a single poem card using BaseCard as foundation.
+ * Works specifically with poem collection entries.
+ */
+
+import type { CollectionEntry } from "astro:content";
+import BaseCard from "./BaseCard.astro";
+
+interface Props {
+  entry: CollectionEntry<"poems">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+// Build meta array for BaseCard
+const meta: string[] = [];
+if (data.writtenAt) {
+  meta.push(new Date(data.writtenAt).toLocaleDateString());
+}
+---
+
+<BaseCard
+  href={`/poems/${entry.id}`}
+  title={data.title}
+  meta={meta}
+  badge="Poem"
+  badgeColor="var(--accent-purple)"
+  class="poem-card"
+/>
+
+<style>
+  .poem-card {
+    /* Poem-specific styling */
+    --accent-purple: #8b5cf6;
+  }
+
+  .poem-card .base-card__title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .poem-card .base-card__badge {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .poem-card .base-card__subtitle {
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+</style>

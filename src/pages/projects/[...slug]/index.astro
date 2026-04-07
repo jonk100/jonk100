@@ -1,0 +1,383 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../../layouts/BaseLayout.astro";
+import CardGrid from "../../../components/CardGrid.astro";
+import { type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+
+// Get counts for each content type
+const episodes = await getCollection("episodes", 
+  (episode) => episode.data.project.id === project.id
+);
+const scenes = await getCollection("scenes", 
+  (scene) => scene.data.project.id === project.id
+);
+const plots = await getCollection("plots", 
+  (plot) => plot.data.project.id === project.id
+);
+const beats = await getCollection("beats", 
+  (beat) => beat.data.project.id === project.id
+);
+const characters = await getCollection("characters", 
+  (character) => character.data.project.id === project.id
+);
+const locations = await getCollection("locations", 
+  (location) => location.data.project.id === project.id
+);
+
+// Calculate stats
+const totalEpisodes = episodes.length;
+const completedEpisodes = episodes.filter(ep => ep.data.status === 'locked').length;
+const plannedEpisodes = project.data.episodeCount || totalEpisodes;
+---
+<Layout title={`${project.data.title}`}>
+  <div class="container">
+    <header class="page-header">
+      <h1>{project.data.title}</h1>
+      <p class="page-description">
+        Navigate through all content for {project.data.title}. Explore episodes, scenes, plots, characters, and more.
+      </p>
+    </header>
+
+    <!-- Series Overview Stats -->
+    <section class="series-overview">
+      <h2>Series Overview</h2>
+      <div class="overview-stats">
+        <div class="stat-card">
+          <span class="stat-number">{totalEpisodes}</span>
+          <span class="stat-label">Total Episodes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">{plannedEpisodes}</span>
+          <span class="stat-label">Planned Episodes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">{completedEpisodes}</span>
+          <span class="stat-label">Completed Episodes</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Navigation Cards -->
+    <section class="content-navigation">
+      <h2>Explore Content</h2>
+      <div class="cards-grid">
+        <!-- Episodes Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Episodes</h3>
+            <span class="card-count">{episodes.length}</span>
+          </div>
+          <p class="card-description">
+            Browse all episodes in this series, including detailed breakdowns and tension analysis.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Completed:</span>
+              <span class="stat-value">{completedEpisodes}</span>
+            </div>
+            <div class="card-stat">
+              <span class="stat-label">In Progress:</span>
+              <span class="stat-value">{episodes.length - completedEpisodes}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/episodes`} class="card-link">
+            View All Episodes →
+          </a>
+        </div>
+
+        <!-- Scenes Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Scenes</h3>
+            <span class="card-count">{scenes.length}</span>
+          </div>
+          <p class="card-description">
+            Individual scenes that make up the episodes, with detailed location and character information.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Total Scenes:</span>
+              <span class="stat-value">{scenes.length}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/scenes`} class="card-link">
+            View All Scenes →
+          </a>
+        </div>
+
+        <!-- Plots Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Plots</h3>
+            <span class="card-count">{plots.length}</span>
+          </div>
+          <p class="card-description">
+            Main and subplots that drive the narrative forward throughout the series.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Main Plots:</span>
+              <span class="stat-value">{plots.filter(p => p.data.plotType === 'main').length}</span>
+            </div>
+            <div class="card-stat">
+              <span class="stat-label">Subplots:</span>
+              <span class="stat-value">{plots.filter(p => p.data.plotType === 'sub').length}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/plots`} class="card-link">
+            View All Plots →
+          </a>
+        </div>
+
+        <!-- Beats Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Beats</h3>
+            <span class="card-count">{beats.length}</span>
+          </div>
+          <p class="card-description">
+            Individual story beats and narrative moments that build the overall tension and pacing.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Total Beats:</span>
+              <span class="stat-value">{beats.length}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/beats`} class="card-link">
+            View All Beats →
+          </a>
+        </div>
+
+        <!-- Characters Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Characters</h3>
+            <span class="card-count">{characters.length}</span>
+          </div>
+          <p class="card-description">
+            All characters appearing in this series, with detailed profiles and relationships.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Band Members:</span>
+              <span class="stat-value">{characters.filter(c => c.data.role === 'protagonist' || c.data.role === 'main').length}</span>
+            </div>
+            <div class="card-stat">
+              <span class="stat-label">Supporting:</span>
+              <span class="stat-value">{characters.filter(c => c.data.role === 'supporting').length}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/characters`} class="card-link">
+            View All Characters →
+          </a>
+        </div>
+
+        <!-- Locations Card -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Locations</h3>
+            <span class="card-count">{locations.length}</span>
+          </div>
+          <p class="card-description">
+            All locations and settings where the story takes place throughout the series.
+          </p>
+          <div class="card-stats">
+            <div class="card-stat">
+              <span class="stat-label">Total Locations:</span>
+              <span class="stat-value">{locations.length}</span>
+            </div>
+          </div>
+          <a href={`/projects/${project.id}/locations`} class="card-link">
+            View All Locations →
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+
+  .page-description {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .series-overview {
+    margin-bottom: 3rem;
+  }
+
+  .series-overview h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+  }
+
+  .overview-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat-card {
+    background: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .content-navigation h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: var(--color-text);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .content-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .content-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .card-header h3 {
+    font-size: 1.3rem;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .card-count {
+    background: var(--color-primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .card-description {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .card-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--color-text);
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .card-link:hover {
+    color: var(--color-primary-hover);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .cards-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .overview-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

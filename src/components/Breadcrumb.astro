@@ -1,0 +1,55 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props {
+  items: Array<{ label: string; href?: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="Breadcrumb navigation">
+  {items.map((item, index) => (
+    <>
+      {item.href ? (
+        <a href={item.href}>{item.label}</a>
+      ) : (
+        <span class="current">{item.label}</span>
+      )}
+      {index < items.length - 1 && (
+        <span class="separator">/</span>
+      )}
+    </>
+  ))}
+</nav>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .breadcrumb span {
+    color: var(--text-muted);
+  }
+
+  .current {
+    color: var(--text-secondary);
+  }
+
+  .separator {
+    color: var(--text-muted);
+  }
+</style>

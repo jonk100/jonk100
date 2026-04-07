@@ -1,0 +1,50 @@
+---
+/**
+ * ProjectCard.astro
+ *
+ * Renders a single project card using BaseCard as foundation.
+ * Works specifically with project collection entries.
+ */
+
+import type { CollectionEntry } from "astro:content";
+import BaseCard from "./BaseCard.astro";
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+// Build meta array for BaseCard
+const meta: string[] = [];
+if (data.type) {
+  meta.push(data.type.replace('-', ' '));
+}
+if (data.episodeCount) {
+  meta.push(`${data.episodeCount} episodes`);
+}
+if (data.genres && data.genres.length > 0) {
+  meta.push(data.genres.slice(0, 2).join(', '));
+}
+
+// Status color mapping
+const statusColorMap: Record<string, string> = {
+  development: "var(--status-draft)",
+  "in-progress": "var(--status-progress)",
+  "first-draft": "var(--status-progress)",
+  revised: "var(--status-progress)",
+  complete: "var(--status-complete)",
+};
+
+const badgeColor = data.status ? (statusColorMap[data.status] ?? "var(--status-draft)") : undefined;
+---
+
+<BaseCard
+  href={`/projects/${entry.id}`}
+  title={data.title}
+  subtitle={data.logline}
+  badge={data.status}
+  badgeColor={badgeColor}
+  meta={meta}
+/>

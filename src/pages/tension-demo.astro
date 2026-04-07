@@ -1,0 +1,134 @@
+---
+import Layout from "../layouts/BaseLayout.astro";
+import TensionGraph from "../components/TensionGraph.astro";
+
+// Sample data for demonstration
+const sampleOverallTension = [
+  { label: "Overall", tension: 2, timestamp: "s1b1" },
+  { label: "Overall", tension: 3, timestamp: "s1b2" },
+  { label: "Overall", tension: 5, timestamp: "s2b1" },
+  { label: "Overall", tension: 7, timestamp: "s2b2" },
+  { label: "Overall", tension: 8, timestamp: "s3b1" },
+  { label: "Overall", tension: 4, timestamp: "s3b2" },
+  { label: "Overall", tension: 2, timestamp: "s4b1" }
+];
+
+const samplePlotTensions = [
+  { label: "Main Plot", tension: 2, overall: 2, timestamp: "s1b1" },
+  { label: "Subplot A", tension: 1, timestamp: "s1b1" },
+  { label: "Main Plot", tension: 4, overall: 3, timestamp: "s1b2" },
+  { label: "Subplot A", tension: 2, timestamp: "s1b2" },
+  { label: "Main Plot", tension: 6, overall: 5, timestamp: "s2b1" },
+  { label: "Subplot A", tension: 4, timestamp: "s2b1" },
+  { label: "Main Plot", tension: 8, overall: 7, timestamp: "s2b2" },
+  { label: "Subplot A", tension: 6, timestamp: "s2b2" },
+  { label: "Main Plot", tension: 9, overall: 8, timestamp: "s3b1" },
+  { label: "Subplot A", tension: 7, timestamp: "s3b1" },
+  { label: "Main Plot", tension: 5, overall: 4, timestamp: "s3b2" },
+  { label: "Subplot A", tension: 3, timestamp: "s3b2" },
+  { label: "Main Plot", tension: 2, overall: 2, timestamp: "s4b1" },
+  { label: "Subplot A", tension: 1, timestamp: "s4b1" }
+];
+
+const singlePlotData = samplePlotTensions.filter(d => d.label === "Main Plot");
+---
+
+<Layout title="Tension Graph Demo">
+  <div class="container">
+    <header class="demo-header">
+      <h1>Tension Graph Component Demo</h1>
+      <p>Explore different ways to visualize tension data using the TensionGraph component.</p>
+    </header>
+
+    <section class="demo-section">
+      <h2>Basic Overall Tension Arc</h2>
+      <p>A simple line graph showing overall story tension from beginning to end.</p>
+      <TensionGraph 
+        data={sampleOverallTension} 
+        title="Story Tension Arc"
+        showOverall={false}
+        colors={["#1f2937"]}
+      />
+    </section>
+
+    <section class="demo-section">
+      <h2>Multiple Plot Tensions</h2>
+      <p>Shows how different plotlines with overall tension as a dashed line.</p>
+      <TensionGraph 
+        data={samplePlotTensions} 
+        title="Multi-Plot Tension Analysis"
+        showOverall={true}
+        colors={["#3b82f6", "#ef4444"]}
+      />
+    </section>
+
+    <section class="demo-section">
+      <h2>Single Plot Focus</h2>
+      <p>Zoom in on a specific plotline to analyze its tension pattern.</p>
+      <TensionGraph 
+        data={singlePlotData} 
+        title="Main Plot Tension"
+        showOverall={false}
+        colors={["#3b82f6"]}
+        width={600}
+        height={300}
+      />
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .demo-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .demo-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  .demo-header p {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .demo-section {
+    margin-bottom: 4rem;
+  }
+
+  .demo-section h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+  }
+
+  .demo-section p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    max-width: 800px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .demo-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

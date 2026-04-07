@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import PostSeriesCard from '../../components/collection-cards/PostSeriesCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Get all post-series
+const postSeries = await getCollection('post-series');
+
+// Get all posts to count posts per series
+const posts = await getCollection('posts');
+
+// Count posts for each series
+const seriesWithCounts = postSeries.map(series => {
+  const postCount = posts.filter(post => post.data.postSeries.id === series.id).length;
+  return {
+    series,
+    postCount
+  };
+});
+
+// Sort series by post count (descending) then by title
+const sortedSeries = seriesWithCounts.sort((a, b) => {
+  if (a.postCount !== b.postCount) {
+    return b.postCount - a.postCount;
+  }
+  return a.series.data.title.localeCompare(b.series.data.title);
+});
+---
+
+<BaseLayout title="Post Series">
+  <main class="container">
+    <header class="page-header">
+      <h1>Post Series</h1>
+      <p>Browse our collections of related posts organized by series</p>
+    </header>
+
+    <div class="series-grid">
+      {sortedSeries.map(({ series, postCount }) => (
+        <PostSeriesCard series={series} postCount={postCount} />
+      ))}
+    </div>
+
+    {postSeries.length === 0 && (
+      <div class="empty-state">
+        <p>No post series found.</p>
+      </div>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .page-header h1 {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .page-header p {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-16);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: var(--space-6) var(--space-4);
+    }
+
+    .page-header h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .page-header p {
+      font-size: var(--text-base);
+    }
+
+    .series-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>
