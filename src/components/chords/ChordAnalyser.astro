@@ -28,14 +28,26 @@
       <span class="ca-tuning-label">Standard Tuning</span>
     </div>
 
-    <button class="ca-reset-btn" data-ca-btn-reset title="Reset">
-      <!-- Simple reset arrow SVG -->
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-        <path d="M3 3v5h5"/>
-      </svg>
-    </button>
+    <div class="ca-header-buttons">
+      <button class="ca-toggle-btn" data-ca-btn-toggle title="Toggle chord analyser" aria-expanded="true">
+        <!-- Simple collapse/expand SVG -->
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      
+      <button class="ca-reset-btn" data-ca-btn-reset title="Reset">
+        <!-- Simple reset arrow SVG -->
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+    </div>
   </header>
+
+  <!-- ── Collapsible Content ─────────────────────────────── -->
+  <div class="ca-content" data-ca-content>
 
   <!-- ── Fretboard ──────────────────────────────────────── -->
   <div class="ca-fretboard-wrap">
@@ -85,6 +97,11 @@
       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       <span>Play</span>
     </button>
+
+    <button class="ca-tool-btn" data-ca-btn-create title="Create chord from current fingering">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      <span>Create</span>
+    </button>
   </div>
 
   <!-- ── Chord names ────────────────────────────────────── -->
@@ -94,6 +111,8 @@
       <p class="ca-results-empty">Select notes on the fretboard…</p>
     </div>
   </div>
+  </div>
+  <!-- End collapsible content -->
 
 </section>
 
@@ -143,6 +162,12 @@
     border-bottom:   1px solid var(--ca-border);
   }
 
+  .ca-header-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
   .ca-chord-name {
     font-size:   1.5rem;
     font-weight: 700;
@@ -184,6 +209,35 @@
     transition: color .15s, border-color .15s;
   }
   .ca-reset-btn:hover { color: var(--ca-amber); border-color: var(--ca-gold); }
+
+  .ca-toggle-btn {
+    background: transparent;
+    border:     1px solid var(--ca-border);
+    border-radius: 50%;
+    color:      var(--ca-text-dim);
+    width:      36px;
+    height:     36px;
+    display:    flex;
+    align-items: center;
+    justify-content: center;
+    cursor:     pointer;
+    transition: color .15s, border-color .15s, transform .15s;
+  }
+  .ca-toggle-btn:hover { color: var(--ca-amber); border-color: var(--ca-gold); }
+  .ca-toggle-btn[aria-expanded="false"] {
+    transform: rotate(180deg);
+  }
+
+  .ca-content {
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 2000px;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .ca-content--collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
 
   /* ── Fretboard wrap ───────────────────────────────────── */
   .ca-fretboard-wrap {
@@ -583,7 +637,10 @@ const btnRoot     = q<HTMLButtonElement>("[data-ca-btn-root]");
 const btnLower    = q<HTMLButtonElement>("[data-ca-btn-lower]");
 const btnHigher   = q<HTMLButtonElement>("[data-ca-btn-higher]");
 const btnPlay     = q<HTMLButtonElement>("[data-ca-btn-play]");
+const btnCreate   = q<HTMLButtonElement>("[data-ca-btn-create]");
 const btnReset    = q<HTMLButtonElement>("[data-ca-btn-reset]");
+const btnToggle   = q<HTMLButtonElement>("[data-ca-btn-toggle]");
+const contentEl   = q<HTMLDivElement>("[data-ca-content]");
 
 // ── Utility helpers ────────────────────────────────────────────────────────
 
@@ -1021,7 +1078,65 @@ function resetBoard(): void {
   renderFretboard();
 }
 
-// ── Audio playback ─────────────────────────────────────────────────────────
+/**
+ * Extracts the current chord state for use with the create form.
+ */
+function getCurrentChordState(): {
+  displayName: string;
+  frets: number[];
+  notes: string[];
+  alternateNames: string[];
+} | null {
+  const pcs = soundingPCs();
+  const matches = matchChords(pcs);
+  
+  if (matches.length === 0) return null;
+  
+  const displayName = formatChordName(matches[0]).replace(/<[^>]*>/g, ""); // strip HTML tags
+  
+  // Build frets array (low E to high E)
+  const frets: number[] = [];
+  const notes: string[] = [];
+  const BASE_MIDI = [40, 45, 50, 55, 59, 64];
+  const OPEN_TUNING_PC: PC[] = [4, 9, 2, 7, 11, 4]; // E A D G B E
+  
+  for (let s = 0; s < STRINGS; s++) {
+    let fret: number | null = null;
+    let note: string = "x";
+    
+    // Check if any fret is pressed on this string
+    for (let f = 1; f < FRETS_VISIBLE; f++) {
+      if (fretted[s][f]) {
+        fret = f;
+        const pc = pitchClass(s, f);
+        note = noteName(pc);
+        break;
+      }
+    }
+    
+    // If no fret pressed, check if string is open
+    if (fret === null && stringStates[s] === "open") {
+      fret = 0;
+      note = noteName(OPEN_TUNING_PC[s]);
+    }
+    
+    // If still nothing, mark as muted
+    if (fret === null) {
+      fret = -1;
+      note = "x";
+    }
+    
+    frets.push(fret);
+    notes.push(note);
+  }
+  
+  // Collect alternate names from all matches (excluding the primary)
+  const alternateNames = matches.slice(1)
+    .map(m => formatChordName(m).replace(/<[^>]*>/g, "")) // strip HTML tags
+    .filter((name, index, arr) => arr.indexOf(name) === index); // remove duplicates
+  
+  return { displayName, frets, notes, alternateNames };
+}
 
 /**
  * Plays the currently selected chord using the Web Audio API.
@@ -1111,7 +1226,25 @@ btnHigher.addEventListener("click", () => {
 
 btnPlay.addEventListener("click", playChord);
 
+btnCreate.addEventListener("click", () => {
+  const state = getCurrentChordState();
+  if (state) {
+    root.dispatchEvent(new CustomEvent("chord:create", { 
+      detail: state,
+      bubbles: true
+    }));
+  }
+});
+
 btnReset.addEventListener("click", resetBoard);
+
+btnToggle.addEventListener("click", () => {
+  const isExpanded = btnToggle.getAttribute("aria-expanded") === "true";
+  const newExpanded = !isExpanded;
+  
+  btnToggle.setAttribute("aria-expanded", String(newExpanded));
+  contentEl.classList.toggle("ca-content--collapsed", !newExpanded);
+});
 
 // ── Init ───────────────────────────────────────────────────────────────────
 

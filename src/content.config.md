@@ -4,7 +4,6 @@ This document describes how the content of this app is organised — what each c
 
 All collections are defined in `src/content/content.config.ts` using Astro's `defineCollection` and Zod schemas. Each collection maps to a folder inside `src/content/`. Every file in a collection folder is a `.mdx` file with a frontmatter block at the top and optional prose body below.
 
-
 ## The big picture
 
 Collections fall into four tiers:

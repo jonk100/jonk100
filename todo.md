@@ -86,3 +86,7 @@
 [ ] - implement content search across all collections
 [ ] - add content tagging system
 [ ] - create content analytics dashboard
+
+## Chords
+
+[ ] - enable chord form file writing functionality (set ALLOW_CHORD_WRITE=true)

@@ -12,6 +12,7 @@ import IndexLayout from "../../layouts/IndexLayout.astro";
 import ChordCard from "../../components/collection-cards/ChordCard.astro";
 import ChordFilter from "../../components/filters/ChordFilter.astro";
 import ChordAnalyser from "../../components/chords/ChordAnalyser.astro";
+import ChordCreateForm from "../../components/chords/ChordCreateForm.astro";
 
 const chords = await getCollection("chords");
 
@@ -28,8 +29,9 @@ const sorted = chords.sort((a, b) => {
   count={sorted.length}
   description="Guitar chord voicing reference library."
 >
-  <ChordFilter chords={sorted} />
   <ChordAnalyser />
+  <ChordCreateForm />
+  <ChordFilter chords={sorted} />
   {sorted.length === 0 ? (
     <p class="empty">No chords yet.</p>
   ) : (

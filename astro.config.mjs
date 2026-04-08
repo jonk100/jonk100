@@ -6,14 +6,19 @@ import alpinejs from '@astrojs/alpinejs';
 import { defineConfig } from 'astro/config';
 import { remarkScreenplay } from './src/plugins/remark-screenplay.ts';
 
+import netlify from '@astrojs/netlify';
+
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
-	integrations: [
-		alpinejs(),
-		mdx({
-			remarkPlugins: [remarkScreenplay],
-		}), 
-		sitemap()
+  site: 'https://example.com',
+
+  integrations: [
+      alpinejs(),
+      mdx({
+          remarkPlugins: [remarkScreenplay],
+      }), 
+      sitemap()
 	],
+
+  adapter: netlify(),
 });
