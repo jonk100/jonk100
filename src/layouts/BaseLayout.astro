@@ -12,7 +12,7 @@
  * @prop description - Meta description for the page.
  * @prop image       - OG image URL (optional).
  */
-
+import Head from "./Head.astro";
 import Header from "../components/Header.astro";
 import Navigation from "../components/Navigation.astro";
 import "../styles/global.css";
@@ -39,25 +39,13 @@ const siteTitle = title === SITE_TITLE
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <meta name="robots" content="noindex, nofollow" />
-
-    <!-- Open Graph -->
-    <meta property="og:title" content={siteTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    {image && <meta property="og:image" content={image} />}
-
-    <title>{siteTitle}</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Head title={title} description={description} />
+    <slot name="head" />
   </head>
 
   <body>
     <Header />
     <Navigation />
-
     <slot />
   </body>
 </html>

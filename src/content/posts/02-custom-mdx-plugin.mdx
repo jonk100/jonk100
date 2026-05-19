@@ -1,0 +1,141 @@
+---
+title: "Custom MDX: Building a Screenplay Plugin"
+postSeries: building-wready
+position: 2
+excerpt: "How to write a custom remark plugin that transforms shorthand screenplay syntax into structured JSX components at parse time."
+publishedAt: 2026-05-20
+status: published
+---
+
+wReady's screenplay scenes use a shorthand syntax that gets transformed into typed React components. Writing a screenplay shouldn't require wrapping every line in JSX tags.
+
+## The Problem
+
+Traditional screenplay markup is verbose:
+
+```mdx
+import { Action, Dialogue, Character } from '~/components/screenplay';
+
+<Action>Nigel enters. He looks tired.</Action>
+
+<Character>NIGEL</Character>
+<Dialogue>We need to talk.</Dialogue>
+```
+
+What if screenplay writers could just use prefixes?
+
+```mdx
+@ Nigel enters. He looks tired.
+
+NIGEL
+> We need to talk.
+```
+
+Much more readable. This is where a remark plugin comes in.
+
+## Writing the Remark Plugin
+
+Create `src/plugins/remark-screenplay.ts`:
+
+```typescript
+import { visit } from 'unist-util-visit';
+import type { Root, Paragraph, Text } from 'mdast';
+
+interface ScreenplayNode extends Paragraph {
+  children: (Text & { value: string })[]; 
+}
+
+export function remarkScreenplay() {
+  return (tree: Root) => {
+    visit(tree, 'paragraph', (node: ScreenplayNode) => {
+      const firstChild = node.children[0];
+      if (!firstChild || firstChild.type !== 'text') return;
+
+      const text = firstChild.value;
+      const actionMatch = text.match(/^@\s+(.+)/);
+      const dialogueMatch = text.match(/^>\s+(.+)/);
+
+      if (actionMatch) {
+        // Transform to JSX
+        node.type = 'mdxJsxFlowExpression' as any;
+        node.name = 'Action';
+        node.attributes = [];
+        node.children = [{ type: 'text', value: actionMatch[1] }];
+      } else if (dialogueMatch) {
+        node.type = 'mdxJsxFlowExpression' as any;
+        node.name = 'Dialogue';
+        node.attributes = [];
+        node.children = [{ type: 'text', value: dialogueMatch[1] }];
+      }
+    });
+  };
+}
+```
+
+Register it in `astro.config.mjs`:
+
+```javascript
+import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
+import { remarkScreenplay } from './src/plugins/remark-screenplay';
+
+export default defineConfig({
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkScreenplay],
+    }),
+  ],
+});
+```
+
+## Creating the Components
+
+Now define `src/components/screenplay/Action.astro`:
+
+```astro
+---
+---
+<div class="action">
+  <slot />
+</div>
+
+<style>
+  .action {
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+</style>
+```
+
+And `Dialogue.astro`:
+
+```astro
+---
+---
+<div class="dialogue">
+  <slot />
+</div>
+
+<style>
+  .dialogue {
+    margin-left: 2em;
+  }
+</style>
+```
+
+## Parsing More Patterns
+
+wReady's plugin handles more complex structures. Here's a simplified version handling character names:
+
+```typescript
+const characterMatch = text.match(/^([A-Z][A-Z\s]+)$/);
+if (characterMatch && text.length < 40) {
+  node.type = 'mdxJsxFlowExpression' as any;
+  node.name = 'Character';
+  node.children = [{ type: 'text', value: characterMatch[1] }];
+}
+```
+
+Now writers can write natural screenplay syntax and the plugin transforms it into components.
+
+Next: [Organizing Related Content with References](/blog/content-references)

@@ -1,0 +1,180 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { cardConfig } from '../../collections.config';
+
+const postSeries = await getCollection('post-series');
+const posts = await getCollection('posts');
+
+// Sort by most recent publishedAt
+const sortedPosts = posts
+  .filter(p => p.data.status === 'published')
+  .sort((a, b) =>
+    (b.data.publishedAt?.getTime() || 0) - (a.data.publishedAt?.getTime() || 0)
+  )
+  .slice(0, 10);
+---
+
+<BaseLayout title="Blog - Technical Writing" description="Guides, tutorials, and deep-dives on creative software development.">
+  <section class="blog-hero">
+    <div class="container">
+      <h1>Blog</h1>
+      <p class="intro">
+        Technical writing about building creative tools. Tutorials, architectural deep-dives,
+        and lessons from building wReady.
+      </p>
+    </div>
+  </section>
+
+  {postSeries.length > 0 && (
+    <section class="series-section">
+      <div class="container">
+        <h2>Series</h2>
+        <div class="series-grid">
+          {postSeries.map(series => {
+            const seriesPosts = posts.filter(p => p.data.postSeries?.id === series.id);
+            return (
+              <a href={`/blog/${series.id}`} class="series-card">
+                <h3>{series.data.title}</h3>
+                <p class="description">{series.data.description}</p>
+                <p class="post-count">{seriesPosts.length} posts</p>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {sortedPosts.length > 0 && (
+    <section class="recent-section">
+      <div class="container">
+        <h2>Recent Posts</h2>
+        <div class="posts-list">
+          {sortedPosts.map(post => {
+            const card = cardConfig.posts(post);
+            return (
+              <a href={card.href} class="post-item">
+                <div>
+                  <h3>{card.title}</h3>
+                  {card.subtitle && <p class="excerpt">{card.subtitle}</p>}
+                </div>
+                {card.meta && <time class="date">{card.meta}</time>}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .blog-hero {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .blog-hero h1 {
+    margin-bottom: 1rem;
+  }
+
+  .intro {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 600px;
+  }
+
+  .series-section,
+  .recent-section {
+    padding: 3rem 0;
+  }
+
+  .series-section {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .series-section h2,
+  .recent-section h2 {
+    margin-bottom: 2rem;
+    font-size: var(--text-lg);
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .series-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-normal);
+  }
+
+  .series-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .series-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+  }
+
+  .series-card .description {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .series-card .post-count {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .post-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-fast);
+  }
+
+  .post-item:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .post-item h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-item .excerpt {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .post-item .date {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
+</style>

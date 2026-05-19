@@ -1,4 +1,5 @@
-import { defineCollection, reference, z, type SchemaContext } from "astro:content";
+import { defineCollection, reference, type SchemaContext } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 /**
@@ -22,7 +23,7 @@ const positiveInt = z.number().int().positive();
 // ---------------------------------------------------------------------------
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/projects" }),
   schema: z.object({
     title: z.string(),
     type: z.enum(["screenplay-series", "standalone-film", "book"]),
@@ -40,7 +41,7 @@ const projects = defineCollection({
 });
 
 const albums = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/albums" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/albums" }),
   schema: z.object({
     title: z.string(),
     year: z.number().int().optional(),
@@ -54,7 +55,7 @@ const albums = defineCollection({
 });
 
 const sets = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/sets" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/sets" }),
   schema: z.object({
     title: z.string(),
     contentType: z.enum(["poems", "short-stories"]),
@@ -82,7 +83,7 @@ const postSeries = defineCollection({
 // ---------------------------------------------------------------------------
 
 const themes = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/themes" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/themes" }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
@@ -106,7 +107,7 @@ const themes = defineCollection({
  * Example file:  src/content/chords/am7-1.mdx
  */
 const chords = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/chords" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/chords" }),
   schema: z.object({
     /**
      * The display name shown on chord sheets.
@@ -165,7 +166,7 @@ const chords = defineCollection({
  * Example file:   src/content/actors/elliott-gould.mdx
  */
 const actors = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/actors" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/actors" }),
   schema: ({ image }: SchemaContext) =>
     z.object({
       /** Full name as it appears in TMDB */
@@ -194,7 +195,7 @@ const actors = defineCollection({
 // ---------------------------------------------------------------------------
 
 const characters = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/characters" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/characters" }),
   schema: z.object({
     name: z.string(),
     project: reference("projects"),
@@ -218,7 +219,7 @@ const characters = defineCollection({
 });
 
 const locations = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/locations" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/locations" }),
   schema: z.object({
     name: z.string(),
     project: reference("projects"),
@@ -236,7 +237,7 @@ const locations = defineCollection({
 });
 
 const plots = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/plots" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/plots" }),
   schema: z.object({
     title: z.string(),
     project: reference("projects"),
@@ -253,7 +254,7 @@ const plots = defineCollection({
 // ---------------------------------------------------------------------------
 
 const episodes = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/episodes" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/episodes" }),
   schema: z.object({
     title: z.string(),
     project: reference("projects"),
@@ -282,7 +283,7 @@ const episodes = defineCollection({
 });
 
 const sequences = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/sequences" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/sequences" }),
   schema: z.object({
     title: z.string(),
     project: reference("projects"),
@@ -293,7 +294,7 @@ const sequences = defineCollection({
 });
 
 const scenes = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/scenes" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/scenes" }),
   schema: z.object({
     title: z.string().default("Untitled"),
     heading: z.string(),
@@ -322,7 +323,7 @@ const scenes = defineCollection({
 // ---------------------------------------------------------------------------
 
 const beats = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/beats" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/beats" }),
   schema: z.object({
     project: reference("projects"),
 
@@ -384,7 +385,7 @@ const beats = defineCollection({
 // ---------------------------------------------------------------------------
 
 const books = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/books" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/books" }),
   schema: z.object({
     title: z.string(),
     project: reference("projects"),
@@ -397,7 +398,7 @@ const books = defineCollection({
 });
 
 const chapters = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/chapters" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/chapters" }),
   schema: z.object({
     title: z.string().optional(),
     project: reference("projects"),
@@ -426,9 +427,10 @@ const chapters = defineCollection({
  *
  * Example slug:  "holy-water"
  * Example file:  src/content/songs/holy-water.mdx
+ * 
  */
 const songs = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/songs" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/songs" }),
   schema: z.object({
     title: z.string(),
 
@@ -498,7 +500,7 @@ const songs = defineCollection({
 // ---------------------------------------------------------------------------
 
 const poems = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/poems" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/poems" }),
   schema: z.object({
     title: z.string(),
     set: reference("sets").optional(),
@@ -510,7 +512,7 @@ const poems = defineCollection({
 });
 
 const shortStories = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/short-stories" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/short-stories" }),
   schema: z.object({
     title: z.string(),
     set: reference("sets").optional(),
@@ -527,9 +529,10 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     postSeries: reference("post-series"),
+    heroImage: z.string().startsWith("/src/assets/").optional(),
     position: z.number().int().positive().optional(),
-    excerpt: z.string().optional(),
-    publishedAt: z.coerce.date().optional(),
+    excerpt: z.string().default(""),
+    publishedAt: z.coerce.date().default(() => new Date()),
     updatedAt: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     themes: z.array(reference("themes")).default([]),
@@ -550,7 +553,7 @@ const posts = defineCollection({
  *   3. pnpm run enrich:actors → creates actor files, writes cast slugs, removes castDetailed
  */
 const reviews = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/reviews" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/wready/reviews" }),
   schema: ({ image }: SchemaContext) =>
     z
       .object({

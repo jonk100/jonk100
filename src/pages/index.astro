@@ -2,40 +2,110 @@
 import Footer from '../components/Footer.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+import '../styles/global.css';
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<main>
-		<h1>🧑‍🚀 Hello, Astronaut!</h1>
-		<p>
-			Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-			serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-			website, blog, or portfolio with Astro.
-		</p>
-		<p>
-			This template comes with a few integrations already configured in your
-			<code>astro.config.mjs</code> file. You can customize your setup with
-			<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-			React, or Vue to your project.
-		</p>
-		<p>Here are a few ideas on how to get started with the template:</p>
-		<ul>
-			<li>Edit this page in <code>src/pages/index.astro</code></li>
-			<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-			<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-			<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-			<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-		</ul>
-		<p>
-			Have fun! If you get stuck, remember to
-			<a href="https://docs.astro.build/">read the docs</a>
-			or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-		</p>
-		<p>
-			Looking for a blog template with a bit more personality? Check out
-			<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-			by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-		</p>
-	</main>
+	<section class="hero" id="top">
+    <div class="container">
+      <p class="hero-eyebrow fade-up delay-1">Writer who builds tools</p>
+      <h1 class="fade-up delay-2">
+        Stories.<br /><em>Software.</em><br />The overlap.
+      </h1>
+      <p class="hero-sub fade-up delay-3">
+        I write stuff and build the tools that help me do it better.
+        The work is always both things at once.
+      </p>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section id="work">
+    <div class="container">
+      <p class="section-label">Selected work</p>
+
+      <div class="work-grid">
+
+        <!-- Her Majesty's Displeasure -->
+        <article class="work-card">
+          <div class="work-meta">
+            <span class="work-type">Television · Limited Series</span>
+            <div class="work-rule"></div>
+          </div>
+          <h2><em>Her Majesty's Displeasure</em></h2>
+          <p class="work-tagline">Six episodes. MI5. John Lennon. 1968.</p>
+          <p class="work-body">
+            A dark political satire following a fictional MI5 operation to surveil — and ultimately
+            silence — John Lennon during the late 1960s. Agents Nigel Finch and Clive Barrow
+            navigate the machinery of state paranoia as the counterculture threatens to become
+            something the establishment can no longer ignore. The series unfolds across six episodes,
+            structured around real historical flashpoints: Twickenham, the rooftop, the aftermath.
+          </p>
+          <div class="work-tags">
+            <span class="tag">Political satire</span>
+            <span class="tag">Period drama</span>
+            <span class="tag">Limited series</span>
+            <span class="tag">Original screenplay</span>
+          </div>
+					<a href="/hmd-bible">View Project Bible</a>
+        </article>
+
+        <div class="work-divider"></div>
+
+        <!-- wReady -->
+        <article class="work-card">
+          <div class="work-meta">
+            <span class="work-type">Software · Creative tooling</span>
+            <div class="work-rule"></div>
+          </div>
+          <h2>wReady</h2>
+          <p class="work-tagline">A personal creative workbench. Built because nothing else fit.</p>
+          <p class="work-body">
+            wReady is a web application I built to manage my own creative practice — songs with
+            chord charts and lyrics, screenplay beats, film and music reviews, and the connective
+            tissue between them. It started as a frustration with tools that weren't designed for
+            the way I actually work, and became an ongoing experiment in what software looks like
+            when you build it entirely for yourself. No users to please. No product roadmap. Just
+            the work and the tools that serve it.
+          </p>
+          <div class="work-tags">
+            <span class="tag">Astro</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Vanilla CSS</span>
+            <span class="tag">Content collections</span>
+            <span class="tag">Self-hosted</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label">About</p>
+      <p class="about-text">
+        I'm a writer and developer based in Youngstown, Ohio. My work lives at the intersection
+        of <strong>narrative and craft</strong> — I write screenplays, play and record music,
+        and build software tools to support both. I'm drawn to projects where the technical
+        problem and the creative problem are the same problem. wReady exists because the tools
+        I needed didn't. <em>Her Majesty's Displeasure</em> exists because the story was
+        worth telling carefully. <strong>The overlap between those two things is where I do my best work.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label">Contact</p>
+      <p class="contact-line">
+        If the work resonates,<br />I'd like to hear from you.
+      </p>
+      <a class="contact-link" href="mailto:hello@example.com">hello@example.com</a>
+    </div>
+  </section>
 	<Footer />
 </BaseLayout>

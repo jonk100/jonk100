@@ -1,0 +1,104 @@
+---
+title: "Getting Started: Astro 6 and Content Collections"
+heroImage: "/src/assets/blog/wready-content-config.gif"
+postSeries: building-wready
+position: 1
+excerpt: "How to scaffold a new Astro project with content collections, set up MDX support, and structure your first content types using Zod schemas."
+publishedAt: 2026-05-19
+status: published
+
+---
+
+wReady started with a simple problem: I needed a tool to manage creative work that lived in version control. Not a database. Not a headless CMS. Just files.
+
+Astro 6's content collections system is perfect for this. It gives you type-safe content organization without forcing you into a framework's runtime constraints.
+
+## Setting Up Your First Astro Project
+
+If you're starting from scratch, begin with:
+
+```bash
+npm create astro@latest
+# Choose "Empty" template
+# Install TypeScript
+```
+
+Then install the essentials:
+
+```bash
+npm install astro @astrojs/mdx zod
+```
+
+## Defining Your First Collection
+
+Content collections live in `src/content/` and are defined in `src/content.config.ts`. Here's a minimal collection for blog posts:
+
+```typescript
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const posts = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/posts' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishedAt: z.coerce.date(),
+  }),
+});
+
+export const collections = { posts };
+```
+
+Each `.mdx` file in `src/content/posts/` now has type-safe frontmatter. Try creating `src/content/posts/hello-world.mdx`:
+
+```mdx
+---
+title: Hello World
+description: My first post
+publishedAt: 2026-05-19
+---
+
+This is my first post.
+```
+
+## Rendering Your Collection
+
+To display these posts, create `src/pages/posts/[slug].astro`:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+const { slug } = Astro.params;
+const post = await getCollection('posts').then(p => p.find(entry => entry.id === slug));
+---
+
+<h1>{post.data.title}</h1>
+<p>{post.data.description}</p>
+<article>{post.body}</article>
+```
+
+And `src/pages/posts/index.astro` for a listing:
+
+```astro
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+---
+
+<h1>All Posts</h1>
+<ul>
+  {posts.map(post => (
+    <li><a href={`/posts/${post.id}`}>{post.data.title}</a></li>
+  ))}
+</ul>
+```
+
+### Why This Matters for wReady
+
+wReady has 17 content collections: projects, scenes, beats, characters, songs, chords, poems, reviews, and more. The type safety from Zod schemas caught errors early — typos in references, missing required fields, schema drift over time.
+
+Content collections force a decision upfront: *what data does each piece of work contain?* This clarity compounds as your project grows.
+
+Next: [Structuring Complex Content Relationships](/blog/complex-content-references)

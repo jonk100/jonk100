@@ -14,14 +14,16 @@ const beats = await getCollection("beats");
 
 // Sort by project, then by plot (first plot if multiple), then by beat number
 const sorted = beats.sort((a, b) => {
-  const projectCompare = a.data.project.id.localeCompare(b.data.project.id);
+  const aProjectId = a.data.project?.id || '';
+  const bProjectId = b.data.project?.id || '';
+  const projectCompare = aProjectId.localeCompare(bProjectId);
   if (projectCompare !== 0) return projectCompare;
-  
-  const aPlotId = a.data.plots && a.data.plots.length > 0 ? a.data.plots[0].id : '';
-  const bPlotId = b.data.plots && b.data.plots.length > 0 ? b.data.plots[0].id : '';
-  const plotCompare = aPlotId.localeCompare(bPlotId);
+
+  const aPlotId = a.data.plots && a.data.plots.length > 0 ? a.data.plots[0].plot?.id : '';
+  const bPlotId = b.data.plots && b.data.plots.length > 0 ? b.data.plots[0].plot?.id : '';
+  const plotCompare = (aPlotId || '').localeCompare(bPlotId || '');
   if (plotCompare !== 0) return plotCompare;
-  
+
   return (a.data.beatNumber || 0) - (b.data.beatNumber || 0);
 });
 ---

@@ -30,12 +30,9 @@ export interface NavItem {
  * Order here controls order in the rendered nav.
  */
 export const navItems: NavItem[] = [
-  { label: "Projects",  href: "/projects" },
-  { label: "Writings",  href: "/writings" },
-  { label: "Reviews",   href: "/reviews" },
-  { label: "Songs",     href: "/songs" },
-  { label: "Posts",     href: "/posts" },
-  { label: "Chords",    href: "/chords" },
+  { label: "Blog",    href: "/blog" },
+  { label: "wReady",  href: "/writty" },
+  { label: "Site",    href: "/" },
 ];
 
 /**

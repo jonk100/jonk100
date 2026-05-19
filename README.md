@@ -1,39 +1,49 @@
-# Writty
+# Portfolio Site
 
-A personal creative workbench built with Astro 6. Writty is a single-user tool for storing, writing, and managing creative work across a range of formats — screenplays, songs, poems, short stories, blog posts, and more.
+A personal portfolio site built with Astro 6, showcasing creative work and development projects. The site features **wReady** — a custom-built creative workbench — alongside writings, blog posts, and screenplays.
 
-It is not a CMS. It is not a public-facing blog. It is a structured writing environment where all content lives as MDX files in version-controlled content collections, with a web interface for reading, browsing, and (selectively) creating.
+This is not a traditional blog or CMS. It's a structured portfolio where all content lives as MDX files in version-controlled content collections, with a web interface designed for both presentation and personal workflow.
+
+---
+
+## About
+
+I'm a writer and developer based in Youngstown, Ohio. My work lives at the intersection of narrative and craft — I write screenplays, play and record music, and build software tools to support both.
+
+This site showcases:
+
+- **wReady** — A personal creative workbench for managing screenplays, songs, poems, stories, and reviews
+- **Her Majesty's Displeasure** — A six-part limited series screenplay (dark political satire, 1968)
+- **Blog posts** — Technical writing about building wReady and other development topics
+- **Creative writing** — Songs, poems, short stories, and reviews
 
 ---
 
 ## Stack
 
-- **Astro 6** — static-first framework with server endpoints for form APIs
-- **MDX + Content Collections** — all creative content stored as structured MDX with Zod-validated frontmatter
-- **Alpine.js** — lightweight interactivity (filters, toggles, visualizations)
-- **Vanilla CSS** — no utility framework; dark, editorial aesthetic
-- **Vanilla TypeScript** — utilities, plugins, and scripts
-- **Netlify** — deployment adapter
-- **pnpm** — package manager
+- **Astro 6** — Static-first framework with server endpoints for form APIs
+- **MDX + Content Collections** — All content stored as structured MDX with Zod-validated frontmatter
+- **Alpine.js** — Lightweight interactivity (filters, toggles, visualizations)
+- **Vanilla CSS** — No utility framework; dark, editorial aesthetic
+- **Vanilla TypeScript** — Utilities, plugins, and scripts
+- **Netlify** — Deployment adapter
+- **pnpm** — Package manager
 
 ---
 
 ## Project Structure
 
 ```
-writty/
+/
 ├── context/                    # AI prompting guides and reference docs
-│   ├── beat-breakdown-guide.md
-│   ├── plot-breakdown-gpt.md
-│   └── plots.md
+│   └── beat-breakdown-guide.md
 ├── public/
-│   └── fonts/                  # Atkinson Hyperlegible (regular + bold)
-├── scripts/                    # One-off data enrichment scripts (run via pnpm)
+│   ├── fonts/                  # Atkinson Hyperlegible (regular + bold)
+│   └── images/                 # TMDB actor/show images
+├── scripts/                    # Data enrichment scripts (run via pnpm)
 │   ├── enrich-tmdb.ts          # Fetch TV show data from TMDB
 │   ├── enrich-actors.ts        # Fetch actor data from TMDB
-│   └── chords/
-│       ├── generate_barre_chords.zsh
-│       └── generate_open_chords.zsh
+│   └── chords/                 # Chord generation scripts
 └── src/
     ├── collections.config.ts   # Card display config — source of truth for collection metadata
     ├── content.config.ts       # Zod schemas for all content collections
@@ -45,27 +55,30 @@ writty/
     │   ├── chords/             # Chord analyser + creation form
     │   └── filters/            # Alpine.js-powered filter components
     ├── content/                # All MDX content, organised by collection
-    │   ├── beats/              # Scene beat breakdowns (per project, per scene)
-    │   ├── scenes/             # Screenplay scenes
-    │   ├── episodes/           # Episode entries
-    │   ├── characters/         # Character profiles
-    │   ├── locations/          # Location entries
-    │   ├── songs/              # Song entries with chord and structure data
-    │   ├── chords/             # Individual chord voicings
-    │   ├── albums/             # Album entries
-    │   ├── poems/              # Poems
-    │   ├── short-stories/      # Short stories
-    │   ├── blog/               # Blog posts
-    │   ├── plots/              # Plot-level story structures
-    │   ├── actors/             # Actor profiles (TMDB-enriched)
-    │   └── reviews/            # Reviews
+    │   ├── posts/              # Blog posts
+    │   ├── post-series/        # Blog post series
+    │   └── wready/             # wReady project content
+    │       ├── beats/          # Scene beat breakdowns
+    │       ├── scenes/         # Screenplay scenes
+    │       ├── episodes/       # Episode entries
+    │       ├── characters/     # Character profiles
+    │       ├── locations/      # Location entries
+    │       ├── songs/          # Song entries with chord data
+    │       ├── chords/         # Individual chord voicings
+    │       ├── albums/         # Album entries
+    │       ├── poems/          # Poems
+    │       ├── short-stories/  # Short stories
+    │       ├── plots/          # Plot-level story structures
+    │       ├── actors/         # Actor profiles (TMDB-enriched)
+    │       ├── reviews/        # Film/TV/book reviews
+    │       └── themes/         # Thematic elements
     ├── pages/                  # Astro file-based routing
     ├── plugins/
-    │   └── remark-screenplay.ts  # Custom remark plugin — parses shorthand prefixes into screenplay components
+    │   └── remark-screenplay.ts  # Custom remark plugin for screenplay shorthand
     └── utils/
         └── music/
             ├── musicTheory.ts  # Music theory constants and types
-            └── musicTheory.md  # Human-readable reference for musicTheory.ts
+            └── musicTheory.md  # Human-readable reference
 ```
 
 ---
@@ -74,7 +87,18 @@ writty/
 
 All content lives in `src/content/` as `.mdx` files. Schemas are defined in `src/content.config.ts` using Zod. Display metadata (card labels, icons, link patterns) is configured separately in `src/collections.config.ts`.
 
-### Screenplay Collections
+### Blog Collections
+
+| Collection | Description |
+|---|---|
+| `posts` | Blog posts about development, creative process, and technical topics |
+| `post-series` | Multi-part blog series with automatic post grouping |
+
+### wReady Collections
+
+The wReady project includes multiple content types for managing creative work:
+
+#### Screenplay Collections
 
 | Collection | Description |
 |---|---|
@@ -85,7 +109,7 @@ All content lives in `src/content/` as `.mdx` files. Schemas are defined in `src
 | `locations` | Location entries used across scenes |
 | `plots` | High-level plot structures |
 
-### Music Collections
+#### Music Collections
 
 | Collection | Description |
 |---|---|
@@ -93,20 +117,20 @@ All content lives in `src/content/` as `.mdx` files. Schemas are defined in `src
 | `chords` | Individual chord voicings with fret/fingering data and diagram support |
 | `albums` | Album entries linked to songs |
 
-### Writing Collections
+#### Writing Collections
 
 | Collection | Description |
 |---|---|
 | `poems` | Poems |
 | `short-stories` | Short stories |
-| `blog` | Blog posts, optionally grouped into series |
 
-### Reference Collections
+#### Reference Collections
 
 | Collection | Description |
 |---|---|
 | `actors` | Actor profiles enriched from TMDB, linked to characters |
 | `reviews` | Film/TV/book reviews |
+| `themes` | Thematic elements and story motifs |
 
 ---
 
@@ -120,13 +144,13 @@ The plugin transforms lines at parse time — the rendered output uses the compo
 
 ## APIs
 
-The site includes a small number of server-side API endpoints (Netlify functions via Astro's SSR adapter) for interactive content creation.
+The site includes server-side API endpoints (Netlify functions via Astro's SSR adapter) for interactive content creation within the wReady workbench.
 
 See `api.md` for full documentation. Key endpoints:
 
-- `GET /api/chords/search` — live chord search, used by the interactive chord selector
-- `POST /api/chords/create` — creates a new chord MDX file
-- `POST /api/songs/create` — creates a new song MDX file
+- `GET /api/chords/search` — Live chord search, used by the interactive chord selector
+- `POST /api/chords/create` — Creates a new chord MDX file
+- `POST /api/songs/create` — Creates a new song MDX file
 
 File writing is disabled by default. Set `ALLOW_CHORD_WRITE=true` in `.env` to enable it.
 
@@ -171,14 +195,20 @@ ALLOW_CHORD_WRITE=true    # Enable chord/song form file writing (default: false)
 
 ---
 
-## Current Project: Her Majesty's Displeasure
+## Featured Project: Her Majesty's Displeasure
 
-The primary creative project in this workbench is *Her Majesty's Displeasure* — a six-part limited series screenplay. It is a dark political satire set in the late 1960s, following a fictional MI5 operation to surveil John Lennon.
+The primary creative project showcased in the wReady workbench is *Her Majesty's Displeasure* — a six-part limited series screenplay. It is a dark political satire set in the late 1960s, following a fictional MI5 operation to surveil John Lennon.
 
-All scenes, beats, characters, locations, and episodes for this project live under their respective collections. Beat breakdowns follow the rules defined in `context/beat-breakdown-guide.md`.
+All scenes, beats, characters, locations, and episodes for this project live under their respective collections in `src/content/wready/`. Beat breakdowns follow the rules defined in `context/beat-breakdown-guide.md`.
 
 ---
 
 ## Node Version
 
 Requires Node >= 22.12.0 (see `package.json` `engines` field).
+
+---
+
+## License
+
+This is a personal portfolio site. All creative content (screenplays, songs, stories, blog posts) is © jonk100. The code and technical implementation may be referenced for educational purposes.

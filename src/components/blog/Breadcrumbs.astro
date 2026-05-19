@@ -1,0 +1,32 @@
+---
+interface Props {
+  series: import('astro:content').CollectionEntry<'post-series'>;
+}
+
+const { series } = Astro.props;
+---
+
+<nav class="breadcrumb">
+  <a href="/posts">All Posts</a>
+  <span class="separator">/</span>
+  <a href={`/post-series/${series.id}`}>
+    {series.data.title}
+  </a>
+</nav>
+
+<style>
+  .breadcrumb {
+    margin-bottom: var(--space-6);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+</style>

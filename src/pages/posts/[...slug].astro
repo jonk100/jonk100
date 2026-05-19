@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BlogPost.astro';
+import Breadcrumbs from '../../components/blog/Breadcrumbs.astro';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -32,7 +34,6 @@ interface Props {
 }
 
 const { post, series } = Astro.props;
-
 const { Content } = await render(post);
 
 // Format published date
@@ -48,20 +49,26 @@ const formattedDate = post.data.publishedAt
 const postSeries = series;
 ---
 
-<BaseLayout title={post.data.title}>
+<BaseLayout 
+  title={post.data.title} 
+  excerpt={post.data.excerpt} 
+  publishedAt={post.data.publishedAt} 
+  heroImage={post.data.heroImage} 
+  tags={post.data.tags} 
+  themes={post.data.themes} 
+  status={post.data.status} 
+  postSeries={post.data.postSeries} 
+  position={post.data.position}
+>
   <main class="container">
     <article class="post">
       <header class="post-header">
-        <nav class="breadcrumb">
-          <a href="/posts">All Posts</a>
-          <span class="separator">/</span>
-          <a href={`/post-series/${series.id}`}>
-            {series.data.title}
-          </a>
-        </nav>
+        <Breadcrumbs series={postSeries} />
         
         <h1 class="post-title">{post.data.title}</h1>
-        
+        <div class="hero-image">
+					{post.data.heroImage && <Image width={1020} height={510} src={post.data.heroImage} alt="" />}
+				</div>
         <div class="post-meta">
           {formattedDate && (
             <time datetime={post.data.publishedAt?.toISOString()}>
@@ -107,21 +114,6 @@ const postSeries = series;
 
   .post-header {
     margin-bottom: var(--space-12);
-  }
-
-  .breadcrumb {
-    margin-bottom: var(--space-6);
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-  }
-
-  .breadcrumb a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  .breadcrumb a:hover {
-    text-decoration: underline;
   }
 
   .separator {
@@ -302,5 +294,21 @@ const postSeries = series;
     .post-content :global(h3) {
       font-size: var(--text-lg);
     }
+  }
+
+  .hero-image {
+    width: 100%;
+  }
+  .hero-image img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1em;
+  }
+
+  .date {
+    margin-bottom: 0.5em;
+    color: var(--text-secondary);
   }
 </style>

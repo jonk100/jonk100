@@ -56,11 +56,17 @@ const BLOCK_RE =
 
 export const remarkScreenplay: Plugin<[], Root> = () => {
   return (tree, file) => {
-    const newChildren: any[] = [];
-
     const implicitEnabled = isSceneFilePath(
       String((file as any)?.path ?? "")
     );
+
+    // Early return: only process scene files
+    // This prevents the plugin from interfering with blog posts and other MDX content
+    if (!implicitEnabled) {
+      return;
+    }
+
+    const newChildren: any[] = [];
 
     let inDialogue = false;
     let dialogueBuffer: any[] = [];
