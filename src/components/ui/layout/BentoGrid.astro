@@ -1,0 +1,47 @@
+---
+/**
+ * src/components/ui/layout/BentoGrid.astro
+ * A bento-box style CSS grid layout primitive.
+ * @props (local): gap
+ * @props (global): class, class:list
+ * - gap: Spacing scale for the grid gap
+ */
+import type { SpacingScale } from 'src/types/variants.types';
+
+export interface Props {
+  gap?: SpacingScale;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  gap = 'md',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['bento-grid', `gap-${gap}`, className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    .bento-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

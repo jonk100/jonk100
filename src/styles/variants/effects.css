@@ -1,0 +1,21 @@
+/**                                 */
+/**            Effects                  */
+/**                                          */
+
+.effect--screen {
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}
+
+.effect--glow {
+  box-shadow: 0 0 30px rgba(var(--accent-rgb, 232, 197, 71), 0.25);
+}
+
+.effect--grayscale {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.effect--grayscale:hover {
+  filter: grayscale(0%);
+}

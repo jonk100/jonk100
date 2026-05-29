@@ -1,0 +1,30 @@
+/* Component Shapes */
+.shape--square {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--rad-lg);
+}
+
+.shape--landscape {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--rad-lg);
+}
+
+.shape--portrait {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--rad-lg);
+}
+
+.shape--circle {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--rad-full);
+}
+
+/* ─────────────────────────────
+   Component Radius Utilities
+───────────────────────────── */
+.radius--none { border-radius: 0; }
+.radius--sm { border-radius: var(--rad-sm); }
+.radius--md { border-radius: var(--rad-md); }
+.radius--lg { border-radius: var(--rad-lg); }
+.radius--xl { border-radius: var(--rad-xl); }
+.radius--full { border-radius: var(--rad-full); }

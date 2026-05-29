@@ -1,0 +1,124 @@
+---
+/**
+ * src/components/ui/primitives/Image.astro
+ * An advanced image component with loading skeletons and fallback support.
+ * - Displays a shimmer effect while the image is loading
+ * - Replaces broken image sources with a provided fallback or a transparent pixel
+ * @props (local): src, alt, shape, fallbackSrc, position
+ * @props (global): class, class:list, frame, effects
+ * - shape: Determines the crop shape of the image container
+ * - fallbackSrc: Image source to display if the primary src fails to load
+ * - effects: Applies visual effects from predefined ImageEffect types
+ * - frame: Applies a decorative frame variant styling
+ * - position: Adjusts the object-position CSS property
+ */
+import type { HTMLAttributes } from 'astro/types';
+import type { ComponentShape, ComponentRadius, FrameVariant, ComponentEffect as ImageEffect } from '/src/types/variants.types';
+
+export interface Props extends HTMLAttributes<'img'> {
+  src: string;
+  alt: string;
+  shape?: ComponentShape;
+  radius?: ComponentRadius;
+  fallbackSrc?: string;
+  effects?: ImageEffect | ImageEffect[];
+  frame?: FrameVariant;
+  position?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+
+const {
+  src,
+  alt,
+  shape = 'landscape',
+  radius,
+  loading = 'lazy',
+  fallbackSrc,
+  effects = [],
+  frame = 'none',
+  position = 'center',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+// Normalize effects to an array
+const effectsArray = Array.isArray(effects) ? effects : [effects];
+const effectClasses = effectsArray.map(e => `effect--${e}`);
+
+// Add frame class if applicable
+const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
+
+// Use a tiny 1x1 transparent PNG or the provided fallback if the main image fails
+const errorFallback = fallbackSrc || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+---
+
+<figure class:list={["image-container", "base-frame", `shape--${shape}`, radius && `radius--${radius}`, frameClass, ...effectClasses, className, classList]}>
+  <div class="image-skeleton" aria-hidden="true"></div>
+  <img
+    class="image-element"
+    src={src}
+    alt={alt}
+    loading={loading}
+    style={`object-position: ${position};`}
+    onload="this.previousElementSibling.style.opacity = '0'"
+    onerror={`this.onerror=null; this.src='${errorFallback}';`}
+    {...rest}
+  />
+</figure>
+
+<style>
+  .image-container {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .base-frame {
+    background: var(--bg-elevated, rgba(0,0,0,0.1));
+  }
+
+  .image-element {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+
+
+  /* ─────────────────────────────
+     Skeletons
+  ───────────────────────────── */
+
+  .image-skeleton {
+    position: absolute;
+    top: inherit;
+    left: inherit;
+    right: inherit;
+    bottom: inherit;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.05) 0%,
+      rgba(255,255,255,0.1) 50%,
+      rgba(255,255,255,0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    transition: opacity 0.5s ease;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+</style>

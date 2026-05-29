@@ -1,0 +1,70 @@
+---
+/**
+ * src/components/ui/layout/VisuallyInteractive.astro
+ * Provides an interactive wrapper element that handles focus and active scaling states.
+ * - Supports custom rendering tag via 'as' prop.
+ * - Features customizable active scaling and hover glow effects.
+ * @props (local): as, scale, glow
+ * @props (global): class, class:list
+ * - as: HTML tag or component to render as the wrapper (e.g., 'button', 'a').
+ * - scale: Determines if the component scales down when active.
+ * - glow: Enables a glowing box-shadow effect on hover.
+ */
+export interface Props {
+  as?: string;
+  scale?: boolean;
+  glow?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  scale = true,
+  glow = false,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'interactive-wrapper',
+    { 'interactive-wrapper--scale': scale },
+    { 'interactive-wrapper--glow': glow },
+    className,
+    classList
+  ]}
+  tabindex="0"
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .interactive-wrapper {
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none; /* We handle focus via focus-visible */
+  }
+
+  /* Keyboard focus states */
+  .interactive-wrapper:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: inherit;
+  }
+
+  /* Active scaling physics */
+  .interactive-wrapper--scale:active {
+    transform: scale(0.96);
+  }
+
+  /* Optional hover glow */
+  .interactive-wrapper--glow:hover {
+    box-shadow: 0 0 16px rgba(var(--accent-rgb, 155, 15, 245), 0.2);
+  }
+</style>

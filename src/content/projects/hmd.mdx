@@ -1,0 +1,58 @@
+---
+title: "Her Majesty's Displeasure"
+description: "A rich series bible and pitch deck for an original screenplay concept."
+category: "Screenplay"
+index: "02"
+tags: ["Creative Writing", "Worldbuilding", "Web Design"]
+imageSrc: "/hmd-nigel-clive-2.png"
+delay: 0.2
+liveUrl: "https://hmd-bible.netlify.app/"
+---
+import Image from '../../components/ui/primitives/Image.astro';
+
+Her Majesty's Displeasure is a darkly satirical limited series pitch: **What if Prince Philip quietly unleashed MI5 on The Beatles?**
+
+This project bridges the gap between traditional screenwriting and modern digital presentation. Instead of a static PDF, the pitch deck is a fully responsive web application that immerses readers in the world, characters, and tone of the series.
+
+<Image 
+  src="/hmd-nigel-and-clive.png" 
+  alt="MI5 Operatives Nigel and Clive" 
+  shape="landscape" 
+/>
+
+## Component-Driven Pitching
+
+To ensure visual consistency and maintainability across the complex pitch document, I treated the narrative exactly like software data. 
+
+### Single Source of Truth
+Instead of scattering text across HTML pages, all of the narrative data (loglines, character arcs, episode summaries) flows from a single TypeScript file (`src/data/her-majestys-displeasure.ts`).
+
+```typescript
+// Excerpt from src/data/her-majestys-displeasure.ts
+export const episodes: Episode[] = [
+  {
+    number: 'EP. 01',
+    title: 'The Investiture',
+    scenes: 'Scenes 1 – 16',
+    timeframe: 'Oct 1965 – Mar 1966',
+    summary: "After The Beatles smoke a joint in the Buckingham Palace bathroom, John Lennon makes a flippant remark about military service that triggers Prince Philip's fury...",
+    tension: 25,
+    tensionLabel: 'Tension 2–5/10 · Low simmer',
+  },
+  // ...
+];
+```
+
+This data is fed into modular Astro UI primitives, like `<CharacterCard>` or `<EpisodeTimeline>`, ensuring that a change to a character's arc in the data layer immediately updates every view across the entire site.
+
+<Image 
+  src="/placeholder.png" 
+  alt="Episode Timeline Component" 
+  shape="landscape" 
+/>
+
+## Satirical Design Language
+
+The visual architecture was explicitly designed to mirror the thematic conflict of the series. The Royal and MI5 sequences are styled with rigid symmetry, cold desaturated palettes, and sterile typography. Conversely, The Beatles' sequences employ a warm, organic, and slightly chaotic aesthetic. 
+
+This proves that web design can be as much a storytelling tool as dialogue.

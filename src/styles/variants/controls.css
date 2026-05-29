@@ -1,0 +1,59 @@
+/**                                 */
+/**            Control Base & Sizes      */
+/**                                          */
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.control--xs {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+}
+
+.control--sm {
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+}
+
+.control--base, .control--md {
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+}
+
+.control--lg {
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+}
+
+.control--xl {
+  font-size: var(--text-lg);
+  padding: var(--space-4) var(--space-8);
+}
+
+.control--icon {
+  padding: 0.5rem;
+  border-radius: 99px;
+}
+
+.control--icon-sm {
+  padding: 0.25rem;
+  border-radius: 99px;
+}
+
+.control--icon-lg {
+  padding: 0.75rem;
+  border-radius: 99px;
+}

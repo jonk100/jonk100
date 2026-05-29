@@ -1,0 +1,53 @@
+---
+/**
+ * src/components/ui/layout/VisuallyHidden.astro
+ * Visually hides content while keeping it accessible to screen readers.
+ * - Provides text context for assistive technologies without breaking visual layouts
+ * - Optionally allows content to become visible when focused
+ * @props (local): as, focusable
+ * @props (global): class, class:list
+ * - focusable: Determines if the hidden element should become visible when it receives focus
+ */
+export interface Props {
+  as?: string;
+  focusable?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'span',
+  focusable = false,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'sr-only',
+    { 'sr-only-focusable': focusable },
+    className,
+    classList
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  /* Base .sr-only is defined globally in layout.css */
+  
+  .sr-only-focusable:focus,
+  .sr-only-focusable:focus-within,
+  .sr-only-focusable:active {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+</style>

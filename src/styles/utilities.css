@@ -1,0 +1,91 @@
+/* =============================================================
+   GLOBAL UTILITIES (Spacing & Layout)
+   Provides universal padding (p-*) and margin (m-*) classes.
+   ============================================================= */
+
+/* ─────────────────────────────
+   Padding (p-*)
+───────────────────────────── */
+.p-none { padding: 0; }
+.p-3xs  { padding: var(--space-1); }  /* 4px */
+.p-2xs  { padding: var(--space-2); }  /* 8px */
+.p-xs   { padding: var(--space-3); }  /* 12px */
+.p-sm   { padding: var(--space-4); }  /* 16px */
+.p-md   { padding: var(--space-6); }  /* 24px */
+.p-lg   { padding: var(--space-8); }  /* 32px */
+.p-xl   { padding: var(--space-12); } /* 48px */
+.p-2xl  { padding: var(--space-16); } /* 64px */
+.p-3xl  { padding: var(--space-24); } /* 96px */
+
+/* ─────────────────────────────
+   Margin (m-*)
+───────────────────────────── */
+.m-none { margin: 0; }
+.m-3xs  { margin: var(--space-1); }
+.m-2xs  { margin: var(--space-2); }
+.m-xs   { margin: var(--space-3); }
+.m-sm   { margin: var(--space-4); }
+.m-md   { margin: var(--space-6); }
+.m-lg   { margin: var(--space-8); }
+.m-xl   { margin: var(--space-12); }
+.m-2xl  { margin: var(--space-16); }
+.m-3xl  { margin: var(--space-24); }
+
+/* ─────────────────────────────
+   Fluid Container Spacing
+───────────────────────────── */
+
+/* Fluid Padding based on Inline Size (Width) */
+.p-fluid {
+  padding: var(--space-3); /* Default baseline */
+}
+
+@container (min-width: 400px) {
+  .p-fluid {
+    padding: var(--space-5);
+  }
+}
+
+@container (min-width: 768px) {
+  .p-fluid {
+    padding: var(--space-8);
+  }
+}
+
+@container (min-width: 1024px) {
+  .p-fluid {
+    padding: var(--space-12);
+  }
+}
+
+/* Fluid Margin (Y-Axis) based on Block Size (Height) */
+/* Note: The parent container must have `container-type: size` for this to work */
+.m-fluid-y {
+  margin-block: var(--space-4); /* Default baseline */
+}
+
+@container (min-height: 28rem) {
+  .m-fluid-y {
+    margin-block: var(--space-8);
+  }
+}
+
+@container (min-height: 40rem) {
+  .m-fluid-y {
+    margin-block: var(--space-12);
+  }
+}
+
+/* ─────────────────────────────
+   Gap (gap-*)
+───────────────────────────── */
+.gap-none { gap: 0; }
+.gap-3xs  { gap: var(--space-1); }
+.gap-2xs  { gap: var(--space-2); }
+.gap-xs   { gap: var(--space-3); }
+.gap-sm   { gap: var(--space-4); }
+.gap-md   { gap: var(--space-6); }
+.gap-lg   { gap: var(--space-8); }
+.gap-xl   { gap: var(--space-12); }
+.gap-2xl  { gap: var(--space-16); }
+.gap-3xl  { gap: var(--space-24); }

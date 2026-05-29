@@ -1,0 +1,226 @@
+---
+/**
+ * src/components/portfolio/ProjectCard.astro
+ * Displays a single project summary as an interactive card.
+ * - Highlights the project image with hover effects
+ * - Shows project metadata like category, index, and tags
+ * @props (local): title, description, category, index, tags, slug, imageSrc, delay
+ * @props (global): class, class:list, frame, effects
+ * - frame: Applies a specific frame style variant to the card
+ * - effects: Applies single or multiple image effects to the card
+ */
+import type { FrameVariant, ComponentEffect } from 'src/types/variants.types';
+import Paper from '../ui/primitives/Paper.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Text from '../ui/primitives/Text.astro';
+import Badge from '../ui/feedback/Badge.astro';
+import Icon from '../ui/media/Icon.astro';
+import Image from '../ui/primitives/Image.astro';
+import Box from '../ui/layout/Box.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  category: string;
+  index: string;
+  tags: string[];
+  slug: string;
+  imageSrc?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  frame?: FrameVariant;
+  effects?: ComponentEffect | ComponentEffect[];
+  delay?: number;
+  isFlagship?: boolean;
+}
+
+const { title, description, category, index, tags, slug, imageSrc, class: className = '', "class:list": classList = {}, frame, effects, delay = 0, isFlagship = false } = Astro.props;
+---
+
+<a href={`/projects/${slug}`} class="card-link" style={`animation-delay: ${delay}s;`}>
+  <Paper padding="none" radius="lg" elevation="surface" class:list={['project-card', className, classList, frame, effects]}>
+    
+    <div class="card-accent-bar"></div>
+    {imageSrc && (
+      <Box class="card-image-wrapper">
+        <Image src={imageSrc} alt={title} class="card-image" radius="none" style={`view-transition-name: hero-${slug}`} />
+        <div class="card-image-mask"></div>
+      </Box>
+    )}
+
+    <Stack gap="sm" class="card-content">
+      <Inline justify="between" align="center" class="card-head">
+        <Text as="span" type="label" tone="subtle" class="card-tag">{category}</Text>
+        <Text as="span" type="label" tone="subtle" class="card-index">{index}</Text>
+      </Inline>
+
+      <Text as="h3" type="h3" class:list={['card-title', { 'card-title--flagship': isFlagship }]}>{title}</Text>
+      
+      <Text as="p" type="body" tone="subtle" class="card-desc">
+        {description}
+      </Text>
+
+      <Inline justify="between" align="end" class="card-footer">
+        <Inline gap="xs" wrap class="card-tags">
+          {tags.map(tag => (
+            <Badge theme="ghost" outlined>{tag}</Badge>
+          ))}
+        </Inline>
+        
+        <div class="card-arrow">
+          <Icon name="arrow-up-right" size={20} />
+        </div>
+      </Inline>
+    </Stack>
+  </Paper>
+</a>
+
+<style>
+  .card-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .project-card {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* Interactive Hover State */
+  .card-link:hover .project-card {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border);
+  }
+
+  .card-link:focus-visible {
+    outline: none;
+  }
+  .card-link:focus-visible .project-card {
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  /* Accent Bar */
+  .card-accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+
+  .card-link:hover .card-accent-bar {
+    opacity: 1;
+  }
+
+  /* Image Layout */
+  .card-image-wrapper {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-link:hover .card-image {
+    transform: scale(1.05);
+  }
+
+  .card-image-mask {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, var(--bg-surface));
+    pointer-events: none;
+  }
+
+  /* Content Layout */
+  .card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+  }
+
+  .card-head {
+    margin-bottom: var(--space-2);
+  }
+
+  .card-tag {
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .card-index {
+    font-family: var(--mono);
+  }
+
+  .card-title {
+    margin-bottom: var(--space-2);
+  }
+
+  .card-title--flagship {
+    font-size: var(--text-2xl);
+  }
+
+  @media (max-width: 900px) {
+    .card-title--flagship {
+      font-size: var(--text-xl); /* Reset on smaller screens */
+    }
+  }
+
+  .card-desc {
+    margin-bottom: var(--space-6);
+    flex: 1;
+  }
+
+  .card-footer {
+    margin-top: auto;
+  }
+
+  .card-arrow {
+    color: var(--text-subtle);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.3s ease;
+  }
+
+  .card-link:hover .card-arrow {
+    transform: translate(2px, -2px);
+    color: var(--accent);
+  }
+</style>

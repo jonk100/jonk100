@@ -1,0 +1,62 @@
+---
+/**
+ * src/components/ui/layout/Grid.astro
+ * A flexible layout primitive for constructing CSS grids.
+ * - Supports specific column counts or auto-fitting grid layouts
+ * - Utilizes design system spacing scales for gaps
+ * @props (local): as, cols, gap, autoFit, minChildWidth
+ * @props (global): class, class:list
+ * - gap: Dictates the gap between grid items based on the spacing scale
+ * - autoFit: Enables dynamic column counting that fits to the container based on minChildWidth
+ */
+import type { SpacingScale } from 'src/types/variants.types.ts';
+
+export interface Props {
+  as?: string;
+  cols?: number | string;
+  gap?: SpacingScale;
+  autoFit?: boolean;
+  minChildWidth?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  cols,
+  gap = 'md',
+  autoFit = false,
+  minChildWidth = '250px',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+// Determine grid-template-columns logic
+let gridTemplateColumns = '';
+if (autoFit) {
+  gridTemplateColumns = `repeat(auto-fit, minmax(${minChildWidth}, 1fr))`;
+} else if (cols) {
+  gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+}
+---
+
+<Tag
+  class:list={[
+    'grid',
+    `gap-${gap}`,
+    className,
+    classList
+  ]}
+  style={gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns};` : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .grid {
+    display: grid;
+  }
+</style>

@@ -1,0 +1,110 @@
+/* =============================================================
+   REUSABLE THEME STYLES
+   Shared across interactive components (Button, Link, etc.)
+   ============================================================= */
+
+/**                                             */
+/**            Primary Variant                */
+/**                                             */
+.variant--primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text);
+}
+
+.variant--primary:hover {
+  background: var(--secondary-hover);
+}
+
+.variant--primary:active {
+  background: var(--accent-hover);
+}
+
+.variant--primary:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**     Ghost Variant                         */
+/**                                          */                                           
+.variant--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+
+.variant--ghost:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.variant--ghost:active {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.variant--ghost:disabled {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+/**                                          */
+/**            Secondary Variant            */
+/**                                           */
+.variant--secondary {
+  background: var(--secondary);
+  color: var(--text-inverse);
+  border-color: var(--primary-border);
+}
+
+.variant--secondary:hover {
+  background: var(--primary-dim);
+  color: var(--text);
+  border-color: var(--secondary-hover);
+}
+
+.variant--secondary:active {
+  background: var(--bg-elevated);
+}
+
+.variant--secondary:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**    Outline Variant                      */
+/**                                           */
+.variant--outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.variant--outline:hover {
+  background: var(--bg-card);
+  border-color: var(--accent-hover);
+}
+
+.variant--outline:active {
+  background: var(--accent-dim);
+  border-color: var(--accent-hover);
+}
+
+/**                                          */
+/**            Default Variant            */
+/**                                           */
+.variant--default {
+  background: var(--bg-surface);
+  color: var(--text);
+}
+
+.variant--default:hover {
+  background: var(--bg-elevated);
+}
+
+.variant--default:active {
+  background: var(--bg-elevated);
+}

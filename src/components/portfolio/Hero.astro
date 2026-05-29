@@ -1,0 +1,132 @@
+---
+/**
+ * src/components/portfolio/Hero.astro
+ * Hero section component for the portfolio site.
+ * - Displays the user's name, tagline, and current status
+ * - Includes animated reveal effects
+ * @props (local): None
+ * @props (global): class, class:list, frame, effects
+ */
+import Box from '../ui/layout/Box.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Text from '../ui/primitives/Text.astro';
+---
+
+<section class="hero" aria-labelledby="hero-heading">
+  <Box class="container">
+    <Stack gap="xl">
+      <!-- Eyebrow -->
+      <Text as="p" type="label" class="hero-eyebrow fade-up-1">
+        Available for work &nbsp;·&nbsp; Youngstown, OH
+      </Text>
+
+      <!-- Name -->
+      <h1 class="hero-name fade-up-2" id="hero-heading">
+        Jon<br><em>Doe</em>
+      </h1>
+
+      <!-- Tagline -->
+      <Text as="p" type="body" tone="subtle" class="hero-tagline fade-up-3">
+        Teacher, musician, and frontend developer.<br/>
+        I build thoughtful web apps with Astro and TypeScript.
+      </Text>
+
+      <!-- Status -->
+      <Inline align="center" gap="sm" class="hero-status fade-up-4">
+        <Inline align="center" gap="xs">
+          <div class="status-dot" aria-hidden="true"></div>
+          <Text as="span" type="label" tone="subtle" class="status-text">Currently building Writty</Text>
+        </Inline>
+        <div class="status-divider" aria-hidden="true"></div>
+        <Text as="span" type="label" tone="subtle" class="status-text">open to collaboration</Text>
+      </Inline>
+    </Stack>
+  </Box>
+</section>
+
+<style>
+  .hero {
+    padding-top: calc(4rem + var(--space-24));
+    padding-bottom: var(--space-20);
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--max-width, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+  .hero-eyebrow {
+    color: var(--accent) !important;
+    font-family: var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-size: clamp(4rem, 10vw, 7.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .hero-name em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .hero-tagline {
+    max-width: 500px;
+    line-height: 1.8;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    animation: pulse 2.8s ease-in-out infinite;
+  }
+
+  .status-text {
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+  }
+
+  .status-divider {
+    width: 1px;
+    height: 14px;
+    background-color: var(--border);
+  }
+
+  /* Animations */
+  .fade-up-1, .fade-up-2, .fade-up-3, .fade-up-4 {
+    opacity: 0;
+    animation: fade-up 0.64s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .fade-up-1 { animation-delay: 0.1s; }
+  .fade-up-2 { animation-delay: 0.2s; }
+  .fade-up-3 { animation-delay: 0.35s; }
+  .fade-up-4 { animation-delay: 0.5s; }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.75); }
+  }
+</style>

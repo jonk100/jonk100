@@ -1,0 +1,65 @@
+---
+/**
+ * src/components/ui/layout/Box.astro
+ * A foundational layout primitive for applying spacing, margins, and display properties.
+ * - Supports responsive padding and margin via spacing scale values
+ * - Configurable HTML tag rendering with the 'as' prop
+ * @props (local): as, padding, margin, display
+ * @props (global): class, class:list, frame, effects
+ * - padding: Applies padding using a spacing scale value
+ * - margin: Applies margin using a spacing scale value
+ * - frame: Applies a specific frame style variant to the component
+ * - effects: Applies single or multiple image effects to the component
+ */
+import type { SpacingScale, FrameVariant, ComponentEffect, ComponentRadius } from 'src/types/variants.types.ts';
+
+export interface Props {
+  as?: string;
+  padding?: SpacingScale;
+  margin?: SpacingScale;
+  display?: 'block' | 'inline-block' | 'inline' | 'flex' | 'grid' | 'none';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  frame?: FrameVariant;
+  effects?: ComponentEffect | ComponentEffect[];
+  radius?: ComponentRadius;
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  padding,
+  margin,
+  display,
+  class: className = '',
+  "class:list": classList = {},
+  frame,
+  effects,
+  radius,
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'box',
+    padding && `p-${padding}`,
+    margin && `m-${margin}`,
+    className,
+    classList,
+    frame,
+    effects,
+    radius && `radius--${radius}`
+  ]}
+  style={display ? `display: ${display};` : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  /* Box is purely functional, delegating sizing to global space utilities */
+  .box {
+    /* Base wrapper properties if needed */
+  }
+</style>

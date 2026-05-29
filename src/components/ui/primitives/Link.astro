@@ -1,0 +1,59 @@
+---
+/**
+ * src/components/ui/primitives/Link.astro
+ * An anchor component featuring shared button-like variant styles.
+ * - Integrates with Astro's native class:list for flexible styling
+ * - Uses global control variant sizes and styles
+ * @props (local): href, theme, tone, size, target, rel
+ * @props (global): class, class:list, frame
+ * - theme: Selects the visual button theme to apply
+ * - tone: Specifies text color
+ * - size: Adjusts the control dimensions
+ * - frame: Applies an optional frame variant to the link styling
+ */
+import type { ComponentTheme, TextTone, Sizes, FrameVariant } from 'src/types/variants.types';
+import Text from './Text.astro';
+
+export interface Props {
+  href: string;
+  label?: string;
+  theme?: ComponentTheme;
+  tone?: TextTone;
+  size?: Sizes;
+  frame?: FrameVariant;
+  class?: string;
+  "class:list"?: Record<string, boolean>;
+  target?: string;
+  rel?: string;
+  [key: string]: any;
+}
+
+const {
+  href,
+  label,
+  theme = "primary",
+  tone,
+  size = "base",
+  frame = "none",
+  class: cls = "",
+  "class:list": classList = {},
+  target,
+  rel,
+  ...rest
+} = Astro.props;
+
+const classes = [
+  "control", 
+  `variant--${theme}`, 
+  tone ? `text--${tone}` : '',
+  `control--${size}`, 
+  frame !== 'none' ? `frame-variant--${frame}` : '',
+  cls
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<a href={href} class={classes} class:list={classList} target={target} rel={rel} {...rest}>
+  {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
+</a>

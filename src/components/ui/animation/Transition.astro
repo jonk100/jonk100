@@ -1,0 +1,86 @@
+---
+/**
+ * src/components/ui/animation/Transition.astro
+ * A flexible wrapper component for adding CSS transitions and view transition names.
+ * - Supports customizable durations, delays, and easing functions
+ * - Provides fallback handling for prefers-reduced-motion accessibility
+ * @props (local): as, name, duration, delay, easing
+ * @props (global): class, class:list
+ * - as: The HTML tag or Astro component to render
+ * - name: Assigns a view-transition-name for View Transitions API
+ * - duration: Selects a predefined transition duration ('fast', 'normal', 'slow')
+ * - delay: Selects a predefined transition delay ('none', 'short', 'long')
+ * - easing: Chooses a CSS timing function (e.g., 'ease', 'bounce')
+ */
+export interface Props {
+  as?: keyof HTMLElementTagNameMap | string;
+  name?: string; // For view-transition-name
+  duration?: 'fast' | 'normal' | 'slow';
+  delay?: 'none' | 'short' | 'long';
+  easing?: 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as = 'div',
+  name,
+  duration = 'normal',
+  delay = 'none',
+  easing = 'ease',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const Tag = as;
+---
+
+<Tag
+  class:list={[
+    'transition-wrapper',
+    `duration--${duration}`,
+    `delay--${delay}`,
+    `easing--${easing}`,
+    className,
+    classList
+  ]}
+  style={name ? `view-transition-name: ${name};` : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .transition-wrapper {
+    /* Base configuration for generic properties, children inherit or can hook into this */
+    transition-property: all;
+  }
+
+  /* Durations */
+  .duration--fast { transition-duration: 150ms; }
+  .duration--normal { transition-duration: 300ms; }
+  .duration--slow { transition-duration: 500ms; }
+
+  /* Delays */
+  .delay--none { transition-delay: 0ms; }
+  .delay--short { transition-delay: 150ms; }
+  .delay--long { transition-delay: 300ms; }
+
+  /* Easings */
+  .easing--ease { transition-timing-function: ease; }
+  .easing--linear { transition-timing-function: linear; }
+  .easing--ease-in { transition-timing-function: ease-in; }
+  .easing--ease-out { transition-timing-function: ease-out; }
+  .easing--ease-in-out { transition-timing-function: ease-in-out; }
+  .easing--bounce { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .transition-wrapper {
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+</style>

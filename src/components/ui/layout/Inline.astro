@@ -1,0 +1,54 @@
+---
+/**
+ * src/components/ui/layout/Inline.astro
+ * A layout primitive for aligning child elements horizontally.
+ * - Handles flexbox alignment, justification, and wrapping
+ * - Standardizes gap spacing using the design system scale
+ * @props (local): as, gap, align, justify, wrap
+ * @props (global): class, class:list
+ * - gap: Sets the flex gap between inline items
+ */
+import type { FlexboxProps } from 'src/types/variants.types.ts';
+
+export interface Props extends FlexboxProps {
+  as?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  gap = 'md',
+  align = 'center',
+  justify = 'start',
+  wrap = true,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'inline',
+    `gap-${gap}`,
+    className,
+    classList
+  ]}
+  style={`
+    align-items: ${align};
+    justify-content: ${justify};
+    flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
+  `}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .inline {
+    display: flex;
+    flex-direction: row;
+  }
+</style>

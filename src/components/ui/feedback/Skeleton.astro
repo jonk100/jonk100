@@ -1,0 +1,86 @@
+---
+/**
+ * src/components/ui/feedback/Skeleton.astro
+ * Renders a placeholder skeleton for loading states.
+ * - Features an animated shimmer effect for visual feedback.
+ * - Supports customizable width, height, and border radius.
+ * @props (local): width, height, rounded, animated
+ * @props (global): class, class:list
+ * - rounded: Border radius rounding preset ('none', 'sm', 'md', 'lg', 'xl', 'full').
+ */
+export interface Props {
+  width?: string;
+  height?: string;
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  animated?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  width = '100%',
+  height = '1.5rem',
+  rounded = 'md',
+  animated = true,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'skeleton',
+    `skeleton--rounded-${rounded}`,
+    { 'skeleton--animated': animated },
+    className,
+    classList
+  ]}
+  style={`width: ${width}; height: ${height};`}
+  {...rest}
+></div>
+
+<style>
+  .skeleton {
+    background-color: var(--bg-elevated);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .skeleton--rounded-none { border-radius: 0; }
+  .skeleton--rounded-sm { border-radius: var(--rad-sm); }
+  .skeleton--rounded-md { border-radius: var(--rad-md); }
+  .skeleton--rounded-lg { border-radius: var(--rad-lg); }
+  .skeleton--rounded-xl { border-radius: var(--rad-xl); }
+  .skeleton--rounded-full { border-radius: var(--rad-full); }
+  
+  .skeleton--animated::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.08),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+  
+  :global(html.light) .skeleton--animated::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 0, 0, 0.04),
+      transparent
+    );
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+</style>

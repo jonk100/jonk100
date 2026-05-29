@@ -1,0 +1,81 @@
+---
+title: "Writty"
+description: "A distraction-free writing environment that lives in your browser. Built with Astro, React, and local-first architecture."
+category: "Web App"
+index: "01"
+tags: ["Astro", "React", "LocalFirst"]
+imageSrc: "/writty-hmd-main-page.png"
+delay: 0.1
+githubUrl: "https://github.com/jonk100/Writty"
+---
+import Image from '../../components/ui/primitives/Image.astro';
+
+Writty is a beautiful, minimal, and highly performant writing application designed to eliminate distractions and keep you focused on your words. It is not a public CMS, but a personal creative workbench for storing screenplays, songs, poems, and short stories.
+
+<Image 
+  src="/writty-plot-beat-tension-graph.gif" 
+  alt="Writty Interface" 
+  shape="landscape"
+  outline={true}
+/>
+
+## Technical Architecture
+
+Built with a modern web stack, Writty utilizes **Astro** for lightning-fast static generation and **Alpine.js** for lightweight client-side interactivity. The application leans heavily into a local-first architecture, ensuring that your data is always instantly available. All creative content is stored as structured MDX with Zod-validated frontmatter.
+
+### The Custom AST Parser
+
+One of the most complex engineering challenges in Writty was building a seamless authoring experience for screenplays. Manually writing JSX tags for every character, dialogue, and action line is tedious and breaks the flow state. 
+
+To solve this, I wrote a custom **Remark plugin** (`remark-screenplay.ts`) that intercepts the Markdown AST during Astro's build step. It parses shorthand text prefixes (e.g., `c-` for character, `d-` for dialogue) and transforms them directly into typed MDX nodes:
+
+```typescript
+// Excerpt from src/plugins/remark-screenplay.ts
+export const remarkScreenplay: Plugin<[], Root> = () => {
+  return (tree, file) => {
+    visit(tree, "paragraph", (node: Paragraph) => {
+      // ... AST traversal logic ...
+      
+      const match = raw.match(BLOCK_RE);
+      const [, prefix, valueRaw] = match;
+      const type = PREFIX_MAP[prefix.toLowerCase()];
+      
+      if (type === "character") {
+        inDialogue = true;
+        currentCharacter = value.toUpperCase();
+        dialogueBuffer.push(jsx("Character", currentCharacter));
+        return;
+      }
+      
+      if (type === "dialogue") {
+        dialogueBuffer.push(
+          jsx("Dialogue", value, { speaker: currentCharacter })
+        );
+        return;
+      }
+      
+      // ... transforms shorthand into Astro components seamlessly
+    });
+  };
+};
+```
+
+This effectively created a custom, domain-specific markdown flavor for screenwriting, allowing for rapid drafting without touching HTML syntax. And from there, I was able to builda custom side-by-side markdown editor / preview for writing screenplays, with (mostly) proper formatting and a current-line highlighter feature: 
+
+<Image 
+  src="/writty-markdown-screenplay-formatter-editor.png" 
+  alt="Screenplay Rendering Demo" 
+  shape="square"
+  frame="minimal"
+/>
+
+## Data Enrichment
+
+Writty goes beyond just text editing. I wrote custom TypeScript scripts that run via Node to automatically fetch and enrich character and actor data from the **TMDB API**, allowing the workbench to serve as a fully featured Series Bible and casting board.
+
+<Image
+  src="/writty-patriot-review.png" 
+  alt="Screenplay Rendering Demo" 
+  frame="polaroid"
+  shape="landscape"
+/>

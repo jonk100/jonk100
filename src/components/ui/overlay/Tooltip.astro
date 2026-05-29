@@ -1,0 +1,148 @@
+---
+/**
+ * src/components/ui/overlay/Tooltip.astro
+ * Displays a transient tooltip element anchored to a target via CSS Anchor Positioning.
+ * - Automatically handles hover and focus triggers.
+ * - Uses native popover API manually invoked via JavaScript.
+ * @props (local): id, anchor, placement
+ * @props (global): class, class:list, frame, effects
+ * - id: Required unique identifier for the tooltip popover.
+ * - anchor: ID of the DOM element that triggers and anchors the tooltip.
+ * - placement: Directional positioning relative to the anchor ('top', 'bottom', 'left', 'right').
+ */
+import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+
+export interface Props {
+  id: string;
+  anchor: string; // The ID of the element this tooltip anchors to
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  frame?: FrameVariant;
+  effects?: ImageEffect | ImageEffect[];
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id,
+  anchor,
+  placement = 'top',
+  frame = 'none',
+  effects = [],
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div
+  id={id}
+  popover="manual"
+  class:list={[
+    'tooltip',
+    `tooltip--${placement}`,
+    frame !== 'none' ? `frame-variant--${frame}` : '',
+    ...([effects].flat().filter(Boolean).map(e => `effect--${e}`)),
+    className,
+    classList
+  ]}
+  style={`position-anchor: --${anchor};`}
+  role="tooltip"
+  {...rest}
+>
+  <slot />
+</div>
+
+<script is:inline define:vars={{ id, anchor }}>
+  // Tooltips are triggered by hover and focus on the anchor element
+  // Since we don't have invokers for hover, we manually wire this up
+  const initTooltip = () => {
+    const tooltip = document.getElementById(id);
+    const trigger = document.getElementById(anchor);
+    
+    if (!tooltip || !trigger) return;
+    
+    const show = () => {
+      if (tooltip.hidePopover) {
+        try { tooltip.showPopover(); } catch(e) {}
+      }
+    };
+    
+    const hide = () => {
+      if (tooltip.hidePopover) {
+        try { tooltip.hidePopover(); } catch(e) {}
+      }
+    };
+
+    trigger.addEventListener('mouseenter', show);
+    trigger.addEventListener('mouseleave', hide);
+    trigger.addEventListener('focus', show);
+    trigger.addEventListener('blur', hide);
+  };
+  
+  // Wait for DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTooltip);
+  } else {
+    initTooltip();
+  }
+  document.addEventListener('astro:page-load', initTooltip);
+</script>
+
+<style>
+  .tooltip {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    background: var(--text);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--rad-sm);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    pointer-events: none; /* Tooltips shouldn't block clicks */
+    z-index: 9999;
+    
+    position: absolute;
+    inset: auto;
+  }
+
+  /* CSS Anchor Positioning */
+  .tooltip--top {
+    bottom: calc(anchor(top) - var(--space-2));
+    justify-self: anchor-center;
+  }
+
+  .tooltip--bottom {
+    top: calc(anchor(bottom) + var(--space-2));
+    justify-self: anchor-center;
+  }
+
+  .tooltip--left {
+    right: calc(anchor(left) - var(--space-2));
+    align-self: anchor-center;
+  }
+
+  .tooltip--right {
+    left: calc(anchor(right) + var(--space-2));
+    align-self: anchor-center;
+  }
+  
+  /* Native CSS Presence (Mount/Unmount) */
+  .tooltip {
+    transition: opacity 0.15s ease-out, transform 0.15s ease-out, display 0.15s allow-discrete, overlay 0.15s allow-discrete;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .tooltip:is(:popover-open, .\:popover-open) {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    .tooltip:is(:popover-open, .\:popover-open) {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+</style>

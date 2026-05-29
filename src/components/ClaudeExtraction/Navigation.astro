@@ -1,0 +1,25 @@
+---
+/**
+ * src/components/ClaudeExtraction/Navigation.astro
+ * Site navigation bar component extracted from Claude.
+ * - Renders the main navigation links
+ * - Includes the site logo / monogram
+ * @props (local): None
+ * @props (global): class, class:list, frame, effects
+ */
+---
+<!-- NAVIGATION -->
+  <nav aria-label="Site navigation">
+    <div class="nav-inner">
+
+      <!-- The logo / monogram. Replace with your initials or a short slug.This stays visible on all pages and links back to home. -->
+      <a href="/" class="nav-logo" aria-label="Home">jon</a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="/projects">work</a></li>
+        <li><a href="/writing">writing</a></li>
+        <li><a href="/now">now</a></li>
+      </ul>
+
+    </div>
+  </nav>

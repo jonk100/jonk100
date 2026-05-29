@@ -1,0 +1,56 @@
+---
+title: "re:MindMatters Blog"
+description: "A performant mental health and self-care publication. Engineered with Astro's Content Collections and Cloudinary CDN integration for lightning-fast delivery."
+category: "Publication"
+index: "03"
+tags: ["Astro", "Cloudinary", "Tailwind"]
+imageSrc: "/rmmblog-cardgrid.png"
+delay: 0.3
+liveUrl: "https://remindmatters.netlify.app/"
+githubUrl: "https://github.com/jonk100/astro-starwind"
+---
+import Image from '../../components/ui/primitives/Image.astro';
+
+The re:MindMatters Blog is the public-facing publication arm of the broader MindMatters ecosystem. It is dedicated to exploring mental health, self-care routines, and psychological well-being through high-quality, performant content delivery.
+
+<Image 
+  src="/rmmblog-pp.png" 
+  alt="re:MindMatters Blog Interface"
+  
+  frame="light"
+  shape="landscape" 
+/>
+
+## Engineering the Publication
+
+The blog is statically generated using **Astro**, ensuring that readers receive fully hydrated HTML instantly, without the overhead of heavy client-side frameworks. This is critical for accessibility and SEO.
+
+### Core Integrations
+* **Content Collections:** All articles are written in Markdown/MDX and are strictly typed and validated using Zod schemas. This ensures bulletproof content management—the build simply fails if frontmatter is missing or invalid.
+* **Cloudinary CDN:** High-quality imagery is heavily featured throughout the publication. To guarantee perfect Core Web Vitals, all media assets are automatically optimized, resized, and delivered via the Cloudinary CDN.
+* **Starwind UI:** The interface utilizes a highly polished, accessible component library based on Tailwind CSS v4.
+
+```astro
+// Example of the Starwind UI primitive composition
+<Container class="prose max-w-none">
+  <Stack gap="xl">
+    <Typography variant="h1">{post.title}</Typography>
+    <CloudinaryImage 
+      src={post.coverImage} 
+      alt={post.title} 
+      width={1200}
+      height={630} 
+    />
+    <Content />
+  </Stack>
+</Container>
+```
+
+<Image 
+  src="/rmmblog-categories.png" 
+  alt="Article Layout Demo"
+  style="margin: 1rem;"
+/>
+
+## The Goal
+The objective was to create a reading experience that feels as calming and seamless as the mental health topics it covers. By eliminating layout shifts, optimizing typography, and stripping away unnecessary JavaScript, the blog achieves perfect Lighthouse scores.

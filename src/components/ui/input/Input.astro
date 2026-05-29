@@ -1,0 +1,131 @@
+---
+/**
+ * src/components/ui/input/Input.astro
+ * An accessible form input component with labels, errors, and hints.
+ * - Supports various input types, sizes, and styling variants
+ * - Handles auto-sizing for content (modern browser support)
+ * @props (local): label, placeholder, error, hint, disabled, required, theme, size, id, name, type
+ * @props (global): class, class:list
+ * - theme: Determines the visual style from predefined options
+ * - size: Adjusts the input dimensions
+ * - error: Displays an error message and sets aria-invalid
+ * - hint: Displays a helpful text underneath the input
+ */
+import type { ComponentTheme, Sizes } from '../../../../types/variants.types';
+
+export interface Props {
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  hint?: string;
+  disabled?: boolean;
+  required?: boolean;
+  theme?: ComponentTheme;
+  size?: Sizes;
+  id?: string;
+  name?: string;
+  type?: 'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  label,
+  placeholder,
+  error,
+  hint,
+  disabled = false,
+  required = false,
+  theme = 'default',
+  size = 'md',
+  id = `input-${Math.random().toString(36).substring(2, 9)}`,
+  name,
+  type = 'text',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['input-wrapper', className, classList]}>
+  {label && (
+    <label for={id} class="input-label">
+      {label} {required && <span class="required">*</span>}
+    </label>
+  )}
+  
+  <input
+    id={id}
+    name={name}
+    type={type}
+    placeholder={placeholder}
+    disabled={disabled}
+    required={required}
+    aria-invalid={!!error}
+    aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+    class:list={[
+      'control',
+      `variant--${theme}`,
+      `control--${size}`,
+      'input-field',
+      { 'input-field--error': error }
+    ]}
+    {...rest}
+  />
+  
+  {error && <span id={`${id}-error`} class="input-error">{error}</span>}
+  {hint && !error && <span id={`${id}-hint`} class="input-hint">{hint}</span>}
+</div>
+
+<style>
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .input-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .required {
+    color: var(--accent);
+  }
+
+  .input-field {
+    /* Override specific .control styles that don't apply to inputs */
+    justify-content: flex-start;
+    text-align: left;
+    cursor: text;
+    width: 100%;
+    
+    /* Modern autosizing support (supported in Chrome 121+) */
+    field-sizing: content;
+    min-width: 100%; /* Fallback/Constraint */
+  }
+
+  .input-field:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  .input-field--error {
+    border-color: var(--accent); /* Assuming accent is used for errors, or add an --error token */
+  }
+
+  .input-error {
+    font-size: var(--text-xs);
+    color: var(--accent);
+    margin-top: calc(var(--space-1) * -1);
+  }
+
+  .input-hint {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-top: calc(var(--space-1) * -1);
+  }
+</style>

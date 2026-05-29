@@ -1,0 +1,21 @@
+---
+title: "Setting up a high-performance Astro portfolio"
+description: "A deep dive into why I chose Astro for my personal site and how I built a custom primitive-based design system."
+pubDate: 2026-05-29
+tags: ["Astro", "Web Development", "Design Systems"]
+---
+
+Building a personal portfolio is a rite of passage for every frontend developer. Over the years, I've built portfolios with everything from plain HTML/CSS to React, Next.js, and even heavy CMS platforms. But for this iteration, I chose **Astro**.
+
+Here is why Astro is the perfect tool for a developer portfolio.
+
+## 1. Zero JavaScript by Default
+A portfolio site is fundamentally a document. It's meant to be read. Serving a massive JavaScript bundle just to render a grid of projects and some text is overkill. Astro's islands architecture means that 99% of my site ships as pure, static HTML. It loads instantly on any connection.
+
+## 2. Component Primitives
+Instead of relying on a massive CSS framework, I built a custom design system using Astro components as UI primitives (`<Box>`, `<Stack>`, `<Inline>`). This gives me the developer experience of something like Chakra UI or styled-components, but with zero runtime cost.
+
+## 3. View Transitions
+With a single `<ClientRouter />` tag, Astro enabled me to add native-feeling page transitions. When you click on a project card, the image literally flies across the screen to become the hero banner of the new page.
+
+Building this site wasn't just about putting my work online; it was an exercise in mastering modern web architecture.

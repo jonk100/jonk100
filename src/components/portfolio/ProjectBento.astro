@@ -1,0 +1,78 @@
+---
+/**
+ * src/components/portfolio/ProjectBento.astro
+ * Renders a grid of selected project cards in a bento-box style layout.
+ * - Sorts projects alphabetically by their index
+ * - Applies different CSS grid classes based on a repeating pattern for dynamic sizing
+ * @props (local): 
+ * @props (global): class, class:list, frame, effects
+ * - frame: Applies a specific frame style variant to the component
+ * - effects: Applies single or multiple image effects to the component
+ */
+import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+import { getCollection } from 'astro:content';
+import Box from '../ui/layout/Box.astro';
+import SectionLabel from '../SectionLabel.astro';
+import BentoGrid from '../ui/layout/BentoGrid.astro';
+import BentoCell from '../ui/layout/BentoCell.astro';
+import ProjectCard from './ProjectCard.astro';
+
+export interface Props {
+  frame?: FrameVariant;
+  effects?: ImageEffect | ImageEffect[];
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+
+const { frame, effects, class: className = '', "class:list": classList = {} } = Astro.props;
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => 
+  a.data.index.localeCompare(b.data.index)
+);
+
+// Map array indices to the CSS grid layout classes
+type SpanValues = "flagship" | "secondary" | "secondary-alt" | "wide";
+const gridClasses: SpanValues[] = ['flagship', 'secondary', 'secondary-alt', 'wide'];
+---
+
+<section id="work" class:list={['section', className, classList, frame, effects]}>
+  <Box class="container">
+    <SectionLabel text="Selected Work" />
+
+    <!-- Bento Grid -->
+    <BentoGrid gap="md">
+      {sortedProjects.map((project, i) => (
+        <BentoCell span={gridClasses[i % gridClasses.length]}>
+          <ProjectCard 
+            title={project.data.title}
+            description={project.data.description}
+            category={project.data.category}
+            index={project.data.index}
+            tags={project.data.tags}
+            slug={project.id}
+            imageSrc={project.data.imageSrc}
+            delay={project.data.delay}
+            isFlagship={gridClasses[i % gridClasses.length] === 'flagship'}
+          />
+        </BentoCell>
+      ))}
+    </BentoGrid>
+  </Box>
+</section>
+
+<style>
+  .section {
+    padding-bottom: var(--space-32);
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--max-width, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+
+
+</style>

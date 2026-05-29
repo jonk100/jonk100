@@ -1,0 +1,11 @@
+/* ─────────────────────────────
+   Text Tones
+───────────────────────────── */
+.text--default { color: var(--text); }
+.text--muted { color: var(--text-muted); }
+.text--subtle { color: var(--text-secondary); }
+.text--accent { color: var(--accent); }
+.text--primary { color: var(--primary); }
+.text--secondary { color: var(--secondary); }
+.text--danger { color: var(--text-danger); }
+.text--success { color: var(--text-success); }

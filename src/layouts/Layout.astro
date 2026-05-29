@@ -1,0 +1,55 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+
+const { 
+  title = "Design System",
+  description = "A sophisticated, high-performance portfolio architecture.",
+  class: className = '',
+  "class:list": classList = {}
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <ClientRouter />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Polyfills for Native Overlay APIs -->
+    <script type="module">
+      // Polyfill for Invoker Commands API (commandfor, command)
+      if (!('commandForElement' in HTMLButtonElement.prototype)) {
+        import('https://esm.run/invokers-polyfill');
+      }
+
+      // Polyfill for Popover API (popover="auto")
+      if (!('popover' in HTMLElement.prototype)) {
+        import('https://unpkg.com/@oddbird/popover-polyfill@latest/dist/popover-fn.js').then(({ apply }) => {
+          apply();
+        });
+      }
+    </script>
+  </head>
+  <body class:list={[className, classList]}>
+    <slot />
+  </body>
+</html>

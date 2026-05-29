@@ -1,0 +1,74 @@
+---
+/**
+ * src/components/portfolio/NavBar.astro
+ * Navigation bar component for the portfolio site.
+ * - Displays the site logo and navigation links
+ * - Fixed at the top of the viewport with a glass effect
+ * @props (local): None
+ * @props (global): class, class:list, frame, effects
+ */
+import Box from '../ui/layout/Box.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Text from '../ui/primitives/Text.astro';
+import Link from '../ui/primitives/Link.astro';
+---
+
+<header class="navbar glass-panel-heavy">
+  <Box class="container">
+    <Inline justify="between" align="center" class="nav-inner">
+      <Link href="/" class="nav-logo">
+        <Text as="span" type="label" tone="subtle" class="logo-text">Jon</Text>
+      </Link>
+      
+      <Inline gap="md" as="nav" class="nav-links">
+        <Link href="#work" class="nav-link">
+          <Text as="span" type="label" tone="subtle">work</Text>
+        </Link>
+        <Link href="/blog" class="nav-link">
+          <Text as="span" type="label" tone="subtle">blog</Text>
+        </Link>
+        <Link href="#writing" class="nav-link">
+          <Text as="span" type="label" tone="subtle">writing</Text>
+        </Link>
+        <Link href="#about" class="nav-link">
+          <Text as="span" type="label" tone="subtle">about</Text>
+        </Link>
+      </Inline>
+    </Inline>
+  </Box>
+</header>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--max-width, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+  .nav-inner {
+    width: 100%;
+  }
+
+  .logo-text, .nav-link span {
+    font-family: var(--mono);
+    letter-spacing: var(--tracking-wider);
+    transition: color 0.2s ease-out;
+  }
+
+  .nav-logo:hover .logo-text,
+  .nav-link:hover span {
+    color: var(--accent) !important;
+  }
+</style>

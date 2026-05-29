@@ -1,0 +1,63 @@
+---
+/**
+ * src/components/ui/layout/Stack.astro
+ * A vertical layout primitive for stacking elements in a column.
+ * - Controls the alignment and spacing of stacked children
+ * - Optionally injects horizontal dividers between sibling elements
+ * @props (local): as, gap, align, justify, divider
+ * @props (global): class, class:list
+ * - gap: Determines the spacing between stacked elements
+ * - divider: Conditionally adds a border-top between sibling elements via lobotomized owl selector
+ */
+import type { FlexboxProps } from 'src/types/variants.types.ts';
+
+export interface Props extends FlexboxProps {
+  as?: string;
+  divider?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  gap = 'md',
+  align = 'stretch',
+  justify = 'start',
+  divider = false,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'stack',
+    `gap-${gap}`,
+    { 'stack--divided': divider },
+    className,
+    classList
+  ]}
+  style={`align-items: ${align}; justify-content: ${justify};`}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Lobotomized owl selector for generic sibling borders */
+  .stack--divided > :global(* + *) {
+    border-top: 1px solid var(--border);
+    /* Gap handles the spacing between the border and the next element natively in flexbox, 
+       but we want padding above the border equal to the gap so the border is perfectly centered.
+       Since we can't extract CSS var values easily without inline styles, 
+       we rely on flex gap which creates space between elements including the border on the bottom element. */
+    padding-top: calc(var(--gap-value, 1rem) / 2);
+  }
+</style>

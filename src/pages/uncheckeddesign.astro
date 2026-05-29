@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jon — Developer, Writer, Musician</title>
+
+  <!--
+    FONTS
+    Cormorant Garamond: literary display type — suits writer/musician identity
+    DM Sans:            clean, readable UI font
+    JetBrains Mono:     meta labels, nav, tags
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* ================================================================
+       TOKEN SYSTEM
+       Copy the :root block into your Astro global.css.
+       All components reference these variables — change a token here
+       and the whole site follows.
+       ================================================================ */
+
+    :root {
+
+      /* ── Color: Backgrounds ─────────────────────────────────────── */
+      --color-bg:            #0a0a0a;   /* page base — very dark warm black */
+      --color-bg-subtle:     #111111;
+      --color-surface:       #141414;   /* card background */
+      --color-surface-raised:#1a1a1a;   /* card hover state */
+
+      /* ── Color: Borders ─────────────────────────────────────────── */
+      --color-border:        #1e1e1e;
+      --color-border-faint:  #161616;
+
+      /* ── Color: Text ────────────────────────────────────────────── */
+      --color-text-primary:  #f0ede6;   /* warm off-white — never pure #fff */
+      --color-text-secondary:#686460;   /* body secondary, card descriptions */
+      --color-text-muted:    #343230;   /* labels, tags, footer */
+
+      /* ── Color: Accent (Amber) ──────────────────────────────────── */
+      --color-accent:        #e8c547;
+      --color-accent-dim:    #b89a2e;
+      --color-accent-subtle: rgba(232, 197, 71, 0.05);
+
+      /* ── Typography: Font Families ──────────────────────────────── */
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+      /* ── Typography: Scale ──────────────────────────────────────── */
+      --text-2xs:  0.625rem;    /*  10px  — decorative only */
+      --text-xs:   0.6875rem;   /*  11px  — mono labels     */
+      --text-sm:   0.8125rem;   /*  13px  — card body copy  */
+      --text-base: 1rem;        /*  16px  — body copy       */
+      --text-md:   1.125rem;    /*  18px  — lead copy       */
+      --text-lg:   1.375rem;    /*  22px  — writing titles  */
+      --text-xl:   1.75rem;     /*  28px  — card titles     */
+      --text-2xl:  2.25rem;     /*  36px  — large card title*/
+      --text-3xl:  3.5rem;      /*  56px  — hero tagline    */
+      --text-4xl:  5rem;        /*  80px  — hero name       */
+      --text-5xl:  7.5rem;      /* 120px  — max hero name   */
+
+      /* ── Typography: Weight ─────────────────────────────────────── */
+      --weight-light:   300;
+      --weight-regular: 400;
+      --weight-medium:  500;
+
+      /* ── Typography: Line Height ────────────────────────────────── */
+      --leading-tight:   1.1;
+      --leading-snug:    1.3;
+      --leading-normal:  1.6;
+      --leading-relaxed: 1.8;
+
+      /* ── Typography: Letter Spacing ─────────────────────────────── */
+      --tracking-tight:  -0.03em;
+      --tracking-normal:  0em;
+      --tracking-wide:    0.06em;
+      --tracking-wider:   0.12em;
+      --tracking-widest:  0.18em;
+
+      /* ── Spacing (8pt scale) ────────────────────────────────────── */
+      --space-1:   0.25rem;   /*  4px */
+      --space-2:   0.5rem;    /*  8px */
+      --space-3:   0.75rem;   /* 12px */
+      --space-4:   1rem;      /* 16px */
+      --space-5:   1.25rem;   /* 20px */
+      --space-6:   1.5rem;    /* 24px */
+      --space-8:   2rem;      /* 32px */
+      --space-10:  2.5rem;    /* 40px */
+      --space-12:  3rem;      /* 48px */
+      --space-16:  4rem;      /* 64px */
+      --space-20:  5rem;      /* 80px */
+      --space-24:  6rem;      /* 96px */
+      --space-32:  8rem;      /*128px */
+
+      /* ── Layout ─────────────────────────────────────────────────── */
+      --max-width:     1280px;
+      --content-width: 720px;
+      --nav-height:    4rem;
+      --page-gutter:   var(--space-8);
+
+      /* ── Border Radius ──────────────────────────────────────────── */
+      --radius-sm:  2px;
+      --radius-md:  4px;
+      --radius-lg:  8px;
+      --radius-xl:  12px;
+
+      /* ── Transitions ────────────────────────────────────────────── */
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+      --dur-fast:   120ms;
+      --dur-base:   220ms;
+      --dur-slow:   380ms;
+      --dur-slower: 640ms;
+    }
+
+
+    /* ================================================================
+       RESET
+       ================================================================ */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      font-weight: var(--weight-regular);
+      line-height: var(--leading-normal);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul, ol {
+      list-style: none;
+    }
+
+
+    /* ================================================================
+       LAYOUT UTILITIES
+       ================================================================ */
+
+    /**
+     * .container — centers content and applies consistent horizontal padding.
+     * Use on every full-width section's inner wrapper.
+     */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin-inline: auto;
+      padding-inline: var(--page-gutter);
+    }
+
+
+    /* ================================================================
+       NAVIGATION
+       ================================================================ */
+
+    nav {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline: 0;
+      z-index: 100;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      /* Frosted glass effect — degrade gracefully if backdrop-filter unsupported */
+      background-color: rgba(10, 10, 10, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--color-border-faint);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: var(--max-width);
+      margin-inline: auto;
+      padding-inline: var(--page-gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-wide);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .nav-logo:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-wider);
+      text-transform: lowercase;
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-accent);
+    }
+
+
+    /* ================================================================
+       HERO
+       ================================================================ */
+
+    .hero {
+      padding-block-start: calc(var(--nav-height) + var(--space-24));
+      padding-block-end: var(--space-20);
+    }
+
+    /**
+     * .hero-eyebrow — mono label above the name.
+     * The amber color makes it feel like a status indicator.
+     */
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-accent);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+      opacity: 0;
+      animation: fade-up var(--dur-slower) var(--ease-out) 0.1s forwards;
+    }
+
+    /**
+     * .hero-name — the centrepiece. Cormorant Garamond at light weight
+     * creates an editorial, literary feel fitting for a writer/musician.
+     * The <em> inside gets the amber accent.
+     *
+     * Replace content:  <span>Jon</span><em>Your Surname</em>
+     */
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(var(--text-4xl), 10vw, var(--text-5xl));
+      font-weight: var(--weight-light);
+      line-height: var(--leading-tight);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-10);
+      opacity: 0;
+      animation: fade-up var(--dur-slower) var(--ease-out) 0.2s forwards;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    .hero-tagline {
+      font-size: var(--text-md);
+      font-weight: var(--weight-light);
+      color: var(--color-text-secondary);
+      max-width: 500px;
+      line-height: var(--leading-relaxed);
+      margin-bottom: var(--space-12);
+      opacity: 0;
+      animation: fade-up var(--dur-slower) var(--ease-out) 0.35s forwards;
+    }
+
+    .hero-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      opacity: 0;
+      animation: fade-up var(--dur-slower) var(--ease-out) 0.5s forwards;
+    }
+
+    /**
+     * .status-indicator — pulsing amber dot communicates "live / active".
+     * Paired with a short status line in mono.
+     */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--color-accent);
+      animation: pulse 2.8s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-wide);
+    }
+
+    .status-divider {
+      width: 1px;
+      height: 14px;
+      background-color: var(--color-border);
+      flex-shrink: 0;
+    }
+
+
+    /* ================================================================
+       SECTION CHROME
+       Shared header pattern: mono label + ruled line.
+       Used above both the projects bento and writing list.
+       ================================================================ */
+
+    .section {
+      padding-block-end: var(--space-32);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      margin-bottom: var(--space-10);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background-color: var(--color-border-faint);
+    }
+
+
+    /* ================================================================
+       BENTO PROJECT GRID
+       12-column grid with a diagonal weight pattern:
+         Row 1: wide (7col) + narrow (5col)
+         Row 2: narrow (5col) + wide (7col)
+       This creates a visual Z-rhythm across the four cards.
+       ================================================================ */
+
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--space-3);
+    }
+
+    /* Row 1 */
+    .bento .card:nth-child(1) { grid-column: 1 / 8; }  /* 7 cols — flagship */
+    .bento .card:nth-child(2) { grid-column: 8 / 13; } /* 5 cols */
+
+    /* Row 2 — diagonal swap */
+    .bento .card:nth-child(3) { grid-column: 1 / 6; }  /* 5 cols */
+    .bento .card:nth-child(4) { grid-column: 6 / 13; } /* 7 cols */
+
+
+    /* ================================================================
+       PROJECT CARD
+       ================================================================ */
+
+    /**
+     * .card — base project card.
+     * Uses flexbox column so .card-footer always sits at the bottom,
+     * regardless of how much description text there is.
+     */
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8);
+      overflow: hidden;
+      cursor: pointer;
+      min-height: 240px;
+      transition:
+        border-color var(--dur-base) var(--ease-out),
+        background-color var(--dur-base) var(--ease-out);
+
+      /* Staggered entrance animation — delay set per-card below */
+      opacity: 0;
+      animation: fade-up var(--dur-slower) var(--ease-out) forwards;
+    }
+
+    .card:hover {
+      background-color: var(--color-surface-raised);
+      border-color: #2a2a2a;
+    }
+
+    /* Amber tint overlay on hover */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      background-color: var(--color-accent-subtle);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease-out);
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    /* Stagger the card entrance delays */
+    .card:nth-child(1) { animation-delay: 0.55s; }
+    .card:nth-child(2) { animation-delay: 0.65s; }
+    .card:nth-child(3) { animation-delay: 0.75s; }
+    .card:nth-child(4) { animation-delay: 0.85s; }
+
+    /* ── Card accent bar ── */
+    /**
+     * 2px amber bar at the top of the card, revealed on hover.
+     * Sits above the card's border-radius via absolute position.
+     */
+    .card-accent-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--color-accent);
+      opacity: 0;
+      transition: opacity var(--dur-base) var(--ease-out);
+    }
+
+    .card:hover .card-accent-bar {
+      opacity: 1;
+    }
+
+    /* ── Card head: category tag + index number ── */
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-8);
+    }
+
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+    }
+
+    .card-index {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Card title ── */
+    .card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-light);
+      line-height: var(--leading-snug);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-3);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    /* Larger title for the flagship card (first child) */
+    .bento .card:nth-child(1) .card-title {
+      font-size: var(--text-2xl);
+    }
+
+    .card:hover .card-title {
+      color: var(--color-accent);
+    }
+
+    /* ── Card description ── */
+    .card-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--leading-normal);
+      flex: 1;  /* pushes footer to the bottom */
+    }
+
+    /* ── Card footer: stack tags + arrow ── */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-8);
+    }
+
+    .card-stack {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    /**
+     * .stack-tag — pill showing a technology or tool.
+     * Inherits border color from the card's own border token.
+     */
+    .stack-tag {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-text-muted);
+      background-color: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-sm);
+      letter-spacing: var(--tracking-wide);
+    }
+
+    /**
+     * .card-arrow — diagonal arrow indicating external/detail link.
+     * Translates on hover for a subtle motion cue.
+     */
+    .card-arrow {
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      line-height: 1;
+      transition:
+        color var(--dur-base) var(--ease-out),
+        transform var(--dur-base) var(--ease-out);
+    }
+
+    .card:hover .card-arrow {
+      color: var(--color-accent);
+      transform: translate(4px, -4px);
+    }
+
+
+    /* ================================================================
+       WRITING LIST
+       ================================================================ */
+
+    .writing-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /**
+     * .writing-item — a single writing entry.
+     * Uses grid to align title left and date right on the same baseline.
+     */
+    .writing-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: var(--space-6);
+      padding-block: var(--space-5);
+      border-bottom: 1px solid var(--color-border-faint);
+      cursor: pointer;
+      transition: gap var(--dur-base) var(--ease-out);
+    }
+
+    .writing-list li:first-child .writing-item {
+      border-top: 1px solid var(--color-border-faint);
+    }
+
+    .writing-item:hover .writing-title {
+      color: var(--color-accent);
+    }
+
+    .writing-item:hover {
+      gap: var(--space-8);
+    }
+
+    .writing-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-light);
+      color: var(--color-text-primary);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .writing-date {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide);
+      white-space: nowrap;
+    }
+
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+
+    footer {
+      border-top: 1px solid var(--color-border-faint);
+      padding-block: var(--space-10);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--space-6);
+    }
+
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      letter-spacing: var(--tracking-wide);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-accent);
+    }
+
+
+    /* ================================================================
+       ANIMATIONS
+       ================================================================ */
+
+    /**
+     * fade-up — used for staggered entrance on all hero elements and cards.
+     * Each element sets its own animation-delay to create a cascade.
+     */
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /**
+     * pulse — the status dot breathes to signal "active / currently building".
+     */
+    @keyframes pulse {
+      0%, 100% { opacity: 1;   transform: scale(1);   }
+      50%       { opacity: 0.3; transform: scale(0.75); }
+    }
+
+
+    /* ================================================================
+       RESPONSIVE
+       Minimal breakpoints — the bento collapses to a single column
+       on tablet/mobile. Gutter narrows on small screens.
+       ================================================================ */
+
+    @media (max-width: 900px) {
+      :root { --page-gutter: var(--space-5); }
+
+      .bento {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .bento .card:nth-child(1),
+      .bento .card:nth-child(2),
+      .bento .card:nth-child(3),
+      .bento .card:nth-child(4) {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root { --page-gutter: var(--space-4); }
+
+      .bento {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        gap: var(--space-5);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+ 
+
+
+  <!-- ══════════════════════════════════════════════
+       HERO
+       ══════════════════════════════════════════════ -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+
+      <!--
+        Eyebrow — brief availability / location signal.
+        This is the first thing that fades in.
+      -->
+      <p class="hero-eyebrow" aria-label="Status">
+        Available for work &nbsp;·&nbsp; Youngstown, OH
+      </p>
+
+      <!--
+        Hero name — the visual centrepiece.
+        The <em> picks up --color-accent automatically.
+        Replace "Surname" with your actual surname.
+      -->
+      <h1 class="hero-name" id="hero-heading">
+        Jon<br><em>Surname</em>
+      </h1>
+
+      <!--
+        Tagline — one or two sentences, written in plain language.
+        Resist the urge to list tools here; that's what the cards do.
+      -->
+      <p class="hero-tagline">
+        Teacher, musician, and frontend developer.
+        I build thoughtful web apps with Astro and TypeScript.
+      </p>
+
+      <!--
+        Status line — "currently building X" + availability signal.
+        The pulsing dot reads as a live indicator, not decoration.
+      -->
+      <div class="hero-status" aria-label="Current status">
+        <div class="status-indicator">
+          <div class="status-dot" aria-hidden="true"></div>
+          <span class="status-text">Currently building Writty</span>
+        </div>
+        <div class="status-divider" aria-hidden="true"></div>
+        <span class="status-text">open to collaboration</span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       PROJECTS — BENTO GRID
+       ══════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="work-label">
+    <div class="container">
+
+      <div class="section-header">
+        <span class="section-label" id="work-label">Selected Work</span>
+        <div class="section-rule" aria-hidden="true"></div>
+      </div>
+
+      <!--
+        Bento grid — 4 project cards arranged in a diagonal weight pattern.
+        Row 1: wide (7col) + narrow (5col)
+        Row 2: narrow (5col) + wide (7col)
+        On tablet this collapses to 2col; on mobile to 1col.
+      -->
+      <div class="bento">
+
+        <!-- ── Card 01: Writty ── (flagship — 7 cols, large title) -->
+        <article class="card" aria-label="Project: Writty">
+          <div class="card-accent-bar" aria-hidden="true"></div>
+
+          <div class="card-head">
+            <span class="card-tag">Content Tools</span>
+            <span class="card-index" aria-label="Project number">01</span>
+          </div>
+
+          <h2 class="card-title">Writty</h2>
+          <p class="card-desc">
+            A personal content management workbench for songs, screenplays,
+            poems, chord sheets, and reviews. Built around Astro 6 content
+            collections with a parse-at-render-time lyrics engine and an
+            interactive fretboard chord analyser.
+          </p>
+
+          <div class="card-footer">
+            <div class="card-stack" aria-label="Technologies used">
+              <span class="stack-tag">Astro 6</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">MDX</span>
+            </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+        <!-- ── Card 02: Her Majesty's Displeasure ── (5 cols) -->
+        <article class="card" aria-label="Project: Her Majesty's Displeasure">
+          <div class="card-accent-bar" aria-hidden="true"></div>
+
+          <div class="card-head">
+            <span class="card-tag">Screenwriting</span>
+            <span class="card-index" aria-label="Project number">02</span>
+          </div>
+
+          <h2 class="card-title">Her Majesty's Displeasure</h2>
+          <p class="card-desc">
+            A six-part dark political satire — MI5 surveillance of The Beatles
+            in 1965 — with an Astro-powered production tool: scene management,
+            beat pressure timelines, and WGA-standard PDF export.
+          </p>
+
+          <div class="card-footer">
+            <div class="card-stack" aria-label="Technologies used">
+              <span class="stack-tag">Astro</span>
+              <span class="stack-tag">MDX</span>
+              <span class="stack-tag">SVG</span>
+            </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+        <!-- ── Card 03: re:MindMatters ── (5 cols) -->
+        <article class="card" aria-label="Project: re:MindMatters">
+          <div class="card-accent-bar" aria-hidden="true"></div>
+
+          <div class="card-head">
+            <span class="card-tag">Publishing</span>
+            <span class="card-index" aria-label="Project number">03</span>
+          </div>
+
+          <h2 class="card-title">re:MindMatters</h2>
+          <p class="card-desc">
+            A mental health and self-care publication covering emotional
+            regulation, burnout, and neurological insight — with a blog
+            architecture built in Astro 6 supporting categories, tags,
+            and a curated reading experience.
+          </p>
+
+          <div class="card-footer">
+            <div class="card-stack" aria-label="Technologies used">
+              <span class="stack-tag">Astro 6</span>
+              <span class="stack-tag">MDX</span>
+              <span class="stack-tag">Netlify</span>
+            </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+        <!-- ── Card 04: Sanctuary Tools ── (7 cols) -->
+        <article class="card" aria-label="Project: Sanctuary Tools">
+          <div class="card-accent-bar" aria-hidden="true"></div>
+
+          <div class="card-head">
+            <span class="card-tag">Wellness Apps</span>
+            <span class="card-index" aria-label="Project number">04</span>
+          </div>
+
+          <h2 class="card-title">Sanctuary Tools</h2>
+          <p class="card-desc">
+            A suite of three self-contained wellness tools living within
+            re:MindMatters — a habit tracker for logging streaks and spotting
+            patterns, a private reflective journal, and a guided meditation
+            system. Built as interactive Astro islands with offline sync.
+          </p>
+
+          <div class="card-footer">
+            <div class="card-stack" aria-label="Technologies used">
+              <span class="stack-tag">Astro Islands</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">Web APIs</span>
+            </div>
+            <span class="card-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+      </div><!-- /.bento -->
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       WRITING — TEASER LIST
+       ══════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="writing-label">
+    <div class="container">
+
+      <div class="section-header">
+        <span class="section-label" id="writing-label">Writing</span>
+        <div class="section-rule" aria-hidden="true"></div>
+      </div>
+
+      <!--
+        Writing list — title + date baseline-aligned.
+        Hover gap-widening creates a subtle push motion.
+        Replace these with your actual articles.
+      -->
+      <ul class="writing-list" role="list">
+        <li>
+          <a class="writing-item" href="/writing/astro-content-architecture">
+            <span class="writing-title">On building content architecture in Astro 6</span>
+            <time class="writing-date" datetime="2026-05">May 2026</time>
+          </a>
+        </li>
+        <li>
+          <a class="writing-item" href="/writing/chord-voicing-grammar">
+            <span class="writing-title">The grammar of a chord voicing</span>
+            <time class="writing-date" datetime="2026-04">Apr 2026</time>
+          </a>
+        </li>
+        <li>
+          <a class="writing-item" href="/writing/structural-irony-pilot">
+            <span class="writing-title">Structural irony in the pilot episode</span>
+            <time class="writing-date" datetime="2026-03">Mar 2026</time>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+
+        <p class="footer-copy">© 2026 Jon Surname</p>
+
+        <nav class="footer-links" aria-label="Social and contact links">
+          <!--
+            Replace hrefs with your actual GitHub, email, etc.
+          -->
+          <a href="https://github.com/yourusername">github</a>
+          <a href="mailto:you@example.com">email</a>
+          <a href="/now">now</a>
+        </nav>
+
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

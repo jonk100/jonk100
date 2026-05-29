@@ -1,0 +1,130 @@
+---
+/**
+ * src/components/ui/primitives/Paper.astro
+ * A structural container with customizable elevation and radius.
+ * - Supports elevation levels that affect backgrounds and shadows
+ * - Integrates with global frame and effect variants
+ * @props (local): elevation, radius, padding, bordered
+ * @props (global): class, class:list, frame, effects
+ * - elevation: Defines shadow and background based on depth level
+ * - radius: Specifies the border radius scale
+ * - padding: Sets spacing around the content
+ */
+import type { ComponentRadius, SpacingScale, FrameVariant, ComponentEffect as ImageEffect } from '/src/types/variants.types';
+
+// Elevation is a shared prop across Paper and Frame that is meant to be used for shadows and background colors. 
+// The specific styles for each elevation level are defined in CSS, 
+// but the prop is shared to maintain consistency across components.
+//
+export type PaperElevation = 'flat' | 'raised' | 'floating' | 'surface';
+
+export interface Props {
+  elevation?: PaperElevation;
+  radius?: ComponentRadius;
+  padding?: SpacingScale;
+  bordered?: boolean;
+  frame?: FrameVariant;
+  effects?: ImageEffect | ImageEffect[];
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  elevation = 'flat',
+  radius = 'md',
+  padding = 'md',
+  bordered = false,
+  frame = 'none',
+  effects = [],
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+// Normalize effects to an array
+const effectsArray = Array.isArray(effects) ? effects : [effects];
+const effectClasses = effectsArray.map(e => `effect--${e}`);
+
+// Add frame class if applicable
+const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
+---
+
+<div
+  class:list={[
+    'paper',
+    `paper--${elevation}`,
+    `p-${padding}`,
+    `paper--radius-${radius}`,
+    { 'paper--bordered': bordered },
+    frameClass,
+    ...effectClasses,
+    className,
+    classList
+  ]}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+.paper {
+  background: var(--bg-surface);
+  color: var(--text);
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+/* ─────────────────────────────
+   Radius
+───────────────────────────── */
+
+.paper--radius-none {
+  border-radius: 0;
+}
+
+.paper--radius-sm {
+  border-radius: var(--rad-sm);
+}
+
+.paper--radius-md {
+  border-radius: var(--rad-md);
+}
+
+.paper--radius-lg {
+  border-radius: var(--rad-lg);
+}
+
+.paper--radius-xl {
+  border-radius: var(--rad-xl);
+}
+
+
+/* ─────────────────────────────
+   Elevation
+───────────────────────────── */
+
+.paper--flat {
+  background: var(--bg-surface);
+}
+
+.paper--raised {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.paper--floating {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─────────────────────────────
+   Border
+───────────────────────────── */
+
+.paper--bordered {
+  border: 1px solid var(--border-subtle);
+}
+</style>

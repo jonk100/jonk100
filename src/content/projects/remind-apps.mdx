@@ -1,0 +1,74 @@
+---
+title: "re:MindMatters Apps"
+description: "A suite of full-stack self-care tools featuring a custom TipTap rich-text editor, real-time Supabase synchronization, and complex XState state machines."
+category: "Web Apps"
+index: "04"
+tags: ["Supabase", "TypeScript", "XState", "TipTap"]
+imageSrc: "/rmm-notes-app.png"
+delay: 0.4
+liveUrl: "https://remindmatters.netlify.app/app/habit/track"
+githubUrl: "https://github.com/jonk100/astro-starwind"
+---
+import Image from '../../components/ui/primitives/Image.astro';
+
+The re:MindMatters Apps represent the highly interactive, authenticated core of the MindMatters ecosystem. Unlike the static blog, these applications are dynamic, data-driven tools designed to help users track habits, journal, and manage their self-care routines.
+
+<Image 
+  src="/cardgridview.png" 
+  alt="re:MindMatters Apps Interface" 
+  shape="landscape" 
+/>
+
+## Advanced Frontend Architecture
+
+Building these tools required moving beyond static generation into the realm of complex, stateful web applications. 
+
+### The Tech Stack
+* **Supabase:** Provides secure authentication, real-time database subscriptions, and row-level security for user data.
+* **XState:** Complex application logic and user flows are modeled using finite state machines, eliminating impossible states and brittle boolean flags.
+* **TipTap:** A highly customized, headless rich-text editor allows users to journal with a bespoke writing experience.
+* **TypeScript:** End-to-end type safety ensures the data contract between the Supabase backend and the UI components remains unbreakable.
+
+```typescript
+// Example: Modeling the Habit Tracker state with XState
+import { setup, createMachine } from 'xstate';
+
+export const habitMachine = setup({
+  types: {
+    context: {} as { habits: Habit[]; error: string | null },
+    events:
+      | { type: 'FETCH_HABITS' }
+      | { type: 'LOG_HABIT'; id: string }
+      | { type: 'RETRY' },
+  },
+  actions: {
+    optimisticUpdate: assign({
+      habits: ({ context, event }) => /* update local state immediately */
+    })
+  }
+}).createMachine({
+  id: 'habitTracker',
+  initial: 'loading',
+  states: {
+    loading: {
+      invoke: { src: 'fetchHabits', onDone: 'idle', onError: 'error' }
+    },
+    idle: {
+      on: { LOG_HABIT: { target: 'syncing', actions: 'optimisticUpdate' } }
+    },
+    syncing: {
+      invoke: { src: 'syncSupabase', onDone: 'idle', onError: 'rollback' }
+    },
+    // ...
+  }
+});
+```
+
+<Image 
+  src="/placeholder.png" 
+  alt="Habit Tracker State Machine Diagram" 
+  shape="square" 
+/>
+
+## Engineering Challenges
+Integrating a real-time backend with complex local state management required a robust architecture. By leveraging **XState** to orchestrate Supabase mutations alongside local optimistic UI updates, the applications feel instantaneous, hiding network latency from the user entirely.

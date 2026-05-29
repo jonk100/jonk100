@@ -1,0 +1,34 @@
+---
+/**
+ * src/components/SrOnly.astro
+ * Screen reader only wrapper.
+ * - Delegates class merging to Astro's native class:list system
+ * @props (local): as
+ * @props (global): class, class:list, frame, effects
+ * - as: HTML tag to render
+ */
+
+export interface Props {
+  as?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean>;
+  [key: string]: any;
+}
+
+const {
+  as = "span",
+  class: cls = "",
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const Tag = as || "span";
+
+const classes = ["sr-only", cls]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<Tag class={classes} class:list={classList} {...rest}>
+  <slot />
+</Tag>

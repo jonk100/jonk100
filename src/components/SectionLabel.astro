@@ -1,0 +1,56 @@
+---
+/**
+ * src/components/SectionLabel.astro
+ * Section label with trailing divider.
+ * - Delegates class merging to Astro's native class:list system
+ * @props (local): as
+ * @props (global): class, class:list, frame, effects
+ * - as: HTML tag to render
+ */
+
+import Inline from './ui/layout/Inline.astro';
+import Text from './ui/primitives/Text.astro';
+
+export interface Props {
+  text?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean>;
+  [key: string]: any;
+}
+
+const {
+  text,
+  class: cls = "",
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const classes = ["section-label", cls]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<Inline align="center" gap="md" class={classes} class:list={classList} {...rest}>
+  <Text as="span" type="label" tone="subtle" class="section-label-text">
+    {text ? text : <slot />}
+  </Text>
+  <div class="section-rule" aria-hidden="true"></div>
+</Inline>
+
+<style>
+  .section-label {
+    margin-bottom: var(--space-10);
+  }
+
+  .section-label-text {
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border);
+  }
+</style>

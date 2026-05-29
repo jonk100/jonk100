@@ -1,0 +1,63 @@
+/**                                             */
+/**            Frame Variants                   */
+/**                                            */
+
+.frame-variant--light {
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  padding: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.frame-variant--dark {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.frame-variant--glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.2);
+  border-left-color: rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.frame-variant--polaroid {
+  border: 12px solid #fff;
+  border-bottom-width: 4rem;
+  background: #fff;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.frame-variant--minimal {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px;
+  background: transparent;
+}
+
+.frame-variant--primary {
+  border: 2px solid var(--primary-border, rgba(255,255,255,0.2));
+  padding: 0.5rem;
+  background: var(--primary-dim, rgba(255,255,255,0.05));
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.frame-variant--secondary {
+  border: 2px solid var(--secondary-border, rgba(255,255,255,0.1));
+  padding: 0.5rem;
+  background: var(--secondary-dim, rgba(255,255,255,0.02));
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.frame-variant--accent {
+  border: 2px solid var(--accent, #e8c547);
+  padding: 0.5rem;
+  background: var(--accent-dim, rgba(232, 197, 71, 0.10));
+  box-shadow: 0 0 20px var(--accent-dim, rgba(232, 197, 71, 0.20));
+}

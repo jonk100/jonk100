@@ -1,0 +1,54 @@
+---
+/**
+ * src/components/ui/layout/Center.astro
+ * Centers content along a specified axis or both axes.
+ * - Supports both block and inline display types
+ * - Allows restriction of centering to horizontal or vertical axis exclusively
+ * @props (local): as, inline, axis
+ * @props (global): class, class:list
+ * - axis: Determines whether centering applies to 'both', 'horizontal', or 'vertical' axes
+ */
+export interface Props {
+  as?: string;
+  inline?: boolean;
+  axis?: 'both' | 'horizontal' | 'vertical';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'div',
+  inline = false,
+  axis = 'both',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+let placeItems = 'center';
+if (axis === 'horizontal') placeItems = 'start center';
+if (axis === 'vertical') placeItems = 'center start';
+---
+
+<Tag
+  class:list={[
+    'center',
+    { 'center--inline': inline },
+    className,
+    classList
+  ]}
+  style={`place-items: ${placeItems};`}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .center {
+    display: grid;
+  }
+  .center--inline {
+    display: inline-grid;
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+/**
+ * src/components/ui/overlay/Popover.astro
+ * Displays a floating popover anchored to another element using the native Popover API.
+ * - Relies on CSS Anchor Positioning for placement relative to its target.
+ * - Supports multiple placements around the anchor element.
+ * @props (local): id, anchor, placement
+ * @props (global): class, class:list, frame
+ * - id: Required unique identifier for the popover element.
+ * - anchor: ID of the DOM element the popover should align itself with.
+ * - placement: Directional positioning relative to the anchor ('top', 'bottom', 'left', 'right').
+ */
+import type { FrameVariant } from '@/types/variants.types';
+
+export interface Props {
+  id: string;
+  anchor: string; // The ID of the element this popover anchors to
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  frame?: FrameVariant;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id,
+  anchor,
+  placement = 'bottom',
+  frame = 'none',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div
+  id={id}
+  popover="auto"
+  class:list={[
+    'popover',
+    `popover--${placement}`,
+    frame !== 'none' ? `frame-variant--${frame}` : '',
+    className,
+    classList
+  ]}
+  style={`position-anchor: --${anchor};`}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .popover {
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--rad-md);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+    
+    /* CSS Anchor Positioning Fallback (in case it fails to anchor, default to center of screen) */
+    position: absolute;
+    inset: auto;
+  }
+
+  /* CSS Anchor Positioning */
+  .popover--bottom {
+    top: calc(anchor(bottom) + var(--space-2));
+    justify-self: anchor-center;
+  }
+
+  .popover--top {
+    bottom: calc(anchor(top) - var(--space-2));
+    justify-self: anchor-center;
+  }
+
+  .popover--left {
+    right: calc(anchor(left) - var(--space-2));
+    align-self: anchor-center;
+  }
+
+  .popover--right {
+    left: calc(anchor(right) + var(--space-2));
+    align-self: anchor-center;
+  }
+
+  /* Native CSS Presence (Mount/Unmount) */
+  .popover {
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, display 0.2s allow-discrete, overlay 0.2s allow-discrete;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.95);
+  }
+
+  .popover:is(:popover-open, .\:popover-open) {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  @starting-style {
+    .popover:is(:popover-open, .\:popover-open) {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.95);
+    }
+  }
+</style>

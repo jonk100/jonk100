@@ -1,0 +1,136 @@
+---
+/**
+ * src/components/ui/feedback/Avatar.astro
+ * Displays a user avatar image with fallback text and status indicators.
+ * - Supports multiple predefined sizes and shapes.
+ * - Handles image loading errors by displaying fallback text gracefully.
+ * @props (local): src, alt, size, fallback, status, shape
+ * @props (global): class, class:list, frame, effects
+ * - size: Size of the avatar ('sm', 'md', 'lg', 'xl') or custom dimension string.
+ * - status: Online status indicator to display over the avatar ('online', 'offline', 'busy', 'away').
+ * - shape: Shape of the avatar ('circle', 'square', 'rounded').
+ */
+import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+
+export interface Props {
+  src?: string;
+  alt?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | string;
+  fallback?: string;
+  status?: 'online' | 'offline' | 'busy' | 'away';
+  shape?: 'circle' | 'square' | 'rounded';
+  frame?: FrameVariant;
+  effects?: ImageEffect | ImageEffect[];
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  src,
+  alt = '',
+  size = 'md',
+  fallback,
+  status,
+  shape = 'circle',
+  frame = 'none',
+  effects = [],
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const sizeMap: Record<string, string> = {
+  sm: '24px',
+  md: '40px',
+  lg: '56px',
+  xl: '80px'
+};
+
+const dimension = sizeMap[size] || size;
+const fallbackText = fallback || alt.charAt(0).toUpperCase() || '?';
+---
+
+<div
+  class:list={[
+    'avatar',
+    `avatar--shape-${shape}`,
+    frame !== 'none' ? `frame-variant--${frame}` : '',
+    ...([effects].flat().filter(Boolean).map(e => `effect--${e}`)),
+    className,
+    classList
+  ]}
+  style={`width: ${dimension}; height: ${dimension};`}
+  {...rest}
+>
+  {src ? (
+    <img 
+      src={src} 
+      alt={alt} 
+      class="avatar-image" 
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    />
+    <div class="avatar-fallback" style="display: none;">
+      {fallbackText}
+    </div>
+  ) : (
+    <div class="avatar-fallback">
+      {fallbackText}
+    </div>
+  )}
+
+  {status && (
+    <span class:list={['avatar-status', `avatar-status--${status}`]} />
+  )}
+</div>
+
+<style>
+  .avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-elevated);
+    flex-shrink: 0;
+  }
+  
+  .avatar--shape-circle { border-radius: 9999px; }
+  .avatar--shape-rounded { border-radius: var(--rad-md); }
+  .avatar--shape-square { border-radius: 0; }
+
+  .avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
+  .avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text);
+    font-size: calc(var(--dimension, 40px) * 0.4);
+    border-radius: inherit;
+  }
+
+  .avatar-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 25%;
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+  
+  .avatar-status--online { background: #10b981; }
+  .avatar-status--offline { background: #6b7280; }
+  .avatar-status--busy { background: #ef4444; }
+  .avatar-status--away { background: #f59e0b; }
+</style>

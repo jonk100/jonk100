@@ -1,0 +1,40 @@
+---
+/**
+ * src/components/ui/layout/BentoCell.astro
+ * A cell within a BentoGrid, controlling column span based on the bento layout logic.
+ * @props (local): span
+ * @props (global): class, class:list
+ * - span: Dictates the size and layout of the cell
+ */
+export interface Props {
+  span?: 'flagship' | 'secondary' | 'secondary-alt' | 'wide' | 'auto';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  span = 'auto',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['bento-cell', span !== 'auto' ? `span--${span}` : '', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .span--flagship { grid-column: 1 / 8; }
+  .span--secondary { grid-column: 8 / 13; }
+  .span--secondary-alt { grid-column: 1 / 6; }
+  .span--wide { grid-column: 6 / 13; }
+
+  /* Responsive Resets */
+  @media (max-width: 900px) {
+    .span--flagship, .span--secondary, .span--secondary-alt, .span--wide {
+      grid-column: auto;
+    }
+  }
+</style>

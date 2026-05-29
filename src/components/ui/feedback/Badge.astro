@@ -1,0 +1,85 @@
+---
+/**
+ * src/components/ui/feedback/Badge.astro
+ * Provides a small label or status indicator for inline items.
+ * - Supports multiple predefined variants and sizes.
+ * - Offers an outlined style option for lighter visuals.
+ * @props (local): theme, size, outlined
+ * @props (global): class, class:list, frame, effects
+ * - theme: Visual style theme aligning with design system themes.
+ * - size: Size scaling of the badge ('xs', 'sm', 'md').
+ */
+import type { ComponentTheme, Sizes, FrameVariant, ComponentEffect as ImageEffect } from '/src/types/variants.types';
+
+export interface Props {
+  theme?: ComponentTheme;
+  size?: 'xs' | 'sm' | 'md';
+  outlined?: boolean;
+  frame?: FrameVariant;
+  effects?: ImageEffect | ImageEffect[];
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  theme = 'secondary',
+  size = 'sm',
+  outlined = false,
+  frame = 'none',
+  effects = [],
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<span
+  class:list={[
+    'badge',
+    `variant--${theme}`,
+    `badge--${size}`,
+    { 'badge--outlined': outlined },
+    frame !== 'none' ? `frame-variant--${frame}` : '',
+    ...([effects].flat().filter(Boolean).map(e => `effect--${e}`)),
+    className,
+    classList
+  ]}
+  {...rest}
+>
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--rad-full);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid transparent; /* default */
+  }
+
+  .badge--outlined {
+    background: transparent !important;
+    border: 1px solid currentColor;
+  }
+
+  /* We use custom scopes for Badge sizes since it's smaller than a standard button/control */
+  .badge--xs {
+    font-size: 0.65rem;
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .badge--sm {
+    font-size: var(--text-xs);
+    padding: var(--space-1) calc(var(--space-2) + 2px);
+  }
+
+  .badge--md {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+</style>

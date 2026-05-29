@@ -1,0 +1,318 @@
+/* =============================================================
+   REUSABLE VARIANT STYLES
+   Shared across interactive components (Button, Link, etc.)
+   ============================================================= */
+
+/**                                             */
+/**            Primary Variant                */
+/**                                             */
+.variant--primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text);
+}
+
+.variant--primary:hover {
+  background: var(--secondary-hover);
+}
+
+.variant--primary:active {
+  background: var(--accent-hover);
+}
+
+.variant--primary:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**     Ghost Variant                         */
+/**                                          */                                           
+.variant--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+
+.variant--ghost:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.variant--ghost:active {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.variant--ghost:disabled {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+/**                                          */
+/**            Secondary Variant            */
+/**                                           */
+.variant--secondary {
+  background: var(--secondary);
+  color: var(--text-inverse);
+  border-color: var(--primary-border);
+}
+
+.variant--secondary:hover {
+  background: var(--primary-dim);
+  color: var(--text);
+  border-color: var(--secondary-hover);
+}
+
+.variant--secondary:active {
+  background: var(--bg-elevated);
+}
+
+.variant--secondary:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**    Outline Variant                      */
+/**                                           */
+.variant--outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.variant--outline:hover {
+  background: var(--bg-card);
+  border-color: var(--accent-hover);
+}
+
+.variant--outline:active {
+  background: var(--accent-dim);
+  border-color: var(--accent-hover);
+}
+
+/**                                          */
+/**            Default Variant            */
+/**                                           */
+.variant--default {
+  background: var(--bg-surface);
+  color: var(--text);
+}
+
+.variant--default:hover {
+  background: var(--bg-elevated);
+}
+
+.variant--default:active {
+  background: var(--bg-elevated);
+}
+
+/**                                 */
+/**            Control Base & Sizes      */
+/**                                          */
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.control--xs {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+}
+
+.control--sm {
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+}
+
+.control--base, .control--md {
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+}
+
+.control--lg {
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+}
+
+.control--xl {
+  font-size: var(--text-lg);
+  padding: var(--space-4) var(--space-8);
+}
+
+.control--icon {
+  padding: 0.5rem;
+  border-radius: 99px;
+}
+
+.control--icon-sm {
+  padding: 0.25rem;
+  border-radius: 99px;
+}
+
+.control--icon-lg {
+  padding: 0.75rem;
+  border-radius: 99px;
+}
+
+/**                                 */
+/**         Glassmorphism          */
+/**                                 */
+.glass-panel {
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-panel-heavy {
+  background: rgba(10, 10, 10, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+
+/**                                             */
+/**            Frame Variants                   */
+/**                                            */
+
+.frame-variant--light {
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  padding: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.frame-variant--dark {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.frame-variant--glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.2);
+  border-left-color: rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.frame-variant--polaroid {
+  border: 12px solid #fff;
+  border-bottom-width: 4rem;
+  background: #fff;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.frame-variant--minimal {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4px;
+  background: transparent;
+}
+
+.frame-variant--primary {
+  border: 2px solid var(--primary-border, rgba(255,255,255,0.2));
+  padding: 0.5rem;
+  background: var(--primary-dim, rgba(255,255,255,0.05));
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.frame-variant--secondary {
+  border: 2px solid var(--secondary-border, rgba(255,255,255,0.1));
+  padding: 0.5rem;
+  background: var(--secondary-dim, rgba(255,255,255,0.02));
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.frame-variant--accent {
+  border: 2px solid var(--accent, #e8c547);
+  padding: 0.5rem;
+  background: var(--accent-dim, rgba(232, 197, 71, 0.10));
+  box-shadow: 0 0 20px var(--accent-dim, rgba(232, 197, 71, 0.20));
+}
+
+/**                                 */
+/**            Control Base & Sizes      */
+/**                                          */
+
+.effect--screen {
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}
+
+.effect--glow {
+  box-shadow: 0 0 30px rgba(var(--accent-rgb, 232, 197, 71), 0.25);
+}
+
+.effect--grayscale {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.effect--grayscale:hover {
+  filter: grayscale(0%);
+}
+
+/* Component Shapes */
+.shape--square {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--rad-lg);
+}
+
+.shape--landscape {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--rad-lg);
+}
+
+.shape--portrait {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--rad-lg);
+}
+
+.shape--circle {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--rad-full);
+}
+
+/* ─────────────────────────────
+   Component Radius Utilities
+───────────────────────────── */
+.radius--none { border-radius: 0; }
+.radius--sm { border-radius: var(--rad-sm); }
+.radius--md { border-radius: var(--rad-md); }
+.radius--lg { border-radius: var(--rad-lg); }
+.radius--xl { border-radius: var(--rad-xl); }
+.radius--full { border-radius: var(--rad-full); }
+
+/* ─────────────────────────────
+   Text Tones
+───────────────────────────── */
+.text--default { color: var(--text); }
+.text--muted { color: var(--text-muted); }
+.text--subtle { color: var(--text-secondary); }
+.text--accent { color: var(--accent); }
+.text--primary { color: var(--primary); }
+.text--secondary { color: var(--secondary); }
+.text--danger { color: var(--text-danger); }
+.text--success { color: var(--text-success); }

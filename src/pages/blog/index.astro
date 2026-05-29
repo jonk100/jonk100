@@ -1,0 +1,135 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import NavBar from '../../components/portfolio/NavBar.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/primitives/Text.astro';
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout title="Blog | Jon Doe" description="Articles about web development, creative writing, and music.">
+  <div class="glow glow-1"></div>
+  <NavBar />
+  
+  <main class="blog-main">
+    <Box class="container">
+      <Stack gap="xl">
+        <header class="blog-header">
+          <Text as="h1" type="h1">Writings</Text>
+          <Text as="p" type="lead" tone="subtle">Thoughts on web development, screenwriting, and the creative process.</Text>
+        </header>
+
+        <div class="posts-list">
+          {sortedPosts.map((post, i) => (
+            <a href={`/blog/${post.id}`} class="post-link" style={`animation-delay: ${i * 0.1}s;`}>
+              <article class="post-card">
+                <Text as="time" type="label" tone="subtle" class="post-date">
+                  {post.data.pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </Text>
+                <Text as="h2" type="h2" class="post-title">{post.data.title}</Text>
+                <Text as="p" type="body" tone="subtle" class="post-desc">{post.data.description}</Text>
+              </article>
+            </a>
+          ))}
+        </div>
+      </Stack>
+    </Box>
+  </main>
+</Layout>
+
+<style>
+  .glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    background: var(--accent);
+    top: -200px;
+    right: -200px;
+  }
+
+  .blog-main {
+    position: relative;
+    z-index: 10;
+    padding-top: var(--space-32);
+    padding-bottom: var(--space-32);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+  .blog-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: var(--space-12);
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .post-card {
+    padding: var(--space-8);
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+  }
+
+  .post-link:hover .post-card {
+    border-color: var(--border);
+    transform: translateX(8px);
+    box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .post-date {
+    display: block;
+    margin-bottom: var(--space-3);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .post-title {
+    margin-bottom: var(--space-3);
+    transition: color 0.3s ease;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--accent);
+  }
+</style>

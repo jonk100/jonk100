@@ -1,0 +1,32 @@
+---
+/**
+ * src/components/Divider.astro
+ * Divider / horizontal rule component.
+ * - Delegates class merging to Astro's native class:list system
+ * @props (local): as
+ * @props (global): class, class:list, frame, effects
+ * - as: HTML tag to render
+ */
+
+export interface Props {
+  as?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean>;
+  [key: string]: any;
+}
+
+const {
+  as = "hr",
+  class: cls = "",
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const Tag = as || "hr";
+
+const classes = ["divider", cls]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<Tag class={classes} class:list={classList} {...rest} />
