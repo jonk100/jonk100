@@ -61,7 +61,7 @@ import Paper from '../ui/primitives/Paper.astro';
           <Spinner size="sm" tone="muted" />
         </Inline>
         
-        <Paper layer="0" class="p-sm">
+        <Paper layer="0" padding="sm">
           <Stack gap="sm">
             <Skeleton variant="text" width="60%" />
             <Skeleton variant="text" />
@@ -74,7 +74,7 @@ import Paper from '../ui/primitives/Paper.astro';
       </Stack>
     </Grid>
     
-    <Stack gap="sm" class="mt-4">
+    <Stack gap="sm" class="alerts-section">
       <Text as="h3" type="h3">Callout Banners (Alerts)</Text>
       <Alert theme="primary" title="Refactoring Upgrade Pending">
         Component library upgraded to standard JSDocs and clean layer custom property boundaries.
@@ -90,7 +90,7 @@ import Paper from '../ui/primitives/Paper.astro';
 </Tooltip>
 
 <style>
-  .mt-4 {
-    margin-top: var(--space-4);
+  .alerts-section {
+    margin-top: var(--space-lg);
   }
 </style>

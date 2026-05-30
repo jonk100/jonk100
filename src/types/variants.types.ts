@@ -4,7 +4,7 @@ export type WrapperSize = "sm" | "md" | "lg" | "xl" | "full" | "screen";
 
 export type ComponentRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
 
-export type BlockType = 'body' | 'body-sm' | 'heading-1' | 'heading-2' | 'heading-3' | 'caption' | 'label';
+export type BlockType = 'body' | 'body-sm' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'heading-1' | 'heading-2' | 'heading-3' | 'heading-4' | 'heading-5' | 'caption' | 'label' | 'lead';
 export type TextTone = 'default' | 'muted' | 'subtle' | 'accent' | 'primary' | 'secondary' | 'danger' | 'success';
 
 /**

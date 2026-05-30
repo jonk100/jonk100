@@ -14,7 +14,8 @@ import Code from '../ui/typography/Code.astro';
 import SectionLabel from '../ui/typography/SectionLabel.astro';
 import Stack from '../ui/layout/Stack.astro';
 import Inline from '../ui/layout/Inline.astro';
-import Grid from '../ui/layout/Grid.astro';
+import BentoGrid from '../ui/layout/BentoGrid.astro';
+import BentoCell from '../ui/layout/BentoCell.astro';
 import Divider from '../ui/layout/Divider.astro';
 import ButtonGroup from '../ui/layout/ButtonGroup.astro';
 import Button from '../ui/controls/Button.astro';
@@ -24,18 +25,27 @@ import Tooltip from '../ui/overlay/Tooltip.astro';
 import Paper from '../ui/primitives/Paper.astro';
 
 const layoutBlueprint = `
-#LT#Card border layer="1"#GT#
-  #LT#CardHeader#GT#
-    #LT#Text type="h3"#GT#Bento Grid Architecture#LT#/Text#GT#
-  #LT#/CardHeader#GT#
-  #LT#CardContent#GT#
-    #LT#Text tone="subtle"#GT#A cohesive, multi-span grid cell composition.#LT#/Text#GT#
-  #LT#/CardContent#GT#
-#LT#/Card#GT#
+#LT#BentoGrid gap="md"#GT#
+  #LT#BentoCell span="flagship"#GT#
+    #LT#Paper layer="3" padding="md"#GT#Flagship Feature#LT#/Paper#GT#
+  #LT#/BentoCell#GT#
+  #LT#BentoCell span="secondary"#GT#
+    #LT#Paper layer="0" padding="md"#GT#Side content#LT#/Paper#GT#
+  #LT#/BentoCell#GT#
+#LT#/BentoGrid#GT#
+`.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
+
+const badgeGroupBlueprint = `
+#LT#!-- Badge children automatically inherit theme, size, and outlined states --#GT#
+#LT#BadgeGroup theme="primary" size="md" outlined#GT#
+  #LT#Badge#GT#Segment 1 (Inherited)#LT#/Badge#GT#
+  #LT#Badge#GT#Segment 2 (Inherited)#LT#/Badge#GT#
+  #LT#Badge theme="accent" outlined={false}#GT#Overridden Segment#LT#/Badge#GT#
+#LT#/BadgeGroup#GT#
 `.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
 ---
 
-<Paper padding="lg" layer="1" bordered id="layout-showcase" style="anchor-name: --layout-showcase;">
+<Paper padding="lg" layer="0" bordered id="layout-showcase" style="anchor-name: --layout-showcase;">
   <Stack gap="md">
     <SectionLabel text="02 / layout primitives" />
     <Text as="h2" type="h2">Compositional Structures</Text>
@@ -46,46 +56,68 @@ const layoutBlueprint = `
     <!-- Grid and Bento Layout Exhibit -->
     <Stack gap="sm">
       <Text as="h3" type="h3">Responsive Bento Spanning</Text>
-      <Grid cols={3} gap="md" class="bento-blueprint">
-        <Paper layer="0" padding="md" class="grid-span-2 bento-cell-demo">
-          <Text as="strong" type="h4">Two-Span Grid Cell</Text>
-          <Text type="caption" tone="subtle">Responsive flex-grow allocation</Text>
-        </Paper>
-        <Paper layer="0" padding="md" class="bento-cell-demo">
-          <Text as="strong" type="h4">Single Span</Text>
-          <Text type="caption" tone="subtle">1/3 column</Text>
-        </Paper>
-        <Paper layer="0" padding="md" class="bento-cell-demo">
-          <Text as="strong" type="h4">Single Span</Text>
-          <Text type="caption" tone="subtle">1/3 column</Text>
-        </Paper>
-        <Paper layer="0" padding="md" class="grid-span-2 bento-cell-demo">
-          <Text as="strong" type="h4">Two-Span Grid Cell</Text>
-          <Text type="caption" tone="subtle">Perfect for hero project features</Text>
-        </Paper>
-      </Grid>
+      <BentoGrid gap="md" class="bento-blueprint">
+        <BentoCell span="flagship">
+          <Paper layer="3" padding="md" class="bento-cell-demo">
+            <Text as="strong" type="h4">Flagship Cell (7/12 cols)</Text>
+            <Text type="caption" tone="subtle">Responsive flex-grow allocation</Text>
+          </Paper>
+        </BentoCell>
+        <BentoCell span="secondary">
+          <Paper layer="0" padding="md" class="bento-cell-demo">
+            <Text as="strong" type="h4">Secondary (5/12 cols)</Text>
+            <Text type="caption" tone="subtle">Standard column stack</Text>
+          </Paper>
+        </BentoCell>
+        <BentoCell span="secondary-alt">
+          <Paper layer="0" padding="md" class="bento-cell-demo">
+            <Text as="strong" type="h4">Secondary Alt (5/12 cols)</Text>
+            <Text type="caption" tone="subtle">Perfect fit for side content</Text>
+          </Paper>
+        </BentoCell>
+        <BentoCell span="wide">
+          <Paper layer="0" padding="md" class="bento-cell-demo">
+            <Text as="strong" type="h4">Wide Cell (7/12 cols)</Text>
+            <Text type="caption" tone="subtle">Perfect for hero project features</Text>
+          </Paper>
+        </BentoCell>
+      </BentoGrid>
     </Stack>
     
     <!-- Inline Flex elements -->
-    <Stack gap="sm" class="mt-4">
-      <Text as="h3" type="h3">Flex Inline & ButtonGroup Layouts</Text>
+    <Stack gap="sm" class="inline-layouts">
+      <Text as="h3" type="h3">Flex Inline, ButtonGroup & BadgeGroup Layouts</Text>
+      <Text type="body-sm" tone="subtle">
+        Compare horizontal <code>&lt;Inline&gt;</code> elements against joined segmented containers like <code>&lt;ButtonGroup&gt;</code> and <code>&lt;BadgeGroup&gt;</code> that automatically handle border-radius trimming and prop inheritance.
+      </Text>
+      
       <Inline gap="md" align="center" wrap>
+        <Inline gap="xs">
+          <Button theme="secondary" size="sm">Inline A</Button>
+          <Button theme="secondary" size="sm">Inline B</Button>
+        </Inline>
+        
         <ButtonGroup>
-          <Button theme="secondary" size="sm">Left Anchored</Button>
-          <Button theme="secondary" size="sm">Centered</Button>
-          <Button theme="secondary" size="sm">Right Anchored</Button>
+          <Button theme="secondary" size="sm">Left Segment</Button>
+          <Button theme="secondary" size="sm">Middle Segment</Button>
+          <Button theme="secondary" size="sm">Right Segment</Button>
         </ButtonGroup>
         
-        <BadgeGroup>
-          <Badge tone="primary">Badge 1</Badge>
-          <Badge tone="accent">Badge 2</Badge>
-          <Badge tone="success">Active</Badge>
+        <BadgeGroup theme="primary" size="md" outlined>
+          <Badge>Inherited 1</Badge>
+          <Badge>Inherited 2</Badge>
+          <Badge theme="accent" outlined={false}>Overridden</Badge>
         </BadgeGroup>
       </Inline>
+      
+      <details class="code-details">
+        <summary><Text type="caption" tone="accent">Show BadgeGroup Inheritance Blueprint</Text></summary>
+        <Code inline={false} language="astro">{badgeGroupBlueprint}</Code>
+      </details>
     </Stack>
 
     <!-- Educational Architecture Callout -->
-    <Paper layer="2" class="p-md architectural-rationale">
+    <Paper layer="2" padding="md" class="architectural-rationale">
       <Stack gap="2xs">
         <Text as="h4" type="h4" tone="accent">Architectural Rationale: Spacing & Clamp Spanning</Text>
         <Text type="body-sm" tone="subtle">
@@ -104,15 +136,9 @@ const layoutBlueprint = `
 </Tooltip>
 
 <style>
-  .architectural-rationale {
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--rad-md);
-    margin-top: var(--space-6);
-  }
+  @import './DesignPage.css';
 
   .code-details {
-    margin-top: var(--space-3);
     cursor: pointer;
   }
 
@@ -132,16 +158,13 @@ const layoutBlueprint = `
     margin-bottom: var(--space-3);
   }
 
-  .bento-blueprint {
-    margin-top: var(--space-2);
-  }
-
   .bento-cell-demo {
     background: var(--bg-surface);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     min-height: 140px;
+    height: 100%;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
@@ -150,11 +173,7 @@ const layoutBlueprint = `
     border-color: var(--accent);
   }
 
-  .grid-span-2 {
-    grid-column: span 2;
-  }
-
-  .mt-4 {
-    margin-top: var(--space-4);
+  .inline-layouts {
+    margin-top: var(--space-lg);
   }
 </style>

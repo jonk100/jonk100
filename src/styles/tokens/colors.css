@@ -4,11 +4,16 @@
   /** ── Color            | Neutral Scale - Cool Bias |               |*/
   /**  ── Tuned for yellows, muted blues, editorial tones             |*/
   /** --------------------------------------------------------------  |*/
-  --neutral-10:            rgb(8, 9, 10);
-  --neutral-20:            rgb(17, 18, 20);
-  --neutral-30:            rgb(26, 27, 30);
-  --neutral-40:            rgb(35, 36, 40);
-  --neutral-50:            rgb(44, 45, 50);
+  --neutral-0:                 rgb(0, 0, 2);
+  --neutral-5:             rgb(2, 3, 5);
+  --neutral-10:            rgb(5, 7, 10);
+  --neutral-15:            rgb(7, 10, 15);
+  --neutral-20:            rgb(10, 15, 20);
+  --neutral-25:            rgb(12, 17, 25);
+  --neutral-30:            rgb(15, 22, 30);
+  --neutral-35:            rgb(17, 25, 35);
+  --neutral-40:            rgb(22, 29, 40);
+  --neutral-50:            rgb(30, 40, 50);
   --neutral-60:            rgb(53, 54, 60);
   --neutral-70:            rgb(62, 63, 70);
   --neutral-80:            rgb(71, 72, 80);
@@ -30,6 +35,36 @@
   --neutral-240:           rgb(226, 234, 240);
   --neutral-250:           rgb(232, 241, 250);
   --neutral-255:           rgb(237, 245, 255);
+  --neutral-5-rgb:           2, 3, 5;
+  --neutral-10-rgb:          5, 7, 10;
+  --neutral-15-rgb:          7, 10, 15;
+  --neutral-20-rgb:          10, 15, 20;
+  --neutral-25-rgb:          12, 17, 25;
+  --neutral-30-rgb:          15, 22, 30;
+  --neutral-35-rgb:          17, 25, 35;
+  --neutral-40-rgb:          22, 29, 40;
+  --neutral-50-rgb:          30, 40, 50;
+  --neutral-60-rgb:          53, 54, 60;
+  --neutral-70-rgb:          62, 63, 70;
+  --neutral-80-rgb:          71, 72, 80;
+  --neutral-90-rgb:          80, 81, 90;
+  --neutral-100-rgb:         89, 90, 100;
+  --neutral-110-rgb:         98, 99, 110;
+  --neutral-120-rgb:         107, 108, 120;
+  --neutral-130-rgb:         116, 123, 130;
+  --neutral-140-rgb:         125, 131, 140;
+  --neutral-150-rgb:         134, 141, 150;
+  --neutral-160-rgb:         144, 151, 160;
+  --neutral-170-rgb:         154, 161, 170;
+  --neutral-180-rgb:         164, 171, 180;
+  --neutral-190-rgb:         174, 183, 190;
+  --neutral-200-rgb:         187, 195, 200;
+  --neutral-210-rgb:         199, 206, 210;
+  --neutral-220-rgb:         210, 216, 220;
+  --neutral-230-rgb:         218, 224, 230;
+  --neutral-240-rgb:         226, 234, 240;
+  --neutral-250-rgb:         232, 241, 250;
+  --neutral-255-rgb:         237, 245, 255;
   --neutral-darkest:                 var(--neutral-10);
   --neutral-darker:                  var(--neutral-20);
   --neutral-dark:                    var(--neutral-40);
@@ -256,6 +291,33 @@
   --border-strong:              var(--accent-border);
   --link:                       var(--accent);
   --link-hover:                 var(--accent-hover);
+  --border-subtle:              var(--neutral-50);
+  --border:              var(--neutral-60);
+
+
+  /**                                            */
+  /**            Surface Hierarchy              */
+  /**                                         */
+  --surface-0: rgba(var(--neutral-0-rgb),.9);
+  --surface-1: rgba(var(--neutral-10-rgb),.85);
+  --surface-2: rgba(var(--neutral-25-rgb),.75);
+  --surface-3: var(--neutral-25);
+  --surface-4: var(--neutral-30);
+  --surface-5: var(--neutral-40);
+  --text-0: var(--text);
+  --text-1: var(--text-surface);
+  --text-2: var(--text-elevated);
+  --text-3: var(--text-card);
+  --text-4: color-mix(
+    in srgb,
+    var(--text-card) 75%,
+    var(--text)
+  );
+  --text-5: color-mix(
+    in srgb,
+    var(--text-card) 60%,
+    var(--text)
+  );
 
   /**                                                           */
   /**             LIGHT THEME                                   */
@@ -264,7 +326,7 @@
     --bg:                var(--neutral-255);
     --bg-surface:        var(--neutral-230);
     --bg-elevated:       var(--neutral-210);
-    --bg-card:           var(--neutral-180);
+    --bg-card:           var(--neutral-80);
     --text:              var(--neutral-80);
     --text-surface:      var(--neutral-60);
     --text-elevated:     var(--neutral-40);
@@ -290,28 +352,6 @@
     --surface-5:         var(--neutral-180);
   }
 
-  /**                                            */
-  /**            Surface Hierarchy              */
-  /**                                         */
-  --surface-0: var(--bg);
-  --surface-1: var(--bg-surface);
-  --surface-2: var(--neutral-30);
-  --surface-3: var(--neutral-40);
-  --surface-4: var(--neutral-50);
-  --surface-5: var(--neutral-60);
-  --text-0: var(--text);
-  --text-1: var(--text-surface);
-  --text-2: var(--text-elevated);
-  --text-3: var(--text-card);
-  --text-4: color-mix(
-    in srgb,
-    var(--text-card) 75%,
-    var(--text)
-  );
-  --text-5: color-mix(
-    in srgb,
-    var(--text-card) 60%,
-    var(--text)
-  );
+  
 
 }

@@ -27,7 +27,7 @@ const elevationBlueprint = `
 
 <section id="foundations" class="section-card">
   <Paper padding="lg" layer="1" bordered>
-    <Stack gap="md">
+    <Stack gap="lg">
       <SectionLabel text="01 / foundations" />
       <Text as="h2" type="h2">Design System Tokens</Text>
       <Text tone="subtle">Harmonious color scales and clean, fluid typography anchors defined within global stylesheets.</Text>
@@ -35,9 +35,9 @@ const elevationBlueprint = `
       <Divider />
       
       <!-- Color Palettes -->
-      <Stack gap="sm">
+      <Stack gap="md">
         <Text as="h3" type="h3">Tuned HSL Color Scales</Text>
-        <Grid cols={5} gap="sm" class="color-palette-grid">
+        <Grid cols={5} gap="sm">
           <Stack gap="2xs">
             <div class="swatch neutral-bg"></div>
             <Text type="caption" class="text-center">Neutral Cool</Text>
@@ -62,9 +62,9 @@ const elevationBlueprint = `
       </Stack>
       
       <!-- Typography Examples -->
-      <Stack gap="sm" class="mt-4">
+      <Stack gap="md">
         <Text as="h3" type="h3">Fluid Editorial Typography</Text>
-        <Paper layer="0" class="p-md text-scale-ex">
+        <Paper layer="0" padding="md" class="text-scale-ex">
           <Stack gap="xs">
             <Text type="h1">H1 Header &bull; Fluid Scale</Text>
             <Text type="h2">H2 Section Heading</Text>
@@ -77,7 +77,7 @@ const elevationBlueprint = `
       </Stack>
 
       <!-- Educational Architecture Callout -->
-      <Paper layer="2" class="p-md architectural-rationale">
+      <Paper layer="2" padding="md" class="architectural-rationale">
         <Stack gap="2xs">
           <Text as="h4" type="h4" tone="accent">Architectural Rationale: Elevation Overrides</Text>
           <Text type="body-sm" tone="subtle">
@@ -94,9 +94,7 @@ const elevationBlueprint = `
 </section>
 
 <style>
-  .color-palette-grid {
-    margin-top: var(--space-2);
-  }
+  @import './DesignPage.css';
 
   .swatch {
     height: 64px;
@@ -110,18 +108,11 @@ const elevationBlueprint = `
   .green-bg { background: linear-gradient(135deg, var(--green-60), var(--green-180)); }
 
   .text-scale-ex {
-    border-left: 2px solid var(--border-strong);
-  }
-
-  .architectural-rationale {
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--rad-md);
-    margin-top: var(--space-6);
+    border-left: 1px solid var(--border-strong);
+    background: var(--surface-3);
   }
 
   .code-details {
-    margin-top: var(--space-3);
     cursor: pointer;
   }
 
@@ -143,9 +134,5 @@ const elevationBlueprint = `
 
   .text-center {
     text-align: center;
-  }
-
-  .mt-4 {
-    margin-top: var(--space-4);
   }
 </style>

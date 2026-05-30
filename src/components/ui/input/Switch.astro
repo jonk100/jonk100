@@ -81,8 +81,8 @@ const {
     width: 2.5rem;
     height: 1.25rem;
     border-radius: 9999px;
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border);
+    background-color: var(--surface-3); /* Progressive surface elevation shade */
+    border: 1px solid color-mix(in srgb, var(--text) 45%, transparent); /* Stronger high-contrast border */
     transition: all 0.2s ease-in-out;
     position: relative;
     flex-shrink: 0;
@@ -100,7 +100,7 @@ const {
     left: 2px;
     height: calc(100% - 4px);
     aspect-ratio: 1 / 1;
-    background-color: var(--text);
+    background-color: color-mix(in srgb, var(--text) 60%, transparent); /* High-contrast visible off-thumb */
     border-radius: 50%;
     transition: transform 0.2s ease-in-out;
   }

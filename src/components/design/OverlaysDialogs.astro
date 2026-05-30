@@ -17,7 +17,10 @@ import Stack from '../ui/layout/Stack.astro';
 import Inline from '../ui/layout/Inline.astro';
 import Divider from '../ui/layout/Divider.astro';
 import Icon from '../ui/media/Icon.astro';
+import Button from '../ui/controls/Button.astro';
 import Modal from '../ui/modal/Modal.astro';
+import ModalHeader from '../ui/modal/ModalHeader.astro';
+import ModalBody from '../ui/modal/ModalBody.astro';
 import Popover from '../ui/overlay/Popover.astro';
 import Tooltip from '../ui/overlay/Tooltip.astro';
 import Paper from '../ui/primitives/Paper.astro';
@@ -26,7 +29,7 @@ const tooltipBlueprint = `
 #LT#button id="target-btn" style="anchor-name: --target-btn;" class="..."#GT#
   Hover Me
 #LT#/button#GT#
-
+ 
 #LT#Tooltip id="info-tooltip" anchor="target-btn" placement="top"#GT#
   CSS Anchor Positioned!
 #LT#/Tooltip#GT#
@@ -43,37 +46,42 @@ const tooltipBlueprint = `
     
     <Inline gap="md" align="center" wrap>
       <!-- Native Modal Button trigger -->
-      <button commandfor="system-modal" command="show-modal" class="control variant--primary control--md">
+      <Button commandfor="system-modal" command="show-modal" theme="primary" size="md">
         Launch Native Modal
-      </button>
+      </Button>
       
-      <Modal id="system-modal" title="Confirm System Refactoring">
-        <Stack gap="md">
-          <Text>This refactoring action will clean relative paths, align CSS anchor positions, and elevate table layers. This uses a native <code>&lt;dialog&gt;</code> element to implement standard keyboard focus traps and background dimming.</Text>
-          <Inline gap="sm" justify="end">
-            <button commandfor="system-modal" command="close" class="control variant--ghost control--md">Cancel</button>
-            <button commandfor="system-modal" command="close" class="control variant--primary control--md">Confirm Execution</button>
-          </Inline>
-        </Stack>
+      <Modal id="system-modal">
+        <ModalHeader>
+          <Text as="h3" type="h3">Confirm System Refactoring</Text>
+        </ModalHeader>
+        <ModalBody>
+          <Stack gap="md">
+            <Text>This refactoring action will clean relative paths, align CSS anchor positions, and elevate table layers. This uses a native <code>&lt;dialog&gt;</code> element to implement standard keyboard focus traps and background dimming.</Text>
+            <Inline gap="sm" justify="end">
+              <Button commandfor="system-modal" command="close" theme="ghost" size="md">Cancel</Button>
+              <Button commandfor="system-modal" command="close" theme="primary" size="md">Confirm Execution</Button>
+            </Inline>
+          </Stack>
+        </ModalBody>
       </Modal>
 
       <!-- Popover Toggle Trigger -->
-      <button id="system-pop-btn" style="anchor-name: --system-pop-btn;" commandfor="system-popover" command="toggle-popover" class="control variant--secondary control--md">
+      <Button id="system-pop-btn" style="anchor-name: --system-pop-btn;" commandfor="system-popover" command="toggle-popover" theme="secondary" size="md">
         Toggle Anchor Popover
-      </button>
+      </Button>
       
       <Popover id="system-popover" anchor="system-pop-btn" placement="bottom">
         <Stack gap="sm">
           <Text as="strong" type="label" tone="accent">Quick Controls</Text>
-          <button class="control variant--ghost control--sm text-left">System Diagnostics</button>
-          <button class="control variant--ghost control--sm text-left">Deploy Workspace</button>
+          <Button theme="ghost" size="sm" class="text-left">System Diagnostics</Button>
+          <Button theme="ghost" size="sm" class="text-left">Deploy Workspace</Button>
         </Stack>
       </Popover>
 
       <!-- Tooltip Hover Trigger -->
-      <button id="system-tip-btn" style="anchor-name: --system-tip-btn;" class="control variant--outline control--md">
+      <Button id="system-tip-btn" style="anchor-name: --system-tip-btn;" theme="outline" size="md">
         Hover Me (Anchor Tooltip)
-      </button>
+      </Button>
       
       <Tooltip id="system-action-tooltip" anchor="system-tip-btn" placement="top">
         Native CSS Anchor Positioning!
@@ -81,7 +89,7 @@ const tooltipBlueprint = `
     </Inline>
 
     <!-- Educational Architecture Callout -->
-    <Paper layer="2" class="p-md architectural-rationale">
+    <Paper layer="2" padding="md" class="architectural-rationale">
       <Stack gap="2xs">
         <Text as="h4" type="h4" tone="accent">Architectural Rationale: Popovers & CSS Anchors</Text>
         <Text type="body-sm" tone="subtle">
@@ -100,15 +108,9 @@ const tooltipBlueprint = `
 </Tooltip>
 
 <style>
-  .architectural-rationale {
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--rad-md);
-    margin-top: var(--space-6);
-  }
+  @import './DesignPage.css';
 
   .code-details {
-    margin-top: var(--space-3);
     cursor: pointer;
   }
 
@@ -130,63 +132,6 @@ const tooltipBlueprint = `
 
   .text-left {
     text-align: left;
-  }
-
-  /* Control button primitives from design.astro */
-  .control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--body);
-    font-weight: 500;
-    border-radius: var(--rad-md);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-  }
-
-  .control--md {
-    padding: var(--space-3) var(--space-5);
-    font-size: var(--text-sm);
-  }
-  
-  .control--sm {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--text-xs);
-  }
-
-  .variant--primary {
-    background: var(--primary);
-    color: var(--text-inverse);
-  }
-  .variant--primary:hover {
-    background: var(--primary-hover);
-  }
-
-  .variant--secondary {
-    background: var(--bg-surface);
-    border-color: var(--border);
-    color: var(--text);
-  }
-  .variant--secondary:hover {
-    background: var(--bg-elevated);
-  }
-
-  .variant--outline {
-    background: transparent;
-    border-color: var(--border-strong);
-    color: var(--text);
-  }
-  .variant--outline:hover {
-    background: var(--bg-surface);
-  }
-
-  .variant--ghost {
-    background: transparent;
-    color: var(--text-subtle);
-  }
-  .variant--ghost:hover {
-    background: var(--bg-surface);
-    color: var(--text);
+    justify-content: flex-start;
   }
 </style>

@@ -24,13 +24,31 @@ export interface Props {
 const {
   type = 'body',
   tone = 'default',
-  as = 'p',
+  as,
   class: className = '',
   "class:list": classList = {},
   ...rest
 } = Astro.props;
 
-const Tag = as;
+const defaultTags: Record<string, string> = {
+  'h1': 'h1',
+  'heading-1': 'h1',
+  'h2': 'h2',
+  'heading-2': 'h2',
+  'h3': 'h3',
+  'heading-3': 'h3',
+  'h4': 'h4',
+  'heading-4': 'h4',
+  'h5': 'h5',
+  'heading-5': 'h5',
+  'body': 'p',
+  'body-sm': 'p',
+  'caption': 'span',
+  'label': 'span',
+  'lead': 'p'
+};
+
+const Tag = as || defaultTags[type] || 'p';
 ---
 
 <Tag
@@ -53,7 +71,7 @@ const Tag = as;
 
 /* ─────────────────────────────
    Variants
-───────────────────────────── */
+ ───────────────────────────── */
 
 .text--body {
   font-size: var(--text-base);
@@ -65,7 +83,13 @@ const Tag = as;
   line-height: var(--leading-normal);
 }
 
-/* .text--h1, .text--heading-1 {
+.text--lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  font-weight: 500;
+}
+
+.text--h1, .text--heading-1 {
   font-size: var(--text-5xl);
   line-height: var(--leading-tighter);
   letter-spacing: -0.04em;
@@ -100,7 +124,7 @@ const Tag = as;
   line-height: var(--leading-tight);
   font-weight: 600;
   font-family: var(--display);
-} */
+}
 
 .text--caption {
   font-size: var(--text-xs);

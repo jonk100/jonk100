@@ -13,6 +13,7 @@ import Text from '../ui/typography/Text.astro';
 import Code from '../ui/typography/Code.astro';
 import SectionLabel from '../ui/typography/SectionLabel.astro';
 import Stack from '../ui/layout/Stack.astro';
+import Inline from '../ui/layout/Inline.astro';
 import Divider from '../ui/layout/Divider.astro';
 import Table from '../ui/data/Table.astro';
 import TableCaption from '../ui/data/TableCaption.astro';
@@ -23,6 +24,8 @@ import TableRow from '../ui/data/TableRow.astro';
 import TableCell from '../ui/data/TableCell.astro';
 import TableFooter from '../ui/data/TableFooter.astro';
 import Badge from '../ui/feedback/Badge.astro';
+import Button from '../ui/controls/Button.astro';
+import ButtonGroup from '../ui/layout/ButtonGroup.astro';
 import Tooltip from '../ui/overlay/Tooltip.astro';
 import Paper from '../ui/primitives/Paper.astro';
 
@@ -98,14 +101,28 @@ const tableBlueprint = `
           </TableRow>
         </TableFooter>
       </Table>
+      
+      <!-- Premium Paginate Control Footer inside Table Card -->
+      <div class="table-actions-footer">
+        <Inline justify="between" align="center">
+          <Text type="caption" tone="subtle">Displaying 4 of 4 ledger entries</Text>
+          <ButtonGroup>
+            <Button theme="secondary" size="sm">Previous</Button>
+            <Button theme="secondary" size="sm">Next</Button>
+          </ButtonGroup>
+        </Inline>
+      </div>
     </Paper>
 
     <!-- Educational Architecture Callout -->
-    <Paper layer="2" class="p-md architectural-rationale">
+    <Paper layer="2" padding="md" class="architectural-rationale">
       <Stack gap="2xs">
-        <Text as="h4" type="h4" tone="accent">Architectural Rationale: Accessible Ledgers</Text>
+        <Text as="h4" type="h4" tone="accent">Architectural Rationale: Custom Accessible Ledgers & Button Groups</Text>
         <Text type="body-sm" tone="subtle">
-          Data ledgers utilize semantic HTML5 tags (<code>&lt;table&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tfoot&gt;</code>) to construct accessible layout layers for screen readers. Padding tokens are derived entirely from global variables.
+          Our custom data ledger is composed entirely of modular, semantic HTML5 sub-components: <code>&lt;Table&gt;</code>, <code>&lt;TableHead&gt;</code>, <code>&lt;TableHeading&gt;</code>, <code>&lt;TableBody&gt;</code>, <code>&lt;TableRow&gt;</code>, <code>&lt;TableCell&gt;</code>, and <code>&lt;TableFooter&gt;</code>. This structure guarantees compliance with standard accessibility parameters and screen-reader tree configurations.
+        </Text>
+        <Text type="body-sm" tone="subtle">
+          By default, control primitives like <code>&lt;Button&gt;</code> feature a soft, interactive border radius (<code>var(--rad-md)</code>). When packed within a <code>&lt;ButtonGroup&gt;</code>, their internal adjacent borders and corner radii are dynamically flattened while retaining the outer border-radius anchor, physically attaching the segments together cleanly.
         </Text>
         <details class="code-details">
           <summary><Text type="caption" tone="accent">Show Table Blueprint</Text></summary>
@@ -120,15 +137,15 @@ const tableBlueprint = `
 </Tooltip>
 
 <style>
+  @import './DesignPage.css';
   .overflow-hidden {
     overflow: hidden;
   }
 
-  .architectural-rationale {
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--rad-md);
-    margin-top: var(--space-6);
+  .table-actions-footer {
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
   }
 
   .code-details {

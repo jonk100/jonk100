@@ -81,8 +81,8 @@ const {
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 50%;
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border);
+    background-color: var(--surface-3); /* Progressive surface elevation shade */
+    border: 1px solid color-mix(in srgb, var(--text) 45%, transparent); /* Stronger high-contrast border */
     transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;

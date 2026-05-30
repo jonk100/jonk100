@@ -70,8 +70,10 @@ const formBlueprint = `
         
         <Switch label="Dynamic UI Motion Effects" checked />
         
-        <Checkbox label="Accept license agreement" checked />
-        <Checkbox label="Notify me on release candidate builds" />
+        <Stack gap="sm">
+          <Checkbox label="Accept license agreement" checked />
+          <Checkbox label="Notify me on release candidate builds" />
+        </Stack>
         
         <RadioGroup legend="Hosting Package Tier" name="hosting-tier">
           <Radio name="hosting-tier" value="community" label="Community Cloud (Free)" checked />
@@ -101,12 +103,7 @@ const formBlueprint = `
 </Tooltip>
 
 <style>
-  .architectural-rationale {
-    background: var(--bg-card);
-    border-left: 2px solid var(--accent);
-    border-radius: var(--rad-md);
-    margin-top: var(--space-6);
-  }
+  @import './DesignPage.css';
 
   .code-details {
     margin-top: var(--space-3);

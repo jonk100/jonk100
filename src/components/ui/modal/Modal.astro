@@ -59,9 +59,9 @@ const {
 <style>
   .modal {
     padding: 0;
-    border: none;
+    border: 1px solid var(--border); /* Premium, sharp high-contrast border */
     border-radius: var(--rad-lg);
-    background: var(--bg-surface);
+    background: var(--surface-5); /* Progressive surface elevation layer */
     color: var(--text);
     box-shadow: var(--shadow-xl);
     width: 100%;
@@ -88,8 +88,8 @@ const {
   }
 
   .modal::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker mask */
+    backdrop-filter: blur(8px); /* Deeper glassmorphism */
     transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
   }
   
