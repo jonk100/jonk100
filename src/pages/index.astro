@@ -1,12 +1,45 @@
 ---
+/**
+ * src/pages/index.astro
+ * The index/landing page of the portfolio.
+ * - Displays premium background ambient animation glows.
+ * - Renders navigation bar, high-impact hero header, and grid-based project bento.
+ * - Injects structured JSON-LD Person schema to maximize search engine richness.
+ * @props (local): None
+ */
+
 import Layout from '../layouts/Layout.astro';
 import NavBar from '../components/portfolio/NavBar.astro';
 import Hero from '../components/portfolio/Hero.astro';
 import ProjectBento from '../components/portfolio/ProjectBento.astro';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jon",
+  "alternateName": "jonk100",
+  "description": "Writer, musician, developer, and teacher building high-performance educational and writing tools.",
+  "url": "https://jonk100.netlify.app",
+  "image": "https://jonk100.netlify.app/og-image.png",
+  "jobTitle": ["Writer", "Musician", "Developer", "Teacher"],
+  "sameAs": [
+    "https://github.com/jonk100"
+  ],
+  "knowsAbout": [
+    "Software Engineering",
+    "Astro",
+    "TypeScript",
+    "Creative Writing",
+    "Pedagogy",
+    "Music Composition"
+  ]
+};
 ---
 
 <Layout title="Jon | Writer, Musician, Developer, Teacher" description="Writer, musician, developer and teacher. I build to help me write and teach, usually with Astro and TypeScript.">
-	
+	<!-- Schema Markup -->
+	<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
 	<!-- Premium background gradients -->
 	<div class="glow glow-1"></div>
 	<div class="glow glow-2"></div>

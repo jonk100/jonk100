@@ -1,28 +1,68 @@
 ---
+/**
+ * src/layouts/Layout.astro
+ * The base page layout component providing main structural markup, styles, and SEO headers.
+ * - Manages modern OpenGraph, Twitter, and canonical metadata tags.
+ * - Preloads visual typography fonts from Google Fonts asynchronously.
+ * - Integrates Astro's ClientRouter for smooth page-level transitions.
+ * @props (local): title, description, image, type
+ * @props (global): class, class:list
+ * - title: Page specific document title tag
+ * - description: Page specific description meta tag
+ * - image: Canonical path for OpenGraph share previews
+ * - type: OpenGraph page type (e.g., 'website' or 'article')
+ */
+
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
 export interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article';
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
 }
 
 const { 
-  title = "Design System",
-  description = "A sophisticated, high-performance portfolio architecture.",
+  title = "Jon | Writer, Musician, Developer, Teacher",
+  description = "Writer, musician, developer, and teacher. I build to help me write and teach, usually with Astro and TypeScript.",
+  image = "/og-image.png",
+  type = "website",
   class: className = '',
   "class:list": classList = {}
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://jonk100.netlify.app');
+const ogImageURL = new URL(image, canonicalURL);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImageURL} />
     
     <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +72,6 @@ const {
     <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
 
     <!-- Polyfills for Native Overlay APIs -->
     <script type="module">
