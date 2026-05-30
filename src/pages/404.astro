@@ -40,8 +40,17 @@ import NavBar from '../components/portfolio/NavBar.astro';
           It looks like you've wandered off the track. The resource you are looking for has been moved, deleted, or was never here in the first place.
         </Text>
 
+        <!-- Interactive Domain-Related Quote Card -->
+        <div class="quote-card animate-slide-up delay-4" id="interactive-quote-card">
+          <p class="quote-text">"Errors are the portals of discovery."</p>
+          <span class="quote-author">— James Joyce (Writing)</span>
+          <button class="quote-refresh" aria-label="Get another quote">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </button>
+        </div>
+
         <!-- Action Items -->
-        <Inline gap="md" align="center" class="animate-slide-up delay-4">
+        <Inline gap="md" align="center" class="animate-slide-up delay-5">
           <Button href="/" theme="primary" size="md">
             Go Back Home
           </Button>
@@ -56,6 +65,69 @@ import NavBar from '../components/portfolio/NavBar.astro';
     </Box>
   </main>
 </Layout>
+
+<script>
+  // Dynamic Easter Egg Quotes based on Jon's disciplines
+  const quotes = [
+    { text: "Errors are the portals of discovery.", author: "James Joyce (Writing)" },
+    { text: "Music is the space between the notes.", author: "Claude Debussy (Music)" },
+    { text: "Not all those who wander are lost.", author: "J.R.R. Tolkien (Writing)" },
+    { text: "Mistakes are the portals of learning.", author: "Educational Wisdom (Teaching)" },
+    { text: "It's not a bug, it's an undocumented feature.", author: "Developer Lore (Development)" },
+    { text: "To teach is to learn twice.", author: "Joseph Joubert (Teaching)" },
+    { text: "Without music, life would be a mistake.", author: "Friedrich Nietzsche (Music)" },
+    { text: "We write to taste life twice, in the moment and in retrospection.", author: "Anaïs Nin (Writing)" }
+  ];
+
+  const card = document.getElementById('interactive-quote-card');
+  if (card) {
+    const textEl = card.querySelector('.quote-text');
+    const authorEl = card.querySelector('.quote-author');
+    const btn = card.querySelector('.quote-refresh');
+
+    const updateQuote = () => {
+      const currentQuote = textEl?.textContent;
+      let newQuote;
+      
+      // Prevent picking the exact same quote twice in a row
+      do {
+        newQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      } while (`"${newQuote.text}"` === currentQuote);
+
+      if (textEl && authorEl) {
+        textEl.textContent = `"${newQuote.text}"`;
+        authorEl.textContent = `— ${newQuote.author}`;
+      }
+    };
+
+    // Pick a random quote immediately on load
+    updateQuote();
+
+    btn?.addEventListener('click', () => {
+      // Small rotation animation
+      const svg = btn.querySelector('svg');
+      if (svg) {
+        svg.style.transform = 'rotate(180deg)';
+        svg.style.transition = 'transform 0.4s ease';
+        setTimeout(() => {
+          svg.style.transform = 'none';
+          svg.style.transition = 'none';
+        }, 400);
+      }
+      updateQuote();
+    });
+  }
+
+  // Developer console easter egg
+  console.log(
+    "%c🔍 Looking under the hood?", 
+    "color: var(--accent, #6366f1); font-size: 16px; font-weight: bold;"
+  );
+  console.log(
+    "%cYou've landed in the 404 void. No code errors here—just a missing page. Try navigating back home!", 
+    "color: #9ca3af; font-size: 12px;"
+  );
+</script>
 
 <style>
   .error-page {
@@ -106,6 +178,57 @@ import NavBar from '../components/portfolio/NavBar.astro';
 
   .error-tagline {
     line-height: 1.8;
+  }
+
+  .quote-card {
+    position: relative;
+    max-width: 480px;
+    margin: var(--space-6) auto;
+    padding: var(--space-6) var(--space-12) var(--space-6) var(--space-8);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--rad-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    text-align: left;
+  }
+
+  .quote-text {
+    font-family: var(--body);
+    font-size: var(--text-base);
+    color: var(--text);
+    line-height: 1.5;
+    margin: 0 0 var(--space-2) 0 !important;
+    font-style: italic;
+  }
+
+  .quote-author {
+    font-family: var(--mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .quote-refresh {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    background: none;
+    border: none;
+    color: var(--text-subtle);
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--rad-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .quote-refresh:hover {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   /* Ambient Background Glows */
