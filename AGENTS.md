@@ -75,3 +75,13 @@ When the user types `/blogthat` in a prompt, the agent must immediately execute 
 3. **Formulate Title**: Draft a catchy, professional title and outline, then **stop and verify them with the user** for explicit confirmation before writing.
 4. **Draft the Post**: Once approved, write a long-form `.mdx` file under `src/content/blog/` following the detailed writing style guide defined in `docs/workflows/blog-generation-workflow.md`.
 
+## 5. Guidelines for Technical Case Studies & Project Pages
+Every project page (`src/content/projects/*.mdx`) must be crafted as an immersive, highly technical, educational, and accessible narrative chronicle of the system.
+
+### Core Case Study Directives:
+1. **Strict Frontmatter Stack Alignment**: Frontmatter tags (`tags`) must map 1:1 with the actual system architecture (e.g. `["Astro", "AlpineJS", "TypeScript", "Remark"]`). Do not include unused dependencies or generic fillers.
+2. **High-Performance Visual Assets**: Leverage the custom `<Image />` primitive component with specific aspect-ratio and styling frame attributes (e.g. `shape="landscape" outline={true}`) to render actual UI interfaces, interactive gifs, and dashboard screen captures.
+3. **High-Density Technical Highlights**: Write dedicated architectural sub-sections detailing the primary engineering breakthroughs of the project (such as custom AST compilers, mathematical/music systems, or local JSON data scrapers). Always support the narrative with real TypeScript/JavaScript code snippets extracted from the source files.
+4. **Accessible Educational Tone**: Explain *why* certain designs were chosen (e.g. comparing static build compilation to heavy runtime SPA frameworks). Teach the reader fundamental computer science and web development patterns.
+5. **Cross-Project Interlinking & CTA**: Never leave a project page as an isolated island. Weave inside-context dynamic links to relevant blog posts (e.g., AST deep-dives), sister projects, and end the article with a clear, compelling call-to-action block urging readers to keep exploring your creative and technical works.
+
