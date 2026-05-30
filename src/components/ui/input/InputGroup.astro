@@ -1,0 +1,67 @@
+---
+/**
+ * src/components/ui/input/InputGroup.astro
+ * Groups an input with an attached button or another input (e.g. for search bars).
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['input-group', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* Target the actual control elements whether they are direct children or wrapped */
+  .input-group :global(.control) {
+    border-radius: 0;
+  }
+
+  /* First element rounding */
+  .input-group > :global(*:first-child) :global(.control),
+  .input-group > :global(.control:first-child) {
+    border-top-left-radius: var(--rad-md);
+    border-bottom-left-radius: var(--rad-md);
+  }
+
+  /* Last element rounding */
+  .input-group > :global(*:last-child) :global(.control),
+  .input-group > :global(.control:last-child) {
+    border-top-right-radius: var(--rad-md);
+    border-bottom-right-radius: var(--rad-md);
+  }
+
+  /* Prevent overlapping borders (assuming 1px solid) */
+  .input-group :global(> *:not(:last-child)) :global(.control),
+  .input-group > :global(.control:not(:last-child)) {
+    border-right-color: transparent;
+  }
+
+  /* Make sure focus rings appear above siblings */
+  .input-group :global(.control:focus-visible) {
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* Make input wrappers flex grow so they take up remaining space */
+  .input-group :global(.input-wrapper) {
+    flex-grow: 1;
+  }
+</style>

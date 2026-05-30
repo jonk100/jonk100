@@ -1,0 +1,139 @@
+---
+/**
+ * src/components/design/ControlsActions.astro
+ * Controls & Actions section showcasing interactive system elements.
+ * - Displays complex Button variant matrices (themes, sizes, loading, disabled).
+ * - Anchors sibling tooltip component explanation.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Divider from '../ui/layout/Divider.astro';
+import Button from '../ui/controls/Button.astro';
+import Spinner from '../ui/feedback/Spinner.astro';
+import Tooltip from '../ui/overlay/Tooltip.astro';
+import Paper from '../ui/primitives/Paper.astro';
+---
+
+<Paper padding="lg" layer="1" bordered id="button-showcase" style="anchor-name: --button-showcase;">
+  <Stack gap="md">
+    <SectionLabel text="03 / controls & actions" />
+    <Text as="h2" type="h2">Interactive Elements</Text>
+    <Text tone="subtle">Buttons designed for a multitude of themes, dimensions, states, and inline micro-icons.</Text>
+    
+    <Divider />
+    
+    <!-- Buttons Variant Showcase Matrix -->
+    <Stack gap="md">
+      <Text as="h3" type="h3">Visual Blueprint Matrix</Text>
+      
+      <div class="matrix-container">
+        <table class="button-matrix">
+          <thead>
+            <tr>
+              <th>Theme</th>
+              <th>Large (lg)</th>
+              <th>Medium (md)</th>
+              <th>Small (sm)</th>
+              <th>Disabled / Loading</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Primary</strong></td>
+              <td><Button theme="primary" size="lg">Primary Lg</Button></td>
+              <td><Button theme="primary" size="md">Primary Md</Button></td>
+              <td><Button theme="primary" size="sm">Primary Sm</Button></td>
+              <td><Button theme="primary" size="md" disabled>Disabled</Button></td>
+            </tr>
+            <tr>
+              <td><strong>Secondary</strong></td>
+              <td><Button theme="secondary" size="lg">Secondary Lg</Button></td>
+              <td><Button theme="secondary" size="md">Secondary Md</Button></td>
+              <td><Button theme="secondary" size="sm">Secondary Sm</Button></td>
+              <td><Button theme="secondary" size="md" disabled>Disabled</Button></td>
+            </tr>
+            <tr>
+              <td><strong>Accent</strong></td>
+              <td><Button theme="accent" size="lg">Accent Lg</Button></td>
+              <td><Button theme="accent" size="md">Accent Md</Button></td>
+              <td><Button theme="accent" size="sm">Accent Sm</Button></td>
+              <td><Button theme="accent" size="md" disabled>Disabled</Button></td>
+            </tr>
+            <tr>
+              <td><strong>Outline</strong></td>
+              <td><Button theme="outline" size="lg">Outline Lg</Button></td>
+              <td><Button theme="outline" size="md">Outline Md</Button></td>
+              <td><Button theme="outline" size="sm">Outline Sm</Button></td>
+              <td><Button theme="outline" size="md" disabled>Disabled</Button></td>
+            </tr>
+            <tr>
+              <td><strong>Ghost</strong></td>
+              <td><Button theme="ghost" size="lg">Ghost Lg</Button></td>
+              <td><Button theme="ghost" size="md">Ghost Md</Button></td>
+              <td><Button theme="ghost" size="sm">Ghost Sm</Button></td>
+              <td><Button theme="ghost" size="md" disabled>Disabled</Button></td>
+            </tr>
+            <tr>
+              <td><strong>Danger</strong></td>
+              <td><Button theme="danger" size="lg">Danger Lg</Button></td>
+              <td><Button theme="danger" size="md">Danger Md</Button></td>
+              <td><Button theme="danger" size="sm">Danger Sm</Button></td>
+              <td>
+                <Inline gap="xs" align="center">
+                  <Button theme="danger" size="sm" disabled>Disabled</Button>
+                  <Button theme="danger" size="sm"><Spinner size="xs" /> Loading</Button>
+                </Inline>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Success</strong></td>
+              <td><Button theme="success" size="lg">Success Lg</Button></td>
+              <td><Button theme="success" size="md">Success Md</Button></td>
+              <td><Button theme="success" size="sm">Success Sm</Button></td>
+              <td><Button theme="success" size="md"><Spinner size="xs" /> Loading</Button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </Stack>
+  </Stack>
+</Paper>
+<Tooltip id="button-tooltip" anchor="button-showcase" placement="top">
+  Showcasing 8 different Button theme styles, sizes, and states!
+</Tooltip>
+
+<style>
+  .matrix-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--rad-md);
+  }
+
+  .button-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .button-matrix th,
+  .button-matrix td {
+    padding: var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .button-matrix th {
+    background: var(--bg-surface);
+    font-weight: 600;
+  }
+
+  .button-matrix tr:hover td {
+    background: rgba(255, 255, 255, 0.01);
+  }
+</style>

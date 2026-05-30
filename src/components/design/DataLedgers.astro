@@ -1,0 +1,154 @@
+---
+/**
+ * src/components/design/DataLedgers.astro
+ * Data Ledgers section showcasing structured semantic tables.
+ * - Displays zebra-striped accessible data grids.
+ * - Exhibits custom footer summaries and badge alignments.
+ * - Anchors sibling tooltip component explanation.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import Code from '../ui/typography/Code.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Divider from '../ui/layout/Divider.astro';
+import Table from '../ui/data/Table.astro';
+import TableCaption from '../ui/data/TableCaption.astro';
+import TableHead from '../ui/data/TableHead.astro';
+import TableHeading from '../ui/data/TableHeading.astro';
+import TableBody from '../ui/data/TableBody.astro';
+import TableRow from '../ui/data/TableRow.astro';
+import TableCell from '../ui/data/TableCell.astro';
+import TableFooter from '../ui/data/TableFooter.astro';
+import Badge from '../ui/feedback/Badge.astro';
+import Tooltip from '../ui/overlay/Tooltip.astro';
+import Paper from '../ui/primitives/Paper.astro';
+
+const tableBlueprint = `
+#LT#Table#GT#
+  #LT#TableHead#GT#
+    #LT#TableRow#GT#
+      #LT#TableHeading#GT#ID#LT#/TableHeading#GT#
+      #LT#TableHeading align="right"#GT#Status#LT#/TableHeading#GT#
+    #LT#/TableRow#GT#
+  #LT#/TableHead#GT#
+  #LT#TableBody#GT#
+    #LT#TableRow#GT#
+      #LT#TableCell#GT#TX-101#LT#/TableCell#GT#
+      #LT#TableCell align="right"#GT##LT#Badge tone="success"#GT#Paid#LT#/Badge#GT##LT#/TableCell#GT#
+    #LT#/TableRow#GT#
+  #LT#/TableBody#GT#
+#LT#/Table#GT#
+`.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
+---
+
+<Paper padding="lg" layer="1" bordered id="table-showcase" style="anchor-name: --table-showcase;">
+  <Stack gap="md">
+    <SectionLabel text="07 / data ledgers" />
+    <Text as="h2" type="h2">Data Tabulation Tables</Text>
+    <Text tone="subtle">Elegant tables with proper borders, zebra alignment, and semantic badges inside elevated containers.</Text>
+    
+    <Divider />
+    
+    <Paper layer="0" padding="none" bordered class="overflow-hidden">
+      <Table>
+        <TableCaption>Refactoring Execution Ledger</TableCaption>
+        <TableHead>
+          <TableRow>
+            <TableHeading>Component ID</TableHeading>
+            <TableHeading>Refactor Description</TableHeading>
+            <TableHeading>Execution Status</TableHeading>
+            <TableHeading align="right">Safety Check</TableHeading>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell><code>Paper.astro</code></TableCell>
+            <TableCell>Add dynamic <code>--paper-bg</code> fallback property overrides</TableCell>
+            <TableCell><Badge theme="success">Refactored</Badge></TableCell>
+            <TableCell align="right"><code>100% OK</code></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell><code>ProjectCard.astro</code></TableCell>
+            <TableCell>Adopt high-fidelity compositional <code>Card</code> layouts</TableCell>
+            <TableCell><Badge theme="success">Refactored</Badge></TableCell>
+            <TableCell align="right"><code>100% OK</code></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell><code>blog/index.astro</code></TableCell>
+            <TableCell>Inject left-accent gradient lines and sliding arrow triggers</TableCell>
+            <TableCell><Badge theme="success">Refactored</Badge></TableCell>
+            <TableCell align="right"><code>100% OK</code></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell><code>design.astro</code></TableCell>
+            <TableCell>Build sandbox layouts, sibling tooltips, and narrative accordions</TableCell>
+            <TableCell><Badge theme="warning">In Progress</Badge></TableCell>
+            <TableCell align="right"><code>Verifying</code></TableCell>
+          </TableRow>
+        </TableBody>
+        <TableFooter>
+          <TableRow hover={false}>
+            <TableCell>Total Logs</TableCell>
+            <TableCell>4 Architectural Nodes</TableCell>
+            <TableCell>3 Complete, 1 Active</TableCell>
+            <TableCell align="right"><strong>Pass Stable</strong></TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </Paper>
+
+    <!-- Educational Architecture Callout -->
+    <Paper layer="2" class="p-md architectural-rationale">
+      <Stack gap="2xs">
+        <Text as="h4" type="h4" tone="accent">Architectural Rationale: Accessible Ledgers</Text>
+        <Text type="body-sm" tone="subtle">
+          Data ledgers utilize semantic HTML5 tags (<code>&lt;table&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tfoot&gt;</code>) to construct accessible layout layers for screen readers. Padding tokens are derived entirely from global variables.
+        </Text>
+        <details class="code-details">
+          <summary><Text type="caption" tone="accent">Show Table Blueprint</Text></summary>
+          <Code inline={false} language="astro">{tableBlueprint}</Code>
+        </details>
+      </Stack>
+    </Paper>
+  </Stack>
+</Paper>
+<Tooltip id="table-tooltip" anchor="table-showcase" placement="top">
+  Accessible data ledger with zebra layout striping!
+</Tooltip>
+
+<style>
+  .overflow-hidden {
+    overflow: hidden;
+  }
+
+  .architectural-rationale {
+    background: var(--bg-card);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--rad-md);
+    margin-top: var(--space-6);
+  }
+
+  .code-details {
+    margin-top: var(--space-3);
+    cursor: pointer;
+  }
+
+  .code-details summary {
+    font-weight: 500;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .code-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .code-details[open] summary {
+    margin-bottom: var(--space-3);
+  }
+</style>

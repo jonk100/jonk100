@@ -3,9 +3,17 @@
 ───────────────────────────── */
 .text--default { color: var(--text); }
 .text--muted { color: var(--text-muted); }
-.text--subtle { color: var(--text-secondary); }
+.text--subtle { color: var(--text-subtle); }
 .text--accent { color: var(--accent); }
 .text--primary { color: var(--primary); }
 .text--secondary { color: var(--secondary); }
 .text--danger { color: var(--text-danger); }
 .text--success { color: var(--text-success); }
+
+.text--h1 { color: var(--text-0); }
+.text--h2 { color: var(--text-0); }
+.text--h3 { color: var(--text-1); }
+.text--h4 { color: var(--text-2); }
+.text--h5 { color: var(--text-3); }
+.text--h6 { color: var(--text-4); }
+

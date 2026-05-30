@@ -1,0 +1,39 @@
+---
+/**
+ * src/components/ui/layout/Card.astro
+ * A structured content container built on top of Paper.
+ * - Used for displaying semantic content like articles, products, or user profiles.
+ * @props (local): None
+ * @props (global): class, class:list, frame, effects
+ */
+import Paper from '../primitives/Paper.astro';
+import type { FrameVariant, ComponentEffect, ComponentRadius } from '/src/types/variants.types';
+
+export interface Props {
+  frame?: FrameVariant;
+  effects?: ComponentEffect | ComponentEffect[];
+  radius?: ComponentRadius;
+  border?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Paper padding="none" class:list={['card', className, classList]} {...rest}>
+  <slot />
+</Paper>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+</style>

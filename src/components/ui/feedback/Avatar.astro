@@ -10,17 +10,17 @@
  * - status: Online status indicator to display over the avatar ('online', 'offline', 'busy', 'away').
  * - shape: Shape of the avatar ('circle', 'square', 'rounded').
  */
-import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+import type { FrameVariant, ComponentEffect, Sizes } from 'src/types/variants.types';
 
 export interface Props {
   src?: string;
   alt?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | string;
+  size?: Sizes;
   fallback?: string;
   status?: 'online' | 'offline' | 'busy' | 'away';
   shape?: 'circle' | 'square' | 'rounded';
   frame?: FrameVariant;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
@@ -41,10 +41,12 @@ const {
 } = Astro.props;
 
 const sizeMap: Record<string, string> = {
-  sm: '24px',
-  md: '40px',
-  lg: '56px',
-  xl: '80px'
+  xs: 'var(--space-4)',  /* 16px */
+  sm: 'var(--space-6)',  /* 24px */
+  md: 'var(--space-10)', /* 40px */
+  base: 'var(--space-12)', /* 48px */
+  lg: 'var(--space-16)', /* 64px */
+  xl: 'var(--space-20)'  /* 80px */
 };
 
 const dimension = sizeMap[size] || size;
@@ -128,9 +130,8 @@ const fallbackText = fallback || alt.charAt(0).toUpperCase() || '?';
     border-radius: 50%;
     border: 2px solid var(--bg);
   }
-  
-  .avatar-status--online { background: #10b981; }
-  .avatar-status--offline { background: #6b7280; }
-  .avatar-status--busy { background: #ef4444; }
-  .avatar-status--away { background: #f59e0b; }
+  .avatar-status--online { background: var(--text-success); }
+  .avatar-status--offline { background: var(--text-muted); }
+  .avatar-status--busy { background: var(--text-danger); }
+  .avatar-status--away { background: var(--accent); }
 </style>

@@ -1,0 +1,33 @@
+---
+/**
+ * src/components/ui/layout/CardFooter.astro
+ * The footer section of a Card.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['card-footer', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .card-footer {
+    padding: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: auto;
+  }
+</style>

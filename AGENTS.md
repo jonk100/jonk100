@@ -35,5 +35,5 @@ NEVER hardcode pixel values (e.g., `12px`, `#ff0000`, `1.5rem`) in scoped CSS or
 Avoid duplicating CSS styles or TypeScript interfaces across components. If a visual treatment or behavior applies to multiple components (like shapes, frame variants, or hover effects):
 
 1. **Types**: Extract shared types into `src/types/variants.types.ts`.
-2. **CSS**: Extract shared CSS classes (e.g., `.shape--*`, `.frame-variant--*`, `.effect--*`) into `src/styles/variants.css`.
+2. **CSS**: Extract shared CSS classes (e.g., `.shape--*`, `.frame-variant--*`, `.effect--*`) into the appropriate file within `src/styles/variants/` (e.g., `shapes.css`, `frames.css`, `effects.css`).
 3. **Usage**: Import the shared type, accept it as a prop, and conditionally append the global CSS class in the component's `class:list`.

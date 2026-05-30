@@ -1,0 +1,72 @@
+---
+/**
+ * src/components/portfolio/ProjectTransition.astro
+ * Handles custom view transitions for project-to-project navigation.
+ */
+---
+<script>
+  // Add class to HTML during project-to-project navigation
+  document.addEventListener('astro:before-preparation', (e) => {
+    const isFromProject = e.from.pathname.startsWith('/projects/');
+    const isToProject = e.to.pathname.startsWith('/projects/');
+    
+    if (isFromProject && isToProject) {
+      document.documentElement.classList.add('project-to-project');
+      
+      // Remove unique transition names so these elements merge into the root slide transition
+      const hero = document.querySelector('.hero-image');
+      if (hero) hero.style.viewTransitionName = 'none';
+      
+      const content = document.querySelector('.content-container');
+      if (content) content.style.viewTransitionName = 'none';
+    } else {
+      document.documentElement.classList.remove('project-to-project');
+    }
+  });
+
+  // Ensure incoming page also has names removed before transition renders
+  document.addEventListener('astro:before-swap', (e) => {
+    if (document.documentElement.classList.contains('project-to-project')) {
+      // Keep the class on the new document so CSS applies during the transition
+      e.newDocument.documentElement.classList.add('project-to-project');
+      
+      const hero = e.newDocument.querySelector('.hero-image');
+      if (hero) hero.style.viewTransitionName = 'none';
+      
+      const content = e.newDocument.querySelector('.content-container');
+      if (content) content.style.viewTransitionName = 'none';
+    }
+  });
+</script>
+
+<style is:global>
+  /* Custom slide animations for project-to-project navigation */
+  html.project-to-project::view-transition-old(root) {
+    animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) both project-slide-out;
+  }
+  html.project-to-project::view-transition-new(root) {
+    animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) both project-slide-in;
+  }
+  
+  @keyframes project-slide-out {
+    from { 
+      transform: translateX(0); 
+      opacity: 1; 
+    }
+    to { 
+      transform: translateX(-15%); 
+      opacity: 0; 
+    }
+  }
+  
+  @keyframes project-slide-in {
+    from { 
+      transform: translateX(15%); 
+      opacity: 0; 
+    }
+    to { 
+      transform: translateX(0); 
+      opacity: 1; 
+    }
+  }
+</style>

@@ -1,10 +1,26 @@
 ---
+/**
+ * src/pages/blog/index.astro
+ * List all creative and technical blog posts.
+ * - Displays a list of sorted blog posts with elegant tags
+ * - Integrates with our custom responsive Card design components
+ * @props (local): none
+ * @props (global): class, class:list
+ */
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import NavBar from '../../components/portfolio/NavBar.astro';
 import Box from '../../components/ui/layout/Box.astro';
 import Stack from '../../components/ui/layout/Stack.astro';
-import Text from '../../components/ui/primitives/Text.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+import Card from '../../components/ui/card/Card.astro';
+import CardHeader from '../../components/ui/card/CardHeader.astro';
+import CardContent from '../../components/ui/card/CardContent.astro';
+import CardFooter from '../../components/ui/card/CardFooter.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Icon from '../../components/ui/media/Icon.astro';
 
 const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -25,17 +41,38 @@ const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
         <div class="posts-list">
           {sortedPosts.map((post, i) => (
             <a href={`/blog/${post.id}`} class="post-link" style={`animation-delay: ${i * 0.1}s;`}>
-              <article class="post-card">
-                <Text as="time" type="label" tone="subtle" class="post-date">
-                  {post.data.pubDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </Text>
-                <Text as="h2" type="h2" class="post-title">{post.data.title}</Text>
-                <Text as="p" type="body" tone="subtle" class="post-desc">{post.data.description}</Text>
-              </article>
+              <Card layer="1" bordered class="post-card">
+                <div class="card-accent-bar"></div>
+                <CardHeader class="post-header-custom">
+                  <Inline justify="between" align="start" class="w-full">
+                    <div class="flex-1">
+                      <Text as="time" type="label" tone="accent" class="post-date">
+                        {post.data.pubDate.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </Text>
+                      <Text as="h2" type="h4" class="post-title">{post.data.title}</Text>
+                    </div>
+                    <div class="post-arrow">
+                      <Icon name="arrow-up-right" size="var(--space-5)" />
+                    </div>
+                  </Inline>
+                </CardHeader>
+                <CardContent class="post-content-custom">
+                  <Text as="p" type="body" tone="subtle" class="post-desc">{post.data.description}</Text>
+                </CardContent>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <CardFooter class="post-footer-custom">
+                    <Inline gap="xs" wrap>
+                      {post.data.tags.map(tag => (
+                        <Badge theme="ghost" outlined>{tag}</Badge>
+                      ))}
+                    </Inline>
+                  </CardFooter>
+                )}
+              </Card>
             </a>
           ))}
         </div>
@@ -101,31 +138,80 @@ const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
   }
 
   .post-card {
-    padding: var(--space-8);
-    background: rgba(20, 20, 20, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease;
   }
 
   .post-link:hover .post-card {
-    border-color: var(--border);
+    border-color: var(--accent);
     transform: translateX(8px);
-    box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Interactive Accent Bar */
+  .card-accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+
+  .post-link:hover .card-accent-bar {
+    opacity: 1;
+  }
+
+  .post-arrow {
+    color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.3s ease;
+    flex-shrink: 0;
+    margin-left: var(--space-4);
+    margin-top: var(--space-1);
+  }
+
+  .post-link:hover .post-arrow {
+    transform: translate(2px, -2px);
+    color: var(--accent);
+  }
+
+  .w-full {
+    width: 100%;
+  }
+
+  .flex-1 {
+    flex: 1;
+  }
+
+  .post-header-custom {
+    padding: var(--space-6) var(--space-6) var(--space-2) var(--space-6);
+  }
+
+  .post-content-custom {
+    padding: 0 var(--space-6) var(--space-4) var(--space-6);
+  }
+
+  .post-footer-custom {
+    padding: 0 var(--space-6) var(--space-6) var(--space-6);
   }
 
   .post-date {
     display: block;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
     font-family: var(--mono);
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
 
   .post-title {
-    margin-bottom: var(--space-3);
+    margin-bottom: 0;
     transition: color 0.3s ease;
   }
 

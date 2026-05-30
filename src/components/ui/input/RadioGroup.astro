@@ -1,0 +1,51 @@
+---
+/**
+ * src/components/ui/input/RadioGroup.astro
+ * Groups multiple radio buttons together.
+ * @props (local): name, legend
+ * @props (global): class, class:list
+ */
+export interface Props {
+  name: string;
+  legend?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  name,
+  legend,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<fieldset class:list={['radio-group', className, classList]} {...rest}>
+  {legend && <legend class="radio-legend">{legend}</legend>}
+  <div class="radio-options">
+    <slot />
+  </div>
+</fieldset>
+
+<style>
+  .radio-group {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .radio-legend {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: var(--space-3);
+  }
+
+  .radio-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+</style>

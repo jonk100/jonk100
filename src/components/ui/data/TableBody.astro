@@ -1,0 +1,34 @@
+---
+/**
+ * src/components/ui/data/TableBody.astro
+ * The main body section of a table.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<tbody class:list={['table-body', className, classList]} {...rest}>
+  <slot />
+</tbody>
+
+<style>
+  .table-body {
+    /* By default, inner borders are handled by TableRow and TableCell */
+  }
+  
+  /* Apply bottom borders to rows in the body */
+  .table-body :global(.table-row:not(:last-child)) {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+</style>

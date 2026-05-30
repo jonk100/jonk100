@@ -11,9 +11,11 @@
  * - effects: Applies visual effects from predefined ImageEffect types
  * - frame: Applies a decorative frame variant styling
  * - position: Adjusts the object-position CSS property
+ * - fit: Sets the object-fit property (cover, contain, etc)
+ * - zoomable: Enables a lightbox on click (defaults to true if fit="cover")
  */
 import type { HTMLAttributes } from 'astro/types';
-import type { ComponentShape, ComponentRadius, FrameVariant, ComponentEffect as ImageEffect } from '/src/types/variants.types';
+import type { ComponentShape, ComponentRadius, FrameVariant, ComponentEffect } from '/src/types/variants.types';
 
 export interface Props extends HTMLAttributes<'img'> {
   src: string;
@@ -21,10 +23,17 @@ export interface Props extends HTMLAttributes<'img'> {
   shape?: ComponentShape;
   radius?: ComponentRadius;
   fallbackSrc?: string;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
+  loading?: 'eager' | 'lazy';
   frame?: FrameVariant;
   position?: string;
+  fit?: 'cover' | 'contain' | 'fill' | 'none';
+  zoomable?: boolean;
+  caption?: string;
+  captionPosition?: 'top' | 'bottom' | 'o-top' | 'o-bottom';
+  captionAlign?: 'left' | 'center' | 'right';
   class?: string;
+  style?: string | Record<string, any>;
   "class:list"?: Record<string, boolean> | any[];
 }
 
@@ -38,7 +47,13 @@ const {
   effects = [],
   frame = 'none',
   position = 'center',
+  fit = 'cover',
+  zoomable,
+  caption,
+  captionPosition = 'bottom',
+  captionAlign = 'center',
   class: className = '',
+  style = '',
   "class:list": classList = {},
   ...rest
 } = Astro.props;
@@ -52,29 +67,114 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
 
 // Use a tiny 1x1 transparent PNG or the provided fallback if the main image fails
 const errorFallback = fallbackSrc || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+const isZoomable = zoomable ?? (fit === 'cover');
+const imageId = rest.id || `img-${Math.random().toString(36).substring(2, 9)}`;
+const onLoadScript = isZoomable 
+  ? "this.parentElement.previousElementSibling.style.opacity = '0'" 
+  : "this.previousElementSibling.style.opacity = '0'";
+
+const mergedStyle = [
+  `object-position: ${position}`,
+  `object-fit: ${fit}`,
+  typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')
+].filter(Boolean).join(';');
 ---
 
-<figure class:list={["image-container", "base-frame", `shape--${shape}`, radius && `radius--${radius}`, frameClass, ...effectClasses, className, classList]}>
-  <div class="image-skeleton" aria-hidden="true"></div>
-  <img
-    class="image-element"
-    src={src}
-    alt={alt}
-    loading={loading}
-    style={`object-position: ${position};`}
-    onload="this.previousElementSibling.style.opacity = '0'"
-    onerror={`this.onerror=null; this.src='${errorFallback}';`}
-    {...rest}
-  />
+<figure class:list={["figure-container", className, classList]}>
+  {caption && captionPosition === 'top' && (
+    <figcaption class="image-caption caption--top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+  )}
+  <div class:list={["image-container", "base-frame", `shape--${shape}`, radius && `radius--${radius}`, frameClass, ...effectClasses]}>
+    <div class="image-skeleton" aria-hidden="true"></div>
+    {isZoomable ? (
+      <>
+        <button popovertarget={`lightbox-${imageId}`} class="zoom-btn" title="View full image">
+          <img
+            class="image-element"
+            src={src}
+            alt={alt}
+            loading={loading}
+            style={mergedStyle}
+            onload={onLoadScript}
+            onerror={`this.onerror=null; this.src='${errorFallback}';`}
+            {...rest}
+          />
+        </button>
+        <div popover id={`lightbox-${imageId}`} class="lightbox">
+          <button popovertarget={`lightbox-${imageId}`} popovertargetaction="hide" class="lightbox-close" title="Close full image">
+            <img src={src} alt={alt} class="lightbox-img" />
+          </button>
+        </div>
+      </>
+    ) : (
+      <img
+        class="image-element"
+        src={src}
+        alt={alt}
+        loading={loading}
+        style={mergedStyle}
+        onload={onLoadScript}
+        onerror={`this.onerror=null; this.src='${errorFallback}';`}
+        {...rest}
+      />
+    )}
+    {caption && captionPosition === 'o-top' && (
+      <figcaption class="image-caption caption--o-top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+    )}
+    {caption && captionPosition === 'o-bottom' && (
+      <figcaption class="image-caption caption--o-bottom" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+    )}
+  </div>
+  {caption && captionPosition === 'bottom' && (
+    <figcaption class="image-caption caption--bottom" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+  )}
+  <slot />
 </figure>
 
 <style>
+  .figure-container {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
   .image-container {
     position: relative;
     width: 100%;
     margin: 0;
     overflow: hidden;
     transition: all 0.3s ease;
+  }
+
+  .image-caption {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: var(--leading-snug);
+  }
+
+  .caption--o-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-3);
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    color: white;
+    z-index: 2;
+  }
+
+  .caption--o-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-3);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+    color: white;
+    z-index: 2;
   }
 
   .base-frame {
@@ -84,11 +184,63 @@ const errorFallback = fallbackSrc || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAA
   .image-element {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
     transition: opacity 0.3s ease, filter 0.3s ease;
     position: relative;
     z-index: 1;
+  }
+
+  /* ─────────────────────────────
+     Lightbox
+  ───────────────────────────── */
+
+  .zoom-btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    cursor: zoom-in;
+    display: block;
+  }
+
+  .lightbox {
+    margin: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+  
+  .lightbox::backdrop {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .lightbox-close {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: zoom-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: var(--rad-md);
+    box-shadow: var(--shadow-2xl);
   }
 
 

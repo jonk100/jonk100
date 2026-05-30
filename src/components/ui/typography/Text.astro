@@ -49,7 +49,6 @@ const Tag = as;
 <style>
 .text {
   margin: 0;
-  color: var(--text);
 }
 
 /* ─────────────────────────────
@@ -57,43 +56,60 @@ const Tag = as;
 ───────────────────────────── */
 
 .text--body {
-  font-size: var(--font-size-400);
-  line-height: 1.6;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
 }
 
 .text--body-sm {
-  font-size: var(--font-size-300);
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
 }
 
-.text--heading-1 {
-  font-size: var(--font-size-900);
-  line-height: 1.05;
+/* .text--h1, .text--heading-1 {
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tighter);
   letter-spacing: -0.04em;
   font-weight: 700;
+  font-family: var(--display);
 }
 
-.text--heading-2 {
-  font-size: var(--font-size-800);
-  line-height: 1.1;
+.text--h2, .text--heading-2 {
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
   letter-spacing: -0.03em;
   font-weight: 650;
+  font-family: var(--display);
 }
 
-.text--heading-3 {
-  font-size: var(--font-size-700);
-  line-height: 1.15;
+.text--h3, .text--heading-3 {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
   font-weight: 600;
+  font-family: var(--display);
 }
+
+.text--h4, .text--heading-4 {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  font-weight: 600;
+  font-family: var(--display);
+}
+
+.text--h5, .text--heading-5 {
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  font-weight: 600;
+  font-family: var(--display);
+} */
 
 .text--caption {
-  font-size: var(--font-size-200);
+  font-size: var(--text-xs);
   line-height: 1.4;
 }
 
 .text--label {
-  font-size: var(--font-size-200);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.4em;
+}
 </style>

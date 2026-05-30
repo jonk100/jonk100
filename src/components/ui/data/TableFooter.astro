@@ -1,0 +1,31 @@
+---
+/**
+ * src/components/ui/data/TableFooter.astro
+ * The footer section of a table.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<tfoot class:list={['table-footer', className, classList]} {...rest}>
+  <slot />
+</tfoot>
+
+<style>
+  .table-footer {
+    border-top: 1px solid var(--border);
+    background-color: var(--bg-surface);
+    font-weight: 500;
+  }
+</style>

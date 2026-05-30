@@ -1,0 +1,126 @@
+---
+/**
+ * src/components/ui/input/Switch.astro
+ * A styled toggle switch input.
+ * @props (local): id, name, checked, disabled, label, theme
+ * @props (global): class, class:list
+ */
+import type { ComponentTheme } from '/src/types/variants.types';
+
+export interface Props {
+  id?: string;
+  name?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  label?: string;
+  theme?: ComponentTheme;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id = `switch-${Math.random().toString(36).substring(2, 9)}`,
+  name,
+  checked = false,
+  disabled = false,
+  label,
+  theme = 'primary',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<label class:list={['switch-wrapper', { 'is-disabled': disabled }, className, classList]} for={id}>
+  <input
+    type="checkbox"
+    role="switch"
+    id={id}
+    name={name}
+    checked={checked}
+    disabled={disabled}
+    class="switch-input sr-only"
+    aria-checked={checked ? "true" : "false"}
+    {...rest}
+  />
+  <div class:list={['switch-track', `variant--${theme}`]} aria-hidden="true">
+    <div class="switch-thumb"></div>
+  </div>
+  {label && <span class="switch-label">{label}</span>}
+</label>
+
+<style>
+  .switch-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .switch-wrapper.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .switch-input {
+    /* visually hidden but accessible */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .switch-track {
+    width: 2.5rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* When checked, we use the variant's background */
+  .switch-input:checked + .switch-track {
+    background-color: var(--variant-bg);
+    border-color: var(--variant-border);
+  }
+
+  .switch-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    aspect-ratio: 1 / 1;
+    background-color: var(--text);
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  /* When checked, the thumb color should contrast the variant bg */
+  .switch-input:checked + .switch-track .switch-thumb {
+    transform: translateX(1.25rem);
+    background-color: var(--variant-text);
+  }
+
+  /* Focus states */
+  .switch-input:focus-visible + .switch-track {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .switch-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+    user-select: none;
+  }
+</style>

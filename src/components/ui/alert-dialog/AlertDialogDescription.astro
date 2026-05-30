@@ -1,0 +1,12 @@
+---
+import ModalSubheading from '../modal/ModalSubheading.astro';
+
+export interface Props {
+  class?: string;
+  [key: string]: any;
+}
+const { class: className = '', ...rest } = Astro.props;
+---
+<ModalSubheading class:list={['alert-dialog-description', className]} {...rest}>
+  <slot />
+</ModalSubheading>

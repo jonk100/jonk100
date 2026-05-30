@@ -10,8 +10,10 @@
  * - speed: Rotation animation speed preset ('fast', 'normal', 'slow').
  * - tone: Color variant of the spinner head matching theme colors.
  */
+import type { Sizes } from 'src/types/variants.types';
+
 export interface Props {
-  size?: 'sm' | 'md' | 'lg' | 'xl' | string;
+  size?: Sizes;
   speed?: 'fast' | 'normal' | 'slow';
   tone?: 'primary' | 'secondary' | 'accent' | 'text' | 'muted';
   class?: string;
@@ -29,10 +31,12 @@ const {
 } = Astro.props;
 
 const sizeMap: Record<string, string> = {
-  sm: '16px',
-  md: '24px',
-  lg: '32px',
-  xl: '48px'
+  xs: 'var(--space-3)',
+  sm: 'var(--space-4)',
+  md: 'var(--space-6)',
+  base: 'var(--space-8)',
+  lg: 'var(--space-10)',
+  xl: 'var(--space-12)'
 };
 
 const dimension = sizeMap[size] || size;
@@ -42,7 +46,7 @@ const dimension = sizeMap[size] || size;
   class:list={[
     'spinner',
     `spinner--${speed}`,
-    `spinner--tone-${tone}`,
+    `text--${tone}`,
     className,
     classList
   ]}
@@ -80,12 +84,6 @@ const dimension = sizeMap[size] || size;
   .spinner--fast { --speed: 0.6s; }
   .spinner--normal { --speed: 1s; }
   .spinner--slow { --speed: 1.5s; }
-  
-  .spinner--tone-primary { color: var(--primary); }
-  .spinner--tone-secondary { color: var(--secondary); }
-  .spinner--tone-accent { color: var(--accent); }
-  .spinner--tone-text { color: var(--text); }
-  .spinner--tone-muted { color: var(--text-muted); }
 
   .spinner-track {
     opacity: 0.2;

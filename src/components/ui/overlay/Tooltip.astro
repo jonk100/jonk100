@@ -10,7 +10,7 @@
  * - anchor: ID of the DOM element that triggers and anchors the tooltip.
  * - placement: Directional positioning relative to the anchor ('top', 'bottom', 'left', 'right').
  */
-import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+import type { FrameVariant, ImageEffect } from '/src/types/variants.types';
 
 export interface Props {
   id: string;
@@ -102,7 +102,7 @@ const {
     pointer-events: none; /* Tooltips shouldn't block clicks */
     z-index: 9999;
     
-    position: absolute;
+    position: fixed;
     inset: auto;
   }
 

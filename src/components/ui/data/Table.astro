@@ -1,0 +1,39 @@
+---
+/**
+ * src/components/ui/data/Table.astro
+ * The main container for tabular data.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class="table-wrapper">
+  <table class:list={['table', className, classList]} {...rest}>
+    <slot />
+  </table>
+</div>
+
+<style>
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    caption-side: bottom;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+</style>

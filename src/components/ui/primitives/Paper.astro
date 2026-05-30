@@ -4,38 +4,37 @@
  * A structural container with customizable elevation and radius.
  * - Supports elevation levels that affect backgrounds and shadows
  * - Integrates with global frame and effect variants
- * @props (local): elevation, radius, padding, bordered
+ * @props (local): layer, radius, padding, bordered
  * @props (global): class, class:list, frame, effects
- * - elevation: Defines shadow and background based on depth level
+ * - layer: Defines depth/elevation (-1 to 5) affecting shadows and background
  * - radius: Specifies the border radius scale
  * - padding: Sets spacing around the content
  */
-import type { ComponentRadius, SpacingScale, FrameVariant, ComponentEffect as ImageEffect } from '/src/types/variants.types';
-
-// Elevation is a shared prop across Paper and Frame that is meant to be used for shadows and background colors. 
-// The specific styles for each elevation level are defined in CSS, 
-// but the prop is shared to maintain consistency across components.
-//
-export type PaperElevation = 'flat' | 'raised' | 'floating' | 'surface';
+import type { ComponentTheme, ComponentRadius, SpacingScale, FrameVariant, ComponentEffect, ComponentLayer } from '/src/types/variants.types';
+import Text from '../typography/Text.astro';
 
 export interface Props {
-  elevation?: PaperElevation;
+  layer?: ComponentLayer;
   radius?: ComponentRadius;
   padding?: SpacingScale;
   bordered?: boolean;
   frame?: FrameVariant;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
+  theme?: ComponentTheme;
+  caption?: string;
   [key: string]: any;
 }
 
 const {
-  elevation = 'flat',
+  layer = 0,
   radius = 'md',
   padding = 'md',
   bordered = false,
   frame = 'none',
+  theme,
+  caption,
   effects = [],
   class: className = '',
   "class:list": classList = {},
@@ -53,11 +52,12 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
 <div
   class:list={[
     'paper',
-    `paper--${elevation}`,
+    `layer--${layer}`,
     `p-${padding}`,
     `paper--radius-${radius}`,
     { 'paper--bordered': bordered },
     frameClass,
+    theme ? `surface--${theme}` : '',
     ...effectClasses,
     className,
     classList
@@ -65,16 +65,29 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
   {...rest}
 >
   <slot />
+  {caption && (
+    <div class="paper-caption">
+      <Text type="caption">{caption}</Text>
+    </div>
+  )}
 </div>
 
 <style>
 .paper {
-  background: var(--bg-surface);
+  background: var(--paper-bg, var(--bg-surface));
   color: var(--text);
   transition:
     background-color 160ms ease,
     box-shadow 160ms ease,
     border-color 160ms ease;
+}
+
+.paper-caption {
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-strong);
+  border-radius: var(--rad-sm);
 }
 
 /* ─────────────────────────────
@@ -101,24 +114,6 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
   border-radius: var(--rad-xl);
 }
 
-
-/* ─────────────────────────────
-   Elevation
-───────────────────────────── */
-
-.paper--flat {
-  background: var(--bg-surface);
-}
-
-.paper--raised {
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow-sm);
-}
-
-.paper--floating {
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow-lg);
-}
 
 /* ─────────────────────────────
    Border

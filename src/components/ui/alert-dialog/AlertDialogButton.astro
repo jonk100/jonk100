@@ -1,0 +1,26 @@
+---
+import Button from '../controls/Button.astro';
+import type { ComponentTheme } from '/src/types/variants.types';
+
+export interface Props {
+  theme?: ComponentTheme;
+  action?: 'cancel' | 'confirm';
+  class?: string;
+  [key: string]: any;
+}
+const { theme = 'primary', action, class: className = '', ...rest } = Astro.props;
+---
+<Button theme={theme} class:list={['alert-dialog-button', className]} data-dialog-close={action === 'cancel' ? true : undefined} {...rest}>
+  <slot />
+</Button>
+<script>
+  // Script to auto-close dialogs when a cancel button is clicked
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const closeBtn = target.closest('[data-dialog-close]');
+    if (closeBtn) {
+      const dialog = closeBtn.closest('dialog');
+      if (dialog) dialog.close();
+    }
+  });
+</script>

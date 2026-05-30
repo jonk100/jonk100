@@ -16,20 +16,20 @@
   --neutral-100:           rgb(89, 90, 100);
   --neutral-110:           rgb(98, 99, 110);
   --neutral-120:           rgb(107, 108, 120);
-  --neutral-130:           rgb(116, 117, 130);
-  --neutral-140:           rgb(125, 126, 140);
-  --neutral-150:           rgb(134, 135, 150);
-  --neutral-160:           rgb(144, 145, 160);
-  --neutral-170:           rgb(154, 155, 170);
-  --neutral-180:           rgb(164, 165, 180);
-  --neutral-190:           rgb(174, 175, 190);
-  --neutral-200:           rgb(185, 186, 200);
-  --neutral-210:           rgb(196, 197, 210);
-  --neutral-220:           rgb(207, 208, 220);
-  --neutral-230:           rgb(218, 219, 230);
-  --neutral-240:           rgb(224, 227, 240);
-  --neutral-250:           rgb(230, 235, 250);
-  --neutral-255:           rgb(235, 239, 255);
+  --neutral-130:           rgb(116, 123, 130);
+  --neutral-140:           rgb(125, 131, 140);
+  --neutral-150:           rgb(134, 141, 150);
+  --neutral-160:           rgb(144, 151, 160);
+  --neutral-170:           rgb(154, 161, 170);
+  --neutral-180:           rgb(164, 171, 180);
+  --neutral-190:           rgb(174, 183, 190);
+  --neutral-200:           rgb(187, 195, 200);
+  --neutral-210:           rgb(199, 206, 210);
+  --neutral-220:           rgb(210, 216, 220);
+  --neutral-230:           rgb(218, 224, 230);
+  --neutral-240:           rgb(226, 234, 240);
+  --neutral-250:           rgb(232, 241, 250);
+  --neutral-255:           rgb(237, 245, 255);
   --neutral-darkest:                 var(--neutral-10);
   --neutral-darker:                  var(--neutral-20);
   --neutral-dark:                    var(--neutral-40);
@@ -38,93 +38,280 @@
   --neutral-l:                       var(--neutral-200);
   --neutral-lt:                      var(--neutral-220);
   --neutral-light:                   var(--neutral-240); 
-  --neutral-lighter:                 var(--neutral-250);;
+  --neutral-lighter:                 var(--neutral-250);
   --neutral-lightest:                var(--neutral-255);
-  --neutral-light-invert:            var(--neutral-50);;
-  --neutral-dark-invert:             var(--neutral-210);;
+  --neutral-light-invert:            var(--neutral-50);
+  --neutral-dark-invert:             var(--neutral-210);
 
-/** --------------------------------------------------------------|*/
-/**    ── Color:                  Primary, Secondary, Accent        |*/
-/** ------------------------------------------------------------------|*/
-  --primary:                         #f0ede6; 
-  --primary-dim:                     rgba(240, 237, 230, 0.10); 
-  --primary-border:                  rgba(240, 237, 230, 0.28); 
-  --primary-hover:                   #ffffff; 
-  --secondary:                       #686460; 
-  --secondary-dim:                   rgba(104, 100, 96, 0.10);
-  --secondary-border:                rgba(104, 100, 96, 0.30);
-  --secondary-hover:                 #8a8682;
-  --accent:                          #e8c547; 
-  --accent-dim:                      rgba(232, 197, 71, 0.10);
-  --accent-border:                   rgba(232, 197, 71, 0.30); 
-  --accent-hover:                    #b49833;
-  --link:                            var(--accent);
-  --link-hover:                      var(--accent-hover);
+  /** --------------------------------------------------------------  |*/
+  /** ── Blue Scale - Cool Bias                                       |*/
+  /**  ── Tuned for yellows, muted blues, editorial tones             |*/
+  /** --------------------------------------------------------------  |*/
+  --blue-10:  rgb(0, 2, 10);
+  --blue-20:  rgb(2, 8, 20);
+  --blue-30:  rgb(4, 14, 30);
+  --blue-40:  rgb(6, 20, 40);
+  --blue-50:  rgb(8, 26, 50);
+  --blue-60:  rgb(10, 32, 60);
+  --blue-70:  rgb(12, 38, 70);
+  --blue-80:  rgb(14, 45, 80);
+  --blue-90:  rgb(16, 52, 90);
+  --blue-100: rgb(18, 60, 100);
+  --blue-110: rgb(22, 68, 110);
+  --blue-120: rgb(26, 76, 120);
+  --blue-130: rgb(30, 84, 130);
+  --blue-140: rgb(35, 93, 140);
+  --blue-150: rgb(40, 102, 150);
+  --blue-160: rgb(48, 112, 160);
+  --blue-170: rgb(56, 122, 170);
+  --blue-180: rgb(66, 133, 180);
+  --blue-190: rgb(76, 145, 190);
+  --blue-200: rgb(90, 158, 200);
+  --blue-210: rgb(105, 172, 210);
+  --blue-220: rgb(122, 186, 220);
+  --blue-230: rgb(140, 198, 230);
+  --blue-240: rgb(158, 209, 240);
+  --blue-250: rgb(172, 216, 250);
+  --blue-255: rgb(180, 220, 255);
+
+  /** --------------------------------------------------------------  |*/
+  /** ── Yellow Scale                                                 |*/
+  /**  ── Tuned for cool neutrals, atmo-blues, and sage greens        |*/
+  /** --------------------------------------------------------------  |*/
+  --yellow-10:  rgb(10, 8, 0);
+  --yellow-20:  rgb(20, 16, 2);
+  --yellow-30:  rgb(30, 24, 4);
+  --yellow-40:  rgb(40, 32, 6);
+  --yellow-50:  rgb(50, 40, 8);
+  --yellow-60:  rgb(60, 48, 10);
+  --yellow-70:  rgb(70, 56, 12);
+  --yellow-80:  rgb(80, 65, 14);
+  --yellow-90:  rgb(90, 74, 16);
+  --yellow-100: rgb(100, 84, 18);
+  --yellow-110: rgb(110, 94, 22);
+  --yellow-120: rgb(120, 104, 26);
+  --yellow-130: rgb(130, 114, 30);
+  --yellow-140: rgb(140, 124, 35);
+  --yellow-150: rgb(150, 135, 40);
+  --yellow-160: rgb(160, 146, 48);
+  --yellow-170: rgb(170, 157, 56);
+  --yellow-180: rgb(180, 169, 66);
+  --yellow-190: rgb(190, 181, 78);
+  --yellow-200: rgb(200, 193, 92);
+  --yellow-210: rgb(210, 205, 108);
+  --yellow-220: rgb(220, 216, 126);
+  --yellow-230: rgb(228, 225, 146);
+  --yellow-240: rgb(235, 233, 168);
+  --yellow-250: rgb(242, 240, 192);
+  --yellow-255: rgb(248, 245, 205);
+
+  /** --------------------------------------------------------------  |*/
+  /** ── Red Scale                                                    |*/
+  /**  ── Tuned for amber yellows, cool slate neutrals, atmo-blues    |*/
+  /** --------------------------------------------------------------  |*/
+  --red-10:  rgb(10, 0, 2);
+  --red-20:  rgb(20, 2, 4);
+  --red-30:  rgb(30, 4, 6);
+  --red-40:  rgb(40, 6, 8);
+  --red-50:  rgb(50, 8, 10);
+  --red-60:  rgb(60, 10, 12);
+  --red-70:  rgb(70, 12, 14);
+  --red-80:  rgb(80, 14, 16);
+  --red-90:  rgb(90, 16, 18);
+  --red-100: rgb(100, 18, 20);
+  --red-110: rgb(110, 22, 24);
+  --red-120: rgb(120, 26, 28);
+  --red-130: rgb(130, 30, 32);
+  --red-140: rgb(140, 35, 37);
+  --red-150: rgb(150, 40, 42);
+  --red-160: rgb(160, 48, 50);
+  --red-170: rgb(170, 56, 58);
+  --red-180: rgb(180, 66, 68);
+  --red-190: rgb(190, 78, 80);
+  --red-200: rgb(200, 92, 94);
+  --red-210: rgb(210, 108, 110);
+  --red-220: rgb(220, 126, 128);
+  --red-230: rgb(228, 146, 148);
+  --red-240: rgb(235, 168, 170);
+  --red-250: rgb(242, 192, 194);
+  --red-255: rgb(248, 205, 207);
+
+  /** --------------------------------------------------------------    |*/
+  /** ── Greem Scale                                                    |*/
+  /**  ── Tuned for editorial UI's, dashboards, modern dark themes      |*/
+  /** --------------------------------------------------------------    |*/
+  --green-10:  rgb(0, 10, 4);
+  --green-20:  rgb(2, 20, 8);
+  --green-30:  rgb(4, 30, 12);
+  --green-40:  rgb(6, 40, 16);
+  --green-50:  rgb(8, 50, 20);
+  --green-60:  rgb(10, 60, 24);
+  --green-70:  rgb(12, 70, 28);
+  --green-80:  rgb(14, 80, 32);
+  --green-90:  rgb(16, 90, 36);
+  --green-100: rgb(18, 100, 40);
+  --green-110: rgb(22, 110, 46);
+  --green-120: rgb(26, 120, 52);
+  --green-130: rgb(30, 130, 58);
+  --green-140: rgb(35, 140, 65);
+  --green-150: rgb(40, 150, 72);
+  --green-160: rgb(48, 160, 82);
+  --green-170: rgb(56, 170, 92);
+  --green-180: rgb(66, 180, 104);
+  --green-190: rgb(78, 190, 118);
+  --green-200: rgb(92, 200, 134);
+  --green-210: rgb(108, 210, 152);
+  --green-220: rgb(126, 220, 170);
+  --green-230: rgb(146, 228, 188);
+  --green-240: rgb(168, 235, 206);
+  --green-250: rgb(192, 242, 224);
+  --green-255: rgb(205, 248, 236);
+
+  /** --------------------------------------------------------------|*/
+  /**    ── Color:                  Primary, Secondary, Accent        |*/
+  /** ------------------------------------------------------------------|*/
+  --primary:                          var(--blue-200);
+  --primary-dim:                      var(--blue-100);
+  --primary-border:                   var(--blue-90);
+  --primary-border-strong:            var(--blue-220);
+  --primary-hover:                    var(--blue-180);
+  --secondary:                        var(--red-200); 
+  --secondary-dim:                    var(--red-100);
+  --secondary-border:                 var(--red-90);
+  --secondary-border-strong:          var(--red-220);
+  --secondary-hover:                  var(--red-180);
+   --accent:                          var(--yellow-200);
+  --accent-dim:                       var(--yellow-100);
+  --accent-border:                    var(--yellow-90);
+  --accent-border-strong:             var(--yellow-220);
+  --accent-hover:                     var(--yellow-180);
 
 
-  /** -------------------------------------------------------------------|*/
-  /**    ── Color:                   Neutrals ───                        |*/
-  /** -----------------------------------------------------------------|*/
-
+  /** -----------------------------------------------|*/
+  /**    ── RGB Aliases                              |*/
+  /** -----------------------------------------------|*/
+  --primary-rgb:                      90, 158, 200;
+  --primary-dim-rgb:                  18, 60, 100;
+  --primary-border-rgb:               16, 52, 90;
+  --primary-border-strong-rgb:        122, 186, 220;
+  --primary-hover-rgb:                66, 133, 180;
+  --secondary-rgb:                    200, 92, 94;
+  --secondary-dim-rgb:                100, 18, 20;
+  --secondary-border-rgb:             90, 16, 18;
+  --secondary-border-strong-rgb:      220, 126, 128;
+  --secondary-hover-rgb:              180, 66, 68;
+  --accent-rgb:                       200, 193, 92;
+  --accent-dim-rgb:                   100, 84, 18;
+  --accent-border-rgb:                90, 74, 16;
+  --accent-border-strong-rgb:         220, 195, 126;
+  --accent-hover-rgb:                 180, 169, 66;
+  --bg-rgb:                           8, 9, 10;
+  --bg-surface-rgb:                   17, 18, 20;
+  --bg-elevated-rgb:                  35, 36, 40;
+  --bg-card-rgb:                      53, 54, 60;
+  --txt-rgb:                          207, 208, 220;
+  --txt-surface-rgb:                  96, 197, 210;
+  --txt-elevated-rgb:                 230, 235, 250;
+  --txt-card-rgb:                     224, 227, 240;
+  --txt-link-rgb:                     200, 193, 92;
+  --txt-link-hover-rgb:               180, 169, 66;
+  --txt-inverse-rgb:                  196, 197, 210;
+  --txt-muted-rgb:                    134, 135, 150;
 
   /** -----------------------------------------------|*/
   /**                  SEMANTICS                    |*/
   /** ----------------------------------------------*/
-  --background:                      var(--neutral-darkest);
-  --background-surface:              var(--neutral-darker);
-  --background-elevated:             var(--neutral-dark);
-  --background-card:                 var(--neutral-dk);
-  --text:                            var(--neutral-220); 
-  --text-surface:                    var(--neutral-210);
-  --text-elevated:                   var(--neutral-250);
-  --text-card:                       var(--neutral-240);
-  --text-link:                       var(--accent);
-  --text-link-hover:                 var(--accent-hover);
-  --text-inverse:                    var(--neutral-darkest);
-  --text-muted:                      var(--neutral-150);
+  --background:                 var(--neutral-darkest);
+  --background-surface:         var(--neutral-darker);
+  --background-elevated:        var(--neutral-dark);
+  --background-card:            var(--neutral-dk);
+  --text:                       var(--neutral-210); 
+  --text-surface:               var(--neutral-220);
+  --text-elevated:              var(--neutral-230);
+  --text-card:                  var(--neutral-250);
+  --text-link:                  var(--accent);
+  --text-link-hover:            var(--accent-hover);
+  --text-inverse:               var(--neutral-darkest);
+  --text-subtle:                var(--neutral-200);
+  --text-muted:                 var(--neutral-150);
   --bg:                         var(--neutral-darkest);
   --bg-surface:                 var(--neutral-darker);
   --bg-elevated:                var(--neutral-dark);
   --bg-card:                    var(--neutral-dk);
-  --txt:                       var(--neutral-220); 
-  --txt-surface:               var(--neutral-210);
-  --txt-elevated:              var(--neutral-250);
-  --txt-card:                  var(--neutral-240);
-  --txt-link:                  var(--accent);
-  --txt-link-hover:            var(--accent-hover);
-  --txt-inverse:               var(--neutral-dark-invert);
-  --txt-muted:                 #343230; 
+  --txt:                        var(--neutral-210); 
+  --txt-surface:                var(--neutral-220);
+  --txt-elevated:               var(--neutral-230);
+  --txt-card:                   var(--neutral-250);
+  --txt-link:                   var(--accent);
+  --txt-link-hover:             var(--accent-hover);
+  --txt-inverse:                var(--neutral-dark-invert);
+  --txt-subtle:                 var(--neutral-200);
+  --txt-muted:                  #343230; 
   --text-secondary:             var(--secondary);
   --text-danger:                rgb(255, 90, 90);
   --text-success:               rgb(90, 255, 170);
   --text-warning:               rgb(255, 210, 90);
   --border:                     #1e1e1e;
-  --border-strong:              #2a2a2a;
- 
+  --border-subtle:              rgba(255, 255, 255, 0.05);
+  --border-strong:              var(--accent-border);
+  --link:                       var(--accent);
+  --link-hover:                 var(--accent-hover);
 
-/**                                                           */
-/**             LIGHT THEME                                   */
-/**                                                          */
+  /**                                                           */
+  /**             LIGHT THEME                                   */
+  /**                                                          */
   html.light { 
-    --bg:                rgb(var(--neutral-255));
-    --bg-surface:        rgb(var(--neutral-230));
-    --bg-elevated:       rgb(var(--neutral-210));
-    --bg-card:           rgb(var(--neutral-l80));
-    --text:              rgb(var(--neutral-inv));
-    --text-surface:      rgb(var(--neutral-40));
-    --text-elevated:     rgb(var(--neutral-30));
-    --text-card:         rgb(var(--neutral-20));
-    --text-link:         var(--neutral-240);
-    --text-link-hover:   var(--neutral-220);
+    --bg:                var(--neutral-255);
+    --bg-surface:        var(--neutral-230);
+    --bg-elevated:       var(--neutral-210);
+    --bg-card:           var(--neutral-180);
+    --text:              var(--neutral-80);
+    --text-surface:      var(--neutral-60);
+    --text-elevated:     var(--neutral-40);
+    --text-card:         var(--neutral-20);
+    --text-link:         var(--blue-140);
+    --text-link-hover:   var(--blue-160);
     --accent:            var(--accent);
     --accent-hover:      var(--accent-hover);
     --accent-border:     var(--accent-border);
-    --border:            rgba(var(--neutral-50), 0.15);
-    --border-strong:     rgba(var(--neutral-50), 0.30);
-    --text-muted:        rgba(var(--neutral-200), 0.55);
-    --text-inverse:      rgb(var(--neutral-dark-invert));
+    --border:            color-mix(in srgb, var(--neutral-50) 15%, transparent);
+    --border-subtle:     color-mix(in srgb, var(--neutral-50) 6%, transparent);
+    --border-strong:     color-mix(in srgb, var(--neutral-50) 30%, transparent);
+    --text-muted:        var(--neutral-110);
+    --text-inverse:      var(--neutral-255);
     --text-danger:       rgb(200, 40, 40);
     --text-success:      rgb(20, 150, 90);
     --text-warning:      rgb(200, 150, 40);
+    --surface-0:         var(--bg);
+    --surface-1:         var(--bg-surface);
+    --surface-2:         var(--neutral-220);
+    --surface-3:         var(--neutral-210);
+    --surface-4:         var(--neutral-200);
+    --surface-5:         var(--neutral-180);
   }
+
+  /**                                            */
+  /**            Surface Hierarchy              */
+  /**                                         */
+  --surface-0: var(--bg);
+  --surface-1: var(--bg-surface);
+  --surface-2: var(--neutral-30);
+  --surface-3: var(--neutral-40);
+  --surface-4: var(--neutral-50);
+  --surface-5: var(--neutral-60);
+  --text-0: var(--text);
+  --text-1: var(--text-surface);
+  --text-2: var(--text-elevated);
+  --text-3: var(--text-card);
+  --text-4: color-mix(
+    in srgb,
+    var(--text-card) 75%,
+    var(--text)
+  );
+  --text-5: color-mix(
+    in srgb,
+    var(--text-card) 60%,
+    var(--text)
+  );
+
 }

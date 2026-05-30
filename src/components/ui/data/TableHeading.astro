@@ -1,0 +1,39 @@
+---
+/**
+ * src/components/ui/data/TableHeading.astro
+ * A header cell within a table.
+ * @props (local): align
+ * @props (global): class, class:list
+ */
+export interface Props {
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  align = 'left',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<th class:list={['table-heading', `text-${align}`, className, classList]} {...rest}>
+  <slot />
+</th>
+
+<style>
+  .table-heading {
+    padding: var(--space-3) var(--space-4);
+    color: var(--text-muted);
+    font-weight: 500;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .text-left { text-align: left; }
+  .text-center { text-align: center; }
+  .text-right { text-align: right; }
+</style>

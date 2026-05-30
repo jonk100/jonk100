@@ -1,0 +1,36 @@
+---
+/**
+ * src/components/ui/layout/CardContent.astro
+ * The main content section of a Card.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['card-content', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .card-content {
+    padding: var(--space-5);
+    padding-top: 0; /* Assumes it follows CardHeader. Override if standalone */
+    flex-grow: 1;
+  }
+  
+  /* If it's the first child, it needs top padding */
+  .card-content:first-child {
+    padding-top: var(--space-5);
+  }
+</style>

@@ -4,14 +4,16 @@
  * Renders a placeholder skeleton for loading states.
  * - Features an animated shimmer effect for visual feedback.
  * - Supports customizable width, height, and border radius.
- * @props (local): width, height, rounded, animated
- * @props (global): class, class:list
- * - rounded: Border radius rounding preset ('none', 'sm', 'md', 'lg', 'xl', 'full').
+ * @props (local): width, height, animated
+ * @props (global): class, class:list, rounded
+ * - rounded: Border radius rounding preset
  */
+import type { ComponentRadius } from 'src/types/variants.types';
+
 export interface Props {
   width?: string;
   height?: string;
-  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  rounded?: ComponentRadius;
   animated?: boolean;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
@@ -32,7 +34,7 @@ const {
 <div
   class:list={[
     'skeleton',
-    `skeleton--rounded-${rounded}`,
+    `radius--${rounded}`,
     { 'skeleton--animated': animated },
     className,
     classList
@@ -47,13 +49,6 @@ const {
     position: relative;
     overflow: hidden;
   }
-  
-  .skeleton--rounded-none { border-radius: 0; }
-  .skeleton--rounded-sm { border-radius: var(--rad-sm); }
-  .skeleton--rounded-md { border-radius: var(--rad-md); }
-  .skeleton--rounded-lg { border-radius: var(--rad-lg); }
-  .skeleton--rounded-xl { border-radius: var(--rad-xl); }
-  .skeleton--rounded-full { border-radius: var(--rad-full); }
   
   .skeleton--animated::after {
     content: "";

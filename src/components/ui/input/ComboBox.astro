@@ -1,0 +1,140 @@
+---
+/**
+ * src/components/ui/input/ComboBox.astro
+ * A native datalist-backed text input allowing text entry with predefined suggestions.
+ * @props (local): options, label, placeholder, error, hint, disabled, theme, size, id, name
+ * @props (global): class, class:list
+ */
+import type { ComponentTheme, Sizes } from '/src/types/variants.types';
+import InputIcon from './InputIcon.astro';
+
+export interface Props {
+  options: { value: string; label?: string }[];
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  hint?: string;
+  disabled?: boolean;
+  required?: boolean;
+  theme?: ComponentTheme;
+  size?: Sizes;
+  id?: string;
+  name?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  options = [],
+  label,
+  placeholder,
+  error,
+  hint,
+  disabled = false,
+  required = false,
+  theme = 'default',
+  size = 'md',
+  id = `combobox-${Math.random().toString(36).substring(2, 9)}`,
+  name,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const datalistId = `${id}-list`;
+---
+
+<div class:list={['input-wrapper', className, classList]}>
+  {label && (
+    <label for={id} class="input-label">
+      {label} {required && <span class="required">*</span>}
+    </label>
+  )}
+  
+  <div class="combobox-container">
+    <input
+      id={id}
+      name={name}
+      type="text"
+      list={datalistId}
+      placeholder={placeholder}
+      disabled={disabled}
+      required={required}
+      aria-invalid={!!error}
+      aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+      class:list={[
+        'control',
+        `variant--${theme}`,
+        `control--${size}`,
+        'combobox-field',
+        { 'input-field--error': error }
+      ]}
+      {...rest}
+    />
+    <InputIcon name="chevron-down" position="right" />
+  </div>
+  
+  <datalist id={datalistId}>
+    {options.map(option => (
+      <option value={option.value}>{option.label}</option>
+    ))}
+  </datalist>
+  
+  {error && <span id={`${id}-error`} class="input-error">{error}</span>}
+  {hint && !error && <span id={`${id}-hint`} class="input-hint">{hint}</span>}
+</div>
+
+<style>
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .input-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .required {
+    color: var(--accent);
+  }
+
+  .combobox-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .combobox-field {
+    justify-content: flex-start;
+    text-align: left;
+    cursor: text;
+    width: 100%;
+    padding-inline-end: var(--space-10) !important;
+  }
+
+  .combobox-field:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  .input-field--error {
+    border-color: var(--text-danger);
+  }
+
+  .input-error {
+    font-size: var(--text-xs);
+    color: var(--text-danger);
+    margin-top: calc(var(--space-1) * -1);
+  }
+
+  .input-hint {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-top: calc(var(--space-1) * -1);
+  }
+</style>

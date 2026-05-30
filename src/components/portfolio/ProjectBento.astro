@@ -9,17 +9,17 @@
  * - frame: Applies a specific frame style variant to the component
  * - effects: Applies single or multiple image effects to the component
  */
-import type { FrameVariant, ImageEffect } from '@/types/variants.types';
+import type { FrameVariant, ComponentEffect } from 'src/types/variants.types';
 import { getCollection } from 'astro:content';
 import Box from '../ui/layout/Box.astro';
-import SectionLabel from '../SectionLabel.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
 import BentoGrid from '../ui/layout/BentoGrid.astro';
 import BentoCell from '../ui/layout/BentoCell.astro';
 import ProjectCard from './ProjectCard.astro';
 
 export interface Props {
   frame?: FrameVariant;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
 }

@@ -1,0 +1,34 @@
+---
+export interface Props {
+  for: string; // The ID of the modal to close
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+const { for: commandFor, class: className = '', "class:list": classList = {}, ...rest } = Astro.props;
+---
+<button commandfor={commandFor} command="close" class:list={["modal-close", className, classList]} aria-label="Close dialog" {...rest}>
+  <slot>
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  </slot>
+</button>
+<style>
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: var(--space-2);
+    margin: calc(var(--space-2) * -1);
+    border-radius: var(--rad-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover {
+    background: var(--bg-elevated);
+    color: var(--text);
+  }
+</style>

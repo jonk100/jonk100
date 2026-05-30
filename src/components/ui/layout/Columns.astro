@@ -1,0 +1,58 @@
+---
+/**
+ * src/components/ui/layout/Columns.astro
+ * A flex/grid wrapper that automatically sizes children into columns.
+ * @props (local): layout, gap
+ * @props (global): class, class:list
+ * - layout: A string of numbers representing fractional column widths (e.g. "121" -> 1fr 2fr 1fr).
+ *   If omitted, all children automatically receive equal width.
+ */
+import type { SpacingScale } from '/src/types/variants.types';
+
+export interface Props {
+  layout?: string | number;
+  gap?: SpacingScale;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  layout,
+  gap = 'md',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+let gridTemplateColumns;
+
+if (layout) {
+  // Convert "121" -> "1fr 2fr 1fr"
+  const chars = String(layout).split('');
+  gridTemplateColumns = chars.map(char => `${char}fr`).join(' ');
+}
+---
+
+<div 
+  class:list={['columns-wrapper', `gap-${gap}`, className, classList]} 
+  style={gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns}` : undefined}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .columns-wrapper {
+    display: grid;
+    /* If no layout is provided, auto-flow creates equal-width columns for all children */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .gap-xs { gap: var(--space-2); }
+  .gap-sm { gap: var(--space-4); }
+  .gap-md { gap: var(--space-6); }
+  .gap-lg { gap: var(--space-8); }
+  .gap-xl { gap: var(--space-12); }
+</style>

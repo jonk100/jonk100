@@ -1,0 +1,96 @@
+---
+/**
+ * src/components/design/FeedbackFeeds.astro
+ * Feedback & Feeds section showcasing loaders and indicators.
+ * - Displays avatars with live status rings.
+ * - Exhibits spinner loading states and skeleton cards.
+ * - Shows banner Alerts of varying theme types.
+ * - Anchors sibling tooltip component explanation.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Grid from '../ui/layout/Grid.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Divider from '../ui/layout/Divider.astro';
+import Avatar from '../ui/feedback/Avatar.astro';
+import Badge from '../ui/feedback/Badge.astro';
+import Spinner from '../ui/feedback/Spinner.astro';
+import Skeleton from '../ui/feedback/Skeleton.astro';
+import Alert from '../ui/feedback/Alert.astro';
+import Tooltip from '../ui/overlay/Tooltip.astro';
+import Paper from '../ui/primitives/Paper.astro';
+---
+
+<Paper padding="lg" layer="1" bordered id="feedback-showcase" style="anchor-name: --feedback-showcase;">
+  <Stack gap="md">
+    <SectionLabel text="06 / feedback feeds" />
+    <Text as="h2" type="h2">Status & Loading States</Text>
+    <Text tone="subtle">Micro-indicators and visual state feedback to ensure a smooth, delightful user experience.</Text>
+    
+    <Divider />
+    
+    <Grid cols={2} gap="lg">
+      <!-- Avatars & Badges -->
+      <Stack gap="md">
+        <Text as="h3" type="h3">Avatars & Metadata Tags</Text>
+        <Inline gap="md" align="center" wrap>
+          <Avatar src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" size="lg" status="online" />
+          <Avatar fallback="JD" size="md" status="busy" shape="rounded" />
+          <Avatar fallback="AA" size="sm" status="offline" shape="circle" />
+        </Inline>
+        
+        <Inline gap="xs" wrap>
+          <Badge theme="primary">Primary Tag</Badge>
+          <Badge theme="accent">Accent Alert</Badge>
+          <Badge theme="success" outlined>Operational</Badge>
+          <Badge theme="danger" outlined>Critical Error</Badge>
+          <Badge theme="warning">Warning Block</Badge>
+        </Inline>
+      </Stack>
+      
+      <!-- Spinners & Skeletons -->
+      <Stack gap="md">
+        <Text as="h3" type="h3">Progress Feeds</Text>
+        <Inline gap="md" align="center">
+          <Spinner size="lg" tone="accent" />
+          <Spinner size="md" tone="primary" />
+          <Spinner size="sm" tone="muted" />
+        </Inline>
+        
+        <Paper layer="0" class="p-sm">
+          <Stack gap="sm">
+            <Skeleton variant="text" width="60%" />
+            <Skeleton variant="text" />
+            <Inline gap="sm">
+              <Skeleton variant="avatar" />
+              <Skeleton variant="rect" width="120px" height="24px" />
+            </Inline>
+          </Stack>
+        </Paper>
+      </Stack>
+    </Grid>
+    
+    <Stack gap="sm" class="mt-4">
+      <Text as="h3" type="h3">Callout Banners (Alerts)</Text>
+      <Alert theme="primary" title="Refactoring Upgrade Pending">
+        Component library upgraded to standard JSDocs and clean layer custom property boundaries.
+      </Alert>
+      <Alert theme="danger" title="Build Pipeline Blocked">
+        Compilation failures encountered on relative layout paths. Verify resolving components folder structures.
+      </Alert>
+    </Stack>
+  </Stack>
+</Paper>
+<Tooltip id="feedback-tooltip" anchor="feedback-showcase" placement="top">
+  Skeleton loading placeholders and semantic badge clusters!
+</Tooltip>
+
+<style>
+  .mt-4 {
+    margin-top: var(--space-4);
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+/**
+ * src/components/ui/primitives/List.astro
+ * A semantic wrapper for ul, ol, and dl lists.
+ * - Supports custom bullet styles and spacing
+ * @props (local): as, type, gap
+ * @props (global): class, class:list
+ */
+import type { SpacingScale } from '/src/types/variants.types';
+
+export interface Props {
+  as?: 'ul' | 'ol' | 'dl';
+  type?: 'disc' | 'decimal' | 'none';
+  gap?: SpacingScale;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  as: Tag = 'ul',
+  type = 'disc',
+  gap = 'sm',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<Tag class:list={['list', `list--${type}`, `gap-${gap}`, className, classList]} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .list {
+    margin: 0;
+    padding-left: var(--space-5);
+    color: var(--text);
+  }
+  
+  .list--none {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .list--disc {
+    list-style: disc;
+  }
+  
+  .list--decimal {
+    list-style: decimal;
+  }
+
+  /* List item spacing */
+  .list.gap-sm :global(li:not(:last-child)), .list.gap-sm :global(dt:not(:last-child)), .list.gap-sm :global(dd:not(:last-child)) { margin-bottom: var(--space-2); }
+  .list.gap-md :global(li:not(:last-child)), .list.gap-md :global(dt:not(:last-child)), .list.gap-md :global(dd:not(:last-child)) { margin-bottom: var(--space-4); }
+  .list.gap-lg :global(li:not(:last-child)), .list.gap-lg :global(dt:not(:last-child)), .list.gap-lg :global(dd:not(:last-child)) { margin-bottom: var(--space-6); }
+</style>

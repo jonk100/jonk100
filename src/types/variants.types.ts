@@ -1,4 +1,4 @@
-export type ComponentTheme = "primary" | "ghost" | "secondary" | "outline" | "default";
+export type ComponentTheme = "primary" | "ghost" | "secondary" | "outline" | "accent" | "default" | "success" | "warning" | "danger";
 export type Sizes = "xs" | "sm" | "md" | "base" | "lg" | "xl" | "icon" | "icon-sm" | "icon-lg";
 export type WrapperSize = "sm" | "md" | "lg" | "xl" | "full" | "screen";
 
@@ -24,3 +24,6 @@ export interface FlexboxProps {
   justify?: 'start' | 'center' | 'end' | 'space-between' | 'space-around';
   wrap?: boolean;
 }
+
+export type ComponentLayer = "-1" | "0" | "1" | "2" | "3" | "4" | "5";
+

@@ -18,6 +18,7 @@ export interface Props {
   padding?: SpacingScale;
   margin?: SpacingScale;
   display?: 'block' | 'inline-block' | 'inline' | 'flex' | 'grid' | 'none';
+  layer?: -1 | 0 | 1 | 2 | 3 | 4 | 5;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   frame?: FrameVariant;
@@ -31,6 +32,7 @@ const {
   padding,
   margin,
   display,
+  layer,
   class: className = '',
   "class:list": classList = {},
   frame,
@@ -45,6 +47,7 @@ const {
     'box',
     padding && `p-${padding}`,
     margin && `m-${margin}`,
+    layer !== undefined && `layer--${layer}`,
     className,
     classList,
     frame,

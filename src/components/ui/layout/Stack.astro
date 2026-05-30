@@ -54,10 +54,6 @@ const {
   /* Lobotomized owl selector for generic sibling borders */
   .stack--divided > :global(* + *) {
     border-top: 1px solid var(--border);
-    /* Gap handles the spacing between the border and the next element natively in flexbox, 
-       but we want padding above the border equal to the gap so the border is perfectly centered.
-       Since we can't extract CSS var values easily without inline styles, 
-       we rely on flex gap which creates space between elements including the border on the bottom element. */
     padding-top: calc(var(--gap-value, 1rem) / 2);
   }
 </style>

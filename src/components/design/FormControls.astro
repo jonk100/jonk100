@@ -1,0 +1,131 @@
+---
+/**
+ * src/components/design/FormControls.astro
+ * Form Controls section showcasing accessible data entry inputs.
+ * - Displays search bars, input groups, custom selects.
+ * - Exhibits Switches, Checkboxes, and Radio fields.
+ * - Anchors sibling tooltip component explanation.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import Code from '../ui/typography/Code.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Grid from '../ui/layout/Grid.astro';
+import Divider from '../ui/layout/Divider.astro';
+import Input from '../ui/input/Input.astro';
+import InputGroup from '../ui/input/InputGroup.astro';
+import Select from '../ui/input/Select.astro';
+import Search from '../ui/input/Search.astro';
+import Switch from '../ui/input/Switch.astro';
+import Checkbox from '../ui/input/Checkbox.astro';
+import Radio from '../ui/input/Radio.astro';
+import RadioGroup from '../ui/input/RadioGroup.astro';
+import Button from '../ui/controls/Button.astro';
+import Tooltip from '../ui/overlay/Tooltip.astro';
+import Paper from '../ui/primitives/Paper.astro';
+
+const formBlueprint = `
+#LT#InputGroup#GT#
+  #LT#Input placeholder="Enter domain..." /#GT#
+  #LT#Button theme="primary"#GT#Check#LT#/Button#GT#
+#LT#/InputGroup#GT#
+`.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
+---
+
+<Paper padding="lg" layer="1" bordered id="form-showcase" style="anchor-name: --form-showcase;">
+  <Stack gap="md">
+    <SectionLabel text="04 / form controls" />
+    <Text as="h2" type="h2">Data Entry Primitives</Text>
+    <Text tone="subtle">Accessible form inputs including searching controls, custom selects, switches, checkbox options, and radio sets.</Text>
+    
+    <Divider />
+    
+    <Grid cols={2} gap="lg">
+      <!-- Search & Text inputs -->
+      <Stack gap="md">
+        <Text as="h3" type="h3">Text & Search Fields</Text>
+        
+        <Input label="Username" type="text" placeholder="jon_doe" hint="Username must be unique." />
+        
+        <Search placeholder="Quick search blueprints..." />
+        
+        <InputGroup>
+          <Input placeholder="Enter verification code..." />
+          <Button theme="primary">Verify</Button>
+        </InputGroup>
+        
+        <Select label="Visual Theme Preference">
+          <option>Follow System Default</option>
+          <option>Sleek Editorial Dark</option>
+          <option>Harmonious Paper Light</option>
+        </Select>
+      </Stack>
+      
+      <!-- Toggleable states -->
+      <Stack gap="md">
+        <Text as="h3" type="h3">Toggles & Selection Choices</Text>
+        
+        <Switch label="Dynamic UI Motion Effects" checked />
+        
+        <Checkbox label="Accept license agreement" checked />
+        <Checkbox label="Notify me on release candidate builds" />
+        
+        <RadioGroup legend="Hosting Package Tier" name="hosting-tier">
+          <Radio name="hosting-tier" value="community" label="Community Cloud (Free)" checked />
+          <Radio name="hosting-tier" value="pro" label="Pro Developer ($15/mo)" />
+          <Radio name="hosting-tier" value="enterprise" label="Dedicated Enterprise ($120/mo)" />
+        </RadioGroup>
+      </Stack>
+    </Grid>
+
+    <!-- Educational Architecture Callout -->
+    <Paper layer="2" class="p-md architectural-rationale">
+      <Stack gap="2xs">
+        <Text as="h4" type="h4" tone="accent">Architectural Rationale: Accessible Form Inlets</Text>
+        <Text type="body-sm" tone="subtle">
+          Form input groups utilize flex margins and exact positioning to align checkables cleanly. Switch toggles are fully keyboard-accessible and inherit color states natively on focus.
+        </Text>
+        <details class="code-details">
+          <summary><Text type="caption" tone="accent">Show Form Group Blueprint</Text></summary>
+          <Code inline={false} language="astro">{formBlueprint}</Code>
+        </details>
+      </Stack>
+    </Paper>
+  </Stack>
+</Paper>
+<Tooltip id="form-tooltip" anchor="form-showcase" placement="top">
+  Keyboard-accessible inputs, checkboxes, and toggle switches!
+</Tooltip>
+
+<style>
+  .architectural-rationale {
+    background: var(--bg-card);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--rad-md);
+    margin-top: var(--space-6);
+  }
+
+  .code-details {
+    margin-top: var(--space-3);
+    cursor: pointer;
+  }
+
+  .code-details summary {
+    font-weight: 500;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .code-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .code-details[open] summary {
+    margin-bottom: var(--space-3);
+  }
+</style>

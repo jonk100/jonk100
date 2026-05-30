@@ -10,7 +10,9 @@
 import Box from '../ui/layout/Box.astro';
 import Stack from '../ui/layout/Stack.astro';
 import Inline from '../ui/layout/Inline.astro';
-import Text from '../ui/primitives/Text.astro';
+import Text from '../ui/typography/Text.astro';
+import Badge from '../ui/feedback/Badge.astro';
+import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-heading">
@@ -23,23 +25,27 @@ import Text from '../ui/primitives/Text.astro';
 
       <!-- Name -->
       <h1 class="hero-name fade-up-2" id="hero-heading">
-        Jon<br><em>Doe</em>
+        jon<em>k100</em>
       </h1>
-
+      <BadgeGroup size="md">
+        <Badge theme="primary">WRITER</Badge>
+        <Badge theme="ghost">MUSICIAN</Badge>
+        <Badge theme="ghost">TEACHER</Badge>
+        <Badge theme="accent">DEVELOPER</Badge>
+      </BadgeGroup>   
       <!-- Tagline -->
       <Text as="p" type="body" tone="subtle" class="hero-tagline fade-up-3">
-        Teacher, musician, and frontend developer.<br/>
-        I build thoughtful web apps with Astro and TypeScript.
+        <strong>I enjoy building stuff</strong> that helps me write and teach more efficiently -- usually with Astro and TypeScript. Check out what I'm working on and hit me up!
       </Text>
 
       <!-- Status -->
       <Inline align="center" gap="sm" class="hero-status fade-up-4">
         <Inline align="center" gap="xs">
           <div class="status-dot" aria-hidden="true"></div>
-          <Text as="span" type="label" tone="subtle" class="status-text">Currently building Writty</Text>
+          <Text as="span" type="label" tone="secondary" size="base" class="status-text">Currently writing</Text>
         </Inline>
         <div class="status-divider" aria-hidden="true"></div>
-        <Text as="span" type="label" tone="subtle" class="status-text">open to collaboration</Text>
+        <Text as="span" type="label" tone="muted" class="status-text">open to collaboration</Text>
       </Inline>
     </Stack>
   </Box>

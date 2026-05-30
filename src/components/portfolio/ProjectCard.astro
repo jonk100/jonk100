@@ -10,10 +10,12 @@
  * - effects: Applies single or multiple image effects to the card
  */
 import type { FrameVariant, ComponentEffect } from 'src/types/variants.types';
-import Paper from '../ui/primitives/Paper.astro';
-import Stack from '../ui/layout/Stack.astro';
+import Card from '../ui/card/Card.astro';
+import CardHeader from '../ui/card/CardHeader.astro';
+import CardContent from '../ui/card/CardContent.astro';
+import CardFooter from '../ui/card/CardFooter.astro';
 import Inline from '../ui/layout/Inline.astro';
-import Text from '../ui/primitives/Text.astro';
+import Text from '../ui/typography/Text.astro';
 import Badge from '../ui/feedback/Badge.astro';
 import Icon from '../ui/media/Icon.astro';
 import Image from '../ui/primitives/Image.astro';
@@ -35,12 +37,31 @@ export interface Props {
   isFlagship?: boolean;
 }
 
-const { title, description, category, index, tags, slug, imageSrc, class: className = '', "class:list": classList = {}, frame, effects, delay = 0, isFlagship = false } = Astro.props;
+const {
+  title,
+  description,
+  category,
+  index,
+  tags,
+  slug,
+  imageSrc,
+  class: className = '',
+  "class:list": classList = {},
+  frame,
+  effects,
+  delay = 0,
+  isFlagship = false
+} = Astro.props;
 ---
 
 <a href={`/projects/${slug}`} class="card-link" style={`animation-delay: ${delay}s;`}>
-  <Paper padding="none" radius="lg" elevation="surface" class:list={['project-card', className, classList, frame, effects]}>
-    
+  <Card
+    layer="-1"
+    bordered
+    frame={frame}
+    effects={effects}
+    class:list={['project-card', className, classList]}
+  >
     <div class="card-accent-bar"></div>
     {imageSrc && (
       <Box class="card-image-wrapper">
@@ -49,19 +70,22 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
       </Box>
     )}
 
-    <Stack gap="sm" class="card-content">
+    <CardHeader class="card-header-custom">
       <Inline justify="between" align="center" class="card-head">
-        <Text as="span" type="label" tone="subtle" class="card-tag">{category}</Text>
+        <Text as="span" type="label" tone="accent" class="card-tag">{category}</Text>
         <Text as="span" type="label" tone="subtle" class="card-index">{index}</Text>
       </Inline>
-
       <Text as="h3" type="h3" class:list={['card-title', { 'card-title--flagship': isFlagship }]}>{title}</Text>
-      
+    </CardHeader>
+
+    <CardContent class="card-content-custom">
       <Text as="p" type="body" tone="subtle" class="card-desc">
         {description}
       </Text>
+    </CardContent>
 
-      <Inline justify="between" align="end" class="card-footer">
+    <CardFooter class="card-footer-custom">
+      <Inline justify="between" align="end" class="w-full">
         <Inline gap="xs" wrap class="card-tags">
           {tags.map(tag => (
             <Badge theme="ghost" outlined>{tag}</Badge>
@@ -69,11 +93,11 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
         </Inline>
         
         <div class="card-arrow">
-          <Icon name="arrow-up-right" size={20} />
+          <Icon name="arrow-up-right" size="var(--space-5)" />
         </div>
       </Inline>
-    </Stack>
-  </Paper>
+    </CardFooter>
+  </Card>
 </a>
 
 <style>
@@ -97,20 +121,17 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
   .project-card {
     position: relative;
     height: 100%;
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.3s ease;
-    border: 1px solid var(--border-subtle);
   }
 
   /* Interactive Hover State */
   .card-link:hover .project-card {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--border);
+    border-color: var(--accent);
   }
 
   .card-link:focus-visible {
@@ -168,16 +189,22 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
     pointer-events: none;
   }
 
-  /* Content Layout */
-  .card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-6);
+  /* Custom Composition paddings */
+  .card-header-custom {
+    padding: var(--space-6) var(--space-6) var(--space-2) var(--space-6);
   }
 
-  .card-head {
-    margin-bottom: var(--space-2);
+  .card-content-custom {
+    padding: 0 var(--space-6) var(--space-4) var(--space-6);
+  }
+
+  .card-footer-custom {
+    padding: 0 var(--space-6) var(--space-6) var(--space-6);
+    margin-top: auto;
+  }
+
+  .w-full {
+    width: 100%;
   }
 
   .card-tag {
@@ -191,7 +218,7 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
   }
 
   .card-title {
-    margin-bottom: var(--space-2);
+    margin-top: var(--space-2);
   }
 
   .card-title--flagship {
@@ -202,15 +229,6 @@ const { title, description, category, index, tags, slug, imageSrc, class: classN
     .card-title--flagship {
       font-size: var(--text-xl); /* Reset on smaller screens */
     }
-  }
-
-  .card-desc {
-    margin-bottom: var(--space-6);
-    flex: 1;
-  }
-
-  .card-footer {
-    margin-top: auto;
   }
 
   .card-arrow {

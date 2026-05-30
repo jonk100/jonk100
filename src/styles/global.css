@@ -22,7 +22,6 @@ body {
   color: var(--text);
   font-family: var(--body);
   font-weight: 400;
-  line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -40,4 +39,66 @@ ul, ol {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--display);
   font-weight: 300;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  line-height: var(--leading-tightest);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  line-height: var(--leading-tighter);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  line-height: var(--leading-tight);
+}
+
+h4 {
+  font-size: var(--fs-h4);
+  line-height: var(--leading-tight);
+}
+
+h5 {
+  font-size: var(--fs-h5);
+  line-height: var(--leading-normal);
+}
+
+h6 {
+  font-size: var(--fs-h6);
+  line-height: var(--leading-normal);
+}
+
+/**                                 */
+/**         Surface Hierarchy       */
+/**                                 */
+
+body {
+  background: var(--surface-0);
+}
+
+.section {
+  background: var(--surface-1);
+}
+
+.card {
+  background: var(--surface-2);
+}
+
+.card--featured {
+  background: var(--surface-3);
+}
+
+.dropdown,
+.tooltip,
+.command-palette {
+  background: var(--surface-4);
+}
+
+.dialog,
+.modal,
+.drawer {
+  background: var(--surface-5);
 }

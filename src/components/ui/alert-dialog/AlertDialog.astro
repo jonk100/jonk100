@@ -1,0 +1,20 @@
+---
+import Modal from '../modal/Modal.astro';
+
+export interface Props {
+  id: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+<Modal id={id} class:list={['alert-dialog', className, classList]} role="alertdialog" {...rest}>
+  <slot />
+</Modal>

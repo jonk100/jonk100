@@ -9,11 +9,11 @@
  */
 import Box from '../ui/layout/Box.astro';
 import Inline from '../ui/layout/Inline.astro';
-import Text from '../ui/primitives/Text.astro';
+import Text from '../ui/typography/Text.astro';
 import Link from '../ui/primitives/Link.astro';
 ---
 
-<header class="navbar glass-panel-heavy">
+<header class="navbar glass-panel-heavy" style="view-transition-name: main-nav;">
   <Box class="container">
     <Inline justify="between" align="center" class="nav-inner">
       <Link href="/" class="nav-logo">
@@ -21,18 +21,11 @@ import Link from '../ui/primitives/Link.astro';
       </Link>
       
       <Inline gap="md" as="nav" class="nav-links">
-        <Link href="#work" class="nav-link">
-          <Text as="span" type="label" tone="subtle">work</Text>
-        </Link>
-        <Link href="/blog" class="nav-link">
-          <Text as="span" type="label" tone="subtle">blog</Text>
-        </Link>
-        <Link href="#writing" class="nav-link">
-          <Text as="span" type="label" tone="subtle">writing</Text>
-        </Link>
-        <Link href="#about" class="nav-link">
-          <Text as="span" type="label" tone="subtle">about</Text>
-        </Link>
+        <Link href="#work" label="work" tone="subtle" class="nav-link" />
+        <Link href="/blog" label="blog" tone="subtle" class="nav-link" />
+        <Link href="#writing" label="writing" tone="subtle" class="nav-link" />
+        <Link href="#about" label="about" tone="subtle" class="nav-link" />
+        <Link href="/design" label="design" tone="subtle" class="nav-link" />
       </Inline>
     </Inline>
   </Box>
@@ -61,14 +54,18 @@ import Link from '../ui/primitives/Link.astro';
     width: 100%;
   }
 
-  .logo-text, .nav-link span {
+  .logo-text, .nav-link :global(.text) {
     font-family: var(--mono);
     letter-spacing: var(--tracking-wider);
     transition: color 0.2s ease-out;
   }
 
   .nav-logo:hover .logo-text,
-  .nav-link:hover span {
+  .nav-link:hover :global(.text) {
     color: var(--accent) !important;
+  }
+
+  ::view-transition-group(main-nav) {
+    z-index: 100;
   }
 </style>

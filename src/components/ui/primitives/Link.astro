@@ -4,15 +4,15 @@
  * An anchor component featuring shared button-like variant styles.
  * - Integrates with Astro's native class:list for flexible styling
  * - Uses global control variant sizes and styles
- * @props (local): href, theme, tone, size, target, rel
+ * @props (local): href, theme, tone, size, target, rel, disabled
  * @props (global): class, class:list, frame
- * - theme: Selects the visual button theme to apply
- * - tone: Specifies text color
- * - size: Adjusts the control dimensions
+ * - theme: Selects the visual link color
+ * - tone: Specifies text color (overrides theme)
+ * - size: Adjusts the link font size
  * - frame: Applies an optional frame variant to the link styling
  */
 import type { ComponentTheme, TextTone, Sizes, FrameVariant } from 'src/types/variants.types';
-import Text from './Text.astro';
+import Text from '../typography/Text.astro';
 
 export interface Props {
   href: string;
@@ -25,6 +25,7 @@ export interface Props {
   "class:list"?: Record<string, boolean>;
   target?: string;
   rel?: string;
+  disabled?: boolean;
   [key: string]: any;
 }
 
@@ -39,14 +40,15 @@ const {
   "class:list": classList = {},
   target,
   rel,
+  disabled = false,
   ...rest
 } = Astro.props;
 
 const classes = [
-  "control", 
-  `variant--${theme}`, 
+  "custom-link", 
+  theme ? `link--${theme}` : '', 
   tone ? `text--${tone}` : '',
-  `control--${size}`, 
+  size !== 'base' ? `text-${size}` : '', 
   frame !== 'none' ? `frame-variant--${frame}` : '',
   cls
 ]
@@ -54,6 +56,53 @@ const classes = [
   .join(" ");
 ---
 
-<a href={href} class={classes} class:list={classList} target={target} rel={rel} {...rest}>
+<a 
+  href={disabled ? undefined : href} 
+  class={classes} 
+  class:list={classList} 
+  target={target} 
+  rel={rel} 
+  aria-disabled={disabled ? "true" : undefined}
+  {...rest}
+>
   {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
 </a>
+
+<style>
+  .custom-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: all 150ms ease;
+    cursor: pointer;
+  }
+
+  /* When themed, remove underline by default */
+  .custom-link[class*="link--"] {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .custom-link:hover {
+    text-decoration-color: currentColor;
+    text-decoration: underline;
+  }
+
+  /* Disabled State */
+  .custom-link[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  /* Themes */
+  .link--primary { color: var(--primary); }
+  .link--secondary { color: var(--secondary); }
+  .link--accent { color: var(--accent); }
+  .link--danger { color: var(--text-danger); }
+  .link--success { color: var(--text-success); }
+  .link--ghost { color: var(--text-secondary); }
+</style>

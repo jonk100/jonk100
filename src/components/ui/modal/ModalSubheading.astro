@@ -1,0 +1,11 @@
+---
+import Text from '../typography/Text.astro';
+export interface Props {
+  class?: string;
+  [key: string]: any;
+}
+const { class: className = '', ...rest } = Astro.props;
+---
+<Text as="p" tone="muted" class:list={["modal-subheading", className]} {...rest}>
+  <slot />
+</Text>

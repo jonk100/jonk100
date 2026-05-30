@@ -1,0 +1,66 @@
+---
+/**
+ * src/components/ui/layout/BadgeGroup.astro
+ * Physically attaches multiple badges together into a single segmented pill.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+import type { ComponentTheme, Sizes } from '/src/types/variants.types';
+
+export interface Props {
+  size?: Sizes;
+  theme?: ComponentTheme;
+  outlined?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  size,
+  theme,
+  outlined,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div 
+  class:list={['badge-group', className, classList]} 
+  data-group-size={size}
+  data-group-theme={theme}
+  data-group-outlined={outlined ? 'true' : undefined}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .badge-group {
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    border-radius: var(--rad-full);
+    width: fit-content;
+  }
+
+  .badge-group :global(> .badge) {
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .badge-group :global(> *:first-child) {
+    border-top-left-radius: var(--rad-full);
+    border-bottom-left-radius: var(--rad-full);
+  }
+
+  .badge-group :global(> *:last-child) {
+    border-top-right-radius: var(--rad-full);
+    border-bottom-right-radius: var(--rad-full);
+  }
+
+  .badge-group :global(> *:not(:last-child)) {
+    border-right: 1px solid var(--border-subtle);
+  }
+</style>

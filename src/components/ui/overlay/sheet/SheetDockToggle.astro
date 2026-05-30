@@ -1,0 +1,128 @@
+---
+/**
+ * src/components/ui/overlay/sheet/SheetDockToggle.astro
+ * A button and popover menu that allows users to dynamically move a sheet to different sides.
+ * @props (local): for
+ * - for: The ID of the Sheet to control.
+ */
+import Icon from '../../media/Icon.astro';
+import Popover from '../Popover.astro';
+import Stack from '../../layout/Stack.astro';
+import Inline from '../../layout/Inline.astro';
+
+export interface Props {
+  for: string;
+}
+
+const { for: sheetId } = Astro.props;
+const popoverId = `${sheetId}-dock-popover`;
+const btnId = `${sheetId}-dock-btn`;
+---
+
+<button 
+  id={btnId} 
+  style={`anchor-name: --${btnId};`} 
+  commandfor={popoverId} 
+  command="toggle-popover" 
+  class="dock-toggle-btn"
+  title="Dock Sheet"
+  aria-label="Dock Sheet"
+>
+  <span style="font-size: 16px;">⛶</span>
+</button>
+
+<Popover id={popoverId} anchor={btnId} placement="bottom">
+  <Stack gap="sm">
+    <span class="dock-label">Dock Position</span>
+    <Inline gap="xs">
+      <button class="dock-option" data-dock-target={sheetId} data-dock-side="top" title="Dock Top">↑</button>
+      <button class="dock-option" data-dock-target={sheetId} data-dock-side="bottom" title="Dock Bottom">↓</button>
+      <button class="dock-option" data-dock-target={sheetId} data-dock-side="left" title="Dock Left">←</button>
+      <button class="dock-option" data-dock-target={sheetId} data-dock-side="right" title="Dock Right">→</button>
+    </Inline>
+  </Stack>
+</Popover>
+
+<script>
+  const initializeDockToggles = () => {
+    const dockButtons = document.querySelectorAll<HTMLButtonElement>('.dock-option');
+    
+    dockButtons.forEach(btn => {
+      // Remove old listener to prevent duplicates on Astro page transitions
+      const newBtn = btn.cloneNode(true) as HTMLButtonElement;
+      btn.parentNode?.replaceChild(newBtn, btn);
+      
+      newBtn.addEventListener('click', () => {
+        const targetId = newBtn.getAttribute('data-dock-target');
+        const side = newBtn.getAttribute('data-dock-side');
+        
+        if (targetId && side) {
+          const sheet = document.getElementById(targetId);
+          if (sheet) {
+            // Remove existing sheet--* classes
+            sheet.classList.forEach(className => {
+              if (className.startsWith('sheet--')) {
+                sheet.classList.remove(className);
+              }
+            });
+            // Add new side class
+            sheet.classList.add(`sheet--${side}`);
+            
+            // Close the popover
+            const popover = newBtn.closest('dialog');
+            if (popover) {
+              popover.close();
+            }
+          }
+        }
+      });
+    });
+  };
+
+  initializeDockToggles();
+  document.addEventListener('astro:page-load', initializeDockToggles);
+</script>
+
+<style>
+  .dock-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--rad-sm);
+    transition: background 0.2s ease;
+  }
+
+  .dock-toggle-btn:hover {
+    background: var(--bg-elevated);
+  }
+
+  .dock-label {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .dock-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rad-sm);
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s ease;
+  }
+
+  .dock-option:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-strong);
+    color: var(--primary);
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+export interface Props {
+  id: string;
+  side?: 'left' | 'right' | 'top' | 'bottom';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id,
+  side = 'right',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<dialog
+  id={id}
+  closedby="any"
+  class:list={['sheet', `sheet--${side}`, className, classList]}
+  {...rest}
+>
+  <div class="sheet-content">
+    <slot />
+  </div>
+</dialog>
+
+<script>
+  const initializeSheets = () => {
+    const dialogs = document.querySelectorAll<HTMLDialogElement>('.sheet[closedby="any"]');
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      dialogs.forEach(dialog => {
+        dialog.addEventListener('click', (e: Event) => {
+          const event = e as MouseEvent;
+          if (event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          const isDialogContent = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (!isDialogContent) dialog.close();
+        });
+      });
+    }
+  };
+  
+  initializeSheets();
+  document.addEventListener('astro:page-load', initializeSheets);
+</script>
+
+<style>
+  .sheet {
+    padding: 0;
+    border: none;
+    background: var(--bg-surface);
+    color: var(--text);
+    box-shadow: var(--shadow-2xl);
+    max-height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    position: fixed;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  }
+  
+  .sheet--right {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: auto;
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+  }
+  
+  .sheet--left {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+  }
+
+  .sheet--top {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 400px;
+    max-height: 90vh;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-100%);
+  }
+
+  .sheet--bottom {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 400px;
+    max-height: 90vh;
+    border-top: 1px solid var(--border);
+    transform: translateY(100%);
+  }
+
+  .sheet[open] {
+    transform: translate(0, 0);
+  }
+
+  @starting-style {
+    .sheet--right[open] { transform: translateX(100%); }
+    .sheet--left[open] { transform: translateX(-100%); }
+    .sheet--top[open] { transform: translateY(-100%); }
+    .sheet--bottom[open] { transform: translateY(100%); }
+  }
+
+  .sheet::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  }
+  
+  @starting-style {
+    .sheet[open]::backdrop {
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+    }
+  }
+
+  .sheet-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+</style>

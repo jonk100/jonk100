@@ -1,0 +1,160 @@
+---
+/**
+ * src/components/design/LayoutPrimitives.astro
+ * Layout Primitives section showcasing core structural containers.
+ * - Displays responsive bento box grid spanning.
+ * - Exhibits flex-inline and ButtonGroup structures.
+ * - Anchors sibling tooltip component explanation.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import Code from '../ui/typography/Code.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Inline from '../ui/layout/Inline.astro';
+import Grid from '../ui/layout/Grid.astro';
+import Divider from '../ui/layout/Divider.astro';
+import ButtonGroup from '../ui/layout/ButtonGroup.astro';
+import Button from '../ui/controls/Button.astro';
+import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
+import Badge from '../ui/feedback/Badge.astro';
+import Tooltip from '../ui/overlay/Tooltip.astro';
+import Paper from '../ui/primitives/Paper.astro';
+
+const layoutBlueprint = `
+#LT#Card border layer="1"#GT#
+  #LT#CardHeader#GT#
+    #LT#Text type="h3"#GT#Bento Grid Architecture#LT#/Text#GT#
+  #LT#/CardHeader#GT#
+  #LT#CardContent#GT#
+    #LT#Text tone="subtle"#GT#A cohesive, multi-span grid cell composition.#LT#/Text#GT#
+  #LT#/CardContent#GT#
+#LT#/Card#GT#
+`.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
+---
+
+<Paper padding="lg" layer="1" bordered id="layout-showcase" style="anchor-name: --layout-showcase;">
+  <Stack gap="md">
+    <SectionLabel text="02 / layout primitives" />
+    <Text as="h2" type="h2">Compositional Structures</Text>
+    <Text tone="subtle">Structural containers designed to manage spacing scales, flex directions, alignments, and grid divisions cleanly without duplicated inline styles.</Text>
+    
+    <Divider />
+    
+    <!-- Grid and Bento Layout Exhibit -->
+    <Stack gap="sm">
+      <Text as="h3" type="h3">Responsive Bento Spanning</Text>
+      <Grid cols={3} gap="md" class="bento-blueprint">
+        <Paper layer="0" padding="md" class="grid-span-2 bento-cell-demo">
+          <Text as="strong" type="h4">Two-Span Grid Cell</Text>
+          <Text type="caption" tone="subtle">Responsive flex-grow allocation</Text>
+        </Paper>
+        <Paper layer="0" padding="md" class="bento-cell-demo">
+          <Text as="strong" type="h4">Single Span</Text>
+          <Text type="caption" tone="subtle">1/3 column</Text>
+        </Paper>
+        <Paper layer="0" padding="md" class="bento-cell-demo">
+          <Text as="strong" type="h4">Single Span</Text>
+          <Text type="caption" tone="subtle">1/3 column</Text>
+        </Paper>
+        <Paper layer="0" padding="md" class="grid-span-2 bento-cell-demo">
+          <Text as="strong" type="h4">Two-Span Grid Cell</Text>
+          <Text type="caption" tone="subtle">Perfect for hero project features</Text>
+        </Paper>
+      </Grid>
+    </Stack>
+    
+    <!-- Inline Flex elements -->
+    <Stack gap="sm" class="mt-4">
+      <Text as="h3" type="h3">Flex Inline & ButtonGroup Layouts</Text>
+      <Inline gap="md" align="center" wrap>
+        <ButtonGroup>
+          <Button theme="secondary" size="sm">Left Anchored</Button>
+          <Button theme="secondary" size="sm">Centered</Button>
+          <Button theme="secondary" size="sm">Right Anchored</Button>
+        </ButtonGroup>
+        
+        <BadgeGroup>
+          <Badge tone="primary">Badge 1</Badge>
+          <Badge tone="accent">Badge 2</Badge>
+          <Badge tone="success">Active</Badge>
+        </BadgeGroup>
+      </Inline>
+    </Stack>
+
+    <!-- Educational Architecture Callout -->
+    <Paper layer="2" class="p-md architectural-rationale">
+      <Stack gap="2xs">
+        <Text as="h4" type="h4" tone="accent">Architectural Rationale: Spacing & Clamp Spanning</Text>
+        <Text type="body-sm" tone="subtle">
+          Spacing scales use fluid containers utilizing CSS <code>clamp()</code> functions linked to container queries. Layout structures automatically adapt to parent aspect ratios, eliminating visual layout thrashing.
+        </Text>
+        <details class="code-details">
+          <summary><Text type="caption" tone="accent">Show Bento Grid Blueprint</Text></summary>
+          <Code inline={false} language="astro">{layoutBlueprint}</Code>
+        </details>
+      </Stack>
+    </Paper>
+  </Stack>
+</Paper>
+<Tooltip id="layout-tooltip" anchor="layout-showcase" placement="top">
+  Bento Grid layouts responsive spanning configurations!
+</Tooltip>
+
+<style>
+  .architectural-rationale {
+    background: var(--bg-card);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--rad-md);
+    margin-top: var(--space-6);
+  }
+
+  .code-details {
+    margin-top: var(--space-3);
+    cursor: pointer;
+  }
+
+  .code-details summary {
+    font-weight: 500;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .code-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .code-details[open] summary {
+    margin-bottom: var(--space-3);
+  }
+
+  .bento-blueprint {
+    margin-top: var(--space-2);
+  }
+
+  .bento-cell-demo {
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 140px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .bento-cell-demo:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+
+  .grid-span-2 {
+    grid-column: span 2;
+  }
+
+  .mt-4 {
+    margin-top: var(--space-4);
+  }
+</style>

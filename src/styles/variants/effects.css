@@ -8,7 +8,8 @@
 }
 
 .effect--glow {
-  box-shadow: 0 0 30px rgba(var(--accent-rgb, 232, 197, 71), 0.25);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb, 232, 197, 71), 0.6);
+  border-color: rgba(var(--accent-rgb, 232, 197, 71), 0.4);
 }
 
 .effect--grayscale {

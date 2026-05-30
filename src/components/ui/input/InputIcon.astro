@@ -1,0 +1,35 @@
+---
+import Icon from '../media/Icon.astro';
+
+export interface Props {
+  name: string;
+  position?: 'left' | 'right';
+  class?: string;
+  [key: string]: any;
+}
+
+const { name, position = 'left', class: className = '', ...rest } = Astro.props;
+---
+<div class:list={['input-icon-wrapper', `input-icon-wrapper--${position}`, className]} {...rest}>
+  <Icon name={name} size="sm" class="input-icon" />
+</div>
+
+<style>
+  .input-icon-wrapper {
+    position: absolute;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+    height: 100%;
+    top: 0;
+  }
+  .input-icon-wrapper--left {
+    left: var(--space-3);
+  }
+  .input-icon-wrapper--right {
+    right: var(--space-3);
+  }
+</style>

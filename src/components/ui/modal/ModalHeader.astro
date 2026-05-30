@@ -1,0 +1,21 @@
+---
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+const { class: className = '', "class:list": classList = {}, ...rest } = Astro.props;
+---
+<header class:list={["modal-header", className, classList]} {...rest}>
+  <slot />
+</header>
+<style>
+  .modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+</style>

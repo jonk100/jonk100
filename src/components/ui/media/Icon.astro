@@ -29,10 +29,10 @@ const {
 } = Astro.props;
 
 const sizeMap: Record<string, string> = {
-  sm: '16px',
-  md: '24px',
-  lg: '32px',
-  xl: '48px'
+  sm: 'var(--space-4)',  /* 16px */
+  md: 'var(--space-6)',  /* 24px */
+  lg: 'var(--space-8)',  /* 32px */
+  xl: 'var(--space-12)'  /* 48px */
 };
 
 const dimension = sizeMap[size] || size;

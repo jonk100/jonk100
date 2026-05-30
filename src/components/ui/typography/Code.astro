@@ -1,0 +1,100 @@
+---
+/**
+ * src/components/ui/primitives/Code.astro
+ * A styled component for rendering inline or block code snippets.
+ * - Uses the global monospace font and elevated background
+ * @props (local): inline, language
+ * @props (global): class, class:list
+ * - inline: Renders as an inline <code> tag instead of a <pre> block
+ */
+import type { FrameVariant } from '/src/types/variants.types';
+
+export interface Props {
+  inline?: boolean;
+  language?: string;
+  frame?: FrameVariant;
+  caption?: string;
+  captionPosition?: 'top' | 'bottom';
+  captionAlign?: 'left' | 'center' | 'right';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  inline = true,
+  language,
+  frame = 'none',
+  caption,
+  captionPosition = 'top',
+  captionAlign = 'left',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const Tag = inline ? 'code' : 'pre';
+const contentClass = inline ? 'code-inline' : 'code-block';
+---
+
+{inline ? (
+  <code class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest}>
+    <slot />
+  </code>
+) : caption ? (
+  <figure class:list={["code-figure", className, classList]}>
+    {captionPosition === 'top' && (
+      <figcaption class="code-caption" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+    )}
+    <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} data-language={language} {...rest}>
+      {language ? <code class={`language-${language}`}><slot /></code> : <slot />}
+    </pre>
+    {captionPosition === 'bottom' && (
+      <figcaption class="code-caption" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+    )}
+  </figure>
+) : (
+  <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} data-language={language} {...rest}>
+    {language ? <code class={`language-${language}`}><slot /></code> : <slot />}
+  </pre>
+)}
+
+<style>
+  .code-inline {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--rad-sm);
+    color: var(--accent);
+    margin: var(--space-5);
+  }
+
+  .code-figure {
+    margin: var(--space-6) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .code-caption {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .code-block {
+    font-family: var(--mono);
+    font-size: var(--text-sm);
+    padding: var(--space-4);
+    margin: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--rad-md);
+    overflow-x: auto;
+    color: var(--text);
+    line-height: var(--leading-relaxed);
+  }
+</style>

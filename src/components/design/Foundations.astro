@@ -1,0 +1,151 @@
+---
+/**
+ * src/components/design/Foundations.astro
+ * Foundations section showcasing the core design system tokens.
+ * - Displays tuned HSL color scales and swatches.
+ * - Exhibits fluid typography scales.
+ * - Explains visual layer custom property elevation overrides.
+ * @props (local): None
+ * @props (global): None
+ */
+
+import Text from '../ui/typography/Text.astro';
+import Code from '../ui/typography/Code.astro';
+import SectionLabel from '../ui/typography/SectionLabel.astro';
+import Stack from '../ui/layout/Stack.astro';
+import Grid from '../ui/layout/Grid.astro';
+import Divider from '../ui/layout/Divider.astro';
+import Paper from '../ui/primitives/Paper.astro';
+
+const elevationBlueprint = `
+#LT#!-- Bypasses scoping restrictions by setting an inline variable --#GT#
+#LT#Paper layer="1" bordered#GT#
+  #LT#Text#GT#Dynamic elevated background using --paper-bg fallback!#LT#/Text#GT#
+#LT#/Paper#GT#
+`.trim().replaceAll('#LT#', '<').replaceAll('#GT#', '>');
+---
+
+<section id="foundations" class="section-card">
+  <Paper padding="lg" layer="1" bordered>
+    <Stack gap="md">
+      <SectionLabel text="01 / foundations" />
+      <Text as="h2" type="h2">Design System Tokens</Text>
+      <Text tone="subtle">Harmonious color scales and clean, fluid typography anchors defined within global stylesheets.</Text>
+      
+      <Divider />
+      
+      <!-- Color Palettes -->
+      <Stack gap="sm">
+        <Text as="h3" type="h3">Tuned HSL Color Scales</Text>
+        <Grid cols={5} gap="sm" class="color-palette-grid">
+          <Stack gap="2xs">
+            <div class="swatch neutral-bg"></div>
+            <Text type="caption" class="text-center">Neutral Cool</Text>
+          </Stack>
+          <Stack gap="2xs">
+            <div class="swatch blue-bg"></div>
+            <Text type="caption" class="text-center">Aero Blue</Text>
+          </Stack>
+          <Stack gap="2xs">
+            <div class="swatch yellow-bg"></div>
+            <Text type="caption" class="text-center">Golden Amber</Text>
+          </Stack>
+          <Stack gap="2xs">
+            <div class="swatch red-bg"></div>
+            <Text type="caption" class="text-center">Crimson Red</Text>
+          </Stack>
+          <Stack gap="2xs">
+            <div class="swatch green-bg"></div>
+            <Text type="caption" class="text-center">Sage Green</Text>
+          </Stack>
+        </Grid>
+      </Stack>
+      
+      <!-- Typography Examples -->
+      <Stack gap="sm" class="mt-4">
+        <Text as="h3" type="h3">Fluid Editorial Typography</Text>
+        <Paper layer="0" class="p-md text-scale-ex">
+          <Stack gap="xs">
+            <Text type="h1">H1 Header &bull; Fluid Scale</Text>
+            <Text type="h2">H2 Section Heading</Text>
+            <Text type="h3">H3 Subsection Heading</Text>
+            <Text type="lead">Lead paragraph providing editorial summaries.</Text>
+            <Text type="body">Standard body typeface carrying crisp paragraphs.</Text>
+            <Text type="caption" tone="muted">Caption block displaying metadata. (Radius: var(--rad-sm))</Text>
+          </Stack>
+        </Paper>
+      </Stack>
+
+      <!-- Educational Architecture Callout -->
+      <Paper layer="2" class="p-md architectural-rationale">
+        <Stack gap="2xs">
+          <Text as="h4" type="h4" tone="accent">Architectural Rationale: Elevation Overrides</Text>
+          <Text type="body-sm" tone="subtle">
+            To bypass esbuild/Astro's scoped CSS specificity restrictions, we modified global elevation layers to map output shades into the <code>--paper-bg</code> custom property. Scoped components like <code>&lt;Paper&gt;</code> reference this property with a default fallback, allowing dynamic backgrounds to render flawlessly across all layers without scoping conflicts.
+          </Text>
+          <details class="code-details">
+            <summary><Text type="caption" tone="accent">Show Elevation Blueprint</Text></summary>
+            <Code inline={false} language="css">{elevationBlueprint}</Code>
+          </details>
+        </Stack>
+      </Paper>
+    </Stack>
+  </Paper>
+</section>
+
+<style>
+  .color-palette-grid {
+    margin-top: var(--space-2);
+  }
+
+  .swatch {
+    height: 64px;
+    border-radius: var(--rad-md);
+    border: 1px solid var(--border-subtle);
+  }
+  .neutral-bg { background: linear-gradient(135deg, var(--neutral-40), var(--neutral-90)); }
+  .blue-bg { background: linear-gradient(135deg, var(--blue-60), var(--blue-180)); }
+  .yellow-bg { background: linear-gradient(135deg, var(--yellow-60), var(--yellow-180)); }
+  .red-bg { background: linear-gradient(135deg, var(--red-60), var(--red-180)); }
+  .green-bg { background: linear-gradient(135deg, var(--green-60), var(--green-180)); }
+
+  .text-scale-ex {
+    border-left: 2px solid var(--border-strong);
+  }
+
+  .architectural-rationale {
+    background: var(--bg-card);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--rad-md);
+    margin-top: var(--space-6);
+  }
+
+  .code-details {
+    margin-top: var(--space-3);
+    cursor: pointer;
+  }
+
+  .code-details summary {
+    font-weight: 500;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .code-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .code-details[open] summary {
+    margin-bottom: var(--space-3);
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .mt-4 {
+    margin-top: var(--space-4);
+  }
+</style>

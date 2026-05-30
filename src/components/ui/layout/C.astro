@@ -1,0 +1,29 @@
+---
+/**
+ * src/components/ui/layout/C.astro
+ * A semantic column child for the Columns component.
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['column', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

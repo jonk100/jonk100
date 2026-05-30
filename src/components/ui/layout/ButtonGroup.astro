@@ -1,0 +1,54 @@
+---
+/**
+ * src/components/ui/layout/ButtonGroup.astro
+ * Physically attaches multiple buttons together into a single segmented control.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['button-group', className, classList]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .button-group {
+    display: inline-flex;
+    border-radius: var(--rad-md);
+    /* Ensure the group has a consistent border if the theme uses borders */
+  }
+
+  /* Override internal border radii for joined elements */
+  .button-group :global(> .control),
+  .button-group :global(> button),
+  .button-group :global(> a) {
+    border-radius: 0;
+  }
+
+  /* Restore outer border radii */
+  .button-group :global(> *:first-child) {
+    border-top-left-radius: var(--rad-md);
+    border-bottom-left-radius: var(--rad-md);
+  }
+
+  .button-group :global(> *:last-child) {
+    border-top-right-radius: var(--rad-md);
+    border-bottom-right-radius: var(--rad-md);
+  }
+
+  /* Add subtle separation lines between items */
+  .button-group :global(> *:not(:last-child)) {
+    border-right: 1px solid var(--border-subtle);
+  }
+</style>

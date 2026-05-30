@@ -108,3 +108,69 @@
 .variant--default:active {
   background: var(--bg-elevated);
 }
+
+/**                                          */
+/**            Accent Variant                */
+/**                                           */
+.variant--accent {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent-border);
+}
+
+.variant--accent:hover {
+  background: var(--accent-hover);
+}
+
+.variant--accent:active {
+  background: var(--accent-dim);
+}
+
+.variant--accent:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**            Danger Variant                */
+/**                                           */
+.variant--danger {
+  background: var(--text-danger);
+  color: var(--text-inverse);
+  border-color: var(--text-danger);
+}
+
+.variant--danger:hover {
+  background: rgb(220, 70, 70);
+}
+
+.variant--danger:active {
+  background: rgb(200, 50, 50);
+}
+
+.variant--danger:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+/**                                          */
+/**            Success Variant               */
+/**                                           */
+.variant--success {
+  background: var(--text-success);
+  color: var(--text-inverse);
+  border-color: var(--text-success);
+}
+
+.variant--success:hover {
+  background: rgb(70, 230, 150);
+}
+
+.variant--success:active {
+  background: rgb(50, 200, 130);
+}
+
+.variant--success:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}

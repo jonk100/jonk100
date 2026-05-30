@@ -1,0 +1,91 @@
+---
+/**
+ * src/components/ui/feedback/Alert.astro
+ * An inline callout for displaying important feedback or messages.
+ * @props (local): title, theme
+ * @props (global): class, class:list
+ * - theme: Maps to global color variables to dictate the semantic meaning (e.g. success, danger)
+ */
+import type { ComponentTheme } from '/src/types/variants.types';
+import Icon from '../media/Icon.astro';
+
+export interface Props {
+  title?: string;
+  theme?: ComponentTheme;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  title,
+  theme = 'default',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+// Determine default icon based on theme
+const iconMap: Record<string, string> = {
+  default: 'info',
+  primary: 'info',
+  secondary: 'info',
+  success: 'check-circle',
+  warning: 'alert-triangle',
+  danger: 'alert-circle',
+  ghost: 'info',
+  accent: 'zap'
+};
+
+const iconName = iconMap[theme] || 'info';
+---
+
+<div class:list={['alert', `variant--${theme}`, className, classList]} role="alert" {...rest}>
+  <div class="alert-icon">
+    <Icon name={iconName} size="sm" />
+  </div>
+  <div class="alert-body">
+    {title && <h5 class="alert-title">{title}</h5>}
+    <div class="alert-content">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .alert {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--rad-md);
+    border: 1px solid var(--border);
+    /* We reuse the generic variant--* classes from globals for the background/text/border colors */
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    margin-top: 2px; /* Slight optical alignment */
+  }
+
+  .alert-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    flex-grow: 1;
+  }
+
+  .alert-title {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .alert-content {
+    font-size: var(--text-sm);
+    opacity: 0.9;
+  }
+  
+  .alert-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

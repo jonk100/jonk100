@@ -1,0 +1,37 @@
+---
+/**
+ * src/components/ui/data/TableRow.astro
+ * A row within a table.
+ * @props (local): hover
+ * @props (global): class, class:list
+ * - hover: Set to true to enable hover styling on the row
+ */
+export interface Props {
+  hover?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  hover = true,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<tr class:list={['table-row', { 'table-row--hover': hover }, className, classList]} {...rest}>
+  <slot />
+</tr>
+
+<style>
+  .table-row {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.15s ease;
+  }
+
+  .table-row--hover:hover {
+    background-color: var(--bg-surface);
+  }
+</style>

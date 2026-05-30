@@ -1,0 +1,8 @@
+---
+import ModalClose from '../../modal/ModalClose.astro';
+export interface Props { for: string; class?: string; [key: string]: any; }
+const { for: commandFor, class: className = '', ...rest } = Astro.props;
+---
+<ModalClose for={commandFor} class:list={['sheet-close', className]} {...rest}>
+  <slot />
+</ModalClose>

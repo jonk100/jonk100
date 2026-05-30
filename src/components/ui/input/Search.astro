@@ -1,0 +1,128 @@
+---
+/**
+ * src/components/ui/input/Search.astro
+ * A specialized input for search queries, featuring a search icon.
+ * @props (local): label, placeholder, error, hint, disabled, theme, size, id, name
+ * @props (global): class, class:list
+ */
+import type { ComponentTheme, Sizes } from '/src/types/variants.types';
+import InputIcon from './InputIcon.astro';
+
+export interface Props {
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  hint?: string;
+  disabled?: boolean;
+  theme?: ComponentTheme;
+  size?: Sizes;
+  id?: string;
+  name?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  label,
+  placeholder = 'Search...',
+  error,
+  hint,
+  disabled = false,
+  theme = 'default',
+  size = 'md',
+  id = `search-${Math.random().toString(36).substring(2, 9)}`,
+  name,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['input-wrapper', className, classList]}>
+  {label && (
+    <label for={id} class="input-label">
+      {label}
+    </label>
+  )}
+  
+  <div class="search-container">
+    <InputIcon name="search" position="left" />
+    <input
+      id={id}
+      name={name}
+      type="search"
+      placeholder={placeholder}
+      disabled={disabled}
+      aria-invalid={!!error}
+      aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+      class:list={[
+        'control',
+        `variant--${theme}`,
+        `control--${size}`,
+        'search-field',
+        { 'input-field--error': error }
+      ]}
+      {...rest}
+    />
+  </div>
+  
+  {error && <span id={`${id}-error`} class="input-error">{error}</span>}
+  {hint && !error && <span id={`${id}-hint`} class="input-hint">{hint}</span>}
+</div>
+
+<style>
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .input-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+
+
+  .search-field {
+    width: 100%;
+    padding-inline-start: var(--space-10) !important; /* Force override control padding */
+    cursor: text;
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .search-field::-webkit-search-cancel-button {
+    cursor: pointer;
+  }
+
+  .search-field:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  .input-field--error {
+    border-color: var(--text-danger);
+  }
+
+  .input-error {
+    font-size: var(--text-xs);
+    color: var(--text-danger);
+    margin-top: calc(var(--space-1) * -1);
+  }
+
+  .input-hint {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-top: calc(var(--space-1) * -1);
+  }
+</style>

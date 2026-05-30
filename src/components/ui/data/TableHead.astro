@@ -1,0 +1,29 @@
+---
+/**
+ * src/components/ui/data/TableHead.astro
+ * The header section of a table.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<thead class:list={['table-head', className, classList]} {...rest}>
+  <slot />
+</thead>
+
+<style>
+  .table-head {
+    /* Optionally style the entire header block */
+  }
+</style>

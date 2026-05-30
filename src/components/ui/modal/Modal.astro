@@ -1,0 +1,113 @@
+---
+import type { FrameVariant, WrapperSize } from '/src/types/variants.types';
+
+export interface Props {
+  id: string;
+  size?: WrapperSize;
+  frame?: FrameVariant;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  id,
+  size = 'md',
+  frame = 'none',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<dialog
+  id={id}
+  closedby="any"
+  class:list={['modal', `modal--space-${size}`, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]}
+  {...rest}
+>
+  <div class="modal-content">
+    <slot />
+  </div>
+</dialog>
+
+<script>
+  const initializeModals = () => {
+    const dialogs = document.querySelectorAll<HTMLDialogElement>('dialog[closedby="any"]');
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      dialogs.forEach(dialog => {
+        dialog.addEventListener('click', (e: Event) => {
+          const event = e as MouseEvent;
+          if (event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          const isDialogContent = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (!isDialogContent) dialog.close();
+        });
+      });
+    }
+  };
+  
+  initializeModals();
+  document.addEventListener('astro:page-load', initializeModals);
+</script>
+
+<style>
+  .modal {
+    padding: 0;
+    border: none;
+    border-radius: var(--rad-lg);
+    background: var(--bg-surface);
+    color: var(--text);
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    margin: auto;
+    inset: 0;
+    
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  
+  .modal[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  @starting-style {
+    .modal[open] {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+  }
+
+  .modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  }
+  
+  @starting-style {
+    .modal[open]::backdrop {
+      background: rgba(0, 0, 0, 0);
+      backdrop-filter: blur(0px);
+    }
+  }
+
+  .modal--space-sm { max-width: 400px; }
+  .modal--space-md { max-width: 600px; }
+  .modal--space-lg { max-width: 800px; }
+  .modal--space-full { max-width: 95vw; height: 95vh; }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+  }
+</style>

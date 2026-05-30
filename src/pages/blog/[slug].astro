@@ -5,7 +5,13 @@ import NavBar from '../../components/portfolio/NavBar.astro';
 import Box from '../../components/ui/layout/Box.astro';
 import Stack from '../../components/ui/layout/Stack.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
-import Text from '../../components/ui/primitives/Text.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import MDXPre from '../../components/mdx/MDXPre.astro';
+
+const components = {
+  pre: MDXPre,
+  Box: Box,
+};
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -52,7 +58,7 @@ const { Content } = await render(post);
         </header>
 
         <div class="markdown-content">
-          <Content />
+          <Content components={components} />
         </div>
       </Stack>
     </Box>

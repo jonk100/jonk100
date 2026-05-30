@@ -1,0 +1,32 @@
+---
+/**
+ * src/components/ui/data/TableCaption.astro
+ * A descriptive caption for a table.
+ * @props (local): None
+ * @props (global): class, class:list
+ */
+export interface Props {
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<caption class:list={['table-caption', className, classList]} {...rest}>
+  <slot />
+</caption>
+
+<style>
+  .table-caption {
+    padding: var(--space-3) var(--space-4);
+    color: var(--text-muted);
+    text-align: left;
+    font-size: var(--text-sm);
+  }
+</style>
