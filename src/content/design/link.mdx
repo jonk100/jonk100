@@ -1,0 +1,69 @@
+---
+title: "Link"
+description: "A styled anchor element supporting button-like visual variants, custom text tones, and tab security targets."
+category: "primitives"
+order: 3
+propsTable:
+  - name: "href"
+    type: "string"
+    description: "Anchor destination URL."
+  - name: "label"
+    type: "string"
+    description: "Text contents to wrap in an accessible typography element."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "Semantic color styling category."
+  - name: "tone"
+    type: "TextTone"
+    description: "Color overrides for text elements."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Blocks navigation and applies aria-disabled attributes."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Link from '../../components/ui/primitives/Link.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Link` primitive extends the native HTML `<a>` anchor element, providing a highly customizable visual trigger. While standard anchors have unpredictable browser-default text underlines and focus indicators, standardizing this component gives us a unified visual baseline that supports thematic variations, disabled button-like behaviors, and consistent outline indicators for keyboard navigation safety.
+
+### Engineering & Security Details
+To protect users and maintain high accessibility scores, we built in two core architectural rules:
+1. **Automated Relationship Isolation**: Whenever a link specifies `target="_blank"`, the component automatically appends `rel="noopener noreferrer"` under the hood. This isolates the destination tab process, preventing external malicious scripts from hijacking the referring page window.
+2. **Accessible Disabling**: Setting `disabled={true}` removes the `href` attribute, updates tab indexing, and assigns `aria-disabled="true"`. This prevents keyboard focus and informs screen readers that the action is currently locked.
+
+### Usage Blueprints
+
+#### Common: Theme Variations
+Group standard text anchors and styled links inside a single visual composition row to verify theme consistency:
+
+<ComponentPreview title="Themed Anchor Showcase">
+  <Inline gap="md" align="center" style="width: 100%; justify-content: center; flex-wrap: wrap;">
+    {/* Theme variants are built by composing raw design tokens into reusable styles */}
+    <Link href="#primary" label="Primary Link" theme="primary" />
+    <Link href="#secondary" label="Secondary Link" theme="secondary" />
+    <Link href="#outline" label="Outline Link" theme="outline" />
+  </Inline>
+</ComponentPreview>
+
+#### Advanced: Secure External Anchor with Minimal Framing
+Demonstrates how to route links to external windows with automated security parameters, custom accent text tones, and an elegant visual matte border frame wrapper:
+
+<ComponentPreview title="Framed External Secure Anchor">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Link 
+      href="https://github.com/jk/portfolio" 
+      theme="outline" 
+      tone="accent" 
+      size="lg" 
+      frame="minimal" 
+      target="_blank" 
+      aria-label="View source repository on GitHub" 
+    >
+      {/* Dev Note: target="_blank" triggers automatic rel="noopener noreferrer" injection */}
+      Explore GitHub Blueprints
+    </Link>
+  </div>
+</ComponentPreview>

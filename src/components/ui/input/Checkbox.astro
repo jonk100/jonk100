@@ -2,11 +2,12 @@
 /**
  * src/components/ui/input/Checkbox.astro
  * A styled checkbox input.
+ * - Utilizes global .sr-only class from src/styles/tokens/layout.css for accessibility visual hiding
  * @props (local): id, name, checked, disabled, label, theme
  * @props (global): class, class:list
  */
 import type { ComponentTheme } from '/src/types/variants.types';
-import Icon from '../media/Icon.astro';
+import Icon from '../primitives/Icon.astro';
 
 export interface Props {
   id?: string;
@@ -40,7 +41,7 @@ const {
     name={name}
     checked={checked}
     disabled={disabled}
-    class="checkbox-input sr-only"
+    class="sr-only checkbox-input"
     {...rest}
   />
   <div class:list={['checkbox-box', `variant--${theme}`]} aria-hidden="true">
@@ -63,17 +64,7 @@ const {
     cursor: not-allowed;
   }
 
-  .checkbox-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+
 
   .checkbox-box {
     width: 1.25rem;

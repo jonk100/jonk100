@@ -1,0 +1,84 @@
+---
+title: "Select"
+description: "A styled native HTML select element that wraps core dropdown options inside interactive design token containers."
+category: "controls"
+order: 11
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "An optional label element linked to the select dropdown."
+  - name: "error"
+    type: "string"
+    description: "An active validation error. If present, turns borders red and overrides the hint message."
+  - name: "hint"
+    type: "string"
+    description: "Descriptive help text rendered below the select dropdown field."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Locks choice options and visually dims the select dropdown."
+  - name: "required"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Appends a required asterisk indicator to the label."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Visual container style theme ('default', 'primary', 'secondary', etc.)."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "Scale dimensions ('xs', 'sm', 'md', 'lg', 'xl')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Select from '../../components/ui/input/Select.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+
+The `Select` component integrates standard option selector logic with custom layout decorations, wrapping the native HTML `<select>` element. Standardizing this dropdown component resolves a major aesthetic issue: native select dropdown carets render differently across every operating system and browser. By establishing a unified visual baseline, we ensure a premium, consistent appearance while retaining native touch and keyboard controls.
+
+### Caret Overrides & Focus Indicators
+To clean up the native selection UI without breaking standard accessibility layers, we implemented a pure-CSS caret system:
+1. **Appearance Resets**: We apply `appearance: none` and `-webkit-appearance: none` to the native select element. This strips away the browser-default arrows across Chrome, Safari, and Firefox.
+2. **Icon Overlay**: We nest the native select inside a relative container and absolutely position our own custom `<Icon name="chevron-down" />` over the right-hand margin. Setting `pointer-events: none` on the overlay wrapper ensures that user click triggers pass directly through to the dropdown below.
+3. **Keyboard Compatibility**: Hiding the native arrow does not impact focus rings. We attach a high-contrast focus outline offset trigger using `:focus-visible` to guide keyboard navigation.
+
+### Usage Blueprints
+
+#### Common: Select Variations Showcase
+Instead of manually declaring layout parameters for every dropdown option list, you can pass size and theme variables. This consolidates standard select configurations inside a single visual catalog grid:
+
+<ComponentPreview
+  title="Dropdown Select Configurations"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto;">
+    <Grid cols={2} gap="sm">
+      <Select label="Project Category" required={true}>
+        <option value="" disabled selected>Select category...</option>
+        <option value="web">Web Application</option>
+        <option value="graphic">Graphic Design</option>
+      </Select>
+      <Select label="Locked Option" disabled={true}>
+        <option>Enterprise Support Only</option>
+      </Select>
+    </Grid>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Active Validation Errors
+Demonstrates how dropdown elements handle warning alerts and active validation errors, turning borders high-contrast red and updating ARIA accessibility maps:
+
+<ComponentPreview
+  title="Dropdown Error Alert"
+>
+  <div style="width: 100%; max-width: 380px; margin: 0 auto;">
+    <Select 
+      label="Theme Mode" 
+      error="Theme configurations are currently offline."
+    >
+      <option value="dark">Retro Cyberpunk Dark</option>
+      <option value="light">Vanilla Cream Light</option>
+    </Select>
+  </div>
+</ComponentPreview>

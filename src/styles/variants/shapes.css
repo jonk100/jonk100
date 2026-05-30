@@ -23,8 +23,8 @@
    Component Radius Utilities
 ───────────────────────────── */
 .radius--none { border-radius: 0; }
-.radius--sm { border-radius: var(--rad-sm); }
-.radius--md { border-radius: var(--rad-md); }
-.radius--lg { border-radius: var(--rad-lg); }
-.radius--xl { border-radius: var(--rad-xl); }
+.radius--sm { border-radius: var(--rad-xs); }
+.radius--md { border-radius: var(--rad-sm); }
+.radius--lg { border-radius: var(--rad-md); }
+.radius--xl { border-radius: var(--rad-lg); }
 .radius--full { border-radius: var(--rad-full); }

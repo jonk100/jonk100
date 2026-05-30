@@ -1,0 +1,177 @@
+---
+title: "The Quest for the Perfect Component Previewer: An AST Story"
+description: "A deep dive into how I engineered a zero-overhead, build-time MDX AST plugin to automate code previews and integrate server-side Shiki highlighting in Astro."
+pubDate: 2026-05-30
+tags: ["Astro", "MDX", "remark", "Vite", "Design Systems"]
+---
+
+Building a personal design system is one of the most rewarding ways to master the frontend craft. For my new Astro portfolio, I built a custom suite of atomic UI primitives (`<Link>`, `<Image>`, `<Inline>`, `<Grid>`) to keep my markup clean and static. 
+
+But soon, I hit a classic Developer Experience (DX) bottleneck: **how to document them.**
+
+I wanted an interactive showcase index—a series of cards where developers could view a living, rendered component in a "Preview" tab, and click a "Code" tab to view the exact code snippet needed to render it.
+
+Here is the story of how I took that system from a fragile, duplicate-heavy layout to a fully automated, build-time AST-extraction powerhouse.
+
+---
+
+## The Initial Trap: Code Duplication
+
+My first approach was simple and naive. I created an interactive `<ComponentPreview>` wrapper and manually fed it a visual element, followed by a duplicate escaped string block to render under the code tab:
+
+````mdx
+<ComponentPreview title="Themed Anchor Showcase">
+  <Inline gap="md">
+    <Link href="#primary" label="Primary Link" theme="primary" />
+    <Link href="#secondary" label="Secondary Link" theme="secondary" />
+  </Inline>
+
+  <Fragment slot="code">
+    ```astro
+    import Link from 'src/components/ui/primitives/Link.astro';
+    import Inline from 'src/components/ui/layout/Inline.astro';
+
+    <Inline gap="md">
+      <Link href="#primary" label="Primary Link" theme="primary" />
+      <Link href="#secondary" label="Secondary Link" theme="secondary" />
+    </Inline>
+    ```
+  </Fragment>
+</ComponentPreview>
+````
+
+It worked, but my developer monologue kicked in almost immediately: 
+
+> *"This is a disaster waiting to happen. Every time I tweak a gap size, add a new prop, or rename a theme class in my live showcase, I have to remember to duplicate those exact changes inside the code string. Code duplication breeds bugs. Can we do better? Can we get to a 'Write-Once' syntax where I only declare the component, and the previewer automatically extracts the code?"*
+
+---
+
+## The Epiphany: Build-Time AST Extraction
+
+If we want a "Write-Once" syntax, we cannot evaluate raw source code strings on the client at runtime. But what if we do it at **build time**? 
+
+MDX files are compiled into JavaScript modules. Before compilation, the Markdown parser builds an **Abstract Syntax Tree (AST)**. I realized that if I wrote a custom Remark plugin, I could intercept this AST at compile time, scan the document for `<ComponentPreview>` elements, slice their raw children nodes out of the source text, and dynamically inject them into the previewer's `code` prop!
+
+I sat down and engineered a zero-dependency recursive AST traveler:
+
+```javascript
+// src/plugins/remark-preview.mjs
+export default function remarkPreview() {
+  return (tree, file) => {
+    const rawContent = file.value;
+    if (!rawContent) return;
+
+    visit(tree, 'mdxJsxFlowElement', (node) => {
+      if (node.name !== 'ComponentPreview') return;
+      
+      // Grab start and end byte offsets of the preview element
+      const startOffset = node.position.start.offset;
+      const endOffset = node.position.end.offset;
+      
+      const rawSlice = rawContent.slice(startOffset, endOffset);
+      
+      // Slice and clean up common indents (dedent)
+      const rawChildrenCode = rawSlice.slice(openTagEndIndex + 1, closeTagStartIndex);
+      const childCode = dedent(rawChildrenCode);
+      
+      // Inject the code string directly into the node's properties!
+      node.attributes.push({
+        type: 'mdxJsxAttribute',
+        name: 'code',
+        value: childCode
+      });
+    });
+  };
+}
+```
+
+This was a massive win! But my internal monologue pushed further:
+
+> *"Wait, are there downsides to this? What about imports? If a developer copies and pastes the snippet from the Code tab, they need to know what components to import. But writing import statements manually inside the component preview defeats the whole point of AST extraction. Can we automate the imports, too?"*
+
+---
+
+## Solving the Import Conundrum
+
+To solve this, I expanded the Remark plugin. The plugin now reads all import declarations at the absolute top of the MDX file at build time. 
+
+Then, it does a regex scan of the extracted preview child block. If it detects a component keyword (like `Link` or `Inline`) being used inside the preview, it filters the top-level imports and prepends only the **relevant** ones to the extracted code block!
+
+```javascript
+// Prepend relevant imports that are used inside this preview code
+const relevantImports = getRelevantImports(childCode);
+const finalCodeBlock = relevantImports.length > 0
+  ? `${relevantImports.join('\n')}\n\n${childCode}`
+  : childCode;
+```
+
+Now, if a preview card uses a `<Link>`, the Code tab automatically outputs the correct, fully qualified import path at the top of the snippet!
+
+---
+
+## An Unexpected Superpower: Code-Only Comments
+
+As I tested this new setup, I hit upon an elegant realization:
+
+> *"What happens if I write custom developer comments inside the JSX component block? Will the end-user see them on the site?"*
+
+In MDX, `{/* standard JSX comments */}` are processed as active code expressions and are **completely compiled away** by Astro during HTML generation. When a regular user visits the site, the browser renders clean DOM nodes with zero comment blocks.
+
+But because our Remark plugin operates on the raw, uncompiled file slice on disk, it extracts the JSX comments *exactly as written*. 
+
+This gave us an unexpected documentation superpower: **Code-Only Comments!** I could now write developer-only notes directly inside the live showcases to explain parameters:
+
+```mdx
+<ComponentPreview title="Framed External Secure Anchor">
+  <Link href="https://github.com/jk/portfolio" target="_blank">
+    {/* Dev Note: target="_blank" triggers automatic rel="noopener noreferrer" injection */}
+    Explore GitHub Blueprints
+  </Link>
+</ComponentPreview>
+```
+
+In the **Preview** tab, the comment compiles to nothing. But in the **Code** tab, the comment is perfectly preserved for other developers to read. 
+
+---
+
+## Polishing the Edge Cases: Spacing & Shiki Highlighting
+
+With the extraction working, I booted up the dev server, only to find two remaining bugs:
+1. **The Stray Indent**: The first line of the code blocks had a strange tab indentation on the first line.
+2. **Missing Colors**: The code tab displayed plain text with no color styling.
+
+My monologue resolved them one by one:
+
+> *"Why is there a tab on the first line? Ah! Inside my custom `<Code>` primitive component, the `<pre>` tag code block was indented across multiple lines for template readability. But in HTML, `<pre>` blocks preserve all spacing and carriage returns literally! Moving the `<pre>` rendering branches onto single, collapsed lines in Code.astro fixes the alignment instantly."*
+
+And for syntax highlighting:
+
+> *"Plain text previews look basic. Astro uses Shiki for standard markdown code blocks, but since we are dynamically piping the AST-extracted code string into a custom element, Astro's markdown processor doesn't touch it. Can we hook directly into Astro's built-in Shiki highlighter?"*
+
+Yes! Astro exposes its high-performance, server-side Shiki engine as a built-in component. I updated our typography primitive to import it:
+
+```astro
+---
+// src/components/ui/typography/Code.astro
+import { Code as AstroCode } from 'astro:components';
+---
+
+{code ? (
+  <AstroCode code={code} lang="astro" theme="github-dark" class="code-block" />
+) : (
+  <pre>...</pre>
+)}
+```
+
+Finally, I updated the Remark plugin to wrap the dynamically prepended imports in Astro's native frontmatter separators (`---`), creating a fully valid `.astro` component preview.
+
+---
+
+## The Verdict
+
+By writing a lightweight build-time Remark plugin, we completely automated our design system showcase:
+* **Zero Duplication**: MDX files are kept incredibly clean and readable.
+* **Server-Side Highlighting**: Previews are pre-compiled with beautiful Shiki theme tokens, requiring zero heavy client-side JavaScript.
+* **Preserved Code Comments**: Developer-only annotations are showcased in the Code panel while leaving the production DOM completely bloat-free.
+
+Sometimes, the best frontend architectures are built by shifting runtime problems into compile-time solutions!

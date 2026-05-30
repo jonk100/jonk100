@@ -1,4 +1,12 @@
 ---
+/**
+ * src/components/ui/modal/Modal.astro
+ * A standard, high-contrast modal dialog box with responsive sizes and frames.
+ * - Backdrop transitions and blurs are centralized inside src/styles/variants/effects.css
+ * - Supports progressive surface elevations (surface-5)
+ * @props (local): id, size, frame
+ * @props (global): class, class:list
+ */
 import type { FrameVariant, WrapperSize } from '/src/types/variants.types';
 
 export interface Props {
@@ -88,14 +96,13 @@ const {
   }
 
   .modal::backdrop {
-    background: rgba(0, 0, 0, 0.6); /* Slightly darker mask */
-    backdrop-filter: blur(8px); /* Deeper glassmorphism */
-    transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+    background: rgba(var(--overlay-rgb), 0.6); /* Slightly darker mask override */
+    backdrop-filter: blur(8px); /* Deeper glassmorphism override */
   }
   
   @starting-style {
     .modal[open]::backdrop {
-      background: rgba(0, 0, 0, 0);
+      background: rgba(var(--overlay-rgb), 0);
       backdrop-filter: blur(0px);
     }
   }

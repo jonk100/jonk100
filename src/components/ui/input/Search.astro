@@ -2,6 +2,7 @@
 /**
  * src/components/ui/input/Search.astro
  * A specialized input for search queries, featuring a search icon.
+ * - Visual container, label, and error layout styles defined in src/styles/variants/controls.css
  * @props (local): label, placeholder, error, hint, disabled, theme, size, id, name
  * @props (global): class, class:list
  */
@@ -72,26 +73,11 @@ const {
 </div>
 
 <style>
-  .input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    width: 100%;
-  }
-
-  .input-label {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text);
-  }
-
   .search-container {
     position: relative;
     display: flex;
     align-items: center;
   }
-
-
 
   .search-field {
     width: 100%;
@@ -108,21 +94,5 @@ const {
   .search-field:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -1px;
-  }
-
-  .input-field--error {
-    border-color: var(--text-danger);
-  }
-
-  .input-error {
-    font-size: var(--text-xs);
-    color: var(--text-danger);
-    margin-top: calc(var(--space-1) * -1);
-  }
-
-  .input-hint {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    margin-top: calc(var(--space-1) * -1);
   }
 </style>

@@ -4,12 +4,13 @@
  * Displays a single project summary as an interactive card.
  * - Highlights the project image with hover effects
  * - Shows project metadata like category, index, and tags
- * @props (local): title, description, category, index, tags, slug, imageSrc, delay
+ * - Implements dynamic system slide-up animations using the animate prop
+ * @props (local): title, description, category, index, tags, slug, imageSrc, delay, isFlagship
  * @props (global): class, class:list, frame, effects
- * - frame: Applies a specific frame style variant to the card
- * - effects: Applies single or multiple image effects to the card
+ * - frame: Forwarded frame variant choice (styled in src/styles/variants/frames.css)
+ * - effects: Forwarded effect choices (styled in src/styles/variants/effects.css)
  */
-import type { FrameVariant, ComponentEffect } from 'src/types/variants.types';
+import type { FrameVariant, ComponentEffect, ComponentTheme } from 'src/types/variants.types';
 import Card from '../ui/card/Card.astro';
 import CardHeader from '../ui/card/CardHeader.astro';
 import CardContent from '../ui/card/CardContent.astro';
@@ -17,7 +18,7 @@ import CardFooter from '../ui/card/CardFooter.astro';
 import Inline from '../ui/layout/Inline.astro';
 import Text from '../ui/typography/Text.astro';
 import Badge from '../ui/feedback/Badge.astro';
-import Icon from '../ui/media/Icon.astro';
+import Icon from '../ui/primitives/Icon.astro';
 import Image from '../ui/primitives/Image.astro';
 import Box from '../ui/layout/Box.astro';
 
@@ -54,12 +55,14 @@ const {
 } = Astro.props;
 ---
 
-<a href={`/projects/${slug}`} class="card-link" style={`animation-delay: ${delay}s;`}>
+<a href={`/projects/${slug}`} class="card-link">
   <Card
     layer="-1"
     bordered
     frame={frame}
     effects={effects}
+    animate="slide-up"
+    style={`animation-delay: ${delay}s;`}
     class:list={['project-card', className, classList]}
   >
     <div class="card-accent-bar"></div>
@@ -72,7 +75,7 @@ const {
 
     <CardHeader class="card-header-custom">
       <Inline justify="between" align="center" class="card-head">
-        <Text as="span" type="label" tone="accent" class="card-tag">{category}</Text>
+        <Text as="span" type="label" tone="accent" class:list={['card-tag', { 'card-tag--flagship': isFlagship }]}>{category}</Text>
         <Text as="span" type="label" tone="subtle" class="card-index">{index}</Text>
       </Inline>
       <Text as="h3" type="h3" class:list={['card-title', { 'card-title--flagship': isFlagship }]}>{title}</Text>
@@ -87,9 +90,11 @@ const {
     <CardFooter class="card-footer-custom">
       <Inline justify="between" align="end" class="w-full">
         <Inline gap="xs" wrap class="card-tags">
-          {tags.map(tag => (
-            <Badge theme="ghost" outlined>{tag}</Badge>
-          ))}
+          {tags.map((tag, index) => {
+            const themes = ['primary', 'secondary', 'accent'];
+            const theme = themes[index % 3];
+            return <Badge theme={theme as ComponentTheme} outlined>{tag}</Badge>;
+          })}
         </Inline>
         
         <div class="card-arrow">
@@ -106,16 +111,6 @@ const {
     height: 100%;
     text-decoration: none;
     color: inherit;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes fadeUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   .project-card {
@@ -213,6 +208,10 @@ const {
     letter-spacing: 0.1em;
   }
 
+  .card-tag--flagship {
+    color: var(--primary);
+  }
+
   .card-index {
     font-family: var(--mono);
   }
@@ -222,7 +221,10 @@ const {
   }
 
   .card-title--flagship {
-    font-size: var(--text-2xl);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--accent);
   }
 
   @media (max-width: 900px) {

@@ -2,8 +2,8 @@
 /**
  * src/components/portfolio/Hero.astro
  * Hero section component for the portfolio site.
- * - Displays the user's name, tagline, and current status
- * - Includes animated reveal effects
+ * - Displays the user's name, tagline, and current status.
+ * - Leverages centralized global entrance animations from src/styles/variants/animations.css.
  * @props (local): None
  * @props (global): class, class:list, frame, effects
  */
@@ -19,27 +19,27 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
   <Box class="container">
     <Stack gap="xl">
       <!-- Eyebrow -->
-      <Text as="p" type="label" class="hero-eyebrow fade-up-1">
+      <Text as="p" type="label" class="hero-eyebrow animate-slide-up delay-1">
         Available for work &nbsp;·&nbsp; Youngstown, OH
       </Text>
 
       <!-- Name -->
-      <h1 class="hero-name fade-up-2" id="hero-heading">
+      <h1 class="hero-name animate-slide-up delay-2" id="hero-heading">
         jon<em>k100</em>
       </h1>
-      <BadgeGroup size="md">
+      <BadgeGroup size="md" class="animate-slide-up delay-3">
         <Badge theme="primary">WRITER</Badge>
         <Badge theme="ghost">MUSICIAN</Badge>
         <Badge theme="ghost">TEACHER</Badge>
         <Badge theme="accent">DEVELOPER</Badge>
       </BadgeGroup>   
       <!-- Tagline -->
-      <Text as="p" type="body" tone="subtle" class="hero-tagline fade-up-3">
+      <Text as="p" type="body" tone="subtle" class="hero-tagline animate-slide-up delay-4">
         <strong>I enjoy building stuff</strong> that helps me write and teach more efficiently -- usually with Astro and TypeScript. Check out what I'm working on and hit me up!
       </Text>
 
       <!-- Status -->
-      <Inline align="center" gap="sm" class="hero-status fade-up-4">
+      <Inline align="center" gap="sm" class="hero-status animate-slide-up delay-5">
         <Inline align="center" gap="xs">
           <div class="status-dot" aria-hidden="true"></div>
           <Text as="span" type="label" tone="secondary" size="base" class="status-text">Currently writing</Text>
@@ -96,7 +96,7 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     height: 6px;
     border-radius: 50%;
     background-color: var(--accent);
-    animation: pulse 2.8s ease-in-out infinite;
+    animation: pulse 2.8s var(--ease-in-out) infinite;
   }
 
   .status-text {
@@ -108,27 +108,6 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     width: 1px;
     height: 14px;
     background-color: var(--border);
-  }
-
-  /* Animations */
-  .fade-up-1, .fade-up-2, .fade-up-3, .fade-up-4 {
-    opacity: 0;
-    animation: fade-up 0.64s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  .fade-up-1 { animation-delay: 0.1s; }
-  .fade-up-2 { animation-delay: 0.2s; }
-  .fade-up-3 { animation-delay: 0.35s; }
-  .fade-up-4 { animation-delay: 0.5s; }
-
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(18px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   @keyframes pulse {

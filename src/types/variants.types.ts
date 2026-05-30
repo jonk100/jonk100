@@ -14,8 +14,11 @@ export type TextTone = 'default' | 'muted' | 'subtle' | 'accent' | 'primary' | '
 export type SpacingScale = "none" | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "fluid";
 
 export type FrameVariant = 'light' | 'dark' | 'glass' | 'polaroid' | 'minimal' | 'accent' | 'primary' | 'secondary' | 'none';
-export type ComponentEffect = 'screen' | 'glow' | 'grayscale';
+export type ComponentEffect = 'screen' | 'glow' | 'grayscale' | 'glass' | 'shimmer';
 export type ComponentShape = 'landscape' | 'portrait' | 'square' | 'circle' | 'none';
+
+/** Options for component entrance and loop animations */
+export type AnimationType = 'slide-up' | 'slide-down' | 'fade-in' | 'pulse' | 'float' | 'spin' | 'none';
 
 /** Shared interface for components using flexbox properties */
 export interface FlexboxProps {
@@ -26,4 +29,3 @@ export interface FlexboxProps {
 }
 
 export type ComponentLayer = "-1" | "0" | "1" | "2" | "3" | "4" | "5";
-

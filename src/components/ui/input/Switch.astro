@@ -2,6 +2,7 @@
 /**
  * src/components/ui/input/Switch.astro
  * A styled toggle switch input.
+ * - Utilizes global .sr-only class from src/styles/tokens/layout.css for accessibility visual hiding
  * @props (local): id, name, checked, disabled, label, theme
  * @props (global): class, class:list
  */
@@ -40,7 +41,7 @@ const {
     name={name}
     checked={checked}
     disabled={disabled}
-    class="switch-input sr-only"
+    class="sr-only switch-input"
     aria-checked={checked ? "true" : "false"}
     {...rest}
   />
@@ -64,18 +65,7 @@ const {
     cursor: not-allowed;
   }
 
-  .switch-input {
-    /* visually hidden but accessible */
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+
 
   .switch-track {
     width: 2.5rem;

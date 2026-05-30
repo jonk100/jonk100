@@ -1,0 +1,71 @@
+---
+title: "Switch"
+description: "A styled interactive toggle switch designed to switch between binary states with fluid micro-animations."
+category: "controls"
+order: 12
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "Optional text rendered alongside the toggle switch."
+  - name: "checked"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Determines if the toggle switch is turned on by default."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Blocks interaction and visually dims the switch state."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "Semantic color theme applied to the switch track when checked ('primary', 'accent', 'success', etc.)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Switch from '../../components/ui/input/Switch.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Switch` component provides a styled interactive toggle designed to switch between binary states, wrapping a native HTML `<input type="checkbox">` element. Because the standard HTML5 spec lacks a native sliding toggle switch component, standardizing this component allows us to compose custom tracks and sliding thumbs under a single tag while preserving full accessibility hooks.
+
+### Accessibility & Track Animations
+To deliver a fluid interaction that remains completely browsable by assistive technologies, we implemented a layered design:
+1. **The Visual Hide (`sr-only`)**: The native checkbox remains on the page but is styled with our global `.sr-only` utility. This hides it visually while keeping it fully focusable via standard keyboard Tab sequences.
+2. **Semantic Role Declarations**: The input is marked with `role="switch"` and `aria-checked`. This informs screen readers that the checkbox acts as an active toggle switch rather than a standard multiple-choice box.
+3. **Sliding CSS Transitions**: When checked, the toggle track scales its HSL background color, and the nested thumb translates rightward:
+   ```css
+   .switch-input:checked + .switch-track .switch-thumb {
+     transform: translateX(1.25rem);
+   }
+   ```
+   This offloads the animation to the browser's GPU transform matrices, ensuring stutter-free sliding transitions.
+
+### Usage Blueprints
+
+#### Common: Active Status Group
+Instead of manually declaring track parameters for every settings form, you can pass state and label properties. This consolidates standard configurations inside a single visual preview showcase:
+
+<ComponentPreview
+  title="Switch State Catalog"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="md" align="center" style="flex-wrap: wrap;">
+      <Switch label="Auto Save" checked={true} />
+      <Switch label="Offline Mode" checked={false} />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Theme Options & Disabled Safety
+Demonstrates how to apply dynamic color variations (like the cyberpunk accent theme) alongside locked disabled switches that visually fade and block mouse click triggers:
+
+<ComponentPreview
+  title="Switch Themes & Restrictions"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Stack gap="sm" align="start">
+      <Switch label="Retro Cyberpunk Theme" theme="accent" checked={true} />
+      <Switch label="Admin Lockdown (Disabled)" disabled={true} checked={false} />
+    </Stack>
+  </div>
+</ComponentPreview>

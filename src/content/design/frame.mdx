@@ -1,0 +1,72 @@
+---
+title: "Frame"
+description: "A layout primitive for displaying images and media assets cropped to geometric dimensions."
+category: "primitives"
+order: 1
+propsTable:
+  - name: "src"
+    type: "string"
+    description: "The primary source path of the image asset."
+  - name: "alt"
+    type: "string"
+    description: "Alternative text for accessibility screen readers."
+  - name: "shape"
+    type: "ComponentShape"
+    defaultValue: "'landscape'"
+    description: "Geometric aspect-ratio boundary ('landscape', 'portrait', 'square', 'circle', 'none')."
+  - name: "radius"
+    type: "ComponentRadius"
+    description: "Rounded corner radius constraint ('none', 'sm', 'md', 'lg', 'xl', 'full')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Frame from '../../components/ui/primitives/Frame.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Frame` component is a layout primitive designed to display images and media assets cropped to precise geometric aspect ratios. By extending a standard HTML `<div>` wrapper around a native image, we establish standard aspect-ratio proportions. We built this component specifically to standardize aesthetic dimensions and eliminate browser layout shifts (CLS) when images load asynchronously.
+
+### Usage Blueprints
+
+#### Common: Core Geometric Shapes
+Instead of applying manual CSS crop parameters to every picture on your site, you can pass a `shape` prop. This consolidates standard aspect ratios into a single visual catalog grid:
+
+<ComponentPreview
+  title="Standard Aspect Ratio Showcase"
+>
+  <Grid cols={3} gap="sm" style="width: 100%;">
+    <Stack gap="3xs">
+      <Frame src="/cardgridview.png" alt="Landscape crop" shape="landscape" radius="md" />
+      <Text type="caption" tone="muted" style="text-align:center;">landscape (3:2)</Text>
+    </Stack>
+    <Stack gap="3xs">
+      <Frame src="/rmmblog-pp.png" alt="Square crop" shape="square" radius="md" />
+      <Text type="caption" tone="muted" style="text-align:center;">square (1:1)</Text>
+    </Stack>
+    <Stack gap="3xs">
+      <Frame src="/rmmblog-cardgrid.png" alt="Portrait crop" shape="portrait" radius="md" />
+      <Text type="caption" tone="muted" style="text-align:center;">portrait (2:3)</Text>
+    </Stack>
+  </Grid>
+</ComponentPreview>
+
+#### Advanced: Scale-Neutral Grayscale Filter Transitions
+For design systems seeking high-fidelity animations, `Frame` allows custom class and style overrides. Here we demonstrate how to combine a round aspect ratio (`shape="circle"`) with a layout-neutral grayscale-to-color transition.
+
+By animating the nested image with `transform` on hover, we trigger high-performance GPU rendering without causing page reflows or resizing the parent container boundaries:
+
+<ComponentPreview
+  title="Hardware-Accelerated Grayscale Circle"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Frame 
+      src="/rmmblog-pp.png" 
+      alt="User avatar profile picture" 
+      shape="circle" 
+      radius="full" 
+      class="effect--grayscale" 
+      style="width: 120px; height: 120px; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
+    />
+  </div>
+</ComponentPreview>

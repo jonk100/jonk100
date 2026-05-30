@@ -4,6 +4,7 @@
  * Provides a small label or status indicator for inline items.
  * - Supports multiple predefined variants and sizes.
  * - Offers an outlined style option for lighter visuals.
+ * - Semantic RGB token variables are centralized inside src/styles/tokens/colors-rgb.css
  * @props (local): theme, size, outlined
  * @props (global): class, class:list, frame, effects
  * - theme: Visual style theme aligning with design system themes.
@@ -134,16 +135,16 @@ const isExplicitOutlined = Astro.props.outlined !== undefined;
 
   .badge--danger,
   :global(.badge-group[data-group-theme="danger"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(255, 90, 90, 0.15);
+    background: rgba(var(--danger-rgb), 0.15);
     color: var(--text-danger);
-    border-color: rgba(255, 90, 90, 0.3);
+    border-color: rgba(var(--danger-rgb), 0.3);
   }
 
   .badge--success,
   :global(.badge-group[data-group-theme="success"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(90, 255, 170, 0.15);
+    background: rgba(var(--success-rgb), 0.15);
     color: var(--text-success);
-    border-color: rgba(90, 255, 170, 0.3);
+    border-color: rgba(var(--success-rgb), 0.3);
   }
 
   .badge--ghost,

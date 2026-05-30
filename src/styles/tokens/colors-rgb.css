@@ -1,0 +1,13 @@
+:root {
+  /** -------------------------------------------------------------
+  /**     ── Colors: Raw RGB Representations (Alpha Support) ──  */
+  /** ----------------------------------------------------------*/
+  --primary-rgb:   122, 186, 220;   /* rgb values for var(--primary) / var(--blue-220) */
+  --secondary-rgb: 200, 92, 94;     /* rgb values for var(--secondary) / var(--red-200) */
+  --accent-rgb:    200, 193, 92;     /* rgb values for var(--accent) / var(--yellow-200) */
+
+  --danger-rgb:    255, 90, 90;     /* rgb values for danger red */
+  --success-rgb:   90, 255, 170;    /* rgb values for success green */
+  --warning-rgb:   255, 210, 90;    /* rgb values for warning yellow */
+  --overlay-rgb:   0, 0, 0;         /* rgb values for dark mask overlays */
+}

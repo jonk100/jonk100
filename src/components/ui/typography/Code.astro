@@ -3,11 +3,14 @@
  * src/components/ui/primitives/Code.astro
  * A styled component for rendering inline or block code snippets.
  * - Uses the global monospace font and elevated background
- * @props (local): inline, language
+ * - Integrates Astro's built-in Shiki-powered syntax highlighter for block previews
+ * @props (local): inline, language, code
  * @props (global): class, class:list
  * - inline: Renders as an inline <code> tag instead of a <pre> block
+ * - code: The raw code string to highlight using Shiki (block mode)
  */
-import type { FrameVariant } from '/src/types/variants.types';
+import type { FrameVariant } from 'src/types/variants.types';
+import { Code as AstroCode } from 'astro:components';
 
 export interface Props {
   inline?: boolean;
@@ -18,18 +21,20 @@ export interface Props {
   captionAlign?: 'left' | 'center' | 'right';
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
+  code?: string;
   [key: string]: any;
 }
 
 const {
   inline = true,
-  language,
+  language = 'plaintext',
   frame = 'none',
   caption,
   captionPosition = 'top',
   captionAlign = 'left',
   class: className = '',
   "class:list": classList = {},
+  code,
   ...rest
 } = Astro.props;
 
@@ -38,25 +43,27 @@ const contentClass = inline ? 'code-inline' : 'code-block';
 ---
 
 {inline ? (
-  <code class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest}>
-    <slot />
-  </code>
+  <code class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest}><slot /></code>
 ) : caption ? (
   <figure class:list={["code-figure", className, classList]}>
     {captionPosition === 'top' && (
       <figcaption class="code-caption" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
     )}
-    <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} data-language={language} {...rest}>
-      {language ? <code class={`language-${language}`}><slot /></code> : <slot />}
-    </pre>
+    {code ? (
+      <AstroCode code={code} lang={language as any} theme="github-dark" class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} {...rest} />
+    ) : (
+      <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} data-language={language} {...rest}><code class={`language-${language}`}><slot /></code></pre>
+    )}
     {captionPosition === 'bottom' && (
       <figcaption class="code-caption" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
     )}
   </figure>
 ) : (
-  <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} data-language={language} {...rest}>
-    {language ? <code class={`language-${language}`}><slot /></code> : <slot />}
-  </pre>
+  code ? (
+    <AstroCode code={code} lang={language as any} theme="github-dark" class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest} />
+  ) : (
+    <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} data-language={language} {...rest}><code class={`language-${language}`}><slot /></code></pre>
+  )
 )}
 
 <style>
@@ -65,8 +72,8 @@ const contentClass = inline ? 'code-inline' : 'code-block';
     font-family: var(--mono);
     font-size: var(--text-xs);
     padding: var(--space-1) var(--space-2);
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
+    background: transparent;
+    /* border: 1px solid var(--border); */
     border-radius: var(--rad-sm);
     color: var(--accent);
     margin: var(--space-5);
@@ -90,9 +97,9 @@ const contentClass = inline ? 'code-inline' : 'code-block';
     font-size: var(--text-sm);
     padding: var(--space-4);
     margin: 0;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: var(--rad-md);
+    background: transparent;
+    /* border: 1px solid var(--border); */
+    /* border-radius: var(--rad-md); */
     overflow-x: auto;
     color: var(--text);
     line-height: var(--leading-relaxed);

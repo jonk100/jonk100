@@ -2,11 +2,12 @@
 /**
  * src/components/ui/input/Select.astro
  * A styled native select dropdown.
+ * - Visual container, label, and error layout styles defined in src/styles/variants/controls.css
  * @props (local): label, error, hint, disabled, required, theme, size, id, name
  * @props (global): class, class:list
  */
 import type { ComponentTheme, Sizes } from '/src/types/variants.types';
-import Icon from '../media/Icon.astro';
+import Icon from '../primitives/Icon.astro';
 
 export interface Props {
   label?: string;
@@ -75,23 +76,6 @@ const {
 </div>
 
 <style>
-  .input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    width: 100%;
-  }
-
-  .input-label {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .required {
-    color: var(--accent);
-  }
-
   .select-container {
     position: relative;
     display: flex;
@@ -111,10 +95,6 @@ const {
     outline-offset: -1px;
   }
 
-  .input-field--error {
-    border-color: var(--text-danger);
-  }
-
   .select-icon-wrapper {
     position: absolute;
     right: var(--space-3);
@@ -123,17 +103,5 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .input-error {
-    font-size: var(--text-xs);
-    color: var(--text-danger);
-    margin-top: calc(var(--space-1) * -1);
-  }
-
-  .input-hint {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    margin-top: calc(var(--space-1) * -1);
   }
 </style>

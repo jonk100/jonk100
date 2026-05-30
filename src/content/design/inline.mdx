@@ -1,0 +1,72 @@
+---
+title: "Inline"
+description: "A horizontal layout primitive designed to align elements in flex rows with dynamic wrapping support."
+category: "layouts"
+order: 7
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'div'"
+    description: "The underlying HTML tag to render (e.g. 'ul', 'ol', 'span')."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "Determines the gap spacing between inline children elements."
+  - name: "align"
+    type: "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+    defaultValue: "'center'"
+    description: "Sets the flex cross-axis items alignment."
+  - name: "justify"
+    type: "'start' | 'center' | 'end' | 'space-between' | 'space-around'"
+    defaultValue: "'start'"
+    description: "Sets the main-axis justification."
+  - name: "wrap"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Enables natural line wrapping when children exceed parent dimensions."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+
+The `Inline` component is our core horizontal layout primitive, extending standard HTML dynamic tags (such as `<div>`, `<ul>`, or `<ol>`) through the `as` parameter. Standardizing this component eliminates the fragile practice of applying right or left margins on list items. This ensures that horizontal elements (like tags, badges, or buttons) wrap naturally and align consistently across responsive viewports without leaking styles.
+
+### The Problem with Sideways Margins
+Traditional CSS layouts often manage horizontal spacing by applying `margin-right` to children, requiring complex `:last-child` overrides to prevent extra white space at the container's edge. 
+
+`Inline` completely sidesteps this by wrapping elements inside a modern CSS flex layout utilizing the standard `gap` property. This automates gutters only between siblings and respects flex boundaries, resulting in fluid spacing that perfectly accommodates varying screen widths.
+
+### Usage Blueprints
+
+#### Common: Wrapping Tag Cloud
+Instead of hardcoding item offsets that cause layout breaks on small mobile viewports, you can wrap them in an `Inline` container. This handles horizontal gaps and line wrapping automatically:
+
+<ComponentPreview
+  title="Wrapping Tag Cloud"
+>
+  <div style="width: 100%; max-width: 320px; margin: 0 auto;">
+    <Inline gap="xs" wrap={true}>
+      <Badge theme="primary">Development</Badge>
+      <Badge theme="secondary">Creative</Badge>
+      <Badge theme="accent">Cinematography</Badge>
+      <Badge theme="ghost" outlined>Blueprints</Badge>
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Split-Justified Header Toolbar
+Demonstrates how to compose a header toolbar utilizing dynamic split-justification (`justify="space-between"`), precise vertical items alignment, and no-wrap parameters inside a surfaced dashboard panel:
+
+<ComponentPreview
+  title="Justified Toolbar Row"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <div style="padding: 12px; width: 100%; max-width: 360px; border-radius: var(--rad-md); border: 1px solid var(--border-subtle); background: var(--surface-1);">
+      <Inline gap="md" justify="space-between" align="center" wrap={false}>
+        <span style="font-family: var(--sans); font-size: var(--text-sm); font-weight: 600;">Diagnostics Console</span>
+        <Badge theme="success">Connected</Badge>
+      </Inline>
+    </div>
+  </div>
+</ComponentPreview>

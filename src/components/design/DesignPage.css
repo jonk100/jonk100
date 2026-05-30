@@ -1,7 +1,8 @@
   .architectural-rationale {
     background: var(--surface-4);
-    border: 1px solid var(--border);
+    border: 1px solid var(--primary-border);
     border-left: 1px solid var(--accent);
-    border-radius: var(--rad-md);
+    border-radius: var(--rad-sm);
     margin-top: var(--space-6);
+    
   }

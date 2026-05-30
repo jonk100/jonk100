@@ -1,17 +1,18 @@
 ---
 /**
  * src/components/ui/layout/Box.astro
- * A foundational layout primitive for applying spacing, margins, and display properties.
+ * A foundational layout primitive for applying spacing, margins, display, and animation properties.
  * - Supports responsive padding and margin via spacing scale values
  * - Configurable HTML tag rendering with the 'as' prop
- * @props (local): as, padding, margin, display
+ * @props (local): as, padding, margin, display, animate
  * @props (global): class, class:list, frame, effects
  * - padding: Applies padding using a spacing scale value
  * - margin: Applies margin using a spacing scale value
  * - frame: Applies a specific frame style variant to the component
  * - effects: Applies single or multiple image effects to the component
+ * - animate: Applies an entrance or loop animation variant (defined in src/styles/variants/animations.css)
  */
-import type { SpacingScale, FrameVariant, ComponentEffect, ComponentRadius } from 'src/types/variants.types.ts';
+import type { SpacingScale, FrameVariant, ComponentEffect, ComponentRadius, AnimationType } from 'src/types/variants.types.ts';
 
 export interface Props {
   as?: string;
@@ -24,6 +25,7 @@ export interface Props {
   frame?: FrameVariant;
   effects?: ComponentEffect | ComponentEffect[];
   radius?: ComponentRadius;
+  animate?: AnimationType;
   [key: string]: any;
 }
 
@@ -38,6 +40,7 @@ const {
   frame,
   effects,
   radius,
+  animate = 'none',
   ...rest
 } = Astro.props;
 ---
@@ -48,6 +51,7 @@ const {
     padding && `p-${padding}`,
     margin && `m-${margin}`,
     layer !== undefined && `layer--${layer}`,
+    animate !== 'none' ? `animate-${animate}` : '',
     className,
     classList,
     frame,

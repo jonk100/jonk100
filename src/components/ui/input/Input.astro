@@ -4,6 +4,7 @@
  * An accessible form input component with labels, errors, and hints.
  * - Supports various input types, sizes, and styling variants
  * - Handles auto-sizing for content (modern browser support)
+ * - Visual container, label, and error layout styles defined in src/styles/variants/controls.css
  * @props (local): label, placeholder, error, hint, disabled, required, theme, size, id, name, type
  * @props (global): class, class:list
  * - theme: Determines the visual style from predefined options
@@ -79,23 +80,6 @@ const {
 </div>
 
 <style>
-  .input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    width: 100%;
-  }
-
-  .input-label {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .required {
-    color: var(--accent);
-  }
-
   .input-field {
     /* Override specific .control styles that don't apply to inputs */
     justify-content: flex-start;
@@ -111,21 +95,5 @@ const {
   .input-field:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -1px;
-  }
-
-  .input-field--error {
-    border-color: var(--text-danger);
-  }
-
-  .input-error {
-    font-size: var(--text-xs);
-    color: var(--text-danger);
-    margin-top: calc(var(--space-1) * -1);
-  }
-
-  .input-hint {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    margin-top: calc(var(--space-1) * -1);
   }
 </style>

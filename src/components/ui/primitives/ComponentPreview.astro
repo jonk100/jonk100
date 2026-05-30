@@ -1,0 +1,211 @@
+---
+/**
+ * src/components/ui/primitives/ComponentPreview.astro
+ * An interactive showcase wrapper for rendering a live component preview and its code snippet.
+ * - Features client-side tab toggling between living component preview and raw code source
+ * - Utilizes custom element scripting to stay framework-agnostic and transition-safe
+ * - Styled with dynamic gradients, elevation layers, and custom outline states
+ * @props (local): code, title
+ * @props (global): class, class:list
+ * - code: The raw HTML/Astro source code string to display in the code tab
+ * - title: Header label of the preview card
+ */
+import Paper from './Paper.astro';
+import Inline from '../layout/Inline.astro';
+import Text from '../typography/Text.astro';
+import Code from '../typography/Code.astro';
+
+export interface Props {
+  code?: string;
+  title?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  code,
+  title,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const previewId = `preview-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<component-preview-element data-id={previewId}>
+  <div class:list={['component-preview', className, classList]} id={previewId} {...rest}>
+    <Paper layer="1" bordered padding="none">
+      <div class="preview-header">
+        <Inline justify="between" align="center" gap="md">
+          <Text as="span" type="label" tone="accent" class="preview-title">{title || 'Component Preview'}</Text>
+          <div class="preview-tabs">
+            <button class="tab-btn is-active" data-tab="preview" aria-selected="true" role="tab">Preview</button>
+            <button class="tab-btn" data-tab="code" aria-selected="false" role="tab">Code</button>
+          </div>
+        </Inline>
+      </div>
+      
+      <div class="preview-content">
+        <div class="tab-pane is-active" data-pane="preview" role="tabpanel">
+          <div class="preview-render">
+            <slot />
+          </div>
+        </div>
+        <div class="tab-pane" data-pane="code" role="tabpanel">
+          <div class="preview-code">
+            {Astro.slots.has('code') ? (
+              <slot name="code" />
+            ) : (
+              code && <Code inline={false} language="astro" code={code} />
+            )}
+          </div>
+        </div>
+      </div>
+    </Paper>
+  </div>
+</component-preview-element>
+
+<script>
+  class ComponentPreviewElement extends HTMLElement {
+    connectedCallback() {
+      const previewId = this.dataset.id;
+      if (!previewId) return;
+      
+      const container = this.querySelector(`#${previewId}`);
+      if (!container) return;
+      
+      const tabButtons = container.querySelectorAll<HTMLButtonElement>('.tab-btn');
+      const tabPanes = container.querySelectorAll<HTMLDivElement>('.tab-pane');
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tab = button.getAttribute('data-tab');
+          
+          tabButtons.forEach(btn => {
+            btn.classList.remove('is-active');
+            btn.setAttribute('aria-selected', 'false');
+          });
+          
+          tabPanes.forEach(pane => {
+            pane.classList.remove('is-active');
+          });
+          
+          button.classList.add('is-active');
+          button.setAttribute('aria-selected', 'true');
+          
+          const activePane = container.querySelector<HTMLDivElement>(`.tab-pane[data-pane="${tab}"]`);
+          if (activePane) {
+            activePane.classList.add('is-active');
+          }
+        });
+      });
+    }
+  }
+  
+  if (!customElements.get('component-preview-element')) {
+    customElements.define('component-preview-element', ComponentPreviewElement);
+  }
+</script>
+
+<style>
+  .component-preview {
+    width: 100%;
+    overflow: hidden;
+    margin: var(--space-4) 0;
+  }
+
+  .preview-header {
+    padding: var(--space-3) var(--space-5);
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .preview-title {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .preview-tabs {
+    display: inline-flex;
+    background: var(--surface-0);
+    padding: 2px;
+    border-radius: var(--rad-md);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .tab-btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--text-subtle);
+    padding: var(--space-1) var(--space-4);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    font-family: var(--sans);
+    border-radius: calc(var(--rad-md) - 2px);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tab-btn:hover {
+    color: var(--text);
+  }
+
+  .tab-btn.is-active {
+    background: var(--surface-2);
+    color: var(--accent);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .preview-content {
+    background: var(--surface-0);
+  }
+
+  .tab-pane {
+    display: none;
+    width: 100%;
+  }
+
+  .tab-pane.is-active {
+    display: block;
+  }
+
+  .preview-render {
+    padding: var(--space-8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    overflow-x: auto;
+    background: radial-gradient(circle at center, var(--surface-1) 0%, var(--surface-0) 100%);
+  }
+
+  .preview-code {
+    max-height: 420px;
+    overflow-y: auto;
+    background: var(--surface-0);
+  }
+
+  .preview-code :global(pre) {
+    margin: 0 !important;
+    padding: var(--space-5) !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Custom Scrollbar for Code panels */
+  .preview-code::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .preview-code::-webkit-scrollbar-track {
+    background: var(--surface-0);
+  }
+  .preview-code::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--rad-full);
+  }
+</style>

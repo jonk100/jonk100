@@ -20,7 +20,7 @@ import CardContent from '../../components/ui/card/CardContent.astro';
 import CardFooter from '../../components/ui/card/CardFooter.astro';
 import Badge from '../../components/ui/feedback/Badge.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
-import Icon from '../../components/ui/media/Icon.astro';
+import Icon from '../../components/ui/primitives/Icon.astro';
 
 const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());

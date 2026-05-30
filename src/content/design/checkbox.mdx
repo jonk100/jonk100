@@ -1,0 +1,73 @@
+---
+title: "Checkbox"
+description: "A styled visual tick box for multi-select forms, implementing fluid scale animations and high-contrast check symbols."
+category: "controls"
+order: 13
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "Descriptive label text aligned next to the tick box."
+  - name: "checked"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Renders the checkbox in a checked state initially."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Dims the tick box and blocks interactive click actions."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "Sets the visual color theme of the check box when checked ('primary', 'accent', 'success', 'danger', etc.)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Checkbox from '../../components/ui/input/Checkbox.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Checkbox` component coordinates native form multi-selection logic with custom visual layouts, wrapping the standard HTML `<input type="checkbox">` element. Because native browser checkboxes suffer from inconsistent visual formatting and cannot load custom check icons, standardizing this component lets us build high-contrast bounding boxes, support custom color themes, and animate vector checkmark grids.
+
+### Visual Bridging & Scaled Transitions
+To achieve a high-fidelity visual experience without sacrificing access standards, we utilize a sibling checkbox mapping system:
+1. **Accessibility Containment**: The native checkbox input is visually hidden using the global `.sr-only` class. This preserves standard browser focus rings and keyboard Tab navigation sequence lists.
+2. **Visual Box Binding**: We construct a visual `.checkbox-box` sibling container housing a nested `<Icon name="check" />`.
+3. **Pulsing Tick Scale**: When selected, the hidden input triggers sibling selectors to scale and animate the checkmark:
+   ```css
+   .checkbox-input:checked + .checkbox-box .checkbox-icon {
+     opacity: 1;
+     transform: scale(1);
+   }
+   ```
+   This hardware-accelerated transition provides instant, fluid visual feedback when clicked.
+
+### Usage Blueprints
+
+#### Common: Checkbox State Varieties
+Instead of manually declaring layout parameters for every form checkbox, you can pass theme and disabled properties. This consolidates standard tick box states inside a single visual preview showcase:
+
+<ComponentPreview
+  title="Checkbox Variation Showcase"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="md" align="center" style="flex-wrap: wrap;">
+      <Checkbox label="Standard Option" checked={true} />
+      <Checkbox label="Success Agreement" theme="success" checked={true} />
+      <Checkbox label="Locked Item (Disabled)" disabled={true} checked={false} />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Framework checklist parameter
+Demonstrates how to compose multiple checkboxes inside a dynamic layout list, aligning options to semantic themes like the cyberpunk accent colors:
+
+<ComponentPreview
+  title="Checkbox Theme Variables"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Stack gap="xs" align="start">
+      <Checkbox label="Astro Components (Primary Theme)" theme="primary" checked={true} />
+      <Checkbox label="TypeScript Types (Accent Theme)" theme="accent" checked={true} />
+    </Stack>
+  </div>
+</ComponentPreview>

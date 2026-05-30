@@ -1,0 +1,75 @@
+---
+title: "Stack"
+description: "A vertical layout primitive designed to stack children elements and manage gap spacing cleanly in columns."
+category: "layouts"
+order: 6
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'div'"
+    description: "The underlying HTML tag to render (e.g. 'section', 'article', 'nav')."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "Determines the gap spacing between stacked child elements ('none', '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl')."
+  - name: "align"
+    type: "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+    defaultValue: "'stretch'"
+    description: "Sets the flex cross-axis items alignment."
+  - name: "justify"
+    type: "'start' | 'center' | 'end' | 'space-between' | 'space-around'"
+    defaultValue: "'start'"
+    description: "Sets the main-axis justification."
+  - name: "divider"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Injects standard horizontal dividing lines between sibling items automatically via CSS."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Stack` component is our core vertical layout primitive, extending standard HTML dynamic tags (like `<div>`, `<section>`, or `<article>`) through the `as` parameter. Standardizing this component eliminates the need to hardcode arbitrary top/bottom margins on child content blocks. This separates visual layout guidelines from content elements, ensuring that vertical gutters flow uniformly across all page lists.
+
+### The Lobotomized Owl Selector
+To automate sibling gutters without polluting the styles of individual children, `Stack` utilizes the legendary **lobotomized owl selector** (`* + *`) inside its stylesheet:
+```css
+.stack > * + * {
+  margin-top: var(--gap);
+}
+```
+This selector targets only elements that are preceded by another sibling inside the container. This eliminates the need for manual margin-top resets on first-child elements or padding trims on last-child containers, keeping page rendering highly modular and performant.
+
+### Usage Blueprints
+
+#### Common: Stacking Content Lists
+Instead of applying manual margin rules to every card in your column, you can wrap them in a `Stack` block. This consolidates vertical spacing gaps into a single layout controller:
+
+<ComponentPreview
+  title="Vertical Gutters Column"
+>
+  <Stack gap="sm" style="width: 100%; max-width: 320px; margin: 0 auto;">
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size:var(--text-xs);">Stacked Item A</Text></Paper>
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size:var(--text-xs);">Stacked Item B</Text></Paper>
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size:var(--text-xs);">Stacked Item C</Text></Paper>
+  </Stack>
+</ComponentPreview>
+
+#### Advanced: Divided Sidebar Modules with Central Justification
+Demonstrates how to compose a semantic section layout utilizing automated horizontal dividing lines, custom cross-axis items alignment, and custom nested tag wrapping inside an elevated card panel:
+
+<ComponentPreview
+  title="Divided Layout Module"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Paper layer="2" padding="md" style="width: 100%; max-width: 360px;">
+      <Stack as="section" gap="md" divider={true} align="center">
+        <Text style="margin: 0; font-size: var(--text-sm);">First Module Segment</Text>
+        <Text style="margin: 0; font-size: var(--text-sm);">Second Module Segment</Text>
+        <Text style="margin: 0; font-size: var(--text-sm);">Third Module Segment</Text>
+      </Stack>
+    </Paper>
+  </div>
+</ComponentPreview>

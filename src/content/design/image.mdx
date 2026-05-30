@@ -1,0 +1,86 @@
+---
+title: "Image"
+description: "A high-performance media wrapper incorporating shimmer states, broken fallback paths, and zoomable lightboxes."
+category: "primitives"
+order: 2
+propsTable:
+  - name: "src"
+    type: "string"
+    description: "The primary source URL of the asset."
+  - name: "alt"
+    type: "string"
+    description: "Alternative text for accessibility."
+  - name: "fallbackSrc"
+    type: "string"
+    description: "Failover replacement source path if the primary asset path breaks."
+  - name: "fit"
+    type: "'cover' | 'contain' | 'fill' | 'none'"
+    defaultValue: "'cover'"
+    description: "CSS object-fit constraint governing asset sizing."
+  - name: "zoomable"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Enables click-to-zoom interactive modal lightbox."
+  - name: "caption"
+    type: "string"
+    description: "Optional label text rendered adjacent or inside the image."
+  - name: "captionPosition"
+    type: "'top' | 'bottom' | 'o-top' | 'o-bottom'"
+    description: "'o-' indicators place a translucent overlay inside the frame bounds."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Image from '../../components/ui/primitives/Image.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Image` primitive extends the native HTML `<img>` tag to provide a robust, high-performance visual asset container. Standardizing this component ensures visual consistency and gives us a system-wide baseline to handle loading shimmers, image aspect cropping, caption positioning, and interactive lightboxes out of the box.
+
+### Architectural Decisions
+To guarantee a resilient user interface, we implemented two key systems:
+1. **Fallback Scripting**: We attach a lightweight client-side `onerror` handler directly to the element. If the primary asset fails to load (e.g., due to a broken path or network timeout), the script intercepts the event and dynamically swaps the raw source to the `fallbackSrc` without throwing console exceptions.
+2. **Native Dialog Lightbox**: The click-to-zoom feature leverages the high-performance browser-native `<dialog>` element. Rerouting fullscreen zooming through `<dialog>` avoids complex z-index stack positioning wars and renders the modal in the browser's high-priority top layer.
+
+### Usage Blueprints
+
+#### Common: Default Loaders & Fallback Recovery
+Rather than managing broken images with manual javascript event bounds, the component provides loading shimmers and automatic failure fallbacks:
+
+<ComponentPreview
+  title="Resilient Asset Loader"
+>
+  <Grid cols={2} gap="md" style="width: 100%;">
+    <Stack gap="3xs">
+      <Image src="/cardgridview.png" alt="Fully loaded system mockup" radius="md" />
+      <Text type="caption" tone="muted" style="text-align:center;">Lazy Loading Shimmer</Text>
+    </Stack>
+    <Stack gap="3xs">
+      <Image src="/broken-link-sample.png" alt="Missing path recovering" fallbackSrc="/rmmblog-pp.png" radius="md" />
+      <Text type="caption" tone="muted" style="text-align:center;">Failover Path Intercepted</Text>
+    </Stack>
+  </Grid>
+</ComponentPreview>
+
+#### Advanced: Polaroid Frame & Translucent Caption Overlay
+In design layouts where imagery needs specialized presentation, you can activate the polaroid layout. This wraps the image in a high-contrast container matte and supports a floating, translucent caption overlay (`captionPosition="o-bottom"`). 
+
+Additionally, clicking the image triggers the interactive lightbox overlay for deep examination:
+
+<ComponentPreview
+  title="Interactive Polaroid Lightbox"
+>
+  <div style="width: 100%; max-width: 320px; margin: 0 auto;">
+    <Image 
+      src="/rmmblog-cardgrid.png" 
+      alt="Interactive interface display" 
+      shape="square" 
+      fit="cover" 
+      zoomable={true} 
+      caption="Mobile Interface Mockup, 2026" 
+      captionPosition="o-bottom" 
+      captionAlign="center" 
+      frame="polaroid" 
+    />
+  </div>
+</ComponentPreview>

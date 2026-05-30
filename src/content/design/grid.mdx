@@ -1,0 +1,70 @@
+---
+title: "Grid"
+description: "A flexible CSS layout grid primitive supporting static columns or dynamic, auto-fitting responsive grids."
+category: "layouts"
+order: 8
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'div'"
+    description: "The underlying HTML tag to render (e.g. 'section', 'article')."
+  - name: "cols"
+    type: "number | string"
+    description: "The static number of columns to generate (e.g. 3, '1fr 2fr 1fr')."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "Determines the gap grid spacing."
+  - name: "autoFit"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Enables responsive column counting fitting containers dynamically based on minChildWidth."
+  - name: "minChildWidth"
+    type: "string"
+    defaultValue: "'250px'"
+    description: "CSS length used by autoFit repeat columns count calculations."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Grid` component is our core multi-column layout wrapper, extending standard HTML dynamic tags (such as `<div>` or `<section>`) through the `as` parameter. Standardizing this component eliminates repeating tedious CSS Grid configurations across individual stylesheets, ensuring that page grids scale smoothly and gutters align with the design system's spacing scale.
+
+### Responsive Parent Container Fitting
+Rather than binding responsive columns to hardcoded window media queries, `Grid` features container query intelligence. Setting `autoFit={true}` triggers modern browser-based grid calculation rules:
+```css
+.grid--autofit {
+  grid-template-columns: repeat(auto-fit, minmax(var(--min-width), 1fr));
+}
+```
+This allows elements to count and wrap columns based on the *parent container's* specific width rather than the device's screen width. This makes a `Grid` highly modular; a grid list will render as three columns inside a wide hero main board but wrap elegantly to a single column when nested inside a narrow sidebar, without writing a single media query.
+
+### Usage Blueprints
+
+#### Common: Static Multi-Column Dashboards
+Instead of declaring manual column counts inside ad-hoc classes, you can pass a standard integer number or a custom `cols` pattern:
+
+<ComponentPreview
+  title="Static Column Divisions"
+>
+  <Grid cols={3} gap="sm" style="width: 100%;">
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Block A</Text></Paper>
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Block B</Text></Paper>
+    <Paper layer="1" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Block C</Text></Paper>
+  </Grid>
+</ComponentPreview>
+
+#### Advanced: Fluid Auto-Fitting Card Grid
+Demonstrates how to coordinate auto-fitting logic to establish a responsive, parent-adaptive visual grid. The grid automatically adjusts its item columns based on a minimum size bound (`minChildWidth="160px"`), wrapping items smoothly on resize:
+
+<ComponentPreview
+  title="Fluid Parent-Adaptive Auto-Fit Grid"
+>
+  <Grid autoFit={true} minChildWidth="160px" gap="md" style="width: 100%;">
+    <Paper layer="2" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs); font-family: var(--mono);">Fluid Cell A</Text></Paper>
+    <Paper layer="2" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs); font-family: var(--mono);">Fluid Cell B</Text></Paper>
+    <Paper layer="2" padding="xs"><Text style="margin:0; text-align: center; font-size: var(--text-xs); font-family: var(--mono);">Fluid Cell C</Text></Paper>
+  </Grid>
+</ComponentPreview>

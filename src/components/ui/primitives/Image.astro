@@ -4,6 +4,7 @@
  * An advanced image component with loading skeletons and fallback support.
  * - Displays a shimmer effect while the image is loading
  * - Replaces broken image sources with a provided fallback or a transparent pixel
+ * - Centralized RGB variables from colors-rgb.css mapped for translucent overlays
  * @props (local): src, alt, shape, fallbackSrc, position
  * @props (global): class, class:list, frame, effects
  * - shape: Determines the crop shape of the image container
@@ -86,7 +87,7 @@ const mergedStyle = [
     <figcaption class="image-caption caption--top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
   )}
   <div class:list={["image-container", "base-frame", `shape--${shape}`, radius && `radius--${radius}`, frameClass, ...effectClasses]}>
-    <div class="image-skeleton" aria-hidden="true"></div>
+    <div class="image-skeleton effect--shimmer" aria-hidden="true"></div>
     {isZoomable ? (
       <>
         <button popovertarget={`lightbox-${imageId}`} class="zoom-btn" title="View full image">
@@ -134,7 +135,7 @@ const mergedStyle = [
 
 <style>
   .figure-container {
-    margin: 0;
+    margin: 1rem;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -161,8 +162,8 @@ const mergedStyle = [
     left: 0;
     right: 0;
     padding: var(--space-3);
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-    color: white;
+    background: linear-gradient(to top, rgba(var(--overlay-rgb), 0.8) 0%, transparent 100%);
+    color: var(--neutral-255);
     z-index: 2;
   }
 
@@ -172,13 +173,13 @@ const mergedStyle = [
     left: 0;
     right: 0;
     padding: var(--space-3);
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
-    color: white;
+    background: linear-gradient(to bottom, rgba(var(--overlay-rgb), 0.8) 0%, transparent 100%);
+    color: var(--neutral-255);
     z-index: 2;
   }
 
   .base-frame {
-    background: var(--bg-elevated, rgba(0,0,0,0.1));
+    background: var(--bg-elevated, rgba(var(--overlay-rgb), 0.1));
   }
 
   .image-element {
@@ -216,7 +217,7 @@ const mergedStyle = [
   }
   
   .lightbox::backdrop {
-    background: rgba(0,0,0,0.8);
+    background: rgba(var(--overlay-rgb), 0.8);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
@@ -258,19 +259,6 @@ const mergedStyle = [
     width: 100%;
     height: 100%;
     z-index: 0;
-    background: linear-gradient(
-      90deg,
-      rgba(255,255,255,0.05) 0%,
-      rgba(255,255,255,0.1) 50%,
-      rgba(255,255,255,0.05) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite linear;
     transition: opacity 0.5s ease;
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
   }
 </style>

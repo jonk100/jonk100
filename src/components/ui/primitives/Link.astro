@@ -48,7 +48,7 @@ const classes = [
   "custom-link", 
   theme ? `link--${theme}` : '', 
   tone ? `text--${tone}` : '',
-  size !== 'base' ? `text-${size}` : '', 
+  size ? `text--${size}` : '', 
   frame !== 'none' ? `frame-variant--${frame}` : '',
   cls
 ]
@@ -65,19 +65,34 @@ const classes = [
   aria-disabled={disabled ? "true" : undefined}
   {...rest}
 >
-  {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
+  {label ? label : <slot />}
 </a>
 
 <style>
   .custom-link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2);
+    font-family: var(--body);
     font-weight: 500;
     text-decoration: underline;
     text-decoration-color: transparent;
-    transition: all 150ms ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Defensive override for MDX-compiled child paragraph tags */
+  .custom-link :global(p) {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    display: inline !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
   }
 
   /* When themed, remove underline by default */
@@ -89,6 +104,7 @@ const classes = [
   .custom-link:hover {
     text-decoration-color: currentColor;
     text-decoration: underline;
+    opacity: 0.9;
   }
 
   /* Disabled State */
@@ -105,4 +121,47 @@ const classes = [
   .link--danger { color: var(--text-danger); }
   .link--success { color: var(--text-success); }
   .link--ghost { color: var(--text-secondary); }
+  .link--outline { color: var(--text-subtle); }
+  .link--default { color: var(--text); }
+
+  /* Hover Themes */
+  .link--primary:hover { color: var(--primary-hover); }
+  .link--secondary:hover { color: var(--secondary-hover); }
+  .link--accent:hover { color: var(--accent-hover); }
+  .link--danger:hover { color: rgb(220, 70, 70); }
+  .link--success:hover { color: rgb(70, 230, 150); }
+  .link--ghost:hover { color: var(--text); }
+  .link--outline:hover { color: var(--accent); }
+  .link--default:hover { color: var(--accent); }
+
+  /* Tone Overrides */
+  .text--primary { color: var(--primary) !important; }
+  .text--secondary { color: var(--secondary) !important; }
+  .text--accent { color: var(--accent) !important; }
+  .text--danger { color: var(--text-danger) !important; }
+  .text--success { color: var(--text-success) !important; }
+  .text--muted { color: var(--text-0) !important; }
+  .text--subtle { color: var(--text-subtle) !important; }
+
+  /* Sizes */
+  .text--xs { font-size: var(--text-xs); }
+  .text--sm { font-size: var(--text-sm); }
+  .text--base { font-size: var(--text-base); }
+  .text--md { font-size: var(--text-md); }
+  .text--lg { font-size: var(--text-lg); }
+  .text--xl { font-size: var(--text-xl); }
+
+  /* Framed links styling adjustment (e.g. outline/minimal framed actions) */
+  .custom-link[class*="frame-variant--"] {
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--rad-md);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .custom-link[class*="frame-variant--"]:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
 </style>

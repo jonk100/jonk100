@@ -1,0 +1,80 @@
+---
+title: "Radio"
+description: "A styled visual radio input for single-choice option selectors, featuring centered dot scaling transitions."
+category: "controls"
+order: 14
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "Descriptive option text aligned next to the radio button."
+  - name: "name"
+    type: "string"
+    description: "The name variable shared among related radio siblings to establish an exclusive choice group."
+  - name: "value"
+    type: "string"
+    description: "The unique value payload returned by this specific option when submitted."
+  - name: "checked"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Sets the radio option active by default."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Blocks choice updates and visually fades the option wrapper."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "The semantic color scheme applied when selected ('primary', 'accent', 'success', etc.)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Radio from '../../components/ui/input/Radio.astro';
+import RadioGroup from '../../components/ui/input/RadioGroup.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Radio` component coordinates native single-option selection logic with custom visual layouts, wrapping the standard HTML `<input type="radio">` element. Standardizing this component resolves the lack of visual customization support in native operating-system-specific radio buttons, letting us build custom geometric circles, align text labels, and animate centered indicator dots consistently.
+
+### Sibling Selectors & Focus Outlines
+To maintain strict accessibility standards while replacing the browser-default radio circle, we leverage high-performance CSS sibling selectors:
+1. **The Visual Hide (`sr-only`)**: The native `<input type="radio">` is visually hidden using `.sr-only`. This leaves the element fully interactive and focusable during keyboard Tab navigation.
+2. **Visual Circle Sibling**: We align a `.radio-circle` wrapper containing a nested `.radio-dot` next to the hidden input.
+3. **Centered Dot Scaling**: When selected, the input maps sibling styles to scale and animate the dot:
+   ```css
+   .radio-input:checked + .radio-circle .radio-dot {
+     opacity: 1;
+     transform: scale(1);
+   }
+   ```
+   Animating scale transforms offloads the transition to the browser's GPU, resulting in lag-free selection feedback.
+
+### Usage Blueprints
+
+#### Common: Radio State Showcase
+Instead of manually declaring selection circles for every form list, you can pass state and name properties. This consolidates standard option configurations inside a single visual preview showcase:
+
+<ComponentPreview
+  title="Radio Option Varieties"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="md" align="center" style="flex-wrap: wrap;">
+      <Radio name="billing" value="monthly" label="Monthly Option" checked={true} />
+      <Radio name="billing" value="yearly" label="Yearly Savings" theme="success" checked={false} />
+      <Radio name="billing" value="enterprise" label="Locked Option" disabled={true} />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Composed Choice Panel (RadioGroup)
+Demonstrates how to group individual options inside a `RadioGroup` container fieldset to establish a clean, exclusively selectable option list, aligning parameters to standard and accent themes:
+
+<ComponentPreview
+  title="Exclusive Option Selection Panel"
+>
+  <div style="width: 100%; max-width: 380px; margin: 0 auto;">
+    <RadioGroup name="cycle" legend="Choose Service Cycle">
+      <Radio name="cycle" value="dev" label="Development Mode (Standard)" checked={true} />
+      <Radio name="cycle" value="prod" label="Production Deployment (Accent Theme)" theme="accent" />
+      <Radio name="cycle" value="custom" label="Custom Architecture (Locked)" disabled={true} />
+    </RadioGroup>
+  </div>
+</ComponentPreview>

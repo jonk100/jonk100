@@ -8,8 +8,8 @@
 }
 
 .effect--glow {
-  box-shadow: 0 0 30px rgba(var(--accent-rgb, 232, 197, 71), 0.6);
-  border-color: rgba(var(--accent-rgb, 232, 197, 71), 0.4);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.6);
+  border-color: rgba(var(--accent-rgb), 0.4);
 }
 
 .effect--grayscale {
@@ -19,4 +19,35 @@
 
 .effect--grayscale:hover {
   filter: grayscale(0%);
+}
+
+.effect--glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.2);
+  border-left-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.effect--shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* ─────────────────────────────
+   Backdrops (Dialogs, Modals, Drawers)
+───────────────────────────── */
+::backdrop {
+  background: var(--backdrop-bg);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }

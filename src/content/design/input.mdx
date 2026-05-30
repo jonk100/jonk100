@@ -1,0 +1,92 @@
+---
+title: "Input"
+description: "Accessible text field wrappers that support descriptive labels, character restrictions, inline errors, and interactive search compositions."
+category: "controls"
+order: 10
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "An optional label element linked to the input via htmlFor."
+  - name: "placeholder"
+    type: "string"
+    description: "Text showing within empty input fields to suggest format/data required."
+  - name: "error"
+    type: "string"
+    description: "An active error message. If present, highlights the border danger-red and assigns aria-invalid."
+  - name: "hint"
+    type: "string"
+    description: "A small explanatory text aligned underneath the input field."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Blocks user interaction and visually dimishes the element."
+  - name: "required"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Injects an asterisk indicator next to the label, indicating a required input."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Visual surface style tone ('default', 'primary', 'success', 'warning', 'danger')."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "Vertical padding and font-size ('xs', 'sm', 'md', 'lg', 'xl')."
+  - name: "type"
+    type: "string"
+    defaultValue: "'text'"
+    description: "Input behavior ('text', 'email', 'password', 'number', 'search', 'tel', 'url')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Input from '../../components/ui/input/Input.astro';
+import Search from '../../components/ui/input/Search.astro';
+import InputGroup from '../../components/ui/input/InputGroup.astro';
+import Button from '../../components/ui/controls/Button.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+
+The `Input` component acts as our primary visual container for user form text entry, wrapping the standard HTML `<input>` element inside a structured label/error layout. Standardizing this component ensures we don't duplicate boilerplate accessible layout structures, coordinates inline helpers, and provides a unified visual baseline for all form fields.
+
+### Dynamic ARIA & Content Auto-Sizing
+To deliver a premium user experience and maintain strict accessibility standards, we built in two core architectural features:
+1. **Dynamic ARIA Descriptors**: The component automatically generates unique field IDs. When an `error` or `hint` is present, it dynamically maps the input's `aria-describedby` attribute to the corresponding message ID node. This alerts screen readers to validation updates in real-time.
+2. **Modern CSS Auto-Sizing**: The input field utilizes the modern CSS `field-sizing: content` property. This allows the text field to automatically expand or contract horizontally based on the user's typed content, eliminating the need for heavy JavaScript keystroke event listeners.
+
+### Usage Blueprints
+
+#### Common: Form Field Variations
+Instead of manually declaring labels and error wrappers for every text box, you can pass theme and constraint properties. This consolidates standard configurations inside a single visual preview showcase:
+
+<ComponentPreview
+  title="Form Input Varieties"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto;">
+    <Grid cols={2} gap="sm">
+      <Input label="Name" placeholder="Jon Doe" required={true} />
+      <Input label="Email" type="email" placeholder="jon@design.com" hint="We never share emails." />
+    </Grid>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Active Validation & Custom Search Compositions
+Demonstrates how to handle active validation alerts, integrate pre-icon `Search` controls, and compose unified `InputGroup` button attachments inside a vertical form panel:
+
+<ComponentPreview
+  title="Composed Input Modules"
+>
+  <div style="width: 100%; max-width: 380px; margin: 0 auto;">
+    <Stack gap="md">
+      <Input 
+        label="Username" 
+        placeholder="design_guru" 
+        error="This username is already taken." 
+      />
+      <Search placeholder="Filter layout sheets..." />
+      <InputGroup>
+        <Input placeholder="Enter coupon code..." style="margin: 0;" />
+        <Button theme="primary" style="margin: 0; white-space: nowrap; height: auto; align-items: center;">Apply Code</Button>
+      </InputGroup>
+    </Stack>
+  </div>
+</ComponentPreview>

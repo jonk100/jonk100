@@ -64,6 +64,22 @@ When creating structural or visual primitives (e.g., `Text.astro`, `Paper.astro`
 
 ---
 
+## 📝 Documentation Writing Style Guidelines
+
+When creating or modifying component documentation files (such as MDX entries in `src/content/design/`), adhere to the following writing style and layout rules:
+
+* **Context & Rationale**: Discuss the concrete use case and the specific reason we extended or built on the underlying standard HTML element (e.g., standardizing styling, handling lazy loading fallbacks, or managing dynamic element tags). Explicitly say so even if it is just to standardize aesthetic styling.
+* **Tone**: Keep the writing casual, matter-of-fact, informative, and educational, yet highly concise.
+* **Engineering Insights**: Explain any specific architectural design decisions we made that might be interesting to someone designing a system (e.g., dynamic tag resolution, lobotomized owl vertical spacing selectors, or field-sizing content scales).
+* **Accessible Readability Gradient**: Ensure the introduction is extremely accessible and easy to read, but allow the vocabulary and concepts to drift into more advanced system-level engineering terminology in the second half of the page where advanced usage and custom parameters are covered.
+* **Consolidated Core Previews**: When an element (such as `Button`) has multiple standard visual themes or size variants, combine them into a single visual preview showcase (e.g., rendering `[primary, small]`, `[default]`, and `[secondary, large]` together in one inline grid). This frees up the secondary "Advanced" preview slot to demonstrate something much cooler, more unique, or highly interactive (e.g., combined dynamic animations or complex structural matting).
+* **Compound Component Grouping**: Do not create separate pages for tightly coupled compound elements:
+  * Document `ButtonGroup` and similar wrapper groups (like `InputGroup`, `RadioGroup`) directly on the parent element's page.
+  * Document `Card` and all of its direct structural children (`CardHeader`, `CardContent`, etc.) on a single, unified `Card` page.
+  * Document `Modal` and its sub-primitives on the same page, and apply the same layout unity to overlays, grids, and dialogs.
+
+---
+
 ## 📂 Codebase File Layout Reference
 * `src/components/` — UI components and functional primitives.
 * `src/styles/tokens/` — Core theme variables (colors, typography, spacing, layouts, animations).

@@ -1,4 +1,12 @@
 ---
+/**
+ * src/components/ui/overlay/sheet/Sheet.astro
+ * A slide-out panel drawer component anchoring to any side of the screen.
+ * - Backdrop transitions and blurs are centralized inside src/styles/variants/effects.css
+ * - Supports responsive widths, hardware accelerated transitions, and close clicks.
+ * @props (local): id, side
+ * @props (global): class, class:list
+ */
 export interface Props {
   id: string;
   side?: 'left' | 'right' | 'top' | 'bottom';
@@ -126,14 +134,13 @@ const {
   }
 
   .sheet::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+    background: rgba(var(--overlay-rgb), 0.5); /* Slightly lighter mask override */
+    backdrop-filter: blur(4px); /* Slightly lighter glassmorphism override */
   }
   
   @starting-style {
     .sheet[open]::backdrop {
-      background: rgba(0, 0, 0, 0);
+      background: rgba(var(--overlay-rgb), 0);
       backdrop-filter: blur(0px);
     }
   }

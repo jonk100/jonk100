@@ -2,6 +2,7 @@
 /**
  * src/components/ui/input/Radio.astro
  * A styled radio button input.
+ * - Utilizes global .sr-only class from src/styles/tokens/layout.css for accessibility visual hiding
  * @props (local): id, name, value, checked, disabled, label, theme
  * @props (global): class, class:list
  */
@@ -42,7 +43,7 @@ const {
     value={value}
     checked={checked}
     disabled={disabled}
-    class="radio-input sr-only"
+    class="sr-only radio-input"
     {...rest}
   />
   <div class:list={['radio-circle', `variant--${theme}`]} aria-hidden="true">
@@ -65,17 +66,7 @@ const {
     cursor: not-allowed;
   }
 
-  .radio-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+
 
   .radio-circle {
     width: 1.25rem;

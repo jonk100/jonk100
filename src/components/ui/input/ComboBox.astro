@@ -2,6 +2,7 @@
 /**
  * src/components/ui/input/ComboBox.astro
  * A native datalist-backed text input allowing text entry with predefined suggestions.
+ * - Visual container, label, and error layout styles defined in src/styles/variants/controls.css
  * @props (local): options, label, placeholder, error, hint, disabled, theme, size, id, name
  * @props (global): class, class:list
  */
@@ -86,23 +87,6 @@ const datalistId = `${id}-list`;
 </div>
 
 <style>
-  .input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    width: 100%;
-  }
-
-  .input-label {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .required {
-    color: var(--accent);
-  }
-
   .combobox-container {
     position: relative;
     display: flex;
@@ -120,21 +104,5 @@ const datalistId = `${id}-list`;
   .combobox-field:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: -1px;
-  }
-
-  .input-field--error {
-    border-color: var(--text-danger);
-  }
-
-  .input-error {
-    font-size: var(--text-xs);
-    color: var(--text-danger);
-    margin-top: calc(var(--space-1) * -1);
-  }
-
-  .input-hint {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    margin-top: calc(var(--space-1) * -1);
   }
 </style>

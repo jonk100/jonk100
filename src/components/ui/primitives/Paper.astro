@@ -1,16 +1,17 @@
 ---
 /**
  * src/components/ui/primitives/Paper.astro
- * A structural container with customizable elevation and radius.
+ * A structural container with customizable elevation, radius, and animation.
  * - Supports elevation levels that affect backgrounds and shadows
- * - Integrates with global frame and effect variants
- * @props (local): layer, radius, padding, bordered
+ * - Integrates with global frame, effect, and animate variants
+ * @props (local): layer, radius, padding, bordered, animate
  * @props (global): class, class:list, frame, effects
  * - layer: Defines depth/elevation (-1 to 5) affecting shadows and background
  * - radius: Specifies the border radius scale
  * - padding: Sets spacing around the content
+ * - animate: Applies a global entrance or looping animation variant (defined in src/styles/variants/animations.css)
  */
-import type { ComponentTheme, ComponentRadius, SpacingScale, FrameVariant, ComponentEffect, ComponentLayer } from '/src/types/variants.types';
+import type { ComponentTheme, ComponentRadius, SpacingScale, FrameVariant, ComponentEffect, ComponentLayer, AnimationType } from '/src/types/variants.types';
 import Text from '../typography/Text.astro';
 
 export interface Props {
@@ -20,6 +21,7 @@ export interface Props {
   bordered?: boolean;
   frame?: FrameVariant;
   effects?: ComponentEffect | ComponentEffect[];
+  animate?: AnimationType;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   theme?: ComponentTheme;
@@ -36,6 +38,7 @@ const {
   theme,
   caption,
   effects = [],
+  animate = 'none',
   class: className = '',
   "class:list": classList = {},
   ...rest
@@ -58,6 +61,7 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
     { 'paper--bordered': bordered },
     frameClass,
     theme ? `surface--${theme}` : '',
+    animate !== 'none' ? `animate-${animate}` : '',
     ...effectClasses,
     className,
     classList
@@ -73,14 +77,16 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
 </div>
 
 <style>
-/* .paper {
+.paper {
   background: var(--paper-bg, var(--bg-surface));
   color: var(--text);
   transition:
     background-color 160ms ease,
     box-shadow 160ms ease,
     border-color 160ms ease;
-} */
+  padding: var(--space-4) var(--space-4);
+  
+}
 
 .paper-caption {
   margin-top: var(--space-4);

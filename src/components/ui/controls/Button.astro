@@ -1,18 +1,19 @@
 ---
 /**
- * src/components/Button.astro
+ * src/components/ui/controls/Button.astro
  * Base button component with variant + size system.
  * - Delegates class merging to Astro's native class:list system
  * - Supports rendering as <button>, <a>, or <div> based on props
- * @props (local): href, theme, tone, size, as, type
+ * - Leverages variant theme styling in src/styles/variants/themes.css and sizes in typography.css
+ * @props (local): href, theme, tone, size, as, type, animate
  * @props (global): class, class:list, frame, effects
  * - theme: Visual style theme ('primary', 'secondary', etc.)
  * - tone: Specifies text color
  * - size: Button dimensions ('base', 'sm', 'lg', etc.)
  * - as: HTML tag to render
+ * - animate: Optional animation choice ('pulse', 'float', etc. defined in src/styles/variants/animations.css)
  */
-
-import type { ComponentTheme, TextTone, Sizes, FrameVariant } from 'src/types/variants.types';
+import type { ComponentTheme, TextTone, Sizes, FrameVariant, AnimationType } from 'src/types/variants.types';
 import Text from '../typography/Text.astro';
 
 type ElementTag = "button" | "a" | "div";
@@ -26,20 +27,22 @@ export interface Props {
   frame?: FrameVariant;
   as?: ElementTag;
   type?: "button" | "submit" | "reset";
+  animate?: AnimationType;
   class?: string;
-  "class:list"?: Record<string, boolean>;
+  "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
 }
 
 const {
   href,
   label,
-  theme = "primary",
+  theme = "default",
   tone,
   size = "base",
   frame = "none",
   as,
   type = "button",
+  animate = "none",
   class: cls = "",
   "class:list": classList = {},
   ...rest
@@ -53,17 +56,35 @@ const classes = [
   tone ? `text--${tone}` : '',
   `control--${size}`, 
   frame !== 'none' ? `frame-variant--${frame}` : '',
+  animate !== 'none' ? `animate-${animate}` : '',
   cls
-]
-  .filter(Boolean)
-  .join(" ");
+];
 
 const tagProps =
   Tag === "button"
-    ? { type, class: classes, "class:list": classList, ...rest }
-    : { href, class: classes, "class:list": classList, ...rest };
+    ? { type, ...rest }
+    : { href, ...rest };
 ---
 
-<Tag {...tagProps}>
+<Tag class:list={[classes, classList]} {...tagProps}>
   {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
 </Tag>
+
+<style>
+  /* See src/styles/variants/themes.css for theme-based styles */
+  .control {
+    display: inline-flex;
+    font-family: var(--body);
+    font-weight: 400;
+    transition: all 0.2s ease;
+    border-radius: var(--rad-sm);
+    margin: var(--space-4) 0;
+    line-height: 1;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  :where(.control):hover {
+    border-color: var(--border-strong);
+  }
+</style>

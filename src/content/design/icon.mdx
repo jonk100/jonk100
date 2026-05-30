@@ -1,0 +1,62 @@
+---
+title: "Icon"
+description: "A foundational atomic media primitive used to fetch and render raw vector paths cleanly at runtime."
+category: "primitives"
+order: 5
+propsTable:
+  - name: "name"
+    type: "string"
+    description: "Name of the SVG file in the icons folder to import."
+  - name: "size"
+    type: "'sm' | 'md' | 'lg' | 'xl' | string"
+    defaultValue: "'md'"
+    description: "Predefined dimensions ('sm': 16px, 'md': 24px, 'lg': 32px, 'xl': 48px) or custom CSS values."
+  - name: "stroke"
+    type: "string"
+    defaultValue: "'currentColor'"
+    description: "Defines the stroke color of the SVG path."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Icon from '../../components/ui/primitives/Icon.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Icon` component is our foundational atomic media primitive, extending native inline `<svg>` elements. In standard web layouts, repeating complex SVG vector paths directly inside HTML markup causes massive code bloat. We standardized this component to allow simple, dynamic loading of vector icons from a centralized source while ensuring layout dimensions remain clean and customizable.
+
+### Architectural Decisions
+To keep our vector integration lightweight and modular, we implemented two key systems:
+1. **Dynamic Glob Loader**: At build time, the component scans the `/src/icons/` directory using Astro's file loader. This dynamically extracts raw SVG strings and injects the corresponding path nodes directly into the compiled HTML, preserving our ability to style individual path strokes.
+2. **Context-Aware Styling**: By defaulting the `stroke` prop to `"currentColor"`, the SVG automatically inherits the color of its surrounding text container. This allows icons placed inside buttons or links to transition colors during hover states without requiring separate CSS classes or custom media parameters.
+
+### Usage Blueprints
+
+#### Common: Vector Showcase Row
+Instead of declaring manual heights and namespaces for every SVG element, you can pass a `name` and `size` prop. This consolidates standard system icons into a single visual catalog row:
+
+<ComponentPreview
+  title="Standard System Icons"
+>
+  <Inline gap="md" align="center" style="width: 100%; justify-content: center; flex-wrap: wrap;">
+    <Icon name="arrow-left" size="sm" />
+    <Icon name="chevron-down" size="md" />
+    <Icon name="check" size="lg" />
+    <Icon name="info" size="xl" />
+  </Inline>
+</ComponentPreview>
+
+#### Advanced: Animated Decorative Highlighting Icon
+In grid headers or landing hero showcases, icons are often utilized as decorative highlights. This example demonstrates how to pass a custom dimension length override (`size="3rem"`), override strokes with custom variables, and wrap the primitive in a pulsing micro-animation to capture user attention:
+
+<ComponentPreview
+  title="Large Pulse Highlighting Icon"
+>
+  <div style="width: 100%; display: flex; justify-content: center; padding: var(--space-4);">
+    <Icon 
+      name="zap" 
+      size="xl" 
+      stroke="var(--accent)" 
+      class="animate-pulse" 
+    />
+  </div>
+</ComponentPreview>

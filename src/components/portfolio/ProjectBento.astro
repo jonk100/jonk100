@@ -41,7 +41,7 @@ const gridClasses: SpanValues[] = ['flagship', 'secondary', 'secondary-alt', 'wi
     <SectionLabel text="Selected Work" />
 
     <!-- Bento Grid -->
-    <BentoGrid gap="md">
+    <BentoGrid gap="xs">
       {sortedProjects.map((project, i) => (
         <BentoCell span={gridClasses[i % gridClasses.length]}>
           <ProjectCard 
@@ -70,9 +70,6 @@ const gridClasses: SpanValues[] = ['flagship', 'secondary', 'secondary-alt', 'wi
     width: 100%;
     max-width: var(--max-width, 1280px);
     margin: 0 auto;
-    padding: 0 var(--space-8);
+    padding: 0 var(--space-1);
   }
-
-
-
 </style>

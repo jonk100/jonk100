@@ -35,7 +35,7 @@ const {
   class:list={[
     'skeleton',
     `radius--${rounded}`,
-    { 'skeleton--animated': animated },
+    { 'effect--shimmer': animated },
     className,
     classList
   ]}
@@ -48,34 +48,5 @@ const {
     background-color: var(--bg-elevated);
     position: relative;
     overflow: hidden;
-  }
-  
-  .skeleton--animated::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    transform: translateX(-100%);
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.08),
-      transparent
-    );
-    animation: shimmer 1.5s infinite;
-  }
-  
-  :global(html.light) .skeleton--animated::after {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(0, 0, 0, 0.04),
-      transparent
-    );
-  }
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
   }
 </style>
