@@ -1,80 +1,171 @@
 ---
 title: "Writty"
-description: "A distraction-free writing environment that lives in your browser. Built with Astro, React, and local-first architecture."
+description: "A highly sophisticated creative writing environment and personal workbench built with Astro, Alpine.js, and a custom Markdown AST parser."
 category: "Web App"
 index: "01"
-tags: ["Astro", "React", "LocalFirst"]
+tags: ["Astro", "AlpineJS", "TypeScript", "Remark"]
 imageSrc: "/writty-hmd-main-page.png"
 delay: 0.1
 githubUrl: "https://github.com/jonk100/Writty"
 ---
 import Image from '../../components/ui/primitives/Image.astro';
 
-Writty is a beautiful, minimal, and highly performant writing application designed to eliminate distractions and keep you focused on your words. It is not a public CMS, but a personal creative workbench for storing screenplays, songs, poems, and short stories.
+Writty is a beautiful, minimal, and highly performant personal creative workbench designed to organize, write, and manage creative work across diverse formats—screenplays, songs, poems, and short stories. Leaning into a file-based, local-first workflow, all content lives as version-controlled MDX files inside Astro Content Collections, validated strictly with Zod schemas.
+
+Rather than a public blog or standard CMS, Writty is designed from the ground up as a focused, developer-centric creative writing environment, maximizing speed, design aesthetics, and offline reliability.
 
 <Image 
-  src="/writty-plot-beat-tension-graph.gif" 
-  alt="Writty Interface" 
+  src="/writty-hmd-main-page.png" 
+  alt="Writty Creative Workbench Interface" 
   shape="landscape"
   outline={true}
 />
 
+---
+
 ## Technical Architecture
 
-Built with a modern web stack, Writty utilizes **Astro** for lightning-fast static generation and **Alpine.js** for lightweight client-side interactivity. The application leans heavily into a local-first architecture, ensuring that your data is always instantly available. All creative content is stored as structured MDX with Zod-validated frontmatter.
+Writty utilizes **Astro 6** as its core static engine to pre-render highly structured editorial pages at build-time. It completely skips heavy client-side frameworks, choosing **Alpine.js** for lightweight, reactive frontend widgets (such as character filtering and chord analysis matrices) and **Vanilla CSS** for its elegant, distraction-free typographic design.
 
-### The Custom AST Parser
+---
 
-One of the most complex engineering challenges in Writty was building a seamless authoring experience for screenplays. Manually writing JSX tags for every character, dialogue, and action line is tedious and breaks the flow state. 
+## The Screenplay AST Engine
 
-To solve this, I wrote a custom **Remark plugin** (`remark-screenplay.ts`) that intercepts the Markdown AST during Astro's build step. It parses shorthand text prefixes (e.g., `c-` for character, `d-` for dialogue) and transforms them directly into typed MDX nodes:
+One of the primary engineering challenges in writing screenplays in Markdown is the formatting. Traditional screenplays require rigid alignments: character names centered, parentheticals indented, and dialogue restricted to narrow gutters. Manually wrapping each element in HTML tags or JSX classes makes rapid drafting impossible and breaks the creative flow state.
+
+To solve this, I wrote a custom build-time **Remark plugin** (`remark-screenplay.ts`). This plugin intercepts the Markdown Abstract Syntax Tree (AST) at compile time. It scans the document and transforms a customized shorthand syntax into styled MDX components:
+
+### The Syntax Shorthand
+- `s- INT. LENNON'S FLAT - DAY` → Renders a `<Scene>` break
+- `c- LENNON` → Renders the `<Character>` speaker anchor
+- `p- (grinning)` → Renders dynamic `<Parenthetical>` expressions
+- `d- Imagine there's no countries...` → Renders speaker-assigned `<Dialogue>`
+
+### Implicit Formatting Support
+To make drafting even faster, the plugin supports **implicit line parsing**:
+1. **Implicit Character**: A line written in ALL CAPS (e.g. `LENNON`) is automatically parsed as a `<Character>` block.
+2. **Implicit Parenthetical**: A line wrapped in parenthesis `(like this)` within dialogue is treated as a `<Parenthetical>` block.
+3. **Implicit Scenes**: A line starting with `INT.`, `EXT.`, or `INT/EXT` is automatically normalized and parsed as a `<Scene>` header.
+
+Here is the recursive AST traversal logic from the parser:
 
 ```typescript
-// Excerpt from src/plugins/remark-screenplay.ts
+// Excerpt from remark-screenplay.ts
 export const remarkScreenplay: Plugin<[], Root> = () => {
   return (tree, file) => {
     visit(tree, "paragraph", (node: Paragraph) => {
-      // ... AST traversal logic ...
-      
-      const match = raw.match(BLOCK_RE);
-      const [, prefix, valueRaw] = match;
-      const type = PREFIX_MAP[prefix.toLowerCase()];
-      
-      if (type === "character") {
+      const rawText = node.children
+        .filter((child): child is Text => child.type === "text")
+        .map((child) => child.value)
+        .join("");
+
+      // Implicit character line: ALL CAPS name
+      if (isImplicitCharacterLine(rawText)) {
+        flushDialogue();
         inDialogue = true;
-        currentCharacter = value.toUpperCase();
+        currentCharacter = rawText.toUpperCase();
         dialogueBuffer.push(jsx("Character", currentCharacter));
         return;
       }
-      
-      if (type === "dialogue") {
+
+      // Implicit parenthetical inside dialogue
+      if (inDialogue && isImplicitParentheticalLine(rawText)) {
         dialogueBuffer.push(
-          jsx("Dialogue", value, { speaker: currentCharacter })
+          jsx("Parenthetical", stripOuterParens(rawText), { speaker: currentCharacter })
         );
         return;
       }
       
-      // ... transforms shorthand into Astro components seamlessly
+      // Implicit scene header check
+      if (isImplicitSceneLine(rawText)) {
+        flushDialogue();
+        newChildren.push(jsx("Scene", normalizeSceneHeading(rawText)));
+        return;
+      }
     });
   };
 };
 ```
 
-This effectively created a custom, domain-specific markdown flavor for screenwriting, allowing for rapid drafting without touching HTML syntax. And from there, I was able to builda custom side-by-side markdown editor / preview for writing screenplays, with (mostly) proper formatting and a current-line highlighter feature: 
+This transforms raw Markdown files into a beautifully formatted, standardized screenplay view with an interactive current-line highlighter and a side-by-side editing canvas:
 
 <Image 
   src="/writty-markdown-screenplay-formatter-editor.png" 
-  alt="Screenplay Rendering Demo" 
+  alt="Screenplay Interactive Markdown Editor & Side-by-Side Live Formatter" 
   shape="landscape"
   frame="minimal"
 />
 
-## Data Enrichment
+> [!TIP]
+> **AST Synergy**: If you are interested in compile-time AST transformations, check out my recent deep-dive article [The Quest for the Perfect Component Previewer: An AST Story](/blog/quest-for-component-previewer-ast) to see how I built a build-time MDX plugin to automate visual component documentation!
 
-I wrote custom TypeScript scripts that run via Node to automatically fetch and enrich character and actor data from the **TMDB API**. I use the data to populate the charactors and ratings into reviews of movie and TV series that I watch.
+---
+
+## Mathematical Music Theory & Diatonic Chords
+
+Writty includes a powerful suite of songwriting features designed around **music theory mathematics**.
+
+Under `src/utils/music/musicTheory.ts`, scale and chord structures are modeled as raw semitone offsets from a dynamic root note name. This lets Writty calculate keys, modes, and chord voicings completely on-the-fly:
+
+```typescript
+// excerpt from src/utils/music/musicTheory.ts
+export const INTERVALS = {
+  P1: { name: 'Perfect Unison', shortName: 'R', semitones: 0 },
+  m2: { name: 'Minor 2nd', shortName: 'b2', semitones: 1 },
+  M2: { name: 'Major 2nd', shortName: '2', semitones: 2 },
+  m3: { name: 'Minor 3rd', shortName: 'b3', semitones: 3 },
+  M3: { name: 'Major 3rd', shortName: '3', semitones: 4 },
+  P4: { name: 'Perfect 4th', shortName: '4', semitones: 5 },
+  TT: { name: 'Tritone', shortName: 'b5', semitones: 6 },
+  P5: { name: 'Perfect 5th', shortName: '5', semitones: 7 },
+  m7: { name: 'Minor 7th', shortName: 'b7', semitones: 10 },
+  M7: { name: 'Major 7th', shortName: '7', semitones: 11 },
+};
+
+export const CHORD_FORMULAS = [
+  { name: 'Major', abbreviation: '', intervals: [0, 4, 7], quality: 'major' },
+  { name: 'Minor', abbreviation: 'm', intervals: [0, 3, 7], quality: 'minor' },
+  { name: 'Dominant 7th', abbreviation: '7', intervals: [0, 4, 7, 10], quality: 'dominant' },
+  { name: 'Minor 7th Flat 5', abbreviation: 'm7b5', intervals: [0, 3, 6, 10], quality: 'diminished' },
+];
+```
+
+By querying these vectors, Writty renders interactive fretboard fingerings, translates keys, and maps diatonic chords (e.g. `I, ii, iii, IV...`) to songwriting templates, facilitating creative melody drafting.
+
+<Image 
+  src="/writty-chord-analyzer.png" 
+  alt="Interactive Fretboard Chord Voicings & Music Theory Analyzer" 
+  shape="landscape"
+  frame="minimal"
+/>
+
+---
+
+## Plot Beat & Tension Visualization
+
+To manage pacing across complex screenplay structures, Writty stores scene descriptions and dynamic **beat arcs**. Using an interactive, custom Alpine.js charting wrapper, Writty plots an episode's emotional tension and pacing curves. This provides visual confirmation of narrative structures (such as rising action, climax, and resolution), helping to identify pacing bottlenecks before starting production drafts.
+
+<Image 
+  src="/writty-plot-beat-tension-graph.gif" 
+  alt="Dynamic Narrative Arc and Beat Tension Graph Visualizer" 
+  shape="landscape"
+/>
+
+---
+
+## Data Enrichment Pipelines
+
+To support secondary collections (like character profiles and film/book reviews), I engineered automated Node.js data pipeline scripts (`enrich-tmdb.ts` and `enrich-actors.ts`).
+
+Running these locally queries the **TMDB API**, extracting cast profiles, actor headshot paths, production details, and aggregate ratings, then merges this data directly back into the MDX frontmatter. This keeps reviews rich, automated, and contextually hyperlinked:
+
+```bash
+# Automate review metadata enrichment
+pnpm run tmdb
+```
 
 <Image
   src="/writty-patriot-review.png" 
-  alt="Screenplay Rendering Demo" 
+  alt="TMDB Enriched Film Review Dashboard layout" 
   shape="landscape"
 />
