@@ -30,7 +30,9 @@ When building a modern web application, developers often default to heavy, JavaS
 For Writty, I wanted to prove that **creative and editorial tools can be incredibly fast, static, and highly interactive without the bloat**. To achieve this, the architecture is built around a hybrid, static-first philosophy:
 
 1. **Astro 6 (Static Engine)**: Astro acts as the compiler. At build-time, it compiles our raw markdown files, layouts, and components into pure, semantic HTML and CSS. The client receives **zero bytes of JavaScript by default**, ensuring perfect Largest Contentful Paint (LCP) and immediate layout stability.
+
 2. **Alpine.js (Lightweight Interactivity)**: When a feature absolutely requires dynamic client-side state, we pair Astro with Alpine.js to add micro-interactions with negligible footprint.
+
 3. **Vanilla CSS**: Leverages custom properties (design tokens) to establish a highly customized, distraction-free typographic system suited for long-form reading and writing.
 
 ---

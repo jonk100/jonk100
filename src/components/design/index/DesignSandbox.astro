@@ -1,0 +1,133 @@
+---
+/**
+ * src/components/design/index/DesignSandbox.astro
+ * Self-contained sandbox panel for the design index sidebar.
+ * Renders the accent hue and border-radius range sliders, and mounts
+ * the runtime logic that updates CSS custom properties on the document root.
+ */
+
+import Stack from '../../ui/layout/Stack.astro';
+import Text from '../../ui/typography/Text.astro';
+import Divider from '../../ui/layout/Divider.astro';
+---
+
+<div class="sidebar-sandbox">
+  <Divider class="sandbox-divider" />
+
+  <Stack gap="xs" class="sidebar-sandbox-panel">
+    <Text as="strong" type="caption" tone="accent" class="sandbox-panel-title">
+      Sandbox Controllers
+    </Text>
+
+    <Stack gap="xs">
+      <Stack gap="3xs">
+        <label for="accent-hue" class="slider-label">
+          <Text type="caption" tone="subtle" style="font-size: 10px;">
+            Accent Hue: <span id="hue-val">200</span>°
+          </Text>
+        </label>
+        <input type="range" id="accent-hue" min="0" max="360" value="200" class="slider-range" />
+      </Stack>
+
+      <Stack gap="3xs">
+        <label for="border-radius" class="slider-label">
+          <Text type="caption" tone="subtle" style="font-size: 10px;">
+            Border Radius: <span id="radius-val">8</span>px
+          </Text>
+        </label>
+        <input type="range" id="border-radius" min="0" max="24" value="8" class="slider-range" />
+      </Stack>
+    </Stack>
+  </Stack>
+</div>
+
+<script is:inline>
+  /**
+   * Initialises the sandbox slider controls.
+   * Safe to call multiple times — exits early if sliders aren't present.
+   */
+  const runSandbox = () => {
+    const hueSlider = document.getElementById('accent-hue');
+    const radiusSlider = document.getElementById('border-radius');
+    const hueVal = document.getElementById('hue-val');
+    const radiusVal = document.getElementById('radius-val');
+
+    if (!hueSlider || !radiusSlider) return;
+
+    /**
+     * Reads the current hue slider value and updates all accent-related
+     * CSS custom properties on the document root.
+     */
+    const updateAccent = () => {
+      const hue = hueSlider.value;
+      if (hueVal) hueVal.textContent = hue;
+
+      document.documentElement.style.setProperty('--accent',               `hsl(${hue}, 53%, 66%)`);
+      document.documentElement.style.setProperty('--accent-dim',           `hsl(${hue}, 53%, 23%)`);
+      document.documentElement.style.setProperty('--accent-border',        `hsl(${hue}, 53%, 35%)`);
+      document.documentElement.style.setProperty('--accent-border-strong', `hsl(${hue}, 53%, 68%)`);
+      document.documentElement.style.setProperty('--accent-hover',         `hsl(${hue}, 53%, 50%)`);
+    };
+
+    /**
+     * Reads the current radius slider value and updates all border-radius
+     * CSS custom properties on the document root.
+     */
+    const updateRadius = () => {
+      const rad = Number(radiusSlider.value);
+      if (radiusVal) radiusVal.textContent = String(rad);
+
+      document.documentElement.style.setProperty('--rad-sm', `${Math.max(0, rad - 4)}px`);
+      document.documentElement.style.setProperty('--rad-md', `${rad}px`);
+      document.documentElement.style.setProperty('--rad-lg', `${rad + 4}px`);
+      document.documentElement.style.setProperty('--rad-xl', `${rad + 8}px`);
+    };
+
+    hueSlider.addEventListener('input', updateAccent);
+    radiusSlider.addEventListener('input', updateRadius);
+
+    // Trigger once on mount to reflect default slider values
+    updateAccent();
+    updateRadius();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runSandbox);
+  } else {
+    runSandbox();
+  }
+
+  // Re-run on Astro view transitions navigation
+  document.addEventListener('astro:page-load', runSandbox);
+</script>
+
+<style>
+  .sidebar-sandbox {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .sandbox-divider {
+    margin-bottom: var(--space-4);
+  }
+
+  .sandbox-panel-title {
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .slider-label {
+    display: block;
+  }
+
+  .slider-range {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+    background: var(--bg-elevated);
+    height: 4px;
+    border-radius: var(--rad-full);
+    border: none;
+  }
+</style>

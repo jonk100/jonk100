@@ -1,0 +1,1069 @@
+---
+
+---
+
+Given the editorial, token-driven system you've described, I'd avoid literal icons (paper sheets, chains, image landscapes, etc.). Those tend to feel generic and age poorly.
+
+Instead, I'd build a consistent icon language around **composition primitives**:
+
+| Component | Concept      | Shape                     |
+| --------- | ------------ | ------------------------- |
+| Paper     | Surface      | Single rectangle          |
+| Frame     | Container    | Double rectangle          |
+| Image     | Visual media | Rectangle + mountain line |
+| Link      | Connection   | Two linked nodes          |
+| Text      | Typography   | Horizontal text lines     |
+
+All icons:
+
+* 24×24 viewBox
+* 1.75 stroke width
+* rounded caps/joins
+* monochrome
+* minimal geometry
+* no fills
+
+---
+
+## Paper
+
+A single surface.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="5" y="4" width="14" height="16" rx="2" />
+</svg>
+```
+
+Visual:
+
+```
+┌──────┐
+│      │
+│      │
+└──────┘
+```
+
+Represents a surface without implying content.
+
+---
+
+## Frame
+
+A container around content.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="4" width="16" height="16" rx="2" />
+  <rect x="8" y="8" width="8" height="8" rx="1.5" />
+</svg>
+```
+
+Visual:
+
+```
+┌──────┐
+│ ┌──┐ │
+│ └──┘ │
+└──────┘
+```
+
+Suggests containment and composition.
+
+---
+
+## Image
+
+An image without becoming decorative.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="5" width="16" height="14" rx="2" />
+  <path d="M7 15l3-3 3 2 4-4 2 2" />
+</svg>
+```
+
+Visual:
+
+```
+┌──────┐
+│ /\   │
+│/  \  │
+└──────┘
+```
+
+Recognizable but still restrained.
+
+---
+
+## Link
+
+Connection rather than chain links.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="7" cy="12" r="2.5" />
+  <circle cx="17" cy="12" r="2.5" />
+  <path d="M9.5 12h5" />
+</svg>
+```
+
+Visual:
+
+```
+○────○
+```
+
+Feels more abstract and system-oriented.
+
+---
+
+## Text
+
+Typography represented as rhythm.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+>
+  <path d="M5 7h14" />
+  <path d="M5 12h10" />
+  <path d="M5 17h12" />
+</svg>
+```
+
+Visual:
+
+```
+────────
+──────
+───────
+```
+
+Represents readable content instead of a literal "T".
+
+---
+
+If you plan to eventually have 30–50 primitives (Stack, Inline, Grid, Divider, Avatar, Heading, Badge, Skeleton, Spinner, etc.), I'd recommend building the entire icon set around a **geometric composition language**:
+
+* rectangles = surfaces
+* lines = flow
+* circles = entities
+* nested shapes = containment
+* spacing = layout
+
+That produces a much more cohesive library than mixing common UI icons from different visual traditions.
+
+
+Yes. For a component library like yours I'd make each icon a complete, production-ready SVG with a consistent visual system:
+
+* `viewBox="0 0 24 24"`
+* `fill="none"`
+* `stroke="currentColor"`
+* `stroke-width="1.75"`
+* `stroke-linecap="round"`
+* `stroke-linejoin="round"`
+* Minimal geometry
+* No decorative details
+
+# Box
+
+Atomic layout unit.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="6" y="6" width="12" height="12" rx="2" />
+</svg>
+```
+
+---
+
+# Stack
+
+Vertical flow.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+>
+  <path d="M7 6h10" />
+  <path d="M7 12h10" />
+  <path d="M7 18h10" />
+</svg>
+```
+
+---
+
+# Inline
+
+Horizontal flow.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+>
+  <path d="M5 12h3" />
+  <path d="M10.5 12h3" />
+  <path d="M16 12h3" />
+</svg>
+```
+
+---
+
+# Grid
+
+Equal layout regions.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="5" y="5" width="14" height="14" rx="2" />
+  <path d="M12 5v14" />
+  <path d="M5 12h14" />
+</svg>
+```
+
+---
+
+# Columns
+
+Multi-column layout.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="5" width="16" height="14" rx="2" />
+  <path d="M9.33 5v14" />
+  <path d="M14.66 5v14" />
+</svg>
+```
+
+---
+
+# Container
+
+Content boundary.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="3" y="6" width="18" height="12" rx="2" />
+</svg>
+```
+
+---
+
+# Divider
+
+Separation.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+>
+  <path d="M4 12h16" />
+</svg>
+```
+
+---
+
+# Center
+
+Center alignment.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+>
+  <path d="M12 4v16" />
+  <path d="M4 12h16" />
+  <circle cx="12" cy="12" r="1.5" />
+</svg>
+```
+
+---
+
+# Button
+
+Action.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="7" width="16" height="10" rx="5" />
+  <path d="M11 9l3 3-3 3" />
+</svg>
+```
+
+---
+
+# Checkbox
+
+Boolean state.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="5" y="5" width="14" height="14" rx="2" />
+  <path d="M8.5 12l2.5 2.5L16 9.5" />
+</svg>
+```
+
+---
+
+# Radio
+
+Single selection.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="7" />
+  <circle cx="12" cy="12" r="2" />
+</svg>
+```
+
+---
+
+# Select
+
+Choice list.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="6" width="16" height="12" rx="2" />
+  <path d="M9 10l3 4 3-4" />
+</svg>
+```
+
+---
+
+# Switch
+
+Toggle state.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="8" width="16" height="8" rx="4" />
+  <circle cx="16" cy="12" r="2.5" />
+</svg>
+```
+
+---
+
+# Badge
+
+Status marker.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="12" r="6" />
+</svg>
+```
+
+---
+
+# Avatar
+
+Person/entity.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <circle cx="12" cy="9" r="3" />
+  <path d="M7 18c1.5-2 3-3 5-3s3.5 1 5 3" />
+</svg>
+```
+
+---
+
+# Card
+
+Structured content container.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="4" width="16" height="16" rx="2" />
+  <path d="M7 9h10" />
+</svg>
+```
+
+---
+
+# Modal
+
+Focused overlay.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="3" y="3" width="18" height="18" rx="2" />
+  <rect x="7" y="7" width="10" height="10" rx="1.5" />
+</svg>
+```
+
+---
+
+# Tooltip
+
+Contextual information.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M6 6h12v8H13l-3 4v-4H6z" />
+</svg>
+```
+
+---
+
+# Table
+
+Structured data.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect x="4" y="5" width="16" height="14" rx="1.5" />
+  <path d="M4 10h16" />
+  <path d="M10 5v14" />
+  <path d="M15 5v14" />
+</svg>
+```
+
+---
+
+# Code
+
+Technical content.
+
+```svg
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9 8l-4 4 4 4" />
+  <path d="M15 8l4 4-4 4" />
+</svg>
+```
+
+These all share the same stroke weight, corner radii, proportions, and geometry language as the original `Paper`, `Frame`, `Image`, `Link`, and `Text` icons, so they'll feel like a single cohesive design system rather than a collection of unrelated icons.
+
+
+
+
+---
+
+
+Looking at your library, I think the icons should communicate **the role of the component in the system**, not its implementation.
+
+I would organize them into a single visual language:
+
+| Primitive | Geometry           |
+| --------- | ------------------ |
+| Surface   | Rectangle          |
+| Content   | Lines              |
+| Container | Nested rectangles  |
+| Layout    | Guides / grids     |
+| Input     | Circle + line      |
+| Feedback  | Circle             |
+| Overlay   | Floating rectangle |
+| Data      | Grid               |
+| Motion    | Arrow              |
+| Utility   | Abstract symbol    |
+
+That gives you a coherent icon family.
+
+# Primitives
+
+### Paper
+
+Surface.
+
+```
+┌──────┐
+│      │
+└──────┘
+```
+
+### Frame
+
+Container.
+
+```
+┌──────┐
+│┌────┐│
+│└────┘│
+└──────┘
+```
+
+### Text
+
+Content.
+
+```
+───────
+─────
+──────
+```
+
+### Link
+
+Relationship.
+
+```
+○───○
+```
+
+### Image
+
+Media.
+
+```
+┌──────┐
+│ /\   │
+└──────┘
+```
+
+### Icon
+
+A simple starburst / radial.
+
+```
+  ╲│╱
+── ○ ──
+  ╱│╲
+```
+
+---
+
+# Layout
+
+These should feel architectural.
+
+### Stack
+
+Vertical flow.
+
+```
+────
+────
+────
+```
+
+### Inline
+
+Horizontal flow.
+
+```
+── ── ──
+```
+
+### Grid
+
+Equal cells.
+
+```
+┌─┬─┐
+├─┼─┤
+└─┴─┘
+```
+
+### Columns
+
+Vertical divisions.
+
+```
+┌─┬─┬─┐
+└─┴─┴─┘
+```
+
+### Container
+
+Boundary.
+
+```
+┌──────┐
+└──────┘
+```
+
+### Divider
+
+Single rule.
+
+```
+────────
+```
+
+### Center
+
+Centered point.
+
+```
+┌──────┐
+│  ●   │
+└──────┘
+```
+
+### Box
+
+Atomic block.
+
+```
+┌──┐
+└──┘
+```
+
+### BentoGrid
+
+Asymmetrical grid.
+
+```
+┌──┬────┐
+│  │    │
+├──┤    │
+└──┴────┘
+```
+
+### BentoCell
+
+Single emphasized cell.
+
+```
+┌────┐
+│    │
+└────┘
+```
+
+---
+
+# Controls
+
+### Button
+
+Clickable action.
+
+```
+┌────┐
+│ →  │
+└────┘
+```
+
+### ButtonGroup
+
+Grouped actions.
+
+```
+┌─┬─┬─┐
+└─┴─┴─┘
+```
+
+---
+
+# Inputs
+
+These should all derive from a common field icon.
+
+### Input
+
+```
+┌──────┐
+│ ──── │
+└──────┘
+```
+
+### Search
+
+```
+○╲
+ ╲
+```
+
+### Checkbox
+
+```
+☑
+```
+
+### Radio
+
+```
+◉
+```
+
+### Select
+
+```
+▼
+```
+
+### ComboBox
+
+```
+┌───▼┐
+└────┘
+```
+
+### Switch
+
+```
+◯──●
+```
+
+### InputGroup
+
+```
+┌─┬─┐
+└─┴─┘
+```
+
+---
+
+# Feedback
+
+### Alert
+
+```
+△
+ !
+```
+
+### Badge
+
+```
+◉
+```
+
+### BadgeGroup
+
+```
+◉◉◉
+```
+
+### Avatar
+
+```
+ ○
+╱│╲
+```
+
+### Spinner
+
+```
+◜
+```
+
+### Skeleton
+
+```
+▒▒▒
+```
+
+---
+
+# Cards
+
+### Card
+
+```
+┌──────┐
+│──────│
+└──────┘
+```
+
+### CardHeader
+
+```
+══════
+──────
+```
+
+### CardContent
+
+```
+──────
+──────
+──────
+```
+
+### CardFooter
+
+```
+──────
+══════
+```
+
+---
+
+# Overlay
+
+### Modal
+
+```
+┌────┐
+│┌──┐│
+│└──┘│
+└────┘
+```
+
+### Sheet
+
+```
+┌──────┐
+│▌     │
+└──────┘
+```
+
+### Popover
+
+```
+┌───┐
+└─┬─┘
+  ▼
+```
+
+### Tooltip
+
+```
+┌─?─┐
+└─┬─┘
+```
+
+---
+
+# Data
+
+### Table
+
+```
+┌─┬─┬─┐
+├─┼─┼─┤
+└─┴─┴─┘
+```
+
+### TableRow
+
+```
+══════
+```
+
+### TableCell
+
+```
+□
+```
+
+### TableHead
+
+```
+══════
+──────
+```
+
+---
+
+# Typography
+
+### Text
+
+Lines.
+
+### List
+
+```
+• ───
+• ───
+• ───
+```
+
+### Code
+
+```
+< />
+```
+
+### SectionLabel
+
+```
+───
+```
+
+---
+
+If this were my design system, I'd actually create only **12–15 foundational SVGs** and derive the rest from them. For example:
+
+* `Card`, `Paper`, `Modal`, `Sheet`, `Frame`, `Container`, `Box` all come from rectangle variations.
+* `Stack`, `Inline`, `Grid`, `Columns`, `BentoGrid` all come from layout-guide variations.
+* `Input`, `Select`, `Checkbox`, `Radio`, `Switch` all come from field-control variations.

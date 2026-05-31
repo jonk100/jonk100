@@ -6,53 +6,27 @@
  * - Provides dynamic sliders to adjust global accent hues and border-radii at runtime
  * - Shared, unified sticky sidebar layout for complete UX consistency
  */
-
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import Text from '../../components/ui/typography/Text.astro';
-import Stack from '../../components/ui/layout/Stack.astro';
-import Inline from '../../components/ui/layout/Inline.astro';
-import Grid from '../../components/ui/layout/Grid.astro';
-import Paper from '../../components/ui/primitives/Paper.astro';
-import Badge from '../../components/ui/feedback/Badge.astro';
-import Icon from '../../components/ui/primitives/Icon.astro';
-import Divider from '../../components/ui/layout/Divider.astro';
+import { componentCategories } from '../../lib/queries/designCategories';
+import { groupComponentsByCategory } from '../../lib/queries/designGrouping';
+import { getCategory, categories } from '../../lib/queries/designCategories';
 
+import Layout from '../../layouts/Layout.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Sidebar from '../../components/design/index/Sidebar.astro';
+import DesignHeader from '../../components/design/index/DesignHeader.astro';
+import CategorySection from '../../components/design/index/CategorySection.astro';
 import '../../styles/global.css';
 
-const allComponents = await getCollection('design');
-const sortedComponents = allComponents.sort((a, b) => a.data.order - b.data.order);
+const components = await getCollection('design');
 
-// Group components by category
-const categories = ['primitives', 'layouts', 'controls', 'overlays', 'feedback'];
-const groupedComponents = categories.reduce((acc, cat) => {
-  acc[cat] = sortedComponents.filter(c => c.data.category === cat);
-  return acc;
-}, {} as Record<string, typeof sortedComponents>);
+const sortedComponents = [...components].sort((a, b) =>
+  a.data.title.localeCompare(b.data.title)
+);
 
-const categoryTitles: Record<string, string> = {
-  primitives: "01 / Atomic Primitives",
-  layouts: "02 / Layout Primitives",
-  controls: "03 / Action Controls",
-  overlays: "04 / Portal Overlays",
-  feedback: "05 / Visual Feedback"
-};
+const groupedComponents =
+  groupComponentsByCategory(sortedComponents);
 
-const categoryDescriptions: Record<string, string> = {
-  primitives: "Atomic foundations used to crop assets, load graphics, anchor actions, and elevated sheets.",
-  layouts: "Compositional layout primitive wrappers that manage fluid grids, padding scales, and gaps.",
-  controls: "Standard inputs, select menus, toggle switches, and buttons governing actions.",
-  overlays: "Backdrop dialogues, popovers, and hover tooltips utilizing native Anchor systems.",
-  feedback: "Inline callout alerts, badge indicators, spinners, and loading skeleton blocks."
-};
-
-const categoryIcons: Record<string, string> = {
-  primitives: "zap",
-  layouts: "info",
-  controls: "check-circle",
-  overlays: "alert-circle",
-  feedback: "alert-triangle"
-};
 ---
 
 <Layout title="Blueprints | Jon.Design Showcase System">
@@ -60,185 +34,27 @@ const categoryIcons: Record<string, string> = {
   <div class="glow glow-content"></div>
 
   <div class="design-workspace">
-    <!-- Sticky Navigation Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <a href="/" class="catalog-link">
-          <div class="brand-arrow">
-            <Icon name="arrow-left" size="sm" />
-          </div>
-          <span class="brand-text">Blueprints</span>
-        </a>
-      </div>
 
-      <nav class="sidebar-nav">
-        {categories.map(cat => {
-          const list = groupedComponents[cat];
-          if (list.length === 0) return null;
-          const icon = categoryIcons[cat] || 'info';
-
-          return (
-            <div class="nav-group">
-              <span class="nav-group-title">{categoryTitles[cat].split(" / ")[1] || cat}</span>
-              <div class="nav-group-links">
-                {list.map(comp => (
-                  <a 
-                    href={`/design/${comp.id}`} 
-                    class="nav-item"
-                  >
-                    <Icon name={icon} size="sm" class="nav-item-icon" />
-                    <span>{comp.data.title}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </nav>
-
-      <!-- Token Range Slider Sandbox Inside Sidebar -->
-      <div class="sidebar-sandbox">
-        <Divider class="sandbox-divider" />
-        <Stack gap="xs" class="sidebar-sandbox-panel">
-          <Text as="strong" type="caption" tone="accent" class="sandbox-panel-title">Sandbox Controllers</Text>
-          <Stack gap="xs">
-            <Stack gap="3xs">
-              <label for="accent-hue" class="slider-label">
-                <Text type="caption" tone="subtle" style="font-size: 10px;">Accent Hue: <span id="hue-val">200</span>°</Text>
-              </label>
-              <input type="range" id="accent-hue" min="0" max="360" value="200" class="slider-range" />
-            </Stack>
-            <Stack gap="3xs">
-              <label for="border-radius" class="slider-label">
-                <Text type="caption" tone="subtle" style="font-size: 10px;">Border Radius: <span id="radius-val">8</span>px</Text>
-              </label>
-              <input type="range" id="border-radius" min="0" max="24" value="8" class="slider-range" />
-            </Stack>
-          </Stack>
-        </Stack>
-      </div>
-      
-      <div class="sidebar-footer">
-        <Text type="caption" tone="muted">Jon.Design System • v2.0</Text>
-      </div>
-    </aside>
+    <Sidebar components={groupedComponents} categories={componentCategories} />
 
     <!-- Main Content Catalog Showcase -->
     <main class="main-content">
       <div class="docs-container">
-        <!-- Header -->
-        <header class="doc-header">
-          <Text as="h1" type="h1" tone="accent" class="doc-title">System Blueprints</Text>
-          <Text as="p" type="lead" tone="subtle" class="doc-subtitle">
-            An all-encompassing showcase sandbox. All modules are built on native HTML5 APIs, bound strictly to CSS design tokens, and highly reusable.
-          </Text>
-        </header>
-
-        <Divider class="header-divider" />
-
+        <DesignHeader />
+        
         <!-- Categories & Components Directory -->
         <Stack gap="xl">
-          {categories.map((cat) => {
-            const list = groupedComponents[cat];
-            if (list.length === 0) return null;
-
-            return (
-              <section class="category-section">
-                <Stack gap="md">
-                  <div class="category-header">
-                    <Text as="h2" type="h3" tone="accent" class="cat-title">
-                      {categoryTitles[cat] || cat}
-                    </Text>
-                    <Text type="body-sm" tone="subtle" class="cat-desc">
-                      {categoryDescriptions[cat]}
-                    </Text>
-                  </div>
-                  
-                  <Divider />
-                  
-                  <Grid cols={2} gap="lg" class="components-grid">
-                    {list.map((comp, i) => (
-                      <a href={`/design/${comp.id}`} class="component-card-link" style={`animation-delay: ${i * 0.08}s;`}>
-                        <Paper layer="1" bordered class="component-card">
-                          <div class="card-accent-bar"></div>
-                          <Stack gap="sm" class="card-body">
-                            <Inline justify="between" align="center">
-                              <Text as="strong" type="h4" class="card-title">{comp.data.title}</Text>
-                              <div class="card-icon">
-                                <Icon name="arrow-up-right" size="sm" />
-                              </div>
-                            </Inline>
-                            <Text type="body-sm" tone="subtle" class="card-desc">
-                              {comp.data.description}
-                            </Text>
-                            <Inline gap="xs" class="card-tags">
-                              <Badge theme="ghost" outlined>{comp.data.category}</Badge>
-                              {comp.data.propsTable && (
-                                <Badge theme="ghost" outlined>{comp.data.propsTable.length} properties</Badge>
-                              )}
-                            </Inline>
-                          </Stack>
-                        </Paper>
-                      </a>
-                    ))}
-                  </Grid>
-                </Stack>
-              </section>
-            );
-          })}
+          {categories.map((category) => (
+            <CategorySection
+              cat={getCategory(category)}
+              list={groupedComponents[category]}
+            />
+          ))}
         </Stack>
       </div>
     </main>
   </div>
 </Layout>
-
-<script is:inline>
-  const runSandbox = () => {
-    const hueSlider = document.getElementById('accent-hue');
-    const radiusSlider = document.getElementById('border-radius');
-    const hueVal = document.getElementById('hue-val');
-    const radiusVal = document.getElementById('radius-val');
-    
-    if (!hueSlider || !radiusSlider) return;
-    
-    const updateAccent = () => {
-      const hue = hueSlider.value;
-      if (hueVal) hueVal.textContent = hue;
-      
-      // Calculate related colors in HSL
-      document.documentElement.style.setProperty('--accent', `hsl(${hue}, 53%, 66%)`);
-      document.documentElement.style.setProperty('--accent-dim', `hsl(${hue}, 53%, 23%)`);
-      document.documentElement.style.setProperty('--accent-border', `hsl(${hue}, 53%, 35%)`);
-      document.documentElement.style.setProperty('--accent-border-strong', `hsl(${hue}, 53%, 68%)`);
-      document.documentElement.style.setProperty('--accent-hover', `hsl(${hue}, 53%, 50%)`);
-    };
-    
-    const updateRadius = () => {
-      const rad = radiusSlider.value;
-      if (radiusVal) radiusVal.textContent = rad;
-      
-      // Calculate related border radii
-      document.documentElement.style.setProperty('--rad-sm', `${Math.max(0, rad - 4)}px`);
-      document.documentElement.style.setProperty('--rad-md', `${rad}px`);
-      document.documentElement.style.setProperty('--rad-lg', `${Number(rad) + 4}px`);
-      document.documentElement.style.setProperty('--rad-xl', `${Number(rad) + 8}px`);
-    };
-    
-    hueSlider.addEventListener('input', updateAccent);
-    radiusSlider.addEventListener('input', updateRadius);
-    
-    // Initial triggers
-    updateAccent();
-    updateRadius();
-  };
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runSandbox);
-  } else {
-    runSandbox();
-  }
-  document.addEventListener('astro:page-load', runSandbox);
-</script>
 
 <style>
   .design-workspace {
@@ -260,148 +76,17 @@ const categoryIcons: Record<string, string> = {
     pointer-events: none;
     opacity: 0.08;
   }
+
   .glow-sidebar {
     top: -200px;
     left: -200px;
     background: var(--primary);
   }
+
   .glow-content {
     bottom: -200px;
     right: -200px;
     background: var(--accent);
-  }
-
-  /* Sidebar styling */
-  .sidebar {
-    width: 280px;
-    background: var(--bg-surface);
-    border-right: 1px solid var(--border-subtle);
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    padding: var(--space-8) var(--space-6);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    overflow-y: auto;
-  }
-
-  .sidebar-brand {
-    margin-bottom: var(--space-8);
-  }
-
-  .catalog-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: var(--text);
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: var(--text-lg);
-    text-decoration: none;
-  }
-
-  .brand-arrow {
-    display: flex;
-    align-items: center;
-    color: var(--text-subtle);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                color 0.3s ease;
-  }
-  
-  .catalog-link.is-active {
-    color: var(--accent);
-  }
-
-  .catalog-link.is-active .brand-arrow {
-    transform: rotate(-180deg);
-    color: var(--accent);
-  }
-
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    flex-grow: 1;
-  }
-
-  .nav-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .nav-group-title {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    padding-left: var(--space-4);
-  }
-
-  .nav-group-links {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--rad-md);
-    color: var(--text-subtle);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-
-  .nav-item:hover {
-    color: var(--text);
-    background: var(--bg-elevated);
-  }
-
-  .nav-item-icon {
-    flex-shrink: 0;
-    color: var(--text-muted);
-  }
-
-  /* Sidebar Sandbox Controllers */
-  .sidebar-sandbox {
-    margin-top: var(--space-6);
-    margin-bottom: var(--space-6);
-  }
-
-  .sandbox-divider {
-    margin-bottom: var(--space-4);
-  }
-
-  .sandbox-panel-title {
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  .slider-label {
-    display: block;
-  }
-
-  .slider-range {
-    width: 100%;
-    accent-color: var(--accent);
-    cursor: pointer;
-    background: var(--bg-elevated);
-    height: 4px;
-    border-radius: var(--rad-full);
-    border: none;
-  }
-
-  .sidebar-footer {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border-subtle);
   }
 
   /* Main content layout */
@@ -418,135 +103,11 @@ const categoryIcons: Record<string, string> = {
     max-width: 900px;
   }
 
-  /* Document Header */
-  .doc-header {
-    margin-bottom: var(--space-8);
-  }
-
-  .doc-title {
-    font-size: var(--text-5xl);
-    letter-spacing: -0.02em;
-    margin-bottom: var(--space-2);
-  }
-
-  .doc-subtitle {
-    margin: 0;
-  }
-
-  .header-divider {
-    margin-bottom: var(--space-10);
-  }
-
-  /* Categories & Components Directory */
-  .category-header {
-    max-width: 600px;
-    margin-bottom: var(--space-2);
-  }
-
-  .cat-title {
-    font-size: var(--text-lg);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: var(--space-1);
-  }
-
-  .cat-desc {
-    margin: 0;
-  }
-
-  .components-grid {
-    margin-top: var(--space-6);
-  }
-
-  .component-card-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes fadeUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .component-card {
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.3s ease;
-  }
-
-  .component-card-link:hover .component-card {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .card-accent-bar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 3px;
-    background: linear-gradient(to right, var(--accent) 0%, transparent 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 2;
-  }
-
-  .component-card-link:hover .card-accent-bar {
-    opacity: 1;
-  }
-
-  .card-body {
-    padding: var(--space-6);
-  }
-
-  .card-title {
-    margin: 0;
-    font-size: var(--text-md);
-    transition: color 0.3s ease;
-  }
-
-  .component-card-link:hover .card-title {
-    color: var(--accent);
-  }
-
-  .card-icon {
-    color: var(--text-muted);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                color 0.3s ease;
-  }
-
-  .component-card-link:hover .card-icon {
-    transform: translate(2px, -2px);
-    color: var(--accent);
-  }
-
-  .card-desc {
-    margin: 0;
-    flex-grow: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .card-tags {
-    margin-top: var(--space-4);
-  }
-
   @media (max-width: 1024px) {
     .sidebar {
       display: none;
     }
+
     .main-content {
       max-width: 100%;
       padding: var(--space-6) var(--space-8);

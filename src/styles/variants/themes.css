@@ -7,16 +7,16 @@
 /**            Primary Variant                */
 /**                                             */
 .variant--primary {
-  background: var(--primary);
-  color: var(--text-inverse);
-  border: 1px solid var(--accent);
+  background: var(--primary) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--border-subtle) !important;
   transition: all 0.4s ease;
 }
 
 .variant--primary:hover {
-  background: var(--primary-hover);
-  border-color: var(--border-strong);
-  color: var(--text-3);
+  background: var(--primary-hover) !important;
+  border-color: var(--border-strong) !important;
+  color: var(--accent) !important;
 }
 
 .variant--primary:active {
@@ -33,13 +33,14 @@
 /**                                          */                                           
 .variant--ghost {
   background: transparent;
-  color: var(--text-secondary);
-  border-color: var(--border-strong);
+  color: var(--text-muted) !important;
+  border-color: var(--border-subtle) !important;
 }
 
 .variant--ghost:hover {
-  background: var(--bg-elevated);
-  color: var(--text);
+  background: var(--surface-2);
+  color: var(--text-1) !important;
+  border-color: var(--border) !important;
   
 }
 
@@ -83,13 +84,13 @@
 /**                                           */
 .variant--outline {
   background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
 }
 
 .variant--outline:hover {
-  background: var(--bg-card);
-  border-color: var(--accent-hover);
+  background: var(--surface-5) !important;
+  border-color: var(--border-strong) !important;
 }
 
 .variant--outline:active {
@@ -103,7 +104,7 @@
 .variant--default {
   background: var(--surface-0);
   color: var(--text);
-  border-color: var(--surface-5);
+  border: 1px solid var(--border) !important;
 }
 
 .variant--default:hover {

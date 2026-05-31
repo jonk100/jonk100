@@ -1,0 +1,359 @@
+---
+title: "Lights, Camera, AST: Building a Remark Plugin That Speaks Screenplay"
+description: "How I taught a markdown parser to understand INT., EXT., and CHARACTER cues — and why building a custom remark plugin was the only real answer."
+pubDate: 2026-05-31
+tags: ["Astro", "Remark", "MDX", "Screenwriting", "AST", "Unified"]
+---
+
+I write screenplays. I also write code. For a long time those two facts lived in separate rooms of my brain, and I was fine with that.
+
+Then I built [Writty](/projects/writty) — a personal writing workbench in Astro — and suddenly I needed my screenplay scenes to *live* inside MDX content collections. Which meant every single line of a scene looked like this:
+
+```mdx
+<Scene>INT. NIGEL'S OFFICE - DAY</Scene>
+<Action>Nigel opens a manila folder. It's empty. He closes it again.</Action>
+<Character>NIGEL</Character>
+<Dialogue>I see.</Dialogue>
+```
+
+Functional. Readable, even. But absolutely miserable to actually write in. I'm trying to hear the rhythm of a scene, not count angle brackets.
+
+What I wanted was to type something closer to how a real screenplay looks on the page — minimal, uncluttered — and have the tooling figure out the rest. So I built `remark-screenplay`: a custom remark plugin that transforms a terse shorthand syntax into fully-formed MDX JSX elements at parse time.
+
+This post is the story of how that went.
+
+---
+
+## 1. The Problem: Markdown Shouldn't Need a Component for Every Line
+
+Astro's content collections are genuinely great for structured creative writing. You get frontmatter, Zod validation, glob loading, and MDX rendering for free. The catch is that MDX is still just JSX-flavoured markdown — if you want a `<Character>` block, you have to type `<Character>`.
+
+For prose, that's fine. For a screenplay, where *every paragraph has a type*, it becomes noise. A two-page scene ends up being 60% component tags.
+
+My first instinct was to write a preprocessor — some Node script that ran before the build and transformed `.scene` files into proper MDX. I got about halfway through it before I realised I was reinventing the unified plugin system, badly.
+
+The right answer was a remark plugin. Write it once, wire it into the Astro MDX config, and never think about it again.
+
+---
+
+## 2. Designing the Shorthand
+
+The first design question was: what does the shorthand actually look like?
+
+I wanted something that:
+- Was unambiguous to a regex (no false positives on normal prose)
+- Was fast to type mid-creative-flow
+- Degraded gracefully — plain text in a non-scene file should still just be plain text
+
+I landed on a prefix system. Every line starts with a short tag followed by a hyphen:
+
+| Prefix | Block type |
+|---|---|
+| `s-` / `scene-` | Scene heading |
+| `a-` / `action-` | Action |
+| `c-` / `character-` | Character cue |
+| `d-` / `dialogue-` | Dialogue |
+| `p-` / `parenthetical-` | Parenthetical |
+| `t-` / `transition-` | Transition |
+| `ab-` / `act-break-` | Act break |
+
+So a scene looks like:
+
+```
+s- INT. NIGEL'S OFFICE - DAY
+a- Nigel opens a manila folder. It's empty. He closes it again.
+c- NIGEL
+d- I see.
+```
+
+Clean. Writable. Unambiguous.
+
+But I also wanted an **implicit mode** for `.scene` files specifically — where you don't need prefixes at all, because the content itself tells you what it is. `INT.` and `EXT.` are dead giveaways for a scene heading. A line in ALL CAPS with no lowercase is almost certainly a character cue. A line wrapped in `(parentheses)` right after a character is a parenthetical.
+
+Hollywood has been using these conventions since the 1920s. No reason to fight them.
+
+---
+
+## 3. How Remark Plugins Actually Work
+
+If you haven't written a remark plugin before, here's the thirty-second version.
+
+The [unified](https://unifiedjs.com/) ecosystem parses text into an AST (Abstract Syntax Tree), lets plugins transform it, then serialises it back out. Remark is unified's markdown flavour. MDX extends it with JSX node types.
+
+A remark plugin is a function that receives the AST (`tree`) and the file (`file`), and mutates the tree in place. You use [`unist-util-visit`](https://github.com/syntax-tree/unist-util-visit) to walk the nodes:
+
+```typescript
+import { visit } from "unist-util-visit";
+import type { Root, Paragraph } from "mdast";
+import type { Plugin } from "unified";
+
+export const myPlugin: Plugin<[], Root> = () => {
+  return (tree, file) => {
+    visit(tree, "paragraph", (node: Paragraph) => {
+      // transform node here
+    });
+  };
+};
+```
+
+A `Paragraph` node looks roughly like this:
+
+```json
+{
+  "type": "paragraph",
+  "children": [
+    { "type": "text", "value": "s- INT. NIGEL'S OFFICE - DAY" }
+  ],
+  "position": {
+    "start": { "line": 1, "column": 1, "offset": 0 },
+    "end": { "line": 1, "column": 30, "offset": 29 }
+  }
+}
+```
+
+What I want to *emit* instead is an `mdxJsxFlowElement` — the AST node type that MDX uses to represent a JSX component:
+
+```json
+{
+  "type": "mdxJsxFlowElement",
+  "name": "Scene",
+  "attributes": [],
+  "children": [
+    { "type": "text", "value": "INT. NIGEL'S OFFICE - DAY" }
+  ]
+}
+```
+
+The plugin's job is to consume `Paragraph` nodes and push `mdxJsxFlowElement` nodes onto a fresh `newChildren` array, which replaces `tree.children` at the end.
+
+```typescript
+const newChildren: any[] = [];
+
+visit(tree, "paragraph", (node: Paragraph) => {
+  // ... examine node, push transformed nodes to newChildren
+});
+
+tree.children = newChildren;
+```
+
+There's a subtlety here: `visit` usually mutates nodes *in place*, but because we're rebuilding the entire children array, we're essentially doing a full tree rewrite. That means we have to handle *every* paragraph — even ones we don't want to transform — by pushing them through unchanged.
+
+---
+
+## 4. The Dialogue Grouping Problem
+
+This was the part that took the most thinking.
+
+A scene heading is self-contained. An action line is self-contained. But a character cue *isn't* — it opens a block of dialogue that continues until something else closes it:
+
+```
+c- NIGEL
+p- (quietly)
+d- I see.
+d- I see it all very clearly now.
+a- He closes the folder.
+```
+
+The `c-` line doesn't just produce a `<Character>` element. It switches the parser into **dialogue mode**, where subsequent lines are presumed to be dialogue or parentheticals *belonging to that character*, until a non-dialogue element breaks the sequence.
+
+I modelled this as a simple state machine with three pieces of state:
+
+```typescript
+let inDialogue = false;
+let dialogueBuffer: any[] = [];
+let currentCharacter: string | null = null;
+```
+
+When we hit a `c-` line, we flush any existing dialogue buffer, set `inDialogue = true`, record `currentCharacter`, and push a `<Character>` node into the buffer. When we hit *anything else* — a scene heading, an action line, a blank paragraph — we call `flushDialogue()`, which dumps the buffer into `newChildren` and resets the state.
+
+```typescript
+const flushDialogue = () => {
+  if (!dialogueBuffer.length) return;
+  newChildren.push(...dialogueBuffer);
+  newChildren.push(blankLine());
+  dialogueBuffer = [];
+  inDialogue = false;
+  currentCharacter = null;
+};
+```
+
+The dialogue and parenthetical nodes get a `speaker` attribute set to `currentCharacter`, which the `<Dialogue>` and `<Parenthetical>` components can use for styling or filtering:
+
+```typescript
+jsx("Dialogue", value, { speaker: currentCharacter })
+// produces:
+// <Dialogue speaker="NIGEL">I see.</Dialogue>
+```
+
+That `speaker` attribute turned out to be genuinely useful downstream — I can highlight a specific character's lines on the page, or filter scenes by character in the content layer.
+
+---
+
+## 5. Inline Shorthand Runs & the `splitShorthandRuns` Edge Case
+
+Here's a fun one.
+
+Remark's paragraph parsing is aggressive. If two shorthand lines appear in the source with no blank line between them, like this:
+
+```
+c- NIGEL
+d- I see.
+```
+
+...remark collapses them into a *single* `Paragraph` node with a single `text` child whose value is `"c- NIGEL\nd- I see."`. The newline is preserved, but it's all one node.
+
+My initial line-by-line processing handled this fine — I split on `\n` and processed each line. But there's a subtler variant: lines that appear *on the same line*, separated by spaces, like when a one-liner scene gets written in a rush:
+
+```
+s- INT. OFFICE - DAY a- He sits.
+```
+
+That's a run of two prefixed shorthand blocks on one line. The `splitShorthandRuns` function handles this — it scans the input for prefix patterns and splits the string at each new prefix boundary:
+
+```typescript
+function splitShorthandRuns(input: string): string[] {
+  const prefixKeys = Object.keys(PREFIX_MAP).sort((a, b) => b.length - a.length);
+  const escaped = prefixKeys.map(escapeRegExp);
+  const prefixRe = new RegExp(`(?:^|\\s)(${escaped.join("|")})`, "gi");
+
+  const starts: number[] = [];
+  for (const match of input.matchAll(prefixRe)) {
+    const idx = match.index ?? -1;
+    const offset = match[0].startsWith(" ") ? 1 : 0;
+    starts.push(idx + offset);
+  }
+
+  // Only split if there are 2+ prefixes and the first is at position 0
+  if (!starts.length || starts[0] !== input.search(/\S/) || starts.length === 1) {
+    return [input];
+  }
+
+  return starts.map((start, i) => {
+    const end = i + 1 < starts.length ? starts[i + 1] : input.length;
+    return input.slice(start, end).trim();
+  }).filter(Boolean);
+}
+```
+
+The `escapeRegExp` call matters here — prefix keys like `s-` and `p-` contain hyphens, which are special characters in regex character classes. Forgetting to escape them produces spectacularly confusing parse errors.
+
+---
+
+## 6. The `getParagraphSource` Trick
+
+Here's something I didn't expect to need.
+
+When remark parses markdown, inline formatting gets broken up. A paragraph with `**bold**` in it doesn't give you a single text node — it gives you a `strong` node wrapping a `text` node, preceded and followed by other `text` nodes. The raw string `node.children.map(c => c.value).join("")` loses the markdown syntax and just gives you the rendered text.
+
+For screenplay shorthand, this mostly doesn't matter — I'm checking for prefixes at the start of lines, not inspecting inline formatting. But there's a case where it does: when a paragraph contains *multiple lines* and some of those lines have inline formatting (italics for a foreign word in a dialogue line, say). I need to split on real newlines, but the merged text value might not preserve them faithfully.
+
+The fix is to reach back into the raw file source using the node's position offsets:
+
+```typescript
+function getParagraphSource(file: any, node: any): string | null {
+  const value = file?.value;
+  if (typeof value !== "string") return null;
+
+  const start = node?.position?.start?.offset;
+  const end = node?.position?.end?.offset;
+  if (typeof start !== "number" || typeof end !== "number") return null;
+
+  return value.slice(start, end);
+}
+```
+
+`file.value` is the raw source string of the entire file. The node's `position.start.offset` and `position.end.offset` are character indices into that string. Slicing between them gives you the exact original source of the paragraph, newlines and all, before remark touched it.
+
+This is the kind of thing that isn't in any tutorial but becomes obvious in retrospect. The unified ecosystem preserves source positions precisely *so* that plugins can do this.
+
+---
+
+## 7. Shipping It: Before and After
+
+Here's what a full scene looks like in shorthand:
+
+```
+s- INT. NIGEL'S OFFICE - NIGHT
+
+a- Rain streaks the window behind him. Nigel hasn't moved in an hour.
+
+c- CLIVE
+d- The targets have arrived in Hamburg.
+
+c- NIGEL
+p- (without looking up)
+d- Of course they have.
+
+t- CUT TO:
+```
+
+And here's the MDX that gets emitted:
+
+```mdx
+<Scene>INT. NIGEL'S OFFICE - NIGHT</Scene>
+
+<Action>Rain streaks the window behind him. Nigel hasn't moved in an hour.</Action>
+
+<Character>CLIVE</Character>
+<Dialogue speaker="CLIVE">The targets have arrived in Hamburg.</Dialogue>
+
+<Character>NIGEL</Character>
+<Parenthetical speaker="NIGEL">without looking up</Parenthetical>
+<Dialogue speaker="NIGEL">Of course they have.</Dialogue>
+
+<Transition>CUT TO:</Transition>
+```
+
+The components themselves handle all the visual formatting — `font-family`, column widths, uppercase rendering, indentation — so the source stays clean.
+
+In implicit mode (`.scene` files), the `s-` and `c-` prefixes aren't even needed:
+
+```
+INT. NIGEL'S OFFICE - NIGHT
+
+Rain streaks the window behind him. Nigel hasn't moved in an hour.
+
+NIGEL
+(without looking up)
+Of course they have.
+```
+
+The plugin detects `INT.` as a scene heading, `NIGEL` as a character cue (all caps, no lowercase, valid character-name characters), and `(without looking up)` as a parenthetical because it's wrapped in parens immediately following a character cue.
+
+It's not magic — it's just pattern matching on conventions that have been standard in the industry for decades. The screenplay format has been doing implicit type detection for a hundred years; I just wrote it down as a regex.
+
+---
+
+## Wiring It Into Astro
+
+Dropping it into `astro.config.ts` is one line:
+
+```typescript
+import { remarkScreenplay } from "./src/plugins/remark-screenplay";
+
+export default defineConfig({
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkScreenplay],
+    }),
+  ],
+});
+```
+
+The plugin runs on every MDX file. For files that don't contain any screenplay shorthand — regular blog posts, reviews, notes — it's a no-op. Every paragraph passes through `BLOCK_RE.test()`, finds no match, and gets pushed to `newChildren` unchanged.
+
+---
+
+## What I'd Do Differently
+
+A few things I'd revisit with fresh eyes:
+
+**The state machine is global per-file.** `inDialogue`, `dialogueBuffer`, and `currentCharacter` are closed over in the plugin's return function, which means they reset per file but are shared across all `visit` callbacks in a single file. This is fine for now, but if I ever needed nested dialogue blocks (unlikely in a screenplay, but still), I'd want a proper stack.
+
+**The `any[]` types are lazy.** The MDX AST types aren't exported from `@mdx-js/mdx` in a way that's easy to use, so I leaned on `any` in a few places. A proper `MdxJsxFlowElement` type from `mdast-util-mdx-jsx` would tighten this up.
+
+**`splitShorthandRuns` is only called for single-line paragraphs.** The function exists to handle the edge case where multiple prefixed blocks appear on one line, but I only invoke it when `lines.length === 1`. Multi-line paragraphs with inline runs are handled by the `\n` split path anyway, so this is correct — but it took me a while to convince myself of that.
+
+---
+
+The plugin is about 400 lines and handles every edge case I've thrown at it across six episodes of screenplay content. The biggest win isn't technical — it's that I can now sit down to write a scene and think about the scene, not the markup. The tooling disappears, which is exactly what good tooling should do.

@@ -31,7 +31,7 @@
   --leading-tight: clamp(1.2, 1.2 + 0.2vw, 1.4);
   --leading-normal: clamp(1.5, 1.5 + 0.25vw, 1.7);
   --leading-loose: clamp(1.6, 1.5 + 0.4vw, 1.85);
-  --leading-looser: clamp(1.8, 1.6 + 0.6vw, 2);
+  --leading-looser: clamp(1.8, 1.8 + 0.6vw, 2);
 
   /** --------------------------  */
   /**      Semantic Aliases       */

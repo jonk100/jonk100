@@ -11,13 +11,10 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Text from '../../components/ui/typography/Text.astro';
-import Stack from '../../components/ui/layout/Stack.astro';
-import Inline from '../../components/ui/layout/Inline.astro';
-import Grid from '../../components/ui/layout/Grid.astro';
-import Paper from '../../components/ui/primitives/Paper.astro';
-import Badge from '../../components/ui/feedback/Badge.astro';
-import Icon from '../../components/ui/primitives/Icon.astro';
 import Divider from '../../components/ui/layout/Divider.astro';
+import Sidebar from '../../components/design/index/Sidebar.astro';
+import { componentCategories } from '../../lib/queries/designCategories';
+import { groupComponentsByCategory } from '../../lib/queries/designGrouping';
 
 import '../../styles/global.css';
 
@@ -37,27 +34,8 @@ const { Content } = await render(entry);
 const allComponents = await getCollection('design');
 const sortedComponents = allComponents.sort((a, b) => a.data.order - b.data.order);
 
-const categories = ['primitives', 'layouts', 'controls', 'overlays', 'feedback'];
-const groupedComponents = categories.reduce((acc, cat) => {
-  acc[cat] = sortedComponents.filter(c => c.data.category === cat);
-  return acc;
-}, {} as Record<string, typeof sortedComponents>);
-
-const categoryTitles: Record<string, string> = {
-  primitives: "Primitives",
-  layouts: "Layouts",
-  controls: "Controls",
-  overlays: "Overlays",
-  feedback: "Feedback"
-};
-
-const categoryIcons: Record<string, string> = {
-  primitives: "zap",
-  layouts: "info",
-  controls: "check-circle",
-  overlays: "alert-circle",
-  feedback: "alert-triangle"
-};
+const groupedComponents =
+  groupComponentsByCategory(sortedComponents);
 ---
 
 <Layout title={`${entry.data.title} | Design System Blueprints`} description={entry.data.description}>
@@ -65,68 +43,7 @@ const categoryIcons: Record<string, string> = {
   <div class="glow glow-content"></div>
 
   <div class="design-workspace">
-    <!-- Sticky Navigation Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <a href="/design" class="catalog-link">
-          <div class="brand-arrow">
-            <Icon name="arrow-left" size="sm" />
-          </div>
-          <span class="brand-text">Blueprints</span>
-        </a>
-      </div>
-
-      <nav class="sidebar-nav">
-        {categories.map(cat => {
-          const list = groupedComponents[cat];
-          if (list.length === 0) return null;
-          const icon = categoryIcons[cat] || 'info';
-
-          return (
-            <div class="nav-group">
-              <span class="nav-group-title">{categoryTitles[cat] || cat}</span>
-              <div class="nav-group-links">
-                {list.map(comp => (
-                  <a 
-                    href={`/design/${comp.id}`} 
-                    class:list={['nav-item', { 'is-active': comp.id === slug }]}
-                  >
-                    <Icon name={icon} size="sm" class="nav-item-icon" />
-                    <span>{comp.data.title}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </nav>
-
-      <!-- Token Range Slider Sandbox Inside Sticky Sidebar -->
-      <div class="sidebar-sandbox">
-        <Divider class="sandbox-divider" />
-        <Stack gap="xs" class="sidebar-sandbox-panel">
-          <Text as="strong" type="caption" tone="accent" class="sandbox-panel-title">Sandbox Controllers</Text>
-          <Stack gap="xs">
-            <Stack gap="3xs">
-              <label for="accent-hue" class="slider-label">
-                <Text type="caption" tone="subtle" style="font-size: 10px;">Accent Hue: <span id="hue-val">200</span>°</Text>
-              </label>
-              <input type="range" id="accent-hue" min="0" max="360" value="200" class="slider-range" />
-            </Stack>
-            <Stack gap="3xs">
-              <label for="border-radius" class="slider-label">
-                <Text type="caption" tone="subtle" style="font-size: 10px;">Border Radius: <span id="radius-val">8</span>px</Text>
-              </label>
-              <input type="range" id="border-radius" min="0" max="24" value="8" class="slider-range" />
-            </Stack>
-          </Stack>
-        </Stack>
-      </div>
-      
-      <div class="sidebar-footer">
-        <Text type="caption" tone="muted">Jon.Design System • v2.0</Text>
-      </div>
-    </aside>
+    <Sidebar components={groupedComponents} categories={componentCategories} />
 
     <!-- Main Content Docs Panel -->
     <main class="main-content">
@@ -195,54 +112,6 @@ const categoryIcons: Record<string, string> = {
   </div>
 </Layout>
 
-<script is:inline>
-  const runSandbox = () => {
-    const hueSlider = document.getElementById('accent-hue');
-    const radiusSlider = document.getElementById('border-radius');
-    const hueVal = document.getElementById('hue-val');
-    const radiusVal = document.getElementById('radius-val');
-    
-    if (!hueSlider || !radiusSlider) return;
-    
-    const updateAccent = () => {
-      const hue = hueSlider.value;
-      if (hueVal) hueVal.textContent = hue;
-      
-      // Calculate related colors in HSL
-      document.documentElement.style.setProperty('--accent', `hsl(${hue}, 53%, 66%)`);
-      document.documentElement.style.setProperty('--accent-dim', `hsl(${hue}, 53%, 23%)`);
-      document.documentElement.style.setProperty('--accent-border', `hsl(${hue}, 53%, 35%)`);
-      document.documentElement.style.setProperty('--accent-border-strong', `hsl(${hue}, 53%, 68%)`);
-      document.documentElement.style.setProperty('--accent-hover', `hsl(${hue}, 53%, 50%)`);
-    };
-    
-    const updateRadius = () => {
-      const rad = radiusSlider.value;
-      if (radiusVal) radiusVal.textContent = rad;
-      
-      // Calculate related border radii
-      document.documentElement.style.setProperty('--rad-sm', `${Math.max(0, rad - 4)}px`);
-      document.documentElement.style.setProperty('--rad-md', `${rad}px`);
-      document.documentElement.style.setProperty('--rad-lg', `${Number(rad) + 4}px`);
-      document.documentElement.style.setProperty('--rad-xl', `${Number(rad) + 8}px`);
-    };
-    
-    hueSlider.addEventListener('input', updateAccent);
-    radiusSlider.addEventListener('input', updateRadius);
-    
-    // Initial triggers
-    updateAccent();
-    updateRadius();
-  };
-  
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runSandbox);
-  } else {
-    runSandbox();
-  }
-  document.addEventListener('astro:page-load', runSandbox);
-</script>
-
 <style>
   .design-workspace {
     display: flex;
@@ -272,148 +141,6 @@ const categoryIcons: Record<string, string> = {
     bottom: -200px;
     right: -200px;
     background: var(--accent);
-  }
-
-  /* Sidebar styling */
-  .sidebar {
-    width: 280px;
-    background: var(--bg-surface);
-    border-right: 1px solid var(--border-subtle);
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    padding: var(--space-8) var(--space-6);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    overflow-y: auto;
-  }
-
-  .sidebar-brand {
-    margin-bottom: var(--space-8);
-  }
-
-  .catalog-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: var(--text);
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: var(--text-lg);
-    text-decoration: none;
-  }
-
-  .brand-arrow {
-    display: flex;
-    align-items: center;
-    color: var(--text-subtle);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                color 0.3s ease;
-  }
-  .catalog-link:hover .brand-arrow {
-    transform: translateX(-4px);
-    color: var(--accent);
-  }
-
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    flex-grow: 1;
-  }
-
-  .nav-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .nav-group-title {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    padding-left: var(--space-4);
-  }
-
-  .nav-group-links {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--rad-md);
-    color: var(--text-subtle);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-
-  .nav-item:hover {
-    color: var(--text);
-    background: var(--bg-elevated);
-  }
-
-  .nav-item.is-active {
-    color: var(--accent);
-    background: var(--bg-elevated);
-    border-left: 2px solid var(--accent);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    padding-left: calc(var(--space-4) - 2px);
-    font-weight: 600;
-  }
-
-  .nav-item-icon {
-    flex-shrink: 0;
-    color: var(--text-muted);
-  }
-  
-  .nav-item.is-active .nav-item-icon {
-    color: var(--accent);
-  }
-
-  /* Sidebar Sandbox Controllers */
-  .sidebar-sandbox {
-    margin-top: var(--space-6);
-    margin-bottom: var(--space-6);
-  }
-
-  .sandbox-divider {
-    margin-bottom: var(--space-4);
-  }
-
-  .sandbox-panel-title {
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-
-  .slider-label {
-    display: block;
-  }
-
-  .slider-range {
-    width: 100%;
-    accent-color: var(--accent);
-    cursor: pointer;
-    background: var(--bg-elevated);
-    height: 4px;
-    border-radius: var(--rad-full);
-    border: none;
-  }
-
-  .sidebar-footer {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border-subtle);
   }
 
   /* Main content layout */

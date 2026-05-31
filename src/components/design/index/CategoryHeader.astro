@@ -1,0 +1,40 @@
+---
+import Text from '../../ui/typography/Text.astro';
+import Divider from '../../ui/layout/Divider.astro';
+import type { CategoryInfo } from '../../../lib/queries/designCategories';
+
+export interface Props {
+  cat: CategoryInfo;
+}
+
+const { cat } = Astro.props;
+
+---
+<div class="category-header">
+  <Text as="h2" type="h3" tone="accent" class="cat-title">
+    {cat.title}
+  </Text>
+  <Text type="body-sm" tone="subtle" class="cat-desc">
+    {cat.description}
+  </Text>
+</div>
+
+<Divider />
+
+<style>
+  .category-header {
+    max-width: 600px;
+    margin-bottom: var(--space-2);
+  }
+
+  .cat-title {
+    font-size: var(--text-lg);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-1);
+  }
+
+  .cat-desc {
+    margin: 0;
+  }
+</style>

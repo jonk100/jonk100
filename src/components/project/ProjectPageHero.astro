@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Image from '../ui/primitives/Image.astro';
+import Box from '../ui/layout/Box.astro';
+import Stack from '../ui/layout/Stack.astro';
+
+interface Props {
+  imageSrc?: string;
+  title: string;
+  project: CollectionEntry<'projects'>;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+
+const { imageSrc, title, project, class: className = '', "class:list": classList = {} } = Astro.props;
+---
+
+<div class="hero-section">
+  {imageSrc && (
+    <img 
+      src={imageSrc} 
+      alt={title} 
+      class="hero-image" 
+      style={`view-transition-name: hero-${project.id}`} 
+    />
+  )}
+  <div class="hero-overlay"></div>
+</div>
+
+<style>
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    background: var(--bg-surface);
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
+    pointer-events: none;
+  }
+
+</style>

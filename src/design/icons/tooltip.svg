@@ -1,0 +1,13 @@
+<!-- src/assets/icons/tooltip.svg -->
+<!-- Contextual information. -->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M6 6h12v8H13l-3 4v-4H6z" />
+</svg>

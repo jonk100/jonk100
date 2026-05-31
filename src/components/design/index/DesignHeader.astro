@@ -1,0 +1,36 @@
+---
+import Text from '../../ui/typography/Text.astro';
+import Divider from '../../ui/layout/Divider.astro';
+
+---
+<!-- Header -->
+<header class="doc-header">
+  <Text as="h1" type="h1" tone="accent" class="doc-title">System Blueprints</Text>
+  <Text as="p" type="lead" tone="subtle" class="doc-subtitle">
+    An all-encompassing showcase sandbox. All modules are built on native HTML5 APIs, bound strictly to CSS design tokens, and highly reusable.
+  </Text>
+</header>
+
+<Divider class="header-divider" />
+
+
+<style>
+  /* Document Header */
+  .doc-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .doc-title {
+    font-size: var(--text-5xl);
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
+  }
+
+  .doc-subtitle {
+    margin: 0;
+  }
+
+  .header-divider {
+    margin-bottom: var(--space-10);
+  }
+</style>

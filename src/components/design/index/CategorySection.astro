@@ -1,0 +1,42 @@
+---
+/**
+ * src/components/design/index/CategorySection.astro
+ * Renders a full category section: a header followed by a 2-column grid of component cards.
+ * Skips rendering entirely if the category has no components.
+ *
+ * @prop {object} cat - The category metadata object (title, description, etc.)
+ * @prop {Array}  list - The array of design collection entries belonging to this category
+ */
+
+import Stack from '../../ui/layout/Stack.astro';
+import Grid from '../../ui/layout/Grid.astro';
+import CategoryHeader from './CategoryHeader.astro';
+import ComponentCard from './ComponentCard.astro';
+
+interface Props {
+  cat: any; // Replace with your Category type from designQueries if available
+  list: any[];
+}
+
+const { cat, list } = Astro.props;
+---
+
+{list.length > 0 && (
+  <section class="category-section">
+    <Stack gap="md">
+      <CategoryHeader cat={cat} />
+
+      <Grid cols={2} gap="lg" class="components-grid">
+        {list.map((comp, i) => (
+          <ComponentCard comp={comp} index={i} />
+        ))}
+      </Grid>
+    </Stack>
+  </section>
+)}
+
+<style>
+  .components-grid {
+    margin-top: var(--space-6);
+  }
+</style>

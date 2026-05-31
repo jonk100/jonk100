@@ -21,6 +21,9 @@ import Text from '../components/ui/typography/Text.astro';
 import Tooltip from '../components/ui/overlay/Tooltip.astro';
 import ProjectTransition from '../components/portfolio/ProjectTransition.astro';
 import Button from '../components/ui/controls/Button.astro';
+import ProjectPageHero from '../components/project/ProjectPageHero.astro';
+import '../styles/markdown.css';
+
 export interface Props {
   project: CollectionEntry<'projects'>;
   nextProject?: CollectionEntry<'projects'>;
@@ -57,17 +60,11 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
       )}
     </nav>
 
-    <div class="hero-section">
-      {imageSrc && (
-        <img 
-          src={imageSrc} 
-          alt={title} 
-          class="hero-image" 
-          style={`view-transition-name: hero-${project.id}`} 
-        />
-      )}
-      <div class="hero-overlay"></div>
-    </div>
+    <ProjectPageHero 
+      imageSrc={imageSrc} 
+      title={title} 
+      project={project} 
+    /> 
 
     <Box class="content-container" style="view-transition-name: project-content;">
       <Stack gap="lg" class="content">
@@ -152,28 +149,6 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     pointer-events: auto;
   }
 
-  .hero-section {
-    position: relative;
-    width: 100%;
-    height: 60vh;
-    min-height: 400px;
-    background: var(--bg-surface);
-  }
-
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
-    pointer-events: none;
-  }
-
   .content-container {
     max-width: var(--max-width, 1280px);
     margin: 0 auto;
@@ -189,7 +164,7 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
 
   .project-header {
     margin-bottom: var(--space-8);
-    background: linear-gradient(to right, rgba(2,3,7,.5) 30%, var(--background) 100%);
+    background: linear-gradient(to right, rgba(2,3,7,.9) 30%, var(--background) 100%);
     padding: var(--space-4);
     border-radius: var(--rad-xs);
   }
@@ -262,14 +237,21 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     color: var(--text-subtle);
   }
 
+  .markdown-content :global(ol) {
+    list-style-type: decimal;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-6);
+    color: var(--text-subtle);
+  }
+
   .markdown-content :global(li) {
     margin-bottom: var(--space-2);
     font-size: var(--text-lg);
   }
 
   .markdown-content :global(strong) {
-    color: var(--text);
-    font-weight: 500;
+    color: var(--text-4);
+    font-weight: 600;
   }
 
   .markdown-content :global(.figure-container),

@@ -1,0 +1,18 @@
+
+:root {
+  .markdown-content :global(ul) {
+    list-style-type: disc;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-6);
+    color: var(--text-subtle);
+  }
+
+  .markdown-content :global(ol) {
+    list-style-type: decimal !important;
+    padding-left: var(--space-6);
+    margin-left: var(--space-6);
+    margin-bottom: var(--space-6);
+    color: var(--text-subtle);
+    line-height: var(--leading-normal);
+  }
+}

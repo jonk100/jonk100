@@ -1,0 +1,161 @@
+---
+import Stack from '../../ui/layout/Stack.astro';
+import Text from '../../ui/typography/Text.astro';
+import Icon from '../../ui/primitives/Icon.astro';
+import Divider from '../../ui/layout/Divider.astro';
+import DesignSandbox from './DesignSandbox.astro';
+import { componentCategories, type ComponentCategory, type CategoryInfo } from '../../../lib/queries/designCategories';
+
+export interface Props {
+  components: Record<ComponentCategory, any[]>;
+  categories: Record<ComponentCategory, CategoryInfo>;
+}
+
+const { components, categories } = Astro.props;
+---
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <a href="/" class="catalog-link">
+      <div class="brand-arrow">
+        <Icon name="arrow-left" size="sm" />
+      </div>
+      <span class="brand-text">Blueprints</span>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    {Object.entries(categories).map(([key, meta]) => {
+      const list = components[key as ComponentCategory] ?? [];
+      if (list.length === 0) return null;
+
+      return (
+        <div class="nav-group">
+          <span class="nav-group-title">
+            {meta.title.split(' / ')[1] || meta.title}
+          </span>
+
+          <div class="nav-group-links">
+            {list.map(comp => (
+              <a href={`/design/${comp.id}`} class="nav-item">
+                <Icon name={meta.icon} size="sm" class="nav-item-icon" />
+                <span>{comp.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+  </nav>
+
+  <DesignSandbox />
+
+  <div class="sidebar-footer">
+    <Text type="caption" tone="accent">jonk100 - Design System • v2.0</Text>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    width: 280px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 4rem;
+    height: calc(100vh - 4rem);
+    padding: var(--space-2) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    margin-bottom: var(--space-8);
+  }
+
+  .catalog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text);
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: var(--text-lg);
+    text-decoration: none;
+  }
+
+  .brand-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--text-subtle);
+    transition:
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      color 0.3s ease;
+  }
+
+  .catalog-link.is-active {
+    color: var(--accent);
+  }
+
+  .catalog-link.is-active .brand-arrow {
+    transform: rotate(-180deg);
+    color: var(--accent);
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .nav-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding-left: var(--space-4);
+  }
+
+  .nav-group-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--rad-md);
+    color: var(--text-subtle);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--text);
+    background: var(--bg-elevated);
+  }
+
+  .nav-item-icon {
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
+
+  .sidebar-footer {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+  }
+</style>
