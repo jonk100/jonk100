@@ -5,15 +5,142 @@ pubDate: 2026-05-20
 tags: ["Writing", "Screenplay", "Creativity"]
 ---
 
-Screenwriting is often romanticized as a purely creative endeavor—waiting for inspiration to strike in a coffee shop. But in reality, writing a screenplay is closer to software architecture than poetry. 
+Screenwriting is often romanticised as a purely creative endeavour — waiting for inspiration to strike in a coffee shop, scribbling a scene on a napkin, the muse arriving on its own schedule. And sometimes that's real. Sometimes you sit down and something just comes out whole.
+
+But finishing a screenplay — actually getting to FADE OUT on a story that holds together, that has earned its ending — is closer to software architecture than poetry. It requires the same discipline you bring to a complex codebase: planning before building, knowing when to refactor instead of patch, and accepting that the first version is never the right version. It just has to exist so the right version can follow.
+
+I've been writing *Her Majesty's Displeasure* for over a year now. It's a six-episode limited series set between 1965 and 1970, following two MI5 operatives — Nigel Finch and Clive Barrow — running a fictional surveillance and destabilisation campaign against The Beatles. It's a dark political satire, and it is the most structurally complicated thing I've ever tried to build. This is what I've learned doing it.
+
+---
 
 ## The Blueprint
-Just as you wouldn't start coding a complex application without a system design, you shouldn't write a script without a structural outline. For my project, *Her Majesty's Displeasure*, I spent weeks building a "Series Bible". 
 
-This bible acts as the state container for the story. It holds:
-* Character arcs (the state machines of the narrative)
-* Worldbuilding rules (the global constants)
-* Thematic goals (the business logic)
+The first thing I built wasn't a scene. It was a series bible.
+
+Just as you wouldn't start coding a complex application without a system design, you shouldn't write a script without a structural outline. Not because spontaneity is bad — it isn't — but because a series with six episodes, a dozen significant characters, and a historical timeline that has to track real events needs a source of truth that isn't just your memory.
+
+The series bible for *Her Majesty's Displeasure* functions like a state container for the story. It holds:
+
+- **Character arcs** — the state machines of the narrative. Where does each character start? What do they want? What do they believe? What has to happen to change those beliefs, and what do they become by the end?
+- **Worldbuilding rules** — the global constants. What can MI5 do in this version of 1967? What is Prince Philip's actual institutional role? Where does the show take liberties with history and where does it stay faithful?
+- **Thematic goals** — the business logic. What is this show actually *about*, underneath the plot? The surveillance apparatus as a funhouse mirror of creative paranoia. The way institutions corrupt individuals slowly enough that no one notices. The particular British genius for bureaucratising cruelty.
+
+Writing the bible first sounds like delaying the real work. It isn't. Every scene I've written has been faster and more confident because I knew what it was supposed to be doing at the thematic level before I started. The bible is the spec. The scenes are the implementation.
+
+---
+
+## Characters as State Machines
+
+Nigel Finch starts the series as a true believer. He genuinely thinks what he's doing matters, that the cultural influence of The Beatles represents a measurable threat to social stability, and that his job is to contain it. He is wrong, but he is sincerely wrong, and that sincerity is what makes him watchable.
+
+By the end of the series, that belief has been hollowed out by everything he's done in its name. He doesn't become a hero. He doesn't defect or blow the whistle or find redemption. He just becomes someone who does the job without the belief — which is, in some ways, worse.
+
+Mapping that arc required thinking about Nigel the way you'd think about a state machine. At any given point in the story, he is in one of a finite number of states: believing, doubting, rationalising, dissociating, complicit. Scenes are transitions. A good scene moves a character from one state to another — not always dramatically, sometimes barely perceptibly, but always with direction. A scene that doesn't move anyone is a scene that doesn't need to exist.
+
+Clive Barrow is a different problem. Clive is a performer — he runs a deep-cover persona called "Klaus," a German art critic who infiltrates the Beatles' Hamburg and London social circles. The character-within-a-character structure means you have to track two state machines simultaneously: who is Clive actually, and who is Klaus, and how does playing Klaus for long enough start to reshape who Clive actually is?
+
+That's a fascinating thing to write and an extremely complicated thing to plan. The scene breakdowns for Clive's arc have more edge cases than anything else in the bible.
+
+---
 
 ## Discipline Over Motivation
-You don't always feel like coding, and you definitely don't always feel like writing. The key to finishing a 100-page script is setting a strict daily word count. Even if the words are bad, you have to push them to the page. You can always refactor a bad draft; you can't refactor a blank page.
+
+You don't always feel like coding. You definitely don't always feel like writing.
+
+The feeling of wanting to write is wonderful when it arrives, and you should chase it — sit down immediately, stay up too late, follow the thing until it runs out. But you cannot build a six-episode series on that feeling alone, because it is not reliable. It comes when it comes. You cannot summon it on deadline.
+
+What you can do is show up anyway. The key to finishing a hundred-page script is setting a strict daily output commitment — scenes, not word counts, because a scene is a meaningful unit in a way that words aren't. Even if the scenes are bad, they have to get written. You can always refactor a bad draft. You can't refactor a blank page.
+
+I keep a beat sheet for every episode — a list of every scene in sequence, with a short description, a tension score, and a note about what narrative function it serves. When I sit down to write and don't know where to start, I open the beat sheet and find the scene with the lowest tension score that I haven't written yet. Something low-stakes, two people talking, no explosions required. Easy scenes are still scenes. They count.
+
+The professional version of this is what they call "writing into the scene" — you don't know exactly what's going to happen, but you know where the scene starts and what it needs to accomplish, and you trust that the characters will find the path once you start putting words in their mouths. It sounds mystical. In practice it's just structured improvisation, and structure is what makes the improvisation possible.
+
+---
+
+## The 89-Scene Problem
+
+*Her Majesty's Displeasure* has 89 scenes across six episodes. I know this because I counted them in a spreadsheet before I wrote most of them, and then again after, and the number changed because some scenes split into two and some merged because they were doing the same thing.
+
+Managing 89 scenes as a document is manageable. Managing them as a *story* — keeping track of which plot threads are active at any given moment, which character knows what, which scenes are paying off setups from three episodes ago — is a different kind of problem.
+
+I ended up building a schema for scene metadata that looks a lot like a database table. Each scene has:
+
+- An episode number and scene number within that episode
+- A location, a time of day, a list of characters present
+- An **Objective** (what does the scene's POV character want?)
+- An **Action** (what do they actually do?)
+- An **Outcome** (what changed by the end of the scene?)
+- A **tension score** from 1 to 10
+- A `beatRole` field — is this scene exposition, confrontation, revelation, turning point, denouement?
+
+This sounds like over-engineering a creative process, and maybe it is. But it gave me a bird's-eye view of the whole series that I couldn't get any other way. I could sort by tension score and see that episodes 3 and 4 had a long flat middle that needed a jolt. I could filter by character and see that Nigel was absent from too many scenes in episode 5, which made his episode 6 reappearance feel unearned.
+
+The structure made the structural problems visible. Which is the whole point of structure.
+
+---
+
+## What Historical Fiction Costs You
+
+One of the specific complications of *Her Majesty's Displeasure* is that it's set in a real time and place, involving real people doing real things that are a matter of historical record.
+
+The Beatles really did go to Hamburg. They really did become famous. Sgt. Pepper's really was recorded in 1967. Brian Epstein really did die that August. These facts are load-bearing — the show needs them to feel true, to feel like it's illuminating something about that actual moment rather than inventing a parallel history.
+
+But real events don't have clean dramatic structure. Things happen at the wrong time. The emotionally correct moment for Epstein's death, from a pure story architecture standpoint, would be earlier in the season — it resets the show's central power dynamic in a way that the story needs. But it happened in August 1967, so it happens in August 1967.
+
+You can't move the facts. You can only find the story that lives inside them.
+
+This turns out to be a useful constraint, in the same way that writing to a specific screen size or a specific API contract is a useful constraint. It stops you from reaching for the easy solution and forces you to find a solution that actually fits the shape of reality. The show is better for not being able to cheat the timeline. The history keeps the drama honest.
+
+---
+
+## The Dialogue Problem
+
+Scenes, structure, arcs — all of this I could plan in advance, build schemas for, reason about systematically. Dialogue is different.
+
+Dialogue is the thing that either sounds like how people talk or it doesn't, and there is no technique for closing that gap except reading your lines out loud and listening to whether they're embarrassing. They usually are, at first. Then you fix them. Then you fix the fixes. Then at some point they stop being embarrassing and start being good, and you don't always know exactly when that happened.
+
+The specific difficulty with *Her Majesty's Displeasure* is that the dialogue has to work on two registers simultaneously. Nigel and Clive are bureaucrats — they speak in the euphemistic, load-bearing understatement that British institutional culture specialised in. Nothing is ever said directly. Every meaningful thing is said sideways, with plausible deniability built in.
+
+But the audience has to understand what's actually being communicated, underneath the politeness. Which means every exchange needs to carry two conversations at once: the surface one (which sounds like a briefing, a performance review, an argument about procedures) and the real one (which is about complicity, or fear, or the slow erosion of a person's ability to distinguish between what they're doing and who they are).
+
+Getting that right is almost entirely a matter of ear, not craft. You read it aloud, and you know.
+
+---
+
+## Influences and What They Actually Teach You
+
+I think about *Patriot* a lot — the Amazon show, not the movie. It has a very specific rhythm: long silences, deadpan delivery, absurdist bureaucratic horror played completely straight. It found a way to make institutional violence funny and then deeply sad, sometimes in the same scene, without the tonal shift feeling like a trick.
+
+Iannucci — *The Thick of It*, *Veep* — is the other major reference point, for the same reason. His people are not evil. They are not stupid. They are just people who have been optimised by their institutions into doing things that they would never have done at twenty-two, and they've done it so gradually that none of them noticed the transition.
+
+What both of those shows teach, if you watch them as a writer, is that structure enables tone. The reason the comedy lands in *The Thick of It* is that the plot underneath is rigorously logical — cause and effect, decision and consequence, every action producing exactly the reaction it should produce in a functioning system. The chaos isn't random. The chaos is the logical outcome of the incentive structures, which makes it both funnier and more disturbing than if it were just made up.
+
+*Her Majesty's Displeasure* is trying to do something similar. The conspiracy is not baroque or absurd on its own terms — it is a completely rational institutional response to a perceived threat, executed by people with the right credentials and paperwork. The horror is in the rationality.
+
+---
+
+## What Finishing Looks Like
+
+I have a complete draft of all six episodes. By which I mean: every scene exists as a document, the beginning connects to the middle, the middle connects to the end, and FADE OUT appears on the last page.
+
+It is not ready. A first draft is never ready. But a first draft that exists is infinitely more useful than the perfect draft that doesn't, because a first draft can be read, and when it's read it reveals what it actually is rather than what you intended it to be. Those are frequently different things.
+
+The revision process for a screenplay is closer to refactoring than rewriting. You're not changing what the story is — you're clarifying it, removing the parts that are trying to be something the story isn't, tightening the connections between cause and effect, finding the places where you've explained something the audience didn't need explained and cutting them.
+
+The biggest structural revision I made between my first and second passes was removing an entire subplot — a parliamentary inquiry that Nigel was quietly steering — because it was doing the same narrative work as a scene that already existed in episode 4, just less efficiently, across three episodes. It was about six scenes. They were some of the better-written scenes in the draft. They had to go.
+
+That's the discipline part. Not the word count or the daily schedule — those are habits. The discipline is looking at something you made and understanding what it actually is, not what you wanted it to be, and then making the change the story requires even when you don't want to.
+
+---
+
+## The Part That's Still Just Magic
+
+For everything I've said about structure and planning and scene schemas and beat sheets — there are scenes in *Her Majesty's Displeasure* that I can't explain.
+
+Not mechanically. I know how they work mechanically. I mean I can't explain why they're good, exactly. There's a scene in episode 3 where Clive, still in the Klaus persona, has a long conversation with John Lennon about authenticity — about whether art made under a pseudonym is as honest as art made under your own name. It's almost entirely subtext. It came out almost complete in one session, and I changed maybe three lines in revision, and it is one of the best things I've ever written.
+
+I don't know why it came out that way. I had the scene blocked in the beat sheet — confrontation, tension 7, Clive's doubt about the Klaus persona surfaces — but the specific shape of it, the specific lines, the way it ends with Clive saying something true about himself in a voice that isn't his own: that wasn't planned. That arrived.
+
+I think this is the same thing that happens with good code sometimes — a solution that is not just correct but elegant, where all the pieces fit in a way that feels inevitable in retrospect even though you couldn't have predicted it in advance. You can create the conditions for it. You can show up and do the work. But you can't force the arrival.
+
+The structure is how you get to the moment. The moment is still its own thing.

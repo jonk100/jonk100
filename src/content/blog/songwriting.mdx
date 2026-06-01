@@ -1,18 +1,203 @@
 ---
-title: "The Math and Magic of Writing a Song"
-description: "Exploring the intersection of music theory, generative audio, and emotional resonance."
-pubDate: 2026-05-15
-tags: ["Music", "Generative Art", "WebAudio"]
+title: "Great Songs Break the Math"
+description: "Why the best moments in music are the ones that shouldn't work — and what that means when you try to write code that helps you write songs."
+pubDate: 2026-05-24
+tags: ["Music", "Songwriting", "WebAudio", "JavaScript"]
 ---
 
-Music is mathematical. There are specific frequencies, intervals, and harmonic ratios that the human ear finds pleasing. But writing a song requires more than just assembling mathematically correct chords; it requires emotional intent.
+Here's the thing about music theory: it's mostly a description of what people *already did*. Someone played a tritone in 1600 and people lost their minds. Then someone played it again and people liked it. Then it was in everything. Then they named it and put it in a textbook.
 
-## The Sonic Bloom Experiment
-When I built *Sonic Bloom*, an interactive generative music sequencer, I wanted to explore this intersection. The app uses the WebAudio API to synthesize sounds in real-time based on mathematical patterns. 
+Theory follows the music. Not the other way around.
 
-However, pure randomness sounds chaotic. To make it sound like *music*, I had to constrain the algorithms within musical scales and time signatures. 
+I think about this a lot because I write songs, and I've also spent a lot of time building tools to help me write songs. And those two activities are in constant, low-grade conflict with each other — because code wants rules, and the best parts of the songs I love are the parts where somebody broke one.
 
-## The Human Element
-No matter how complex the algorithm, the best songs always stem from human emotion. Writing a song is about capturing a specific feeling in a bottle. The chords provide the setting, the melody provides the characters, and the rhythm provides the pacing. 
+---
 
-Whether I'm writing a folk song on an acoustic guitar or programming a synthesizer in JavaScript, the goal remains the same: to make the listener *feel* something.
+## The Moment That Shouldn't Work
+
+There's a moment in "Strawberry Fields Forever" where the melody lands on a note that has no business being there. It's not in the key. It doesn't resolve cleanly. If you fed that chord progression into a theory app and asked it to suggest the next note, it would not suggest that note.
+
+And yet.
+
+That's the whole thing, isn't it? The "and yet." The moments that make you put down what you're doing and just listen — they are almost never the mathematically correct moments. They're the moment the Beatles tune a sitar slightly wrong and it sounds like a different dimension. They're the note Kurt Cobain bends just past where it should go. They're the one chord in a Joni Mitchell song that you can't even name because she retuned the guitar and the whole framework collapsed.
+
+Music *uses* math the way a great sentence uses grammar — as infrastructure, mostly invisible, occasionally broken on purpose to spectacular effect. The grammar of a sentence tells you what's legal. It does not tell you what's memorable.
+
+So when I sit down at a guitar and something comes out that's genuinely good, there's always a moment where I can't fully explain why it works. I just know it does. I can feel it before I understand it. That gap — between the feeling and the understanding — is where songwriting actually lives.
+
+Code does not live there. Code needs to understand everything.
+
+---
+
+## Why You Build the Tool Anyway
+
+Here's the contradiction I keep running into: the parts of songwriting that are *not* magic are genuinely tedious, and code is excellent at tedious.
+
+Transposing a chord progression to a new key. Generating a chart to practice against. Keeping track of which voicings you've used for a chord across a hundred songs so you're not reaching for the same grip every time. Figuring out whether a melody note is in the scale or not — not because being in the scale matters, but because *knowing* it's out of the scale, deliberately, is different from not knowing.
+
+That last one is important. There's a difference between breaking a rule on purpose and accidentally falling into something. Both can sound good. But only one of them is repeatable, and only one of them teaches you anything. So I want the tool to tell me what key I'm in, what scale degree that note is, what the "correct" chord would be — not so I'll use it, but so I know exactly what I'm deviating from.
+
+The theory is the baseline. The deviation is the music.
+
+---
+
+## The Chord Schema Problem
+
+The first time I tried to model guitar chords in code, I thought it would take an afternoon.
+
+It took significantly longer than an afternoon.
+
+The surface problem is straightforward: a chord has a name, a root, a quality (major, minor, dominant seventh, etc.), and a set of fret positions on six strings. You can represent that as an object. Fine.
+
+```typescript
+interface ChordVoicing {
+  name: string;
+  root: string;
+  quality: string;
+  frets: (number | null)[];  // null = muted string
+  fingering?: number[];
+}
+```
+
+But then you hit the first wall: the same chord has many voicings. A C major chord can be played in at least a dozen meaningfully different positions on a guitar neck, and they don't sound the same. An open C major has a different texture than a barre chord C major at the third fret. The open strings ring differently. The overtones are different. Calling them both "C major" is like calling two different rooms "a room" — technically accurate, emotionally useless.
+
+So you need a way to identify a voicing specifically — not just by chord name but by *which* voicing. I ended up with a slug convention: `chord-name-root-string`, where root string is the lowest string the chord is played on. `c-major-5` for the open C, `c-major-6` for the barre. Workable, if a bit arbitrary.
+
+Then the second wall: chord detection. Given six fret numbers, what chord is this? That sounds like it should be simple. It is not simple.
+
+You need to figure out the notes on each fretted string (fret number + open string pitch + standard tuning offsets), remove muted strings, get the set of unique pitch classes, and then compare that set against every known chord structure to find the best match. And "best match" is doing a lot of work in that sentence — a six-note voicing might partially match a dozen different chords. Is it a C major with an added ninth? A G major with an inverted bass? An Am7 with a missing fifth?
+
+```typescript
+/**
+ * Detects the most likely chord name from a set of fretted positions.
+ * Returns the chord quality, root, and any extensions detected.
+ *
+ * @param frets - Array of 6 fret numbers (or null for muted strings)
+ * @param tuning - Open string pitches in semitones (default: standard tuning)
+ * @returns The best-match chord name, or null if no match found
+ */
+function detectChord(
+  frets: (number | null)[],
+  tuning = [40, 45, 50, 55, 59, 64]
+): string | null {
+  const notes = frets
+    .map((fret, i) => fret !== null ? (tuning[i] + fret) % 12 : null)
+    .filter((n): n is number => n !== null);
+
+  const pitchClassSet = [...new Set(notes)];
+  // ... match against chord interval patterns
+}
+```
+
+The matching logic works well enough for common chords. It falls apart for anything unusual — which is, again, where the interesting music lives.
+
+---
+
+## The Problem With Knowing Too Much
+
+Here's a failure mode I didn't anticipate: building the tool made me more self-conscious as a songwriter, not less.
+
+For a while, every time I played something that sounded good, I'd immediately flip over to the theory view to see what it was. And knowing — "oh, that's a bVI chord, that's why it sounds dramatic" — would sometimes take the air out of it. The mystery is part of what makes you want to keep playing it. Once you've named the thing, it's a specimen.
+
+I had to build a deliberate separation. The tool is for *after* — after I've got something, after I've recorded it, after I know I'm keeping it. Not during. During is for not thinking about it.
+
+This sounds obvious in retrospect. Of course you don't stop mid-session to analyse what you're playing. But when you've built something, you want to use it. You've got a tab open and a chord diagram and a transposer and a scale highlighter, and it's very easy to let that stuff colonise the creative space.
+
+The lesson I keep relearning: the tool should be a reference, not a co-writer. The moment it starts feeling like a co-writer, close the laptop.
+
+---
+
+## Web Audio and the Gap Between Synthesis and Music
+
+At some point I added audio playback to the chord diagrams — click a voicing, hear it played back. This required diving into the Web Audio API, which is powerful and extremely unmusical.
+
+The Web Audio API thinks in oscillators and gain nodes and buffer sources. It doesn't know what a chord is. It doesn't know what a guitar is. It knows about waveforms and frequencies and connections between audio processing nodes:
+
+```javascript
+/**
+ * Plays a single note at a given frequency using a synthesized pluck sound.
+ * Uses an oscillator with a sharp gain envelope to approximate a string attack.
+ *
+ * @param ctx - The AudioContext to use for playback
+ * @param frequency - The frequency in Hz to play
+ * @param startTime - When to start the note (in AudioContext time)
+ */
+function playNote(ctx: AudioContext, frequency: number, startTime: number) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(frequency, startTime);
+
+  // Sharp attack, exponential decay — approximate pluck
+  gain.gain.setValueAtTime(0.8, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.2);
+
+  osc.start(startTime);
+  osc.stop(startTime + 1.2);
+}
+```
+
+Getting six of those to fire in rapid sequence — strumming — means staggering the start times by about 20–30 milliseconds per string:
+
+```javascript
+voicing.frets.forEach((fret, stringIndex) => {
+  if (fret === null) return;
+  const freq = midiToFrequency(tuning[stringIndex] + fret);
+  const delay = stringIndex * 0.025; // 25ms stagger
+  playNote(ctx, freq, ctx.currentTime + delay);
+});
+```
+
+It sounds like a chord. It does not sound like a guitar. It sounds like a chord played by a robot who has read about guitars but never heard one. There's no body resonance, no string noise, no fret buzz on the low E when you're not quite pressing hard enough. All the stuff that makes a guitar sound like a guitar is the stuff that's technically wrong — and synthesising "technically wrong" is very hard.
+
+I briefly went down the path of using recorded samples instead of synthesis. That sounds better immediately, but introduces a different problem: sample libraries are enormous, licensing is a headache, and you still end up with a chord that sounds like a chord played by someone else on their guitar in a studio in 1997. It's accurate but it's not *yours*.
+
+I went back to the synthesized version. It's a reference tool. It doesn't need to sound like a guitar; it needs to tell me if the notes are right.
+
+---
+
+## Lyrics Don't Parse
+
+Chords have structure. Intervals are measurable. Rhythm is countable. You can write code that meaningfully interacts with all of these.
+
+Lyrics are a different country entirely.
+
+I have a lyrics collection in Writty. Each song has a structured representation of its sections — verses, choruses, bridges, a preamble if there's a spoken intro — with the chord changes mapped to syllables where possible. I can display them, I can print them, I can search across them.
+
+What I cannot do is anything useful *with* them. No algorithm I've found can tell me whether a line scans well. Nothing can detect that "forever" is a lazy rhyme that I've used four times in this song. Nothing catches that I've buried the most emotionally resonant image in the third verse when it should be in the hook.
+
+Those are editorial instincts, and they come from having read and listened to a lot of songs, and they are almost entirely not transferable to code. I tried building a syllable counter once — for checking whether a lyric line fits a melody — and it was wrong about 30% of the time, which is exactly the wrong amount of wrong. Often enough to be useless as a reference, not often enough to be obviously broken.
+
+Human language is slippery in ways that music notation is not. "Fire" is one syllable. "Fiery" is two or three depending on who's singing and how fast. "Every" can be two syllables in normal speech and one syllable in a pop song and two and a half in a country song. The syllable counter doesn't know any of that. It counts phonemes in a dictionary and gives up on anything it can't find.
+
+I deleted the syllable counter. Some problems are better solved by just singing the line out loud a few times.
+
+---
+
+## What the Code Is Actually For
+
+After all of this, here's what I've settled on.
+
+The code is for the *archaeology* of songwriting — digging back into finished things and making sense of them. What key is this song in? What chords do I reach for most often? Do I have a harmonic fingerprint — some progression I keep returning to, some voicing I default to? Am I always playing in the same two or three positions on the neck?
+
+These are questions I can answer with code, and they're interesting questions. The answers are sometimes surprising. I apparently love a chord I couldn't name for years — turns out it's a sus2 with the major third added, which doesn't have a clean name and sounds slightly wrong and is in about a third of my songs.
+
+That's the thing code is good at: pattern recognition across a body of work, at a scale that memory can't do reliably. I can hold maybe twenty songs in my head clearly enough to compare them. The database holds all of them and can filter and sort and count and cross-reference without getting tired.
+
+What it can't do — what nothing can do — is write the song. It can't tell me what the next chord should be, because "should" is the wrong frame. It can't tell me whether a melody is memorable. It can't tell me whether the bridge needs to go somewhere more unexpected. It can tell me what key I'm in, which tells me what notes are *available*, which is useful. The rest is just listening and playing and following the thing that sounds like it wants to go somewhere.
+
+---
+
+## The Rule Worth Breaking
+
+There's a version of this post where I end on something clean and conclusive, like: *use theory as a foundation and let instinct guide you*, or: *the best tools get out of the way*. Both of those are true and both of them are a little smug.
+
+The more honest version is that I don't fully understand why good songs are good. I've been playing guitar for most of my life and writing songs for a long time and I still sometimes play something and have no idea why it works — only that it does, and that the right response is to record it before I forget it, not to analyse it.
+
+The code helps with everything around that moment. The capture, the cataloguing, the transposing, the printing, the searching. It handles the administration of a creative practice so the creative practice itself can stay messy and instinctive.
+
+But the moment itself — the one that shouldn't work, and yet — that's not a technical problem. That's the whole point.
