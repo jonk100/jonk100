@@ -1,21 +1,196 @@
 ---
-title: "Setting up a high-performance Astro portfolio"
+title: "Setting Up a High-Performance Astro Portfolio"
 description: "A deep dive into why I chose Astro for my personal site and how I built a custom primitive-based design system."
 pubDate: 2026-05-29
 tags: ["Astro", "Web Development", "Design Systems"]
 ---
 
-Building a personal portfolio is a rite of passage for every frontend developer. Over the years, I've built portfolios with everything from plain HTML/CSS to React, Next.js, and even heavy CMS platforms. But for this iteration, I chose **Astro**.
+I've started building my portfolio probably six or seven times.
 
-Here is why Astro is the perfect tool for a developer portfolio.
+Not six or seven iterations of the same site — six or seven completely separate attempts that each made it a different distance before I gave up. One got as far as a deployed URL. Most got as far as a half-finished homepage. At least two are sitting in a `~/dev/graveyard` folder that I haven't opened in years.
 
-## 1. Zero JavaScript by Default
-A portfolio site is fundamentally a document. It's meant to be read. Serving a massive JavaScript bundle just to render a grid of projects and some text is overkill. Astro's islands architecture means that 99% of my site ships as pure, static HTML. It loads instantly on any connection.
+The problem was never technical. I know how to build websites. The problem was that I couldn't figure out what the site was *for*, and without an answer to that question, every design decision felt arbitrary and every technology choice felt like a commitment I wasn't ready to make.
 
-## 2. Component Primitives
-Instead of relying on a massive CSS framework, I built a custom design system using Astro components as UI primitives (`<Box>`, `<Stack>`, `<Inline>`). This gives me the developer experience of something like Chakra UI or styled-components, but with zero runtime cost.
+---
 
-## 3. View Transitions
-With a single `<ClientRouter />` tag, Astro enabled me to add native-feeling page transitions. When you click on a project card, the image literally flies across the screen to become the hero banner of the new page.
+## The Paralysis Problem
 
-Building this site wasn't just about putting my work online; it was an exercise in mastering modern web architecture.
+A portfolio is supposed to answer a question: who are you, and what do you do? For a lot of developers, that's relatively straightforward. You do frontend work, or backend work, or you specialise in a particular stack or industry, and the portfolio is a showcase of that thing.
+
+My answer to "what do you do" is more complicated. I write screenplays. I write songs. I build web apps, mostly for myself, mostly to support the writing. I'm a developer, but not in a professional-product sense — in the sense that code is one of the tools I reach for when I need something that doesn't exist yet.
+
+How do you portfolio that? Do you lead with the screenwriting? The code? Do you try to present them as a unified practice, and if so, how do you do that without it sounding like a creative-developer brand pitch you'd see on a Dribbble profile?
+
+Every time I tried to answer those questions by designing a website, I'd get stuck. The design would imply a hierarchy — this thing is more important than that thing — and as soon as I saw the hierarchy on screen I'd know it was wrong and start over.
+
+The breakthrough, when it came, was realising I was approaching it backwards. I was trying to design the presentation before I understood the content. And I had a lot of content. I just hadn't organised it yet.
+
+---
+
+## Starting With What I Had
+
+The actual shift was deciding to inventory everything first and worry about presenting it later.
+
+Songs I'd written. Scenes from *Her Majesty's Displeasure*. Book and film reviews I'd written in notebooks and never published. Guitar chord charts I'd worked out and immediately lost track of. Blog posts I'd drafted and abandoned because I didn't have a place to put them.
+
+The common thread was that all of it was text, or structured data closely related to text, and all of it was mine, and none of it had a home.
+
+Once I saw the problem as "I have a collection of creative work across multiple formats and I need a system that can hold all of it without imposing a hierarchy" — Astro content collections became obvious. Not as a portfolio technology, but as a personal CMS for my own practice. The portfolio would be a byproduct of the organisation, not the point of it.
+
+---
+
+## Why Astro, Specifically
+
+I've built things with plain HTML and CSS. With React and Next.js. With various CMS platforms I don't need to name. For this, I kept coming back to Astro for a set of reasons that compound on each other.
+
+**It's a document framework, not an application framework.** A portfolio is fundamentally a document — it's meant to be read. The default mode for most React-based tools is to ship a JavaScript bundle that hydrates a page that could have been static HTML. For a site that is mostly text and images, that's a lot of machinery to justify. Astro's default is the opposite: ship HTML, add JavaScript only where interactivity actually requires it. That inversion matches the actual nature of the content.
+
+**Content collections are a first-class concept.** This is the thing that actually made the decision. Astro's content collections let you define a schema for each content type — songs, scenes, reviews, blog posts, chord charts — validate it with Zod at build time, and query it as typed data anywhere in your templates. It's the difference between a folder of markdown files you're praying are formatted consistently and a type-safe database you happen to store as markdown files.
+
+For someone with 20-odd content types and years of accumulated material, that validation matters. The build fails loudly if a schema field is missing or wrong. Better to know at build time than to discover at runtime that half the song entries don't have a key field.
+
+**It renders MDX naturally.** The screenwriting plugin, the chord sheet components, the structured lyrics display — all of that works inside Astro without additional configuration. MDX as a content format means the content files can import and use components, which means a scene can actually look like a screenplay and a chord chart can actually be interactive, inside the same content collection architecture as a plain blog post.
+
+---
+
+## The Content Schema as Design System
+
+Once I committed to content collections as the backbone, the next question was what the schemas should look like. This turned out to be the most interesting design problem in the project.
+
+A song needs different fields than a film review. A screenplay scene needs different fields than a blog post. But they all share some common structure — a title, a publication or creation date, tags, a status (draft, published, archived). The shared structure means you can build shared layout primitives that work across types, and the type-specific structure means each content type can have exactly the fields it needs without forcing everything into a single schema that's right for none of them.
+
+For songs, the schema ended up looking roughly like this:
+
+```typescript
+const songs = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/songs" }),
+  schema: z.object({
+    title: z.string(),
+    key: z.string(),
+    timeSignature: z.string().default("4/4"),
+    tempo: z.number().optional(),
+    tags: z.array(z.string()).default([]),
+    status: z.enum(["draft", "complete", "abandoned"]).default("draft"),
+    recorded: z.boolean().default(false),
+    pubDate: z.coerce.date().optional(),
+  }),
+});
+```
+
+For screenplay scenes:
+
+```typescript
+const scenes = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/scenes" }),
+  schema: z.object({
+    title: z.string(),
+    episode: z.number(),
+    sceneNumber: z.number(),
+    location: z.string(),
+    timeOfDay: z.enum(["DAY", "NIGHT", "DAWN", "DUSK", "CONTINUOUS"]),
+    characters: z.array(z.string()),
+    tension: z.number().min(1).max(10).optional(),
+    beatRole: z.enum([
+      "exposition", "confrontation", "revelation",
+      "turning-point", "denouement", "transition"
+    ]).optional(),
+    status: z.enum(["outline", "draft", "revised", "locked"]).default("outline"),
+  }),
+});
+```
+
+The schemas are documentation as much as they are validation. When I come back to a content type after a few weeks, the schema tells me exactly what fields exist and what they mean. That's worth more than it sounds when you have twenty collections.
+
+---
+
+## Component Primitives Instead of a CSS Framework
+
+I didn't want to pull in a full CSS framework. Not because there's anything wrong with them — Tailwind is excellent for what it is — but because a personal site built on utility classes ends up looking like every other personal site built on utility classes, and I wanted this to look like mine.
+
+Instead I built a small set of layout primitives as Astro components: `<Box>`, `<Stack>`, `<Inline>`, `<Grid>`. Each one accepts a handful of props — spacing, alignment, max-width — and maps them to CSS custom properties. The components don't do much on their own; they're just named wrappers around CSS that make the layout structure explicit in the markup.
+
+```astro
+---
+// Stack.astro — a vertical stack with consistent spacing
+interface Props {
+  gap?: "xs" | "sm" | "md" | "lg" | "xl";
+  align?: "start" | "center" | "end" | "stretch";
+}
+
+const { gap = "md", align = "stretch" } = Astro.props;
+---
+
+<div class="stack" data-gap={gap} data-align={align}>
+  <slot />
+</div>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stack[data-gap="xs"] { gap: var(--space-xs); }
+  .stack[data-gap="sm"] { gap: var(--space-sm); }
+  .stack[data-gap="md"] { gap: var(--space-md); }
+  .stack[data-gap="lg"] { gap: var(--space-lg); }
+  .stack[data-gap="xl"] { gap: var(--space-xl); }
+
+  .stack[data-align="start"]   { align-items: flex-start; }
+  .stack[data-align="center"]  { align-items: center; }
+  .stack[data-align="end"]     { align-items: flex-end; }
+  .stack[data-align="stretch"] { align-items: stretch; }
+</style>
+```
+
+The advantage over a framework isn't raw capability — it's that the constraints are mine. The spacing scale, the type scale, the color tokens — they come from decisions I made about what this particular site should feel like, not from a design system built for general use. The aesthetic is editorial and dark: near-black backgrounds, off-white type, amber accents, IBM Plex Mono for metadata. Nothing about that aesthetic is enforced by a framework, which is partly the point.
+
+This approach gives me the developer experience of something like Chakra UI — composable, typed, consistent — with zero runtime cost. The components are compiled away at build time. The browser gets HTML and CSS.
+
+---
+
+## Zero JavaScript by Default
+
+This is worth saying clearly because it's easy to forget how unusual it is.
+
+Most modern web frameworks have a default mode that is "ship JavaScript, hydrate the page." Astro's default mode is "ship HTML, add JavaScript only where you explicitly opt in." For a site that is 95% reading and 5% interaction, that default is correct in a way that no other framework's default is.
+
+The practical result: the site loads instantly on any connection. There's no flash of unstyled content, no hydration delay, no layout shift while JavaScript figures out what to render. The first byte the browser receives is the first thing the user sees, because the HTML is the whole thing.
+
+Where I do need JavaScript — the chord playback in the song entries, the collapsible sections in the screenplay scenes, the debounced search — I use Astro islands to add it surgically. Each interactive component hydrates itself; everything else is static. The total JavaScript budget for the whole site is a fraction of what a comparable React application would ship for a single page.
+
+---
+
+## View Transitions
+
+With a single `<ClientRouter />` tag in the base layout, Astro enabled page transitions using the browser's native View Transitions API. This was genuinely surprising to implement — it took about fifteen minutes and produced an effect that would have taken days with a client-side router.
+
+When you navigate between pages, shared elements animate between their positions rather than the whole page cutting. A project card image flies across the screen to become the hero image of the project detail page. The navigation stays in place while the content transitions. It feels like a native application without shipping any application code.
+
+The catch is browser support — View Transitions are still rolling out, and the fallback is a normal navigation. That's fine for a portfolio. The enhanced experience is a bonus, not a requirement.
+
+---
+
+## What It Is Right Now
+
+The honest answer is that it's a work in progress. Not in the "I'll clean it up later" sense — I mean it's structurally designed to be permanently in progress, in the same way a personal journal is in progress. Every song I write gets an entry. Every scene I finish gets its schema populated. Every review I write gets added to the collection.
+
+The portfolio isn't a showcase of finished things. It's a working record of an ongoing practice. Some entries are drafts. Some are marked abandoned. The status fields in the schemas aren't there for the visitor — they're there for me, so I can filter my content collections by `status: "draft"` and see exactly what's unfinished and why.
+
+This framing took a while to arrive at, but it's the one that finally made the site feel right. I'm not curating a greatest-hits selection for a recruiter to skim. I'm building a system for my own creative work that happens to be public. The publicness is incidental to the function.
+
+---
+
+## What Comes Next
+
+There are a few things I want the site to eventually do that it doesn't do yet.
+
+A proper search across all content collections — not just blog posts, but songs, scenes, reviews, everything — using a pre-built index at compile time. The architecture already supports this; I just haven't wired it up.
+
+Better cross-referencing between collections. A song that is referenced in a scene should link to that scene. A review that mentions a film I used as a reference for *Her Majesty's Displeasure* should appear in the show's series bible entry. These relationships exist; they're just not surfaced yet.
+
+And at some point, a better visual design for the public-facing parts — the pages a visitor actually lands on rather than the internal content-management views. Right now the aesthetic is consistent but it's functional-first. I'd like it to eventually be genuinely beautiful in the way that the best editorial sites are beautiful: the design serving the content rather than decorating it.
+
+But the foundation is right. I know it's right because adding a new content type takes about twenty minutes — write the schema, drop the files in, create the collection layout. The system extends without friction. That's the thing I couldn't build on any of the six previous attempts, because I was always trying to design the presentation before I understood the content.
+
+Understand the content first. The presentation follows.
