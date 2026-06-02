@@ -4,12 +4,13 @@
  * An anchor component featuring shared button-like variant styles.
  * - Integrates with Astro's native class:list for flexible styling
  * - Uses global control variant sizes and styles
- * @props (local): href, theme, tone, size, target, rel, disabled
+ * @props (local): href, theme, tone, size, target, rel, disabled, preview
  * @props (global): class, class:list, frame
  * - theme: Selects the visual link color
  * - tone: Specifies text color (overrides theme)
  * - size: Adjusts the link font size
  * - frame: Applies an optional frame variant to the link styling
+ * - preview: Enables a hover-intent metadata preview card
  */
 import type { ComponentTheme, TextTone, Sizes, FrameVariant } from 'src/types/variants.types';
 import Text from '../typography/Text.astro';
@@ -26,6 +27,7 @@ export interface Props {
   target?: string;
   rel?: string;
   disabled?: boolean;
+  preview?: boolean;
   [key: string]: any;
 }
 
@@ -41,8 +43,11 @@ const {
   target,
   rel,
   disabled = false,
+  preview = false,
   ...rest
 } = Astro.props;
+
+const isActive = Astro.url.pathname === href || Astro.url.pathname === href + '/';
 
 const classes = [
   "custom-link", 
@@ -50,23 +55,108 @@ const classes = [
   tone ? `text--${tone}` : '',
   size ? `text--${size}` : '', 
   frame !== 'none' ? `frame-variant--${frame}` : '',
+  { "is-active": isActive },
   cls
-]
-  .filter(Boolean)
-  .join(" ");
+];
 ---
 
 <a 
   href={disabled ? undefined : href} 
-  class={classes} 
-  class:list={classList} 
+  class:list={[classes, classList]} 
   target={target} 
   rel={rel} 
   aria-disabled={disabled ? "true" : undefined}
+  data-preview={preview ? "true" : undefined}
   {...rest}
 >
   {label ? label : <slot />}
 </a>
+
+{preview && (
+  <script>
+    class LinkPreview {
+      private timer: number | null = null;
+      private previewEl: HTMLElement | null = null;
+
+      constructor() {
+        this.init();
+      }
+
+      private init() {
+        const links = document.querySelectorAll('a[data-preview="true"]');
+        links.forEach(link => {
+          link.addEventListener('mouseenter', (e) => this.handleMouseEnter(e as MouseEvent));
+          link.addEventListener('mouseleave', () => this.handleMouseLeave());
+        });
+      }
+
+      private handleMouseEnter(e: MouseEvent) {
+        const target = e.currentTarget as HTMLAnchorElement;
+        const href = target.href;
+
+        this.timer = window.setTimeout(() => {
+          this.showPreview(target, href);
+        }, 400);
+      }
+
+      private handleMouseLeave() {
+        if (this.timer) {
+          clearTimeout(this.timer);
+          this.timer = null;
+        }
+        this.hidePreview();
+      }
+
+      private async showPreview(anchor: HTMLElement, href: string) {
+        if (this.previewEl) this.hidePreview();
+
+        this.previewEl = document.createElement('div');
+        this.previewEl.className = 'link-preview-card';
+        this.previewEl.innerHTML = `
+          <div class="link-preview-loading">
+            <p>Fetching metadata...</p>
+          </div>
+        `;
+
+        document.body.appendChild(this.previewEl);
+
+        const rect = anchor.getBoundingClientRect();
+        this.previewEl.style.position = 'fixed';
+        this.previewEl.style.top = `${rect.bottom + 10}px`;
+        this.previewEl.style.left = `${rect.left}px`;
+        this.previewEl.style.zIndex = '1000';
+
+        setTimeout(() => {
+          if (this.previewEl) {
+            try {
+              const url = new URL(href);
+              this.previewEl.innerHTML = `
+                <div class="link-preview-content">
+                  <p class="link-preview-title">Link Preview: ${url.hostname}</p>
+                  <p class="link-preview-url">${href}</p>
+                  <p class="link-preview-desc">Metadata proxy required for full OG data.</p>
+                </div>
+              `;
+            } catch (e) {
+               this.previewEl.innerHTML = '<p>Invalid URL</p>';
+            }
+          }
+        }, 600);
+      }
+
+      private hidePreview() {
+        if (this.previewEl) {
+          this.previewEl.remove();
+          this.previewEl = null;
+        }
+      }
+    }
+
+    document.addEventListener('astro:page-load', () => {
+      new LinkPreview();
+    });
+  </script>
+)}
 
 <style>
   .custom-link {
@@ -81,6 +171,13 @@ const classes = [
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     line-height: 1;
+    position: relative;
+  }
+
+  .custom-link.is-active {
+    font-weight: 700;
+    text-decoration-color: currentColor;
+    text-decoration: underline;
   }
 
   /* Defensive override for MDX-compiled child paragraph tags */
@@ -163,5 +260,45 @@ const classes = [
     text-decoration: none;
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
+  }
+</style>
+
+<style is:global>
+  .link-preview-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--rad-md);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-lg);
+    width: 280px;
+    font-family: var(--sans);
+    animation: slide-up-fade 0.2s ease-out;
+  }
+
+  .link-preview-title {
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-1);
+    color: var(--text);
+    margin-top: 0;
+  }
+
+  .link-preview-url {
+    font-size: 10px;
+    color: var(--accent);
+    margin-bottom: var(--space-2);
+    word-break: break-all;
+  }
+
+  .link-preview-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  @keyframes slide-up-fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>

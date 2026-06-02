@@ -1,0 +1,72 @@
+---
+/**
+ * src/components/ui/navigation/BreadcrumbItem.astro
+ * An individual item within a breadcrumb list.
+ * @props (local): href, current
+ * @props (global): class, class:list
+ * - href: Optional link destination
+ * - current: If true, indicates this is the current page
+ */
+import Link from '../primitives/Link.astro';
+import Svg from '../primitives/Svg.astro';
+
+export interface Props {
+  href?: string;
+  current?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  href,
+  current = false,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<li class:list={['breadcrumb-item', { 'breadcrumb-item--current': current }, className, classList]} {...rest}>
+  {href && !current ? (
+    <Link href={href} theme="ghost" size="sm" class="breadcrumb-link">
+      <slot />
+    </Link>
+  ) : (
+    <span class="breadcrumb-text" aria-current={current ? 'page' : undefined}>
+      <slot />
+    </span>
+  )}
+  {!current && (
+    <div class="breadcrumb-separator" aria-hidden="true">
+      <Svg name="divider" size="sm" />
+    </div>
+  )}
+</li>
+
+<style>
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .breadcrumb-item--current {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .breadcrumb-separator {
+    opacity: 0.3;
+    display: flex;
+    align-items: center;
+    transform: rotate(-90deg);
+  }
+
+  .breadcrumb-link {
+    padding: 0 !important;
+    text-decoration: none !important;
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * src/components/ui/layout/BentoItem.astro
+ * A semantic child for the Bento grid system.
+ * @props (local): colSpan, rowSpan
+ * @props (global): class, class:list
+ * - colSpan: Number of columns this item should occupy
+ * - rowSpan: Number of rows this item should occupy
+ */
+export interface Props {
+  colSpan?: number;
+  rowSpan?: number;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  colSpan = 1,
+  rowSpan = 1,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div 
+  class:list={['bento-item', className, classList]} 
+  style={`grid-column: span ${colSpan}; grid-row: span ${rowSpan};`}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .bento-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .bento-item {
+      grid-column: span 1 !important;
+      grid-row: span 1 !important;
+    }
+  }
+</style>

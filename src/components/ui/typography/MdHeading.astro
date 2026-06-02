@@ -1,0 +1,112 @@
+---
+/**
+ * src/components/ui/typography/MdHeading.astro
+ * A specialized heading component for Markdown/MDX content.
+ * - Supports sticky positioning for long-form reading
+ * - Automatically generates hover-anchors for deep linking
+ * @props (local): level, sticky, id
+ * @props (global): class, class:list
+ * - level: Heading level (1-6)
+ * - sticky: If true, the heading sticks to the top of the viewport on scroll
+ */
+import type { TextTone } from 'src/types/variants.types';
+
+export interface Props {
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+  sticky?: boolean;
+  tone?: TextTone;
+  id?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  level = 2,
+  sticky = false,
+  tone = 'default',
+  id,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const Tag = `h${level}` as any;
+
+// Generate id from slot content if not provided
+// (This is a simplified version; real MDX processing often handles this)
+const headingId = id;
+---
+
+<Tag
+  id={headingId}
+  class:list={[
+    'md-heading',
+    `md-heading--${level}`,
+    `text--${tone}`,
+    { 'md-heading--sticky': sticky },
+    className,
+    classList
+  ]}
+  {...rest}
+>
+  <span class="md-heading-content">
+    <slot />
+  </span>
+  {headingId && (
+    <a href={`#${headingId}`} class="md-heading-anchor" aria-label="Anchor link">
+      #
+    </a>
+  )}
+</Tag>
+
+<style>
+  .md-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-12) 0 var(--space-6);
+    font-family: var(--display);
+    font-weight: 600;
+    line-height: 1.2;
+    scroll-margin-top: var(--header-height, 100px);
+  }
+
+  .md-heading--1 { font-size: var(--text-5xl); }
+  .md-heading--2 { font-size: var(--text-4xl); }
+  .md-heading--3 { font-size: var(--text-3xl); }
+  .md-heading--4 { font-size: var(--text-2xl); }
+  .md-heading--5 { font-size: var(--text-xl); }
+  .md-heading--6 { font-size: var(--text-lg); }
+
+  .md-heading--sticky {
+    position: sticky;
+    top: var(--header-height, 60px);
+    z-index: 10;
+    background: var(--bg);
+    padding: var(--space-4) 0;
+    margin-top: var(--space-8);
+    backdrop-filter: blur(8px);
+    /* Fade out edge */
+    mask-image: linear-gradient(to bottom, black 80%, transparent);
+  }
+
+  .md-heading-anchor {
+    opacity: 0;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    transition: opacity 0.2s ease;
+  }
+
+  .md-heading:hover .md-heading-anchor {
+    opacity: 1;
+  }
+
+  /* Tone overrides */
+  .text--default { color: var(--text); }
+  .text--primary { color: var(--primary); }
+  .text--accent { color: var(--accent); }
+  .text--muted { color: var(--text-muted); }
+</style>

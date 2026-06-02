@@ -11,8 +11,8 @@
  * - size: Semantic size token or CSS length value
  */
 
-import { icons } from '../../../design/icons';
-import type { SvgName } from '../../../design/icons';
+import { icons } from '../../../design/icons/index';
+import type { SvgName } from '../../../design/icons/index';
 
 export interface Props {
   name: SvgName;
@@ -42,21 +42,23 @@ const sizeMap: Record<string, string> = {
 const dimension = sizeMap[size] ?? size;
 
 const SvgComponent = icons[name];
-
-
 ---
 
-<SvgComponent
-  class:list={[
-    'svg',
-    className,
-    classList
-  ]}
-  width={dimension}
-  height={dimension}
-  stroke={stroke}
-  {...rest}
-/>
+{SvgComponent ? (
+  <SvgComponent
+    class:list={[
+      'svg',
+      className,
+      classList
+    ]}
+    width={dimension}
+    height={dimension}
+    stroke={stroke}
+    {...rest}
+  />
+) : (
+  <span class="svg-error" title={`Icon "${name}" not found`}>?</span>
+)}
 
 <style>
   .svg {

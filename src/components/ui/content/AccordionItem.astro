@@ -1,0 +1,101 @@
+---
+/**
+ * src/components/ui/content/AccordionItem.astro
+ * An individual collapsible item using native details/summary.
+ * @props (local): title, open
+ * @props (global): class, class:list
+ * - title: The text to display in the summary header
+ * - open: If true, the item is open by default
+ */
+import Svg from '../primitives/Svg.astro';
+
+export interface Props {
+  title: string;
+  open?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  title,
+  open = false,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<details 
+  class:list={['accordion-item', className, classList]} 
+  open={open}
+  {...rest}
+>
+  <summary class="accordion-summary">
+    <span class="accordion-title">{title}</span>
+    <div class="accordion-chevron">
+       <Svg name="chevron-down" size="sm" />
+    </div>
+  </summary>
+  <div class="accordion-content">
+    <div class="accordion-inner">
+      <slot />
+    </div>
+  </div>
+</details>
+
+<style>
+  .accordion-item {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--rad-md);
+    background: var(--surface-1);
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .accordion-item[open] {
+    border-color: var(--accent);
+    background: var(--bg);
+  }
+
+  .accordion-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    cursor: pointer;
+    list-style: none; /* Hide native marker */
+    font-weight: 600;
+    font-family: var(--sans);
+    color: var(--text);
+  }
+
+  .accordion-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion-title {
+    user-select: none;
+  }
+
+  .accordion-chevron {
+    transition: transform 0.2s ease;
+    color: var(--text-muted);
+  }
+
+  .accordion-item[open] .accordion-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  .accordion-content {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .accordion-inner {
+    padding: var(--space-5);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text-subtle);
+  }
+</style>

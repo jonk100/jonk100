@@ -1,0 +1,51 @@
+---
+/**
+ * src/components/ui/feedback/ToastProvider.astro
+ * A global layout provider for Toast notifications.
+ * - Manages the fixed container for stacked toast items
+ */
+---
+
+<div class="toast-container" aria-live="polite"></div>
+
+<style is:global>
+  .toast-container {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    z-index: 9999;
+    pointer-events: none;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .toast-item {
+    pointer-events: auto;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--rad-md);
+    padding: var(--space-4);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(100px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  .animate-fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+  }
+</style>

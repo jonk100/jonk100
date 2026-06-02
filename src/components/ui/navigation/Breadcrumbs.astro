@@ -1,0 +1,56 @@
+---
+/**
+ * src/components/ui/navigation/Breadcrumbs.astro
+ * A secondary navigation component indicating the current page's hierarchy.
+ * @props (local): separator
+ * @props (global): class, class:list
+ */
+import Svg from '../primitives/Svg.astro';
+
+export interface Props {
+  separator?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  separator = 'divider',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class:list={['breadcrumbs', className, classList]} {...rest}>
+  <ol class="breadcrumbs-list">
+    <slot />
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    padding: var(--space-4) 0;
+  }
+
+  .breadcrumbs-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .breadcrumbs-list :global(li:not(:last-child)::after) {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: var(--space-2);
+    opacity: 0.3;
+    /* Use a background image or mask for the separator if needed, 
+       but for simplicity we'll use a slot-based or child-based approach in the item */
+  }
+</style>

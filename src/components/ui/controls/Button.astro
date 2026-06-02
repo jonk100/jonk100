@@ -5,16 +5,18 @@
  * - Delegates class merging to Astro's native class:list system
  * - Supports rendering as <button>, <a>, or <div> based on props
  * - Leverages variant theme styling in src/styles/variants/themes.css and sizes in typography.css
- * @props (local): href, theme, tone, size, as, type, animate
+ * @props (local): href, theme, tone, size, as, type, animate, loading
  * @props (global): class, class:list, frame, effects
  * - theme: Visual style theme ('primary', 'secondary', etc.)
  * - tone: Specifies text color
  * - size: Button dimensions ('base', 'sm', 'lg', etc.)
  * - as: HTML tag to render
  * - animate: Optional animation choice ('pulse', 'float', etc. defined in src/styles/variants/animations.css)
+ * - loading: If true, disables the button and displays a centered Spinner
  */
 import type { ComponentTheme, TextTone, Sizes, FrameVariant, AnimationType } from 'src/types/variants.types';
 import Text from '../typography/Text.astro';
+import Spinner from '../feedback/Spinner.astro';
 
 type ElementTag = "button" | "a" | "div";
 
@@ -28,6 +30,7 @@ export interface Props {
   as?: ElementTag;
   type?: "button" | "submit" | "reset";
   animate?: AnimationType;
+  loading?: boolean;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
@@ -43,6 +46,7 @@ const {
   as,
   type = "button",
   animate = "none",
+  loading = false,
   class: cls = "",
   "class:list": classList = {},
   ...rest
@@ -57,23 +61,33 @@ const classes = [
   `control--${size}`, 
   frame !== 'none' ? `frame-variant--${frame}` : '',
   animate !== 'none' ? `animate-${animate}` : '',
+  { "control--loading": loading },
   cls
 ];
 
 const tagProps =
   Tag === "button"
-    ? { type, ...rest }
-    : { href, ...rest };
+    ? { type, disabled: loading, ...rest }
+    : { href: loading ? undefined : href, ...rest };
 ---
 
 <Tag class:list={[classes, classList]} {...tagProps}>
-  {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
+  <div class="control-content">
+    {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
+  </div>
+  {loading && (
+    <div class="control-loader">
+      <Spinner size={size} tone="currentColor" />
+    </div>
+  )}
 </Tag>
 
 <style>
   /* See src/styles/variants/themes.css for theme-based styles */
   .control {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-family: var(--sans);
     letter-spacing: 0.03em;
     font-size: var(--text-sm);
@@ -82,7 +96,25 @@ const tagProps =
     margin: var(--space-4) 0;
     cursor: pointer;
     border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
 
+  .control--loading {
+    cursor: wait;
+    pointer-events: none;
+  }
+
+  .control--loading .control-content {
+    opacity: 0;
+  }
+
+  .control-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   :where(.control):hover {

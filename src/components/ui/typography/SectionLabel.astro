@@ -3,38 +3,68 @@
  * src/components/SectionLabel.astro
  * Section label with trailing divider.
  * - Delegates class merging to Astro's native class:list system
- * @props (local): as
- * @props (global): class, class:list, frame, effects
- * - as: HTML tag to render
+ * @props (local): text, theme, tone, size, animate
+ * @props (global): class, class:list
  */
 
 import Inline from '../layout/Inline.astro';
 import Text from './Text.astro';
+import Divider from '../layout/Divider.astro';
+import type { ComponentTheme, TextTone, Sizes, AnimationType } from 'src/types/variants.types';
 
 export interface Props {
   text?: string;
+  theme?: ComponentTheme;
+  tone?: TextTone;
+  size?: Sizes;
+  animate?: AnimationType;
   class?: string;
-  "class:list"?: Record<string, boolean>;
+  'class:list'?: string | Record<string, boolean> | (string | Record<string, boolean>)[];
   [key: string]: any;
 }
 
 const {
   text,
-  class: cls = "",
-  "class:list": classList = {},
+  theme = 'default',
+  tone = 'subtle',
+  size = 'base',
+  animate = 'none',
+  class: cls = '',
+  'class:list': classList = {},
   ...rest
 } = Astro.props;
 
-const classes = ["section-label", cls]
-  .filter(Boolean)
-  .join(" ");
+const dividerColor = tone ? `var(--text-${tone})` : `var(--text-subtle)`;
+
+const classes = [
+  'section-label',
+  `variant--${theme}`,
+  tone ? `text--${tone}` : '',
+  `control--${size}`,
+  animate !== 'none' ? `animate-${animate}` : '',
+  cls,
+].filter(Boolean);
 ---
 
-<Inline align="center" gap="md" class={classes} class:list={classList} {...rest}>
-  <Text as="span" type="label" tone="subtle" class="section-label-text">
+<Inline
+  align="center"
+  gap="md"
+  class:list={[...classes, classList]}
+  {...rest}
+>
+  <Text
+    as="span"
+    type="label"
+    tone={tone}
+    class="section-label-text"
+  >
     {text ? text : <slot />}
   </Text>
-  <div class="section-rule" aria-hidden="true"></div>
+  <Divider
+    class="section-rule"
+    aria-hidden="true"
+    style={`color: ${dividerColor}`}
+  />
 </Inline>
 
 <style>
@@ -46,11 +76,13 @@ const classes = ["section-label", cls]
     font-family: var(--mono);
     text-transform: uppercase;
     letter-spacing: 0.18em;
+    white-space: nowrap;
   }
 
   .section-rule {
     flex: 1;
     height: 1px;
-    background-color: var(--border);
+    color: currentColor;
+    background: currentColor;
   }
 </style>

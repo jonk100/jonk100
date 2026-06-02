@@ -1,0 +1,66 @@
+---
+/**
+ * src/components/ui/content/Accordion.astro
+ * A vertical list of collapsible content items.
+ * @props (local): multiple
+ * @props (global): class, class:list
+ * - multiple: If true, allows multiple items to be open simultaneously (default behavior of native details)
+ */
+export interface Props {
+  multiple?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  multiple = true,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div class:list={['accordion', className, classList]} data-multiple={multiple} {...rest}>
+  <slot />
+</div>
+
+{!multiple && (
+  <script>
+    class AccordionController {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        const accordions = document.querySelectorAll('.accordion[data-multiple="false"]');
+        accordions.forEach(acc => {
+          const items = acc.querySelectorAll('details');
+          items.forEach(item => {
+            item.addEventListener('click', (e) => {
+              // We need to check if it's currently opening
+              if (!item.hasAttribute('open')) {
+                 items.forEach(other => {
+                   if (other !== item) other.removeAttribute('open');
+                 });
+              }
+            });
+          });
+        });
+      }
+    }
+
+    document.addEventListener('astro:page-load', () => {
+      new AccordionController();
+    });
+  </script>
+)}
+
+<style>
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+</style>

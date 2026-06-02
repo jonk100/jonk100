@@ -1,0 +1,68 @@
+---
+/**
+ * src/components/ui/controls/TabButton.astro
+ * An individual trigger for a TabPanel.
+ * @props (local): target, label
+ * @props (global): class, class:list
+ * - target: The ID of the TabPanel this button controls
+ */
+export interface Props {
+  target: string;
+  label?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  target,
+  label,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<button
+  role="tab"
+  aria-controls={target}
+  aria-selected="false"
+  tabindex="-1"
+  class:list={['tab-button', className, classList]}
+  {...rest}
+>
+  {label ? label : <slot />}
+</button>
+
+<style>
+  .tab-button {
+    padding: var(--space-3) var(--space-5);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    margin-bottom: -1px; /* Align with parent border */
+  }
+
+  .tab-button:hover {
+    color: var(--text);
+    background: var(--surface-1);
+  }
+
+  .tab-button[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+    background: var(--surface-2);
+  }
+</style>

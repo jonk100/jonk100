@@ -1,0 +1,22 @@
+---
+/**
+ * src/components/ui/feedback/SkeletonGroup.astro
+ * A conditional wrapper for managing loading states across multiple components.
+ * @props (local): loading
+ */
+export interface Props {
+  loading?: boolean;
+}
+
+const { loading = false } = Astro.props;
+---
+
+{loading ? (
+  <div class="skeleton-group-loading">
+    <slot name="loading" />
+  </div>
+) : (
+  <div class="skeleton-group-content">
+    <slot />
+  </div>
+)}

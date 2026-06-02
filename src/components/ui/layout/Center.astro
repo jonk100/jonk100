@@ -26,9 +26,22 @@ const {
   ...rest
 } = Astro.props;
 
-let placeItems = 'center';
-if (axis === 'horizontal') placeItems = 'start center';
-if (axis === 'vertical') placeItems = 'center start';
+const styles: Record<string, string> = {};
+
+if (axis === 'both') {
+  styles['place-content'] = 'center';
+  styles['place-items'] = 'center';
+} else if (axis === 'horizontal') {
+  styles['justify-content'] = 'center';
+  styles['justify-items'] = 'center';
+} else if (axis === 'vertical') {
+  styles['align-content'] = 'center';
+  styles['align-items'] = 'center';
+}
+
+const styleString = Object.entries(styles)
+  .map(([prop, val]) => `${prop}: ${val};`)
+  .join(' ');
 ---
 
 <Tag
@@ -38,7 +51,7 @@ if (axis === 'vertical') placeItems = 'center start';
     className,
     classList
   ]}
-  style={`place-items: ${placeItems};`}
+  style={styleString}
   {...rest}
 >
   <slot />

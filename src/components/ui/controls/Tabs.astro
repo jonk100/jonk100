@@ -1,0 +1,125 @@
+---
+/**
+ * src/components/ui/controls/Tabs.astro
+ * A container for organized content switching via tabbed navigation.
+ * - Manages state using a Vanilla TS Web Component
+ * - Accessible via ARIA roles and keyboard navigation
+ * @props (local): defaultTab
+ * @props (global): class, class:list
+ */
+export interface Props {
+  defaultTab?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  defaultTab,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<tabs-controller 
+  data-default-tab={defaultTab} 
+  class:list={['tabs', className, classList]} 
+  {...rest}
+>
+  <div class="tabs-list" role="tablist">
+    <slot name="tabs" />
+  </div>
+  <div class="tabs-panels">
+    <slot />
+  </div>
+</tabs-controller>
+
+<script>
+  class TabsController extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const defaultTab = this.dataset.defaultTab;
+      const tabButtons = this.querySelectorAll('[role="tab"]');
+      const tabPanels = this.querySelectorAll('[role="tabpanel"]');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('aria-controls');
+          this.activateTab(targetId!);
+        });
+
+        // Keyboard navigation
+        button.addEventListener('keydown', (e: any) => {
+          const index = Array.from(tabButtons).indexOf(button);
+          let nextIndex;
+
+          if (e.key === 'ArrowRight') {
+            nextIndex = (index + 1) % tabButtons.length;
+            (tabButtons[nextIndex] as HTMLElement).focus();
+            (tabButtons[nextIndex] as HTMLElement).click();
+          } else if (e.key === 'ArrowLeft') {
+            nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+            (tabButtons[nextIndex] as HTMLElement).focus();
+            (tabButtons[nextIndex] as HTMLElement).click();
+          }
+        });
+      });
+
+      // Initial activation
+      if (defaultTab) {
+        this.activateTab(defaultTab);
+      } else if (tabButtons.length > 0) {
+        const firstId = tabButtons[0].getAttribute('aria-controls');
+        this.activateTab(firstId!);
+      }
+    }
+
+    activateTab(id: string) {
+      const tabButtons = this.querySelectorAll('[role="tab"]');
+      const tabPanels = this.querySelectorAll('[role="tabpanel"]');
+
+      tabButtons.forEach(btn => {
+        const isActive = btn.getAttribute('aria-controls') === id;
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        btn.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+
+      tabPanels.forEach(panel => {
+        const isActive = panel.id === id;
+        panel.setAttribute('data-state', isActive ? 'active' : 'inactive');
+        (panel as HTMLElement).style.display = isActive ? 'block' : 'none';
+      });
+    }
+  }
+
+  customElements.define('tabs-controller', TabsController);
+</script>
+
+<style>
+  .tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .tabs-list {
+    display: flex;
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs-panels {
+    position: relative;
+  }
+</style>
