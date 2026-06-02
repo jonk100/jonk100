@@ -1,0 +1,274 @@
+---
+
+title: "AST Node"
+shortDefinition: "The fundamental structural building block of an Abstract Syntax Tree, representing a single grammatical element of source code."
+definition: "An AST Node is an individual data object that represents a distinct structural or syntactic component within an Abstract Syntax Tree (AST). Each node contains a set of properties defining its type, associated value or operator, and pointers to child nodes, collectively forming the hierarchical tree model of a program."
+categories:
+- compilers
+- programming-languages
+tags:
+- ast
+- syntax-tree
+- node
+- compiler-design
+- parsing
+level: beginner
+related:
+- abstract-syntax-tree
+- parser
+- token
+- traversal
+- visitor-pattern
+prerequisites:
+- abstract-syntax-tree
+- token
+- parser
+difficultyScore: 3
+description: "Understand what an AST node is, how nodes capture structural code patterns, and how they form recursive tree networks."
+keywords:
+- AST node
+- abstract syntax tree node
+- compiler design
+- syntax tree properties
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+An **AST Node** is the fundamental atomic element of an Abstract Syntax Tree.
+
+If an Abstract Syntax Tree is a structural map of your source code, the **nodes** are the individual intersections, cities, and landmarks on that map. Every variable declaration, function call, arithmetic operator, and loop condition in your program is translated by the parser into a distinct node.
+
+To understand nodes completely, you need to look at how they break away from text, what information they store internally, and how they connect recursively to build a tree network.
+
+
+## Code as a Network of Connected Nodes
+
+When code is parsed, sequential strings are translated into distinct, nested data objects.
+
+Consider this standard variable assignment:
+
+```js
+let total = 10 + 20;
+
+```
+
+To a text editor, this is a sequence of characters. To a compiler backend, this is a hierarchy of **nodes** bound together by structural parents and children.
+
+In this tree architecture:
+
+* The parent node is a **VariableDeclaration**.
+* It points to an **Identifier** node (representing the name `total`).
+* It simultaneously points to a **BinaryExpression** node (representing the mathematical addition).
+* The **BinaryExpression** node acts as a sub-parent, pointing to two leaf nodes: a pair of **NumericLiterals** (`10` and `20`).
+
+---
+
+## The Anatomy of an AST Node
+
+An AST node is typically implemented as a plain JavaScript object, JSON schema, or class instance containing explicit properties. While different parsers name their keys differently, a standard node contains three essential categories of information:
+
+### 1. The Core Metadata (`type`)
+
+Every node must declare what kind of linguistic component it represents. This dictates how compilation tools treat it. Common types include:
+
+* `FunctionDeclaration`
+* `IfStatement`
+* `BinaryExpression`
+* `Identifier`
+
+### 2. The Internal Values (`operator`, `name`, `value`)
+
+Nodes store the literal data extracted by the lexer. For an identifier node, it stores the variable's string name. For a literal node, it stores the actual scalar value.
+
+### 3. The Structural Pointers (`left`, `right`, `body`, `arguments`)
+
+This is what makes it a tree. Nodes don't store their child elements as a flat list; they point to them using specific semantic properties. A binary operator node points to its `left` and `right` operands. A function node points to a list of parameter nodes and a `body` statement block node.
+
+### A Concrete Node Representation
+
+Here is what the **BinaryExpression** node ($10 + 20$) looks like under the hood in a modern parser format:
+
+```json
+{
+  "type": "BinaryExpression",
+  "operator": "+",
+  "left": {
+    "type": "NumericLiteral",
+    "value": 10
+  },
+  "right": {
+    "type": "NumericLiteral",
+    "value": 20
+  }
+}
+
+```
+
+---
+
+## Leaf Nodes vs. Composite Nodes
+
+Within an AST, nodes generally fall into one of two physical categorizations based on their position in the hierarchy:
+
+### Leaf Nodes (Terminals)
+
+Leaf nodes sit at the absolute edges of the tree structure. They represent values and variables that contain no further nested sub-expressions. They have **no children**.
+
+* *Examples:* `NumericLiteral` (`42`), `StringLiteral` (`"hello"`), `Identifier` (`myVariable`).
+
+### Composite Nodes (Non-Terminals)
+
+Composite nodes form the branches and trunk of the tree. They serve to group, coordinate, and control lower-level child nodes. They **always contain pointers to other nodes**.
+
+* *Examples:* `WhileStatement`, `ForInStatement`, `TryStatement`, `AssignmentExpression`.
+
+---
+
+## How Tools Interact with Nodes: Traversal and Visitors
+
+Compilers, linters, and mini-transpilers rarely look at the whole tree at once. Instead, they interact with code on a **node-by-node** basis using a technique called **Tree Traversal** (typically a Depth-First Search).
+
+To make editing code clean, developers use the **Visitor Pattern**. A tool defines "visitor hooks" for specific node types. When the engine walks through the tree and encounters a matching node type, it triggers the corresponding function.
+
+### Example: A Linting Rule Visitor
+
+An optimization linter might define a visitor targeting `BinaryExpression` nodes to find dead math equations:
+
+```ts
+const linterVisitor = {
+  BinaryExpression(node) {
+    if (node.left.type === "NumericLiteral" && node.right.type === "NumericLiteral") {
+      console.warn(`Performance Note: You can optimize this math at compile time!`);
+    }
+  }
+};
+
+```
+
+---
+
+## Comparisons - Node vs. Token
+
+### Token vs. AST Node
+
+* **Token** = A temporary flat object used exclusively during the lexing phase. It captures simple textual blocks (like a keyword or punctuation mark) and contains no structural awareness of code around it.
+* **AST Node** = A permanent structural object generated by the parser. It has an awareness of its context and encapsulates relationships by directly linking to its child and parent components.
+
+---
+
+## Related terms (glossary cluster)
+
+### Tree Traversal
+
+The process of recursively walking down the tree network from node to node to inspect, analyze, or modify properties.
+
+### Root Node
+
+The absolute top-level node of an AST (often typed as `Program` or `File`), which serves as the entry point containing all other blocks.
+
+### Location Metadata (`loc`)
+
+Optional node properties tracking coordinates (e.g., `start: { line: 1, column: 12 }`) to help developer tools jump directly to specific components in text files.
+
+---
+
+## Node Creation and Representation Example
+
+The following code illustrates how custom **Node Classes** are declared in object-oriented compiler backends, complete with structural references and an evaluation visitor.
+
+---
+
+# 1. Defining Node Structures (`nodes.ts`)
+
+```ts
+/**
+ * Base Node contract defining structural traversal behaviors.
+ */
+export interface Node {
+  type: string;
+}
+
+export class NumericLiteral implements Node {
+  public readonly type = "NumericLiteral";
+  constructor(public value: number) {}
+}
+
+export class BinaryExpression implements Node {
+  public readonly type = "BinaryExpression";
+  constructor(
+    public operator: "+" | "-" | "*" | "/",
+    public left: Node,
+    public right: Node
+  ) {}
+}
+
+```
+
+---
+
+# 2. Processing Nodes via Evaluator (`interpreter.ts`)
+
+```ts
+import { Node, NumericLiteral, BinaryExpression } from "./nodes";
+
+/**
+ * A tiny interpreter tree-walker that reads nodes recursively and computes values.
+ */
+export function evaluate(node: Node): number {
+  switch (node.type) {
+    case "NumericLiteral": {
+      const literal = node as NumericLiteral;
+      return literal.value;
+    }
+
+    case "BinaryExpression": {
+      const expr = node as BinaryExpression;
+      const leftVal = evaluate(expr.left);
+      const rightVal = evaluate(expr.right);
+
+      switch (expr.operator) {
+        case "+": return leftVal + rightVal;
+        case "-": return leftVal - rightVal;
+        case "*": return leftVal * rightVal;
+        case "/": return leftVal / rightVal;
+      }
+    }
+
+    default:
+      throw new Error(`Execution Engine Error: Unknown node type '${node.type}'`);
+  }
+}
+
+```
+
+---
+
+# 3. Generating and Executing Nodes (`index.ts`)
+
+```ts
+import { BinaryExpression, NumericLiteral } from "./nodes";
+import { evaluate } from "./interpreter";
+
+// Manually build an AST Node cluster representing: (5 * 4) + 10
+const astRoot = new BinaryExpression(
+  "+",
+  new BinaryExpression("*", new NumericLiteral(5), new NumericLiteral(4)),
+  new NumericLiteral(10)
+);
+
+const computationResult = evaluate(astRoot);
+console.log(`Computed Result from Nodes: ${computationResult}`); // Output: 30
+
+```
+
+---
+
+## Review
+
+Keep these core principles in mind when reasoning about AST nodes:
+
+* **Nodes form nested hierarchies:** A node doesn't exist in isolation; it maintains programmatic properties (`left`, `right`, `body`) that link directly to child nodes, shaping the nested dimensions of the tree.
+* **Nodes represent concepts, not characters:** An AST node strips out code commas, semicolons, and parentheses. It holds only the semantic information needed to execute or transform the code block.
+* **The foundation of toolchains:** Every action your IDE takes—from auto-formatting via Prettier to calculating type constraints in TypeScript—is driven under the hood by scanning and inspecting individual AST node properties.

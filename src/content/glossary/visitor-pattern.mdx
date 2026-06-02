@@ -1,0 +1,276 @@
+---
+
+title: "Visitor Pattern in ASTs"
+shortDefinition: "A design pattern that separates an algorithmic operation from the object structure it acts upon, allowing new operations to be added to AST nodes without modifying them."
+definition: "The Visitor Pattern is a behavioral design pattern widely used in compiler design and static analysis tooling. It separates an Abstract Syntax Tree's node structure from the algorithms that operate on those nodes, enabling developers to add new analysis, transformation, or generation passes without altering the underlying node classes."
+categories:
+- compilers
+- software-design-patterns
+tags:
+- visitor-pattern
+- ast-traversal
+- software-architecture
+- compiler-design
+- static-analysis
+level: intermediate
+related:
+- abstract-syntax-tree
+- node
+- traversal
+- double-dispatch
+prerequisites:
+- abstract-syntax-tree
+- node
+- traversal
+difficultyScore: 6
+description: "Master the Visitor Pattern in compiler design. Learn how it decouples AST node structures from code transformations, linters, and type checkers."
+keywords:
+- visitor pattern
+- AST visitor
+- design patterns
+- compiler architecture
+- double dispatch
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+The **Visitor Pattern** is the architectural backbone of modern language tooling.
+
+Once a parser creates an Abstract Syntax Tree (AST), dozens of separate tools need to analyze or transform that tree. Linters look for errors, formatters rearrange whitespace, type checkers validate types, and code generators output machine code.
+
+If you tried to build all of these features directly into the AST node classes, your core compiler code would quickly become an unmaintainable mess. The Visitor Pattern solves this by completely separating the **data structure** (the nodes) from the **algorithms** (the tools) operating on them.
+
+## The Problem: Class Bloat and Fractured Architecture
+
+Imagine you are building a compiler. You define your core AST node classes: `FunctionDeclaration`, `WhileStatement`, and `BinaryExpression`.
+
+Initially, you just want to execute the code, so you add an `evaluate()` method to every single node class. Later, you decide to add a linter, so you have to go back and add a `checkStyle()` method to every class. Next, you add a minifier, forcing you to add a `minify()` method to every class.
+
+### The Core Problem
+
+Your clean node data classes are now bloated with conflicting, unrelated logic.
+
+This approach violates the **Single Responsibility Principle** and the **Open/Closed Principle**:
+
+* Every time you invent a new tool, you must modify *every single node class* in your compiler.
+* Developers building third-party plugins cannot add new features without changing your core source code.
+
+---
+
+## The Solution: Externalizing the Operations
+
+The Visitor Pattern takes all those external methods (`evaluate`, `checkStyle`, `minify`) out of the node classes entirely and encapsulates them inside dedicated, standalone objects called **Visitors**.
+
+Instead of a node knowing how to lint itself, a dedicated `LinterVisitor` walks through the tree. When it runs into a node, it hands the node over to a specific function designed to process that exact node type.
+
+---
+
+## Classic Gang of Four (GoF) Implementation: Double Dispatch
+
+In statically-typed languages (like Java, C++, or C#), a major obstacle arises: method overriding is resolved at runtime, but method overloading (choosing which function signature matches an argument type) is resolved at compile time.
+
+If you pass a generic `Node` base class to an external utility, the compiler doesn't know which specific subtype method to run. The classic Visitor Pattern bypasses this constraint using a mechanism called **Double Dispatch**.
+
+### How Double Dispatch Works
+
+1. **The Traversal Engine** calls a generic interface method on a node: `node.accept(visitor)`. Because of runtime polymorphism, the runtime environment dispatches this call to the correct concrete subclass execution loop.
+2. **The Concrete Node** receives the visitor and immediately calls back into it, explicitly passing its exact self: `visitor.visitBinaryExpression(this)`.
+
+By adding a tiny, permanent `accept` method to your node classes, you grant external visitors full, strongly-typed access to every specialized node layout without ever modifying the node classes again.
+
+---
+
+## Modern Functional Implementation (JavaScript/TypeScript)
+
+In dynamic languages, or languages with robust structural pattern matching (like TypeScript, Rust, or Python), classical double dispatch is often simplified. Because you can inspect a node’s `"type"` field at runtime, a visitor can simply be a plain object containing callback hooks mapped directly to node type names.
+
+A central traversal runner handles the tree walking, reads the string token property of the current node, and fires the matching hook:
+
+```ts
+// Modern Hook Style Visitor
+const deadCodeLinter = {
+  IfStatement(node) {
+    if (node.test.value === false) {
+      console.warn("Dead code detected: code inside 'if (false)' block will never execute.");
+    }
+  }
+};
+
+```
+
+---
+
+## Comparisons - Classical vs. Modern Visitor
+
+### Classical Double Dispatch vs. Modern Hook Object
+
+| Feature | Classical Double Dispatch (GoF) | Modern Hook Object |
+| --- | --- | --- |
+| **Mechanics** | Relies on `node.accept(visitor)` methods. | Relies on runtime string or type matching. |
+| **Language Fit** | Strict OOP (Java, C++). | Functional / Dynamic (TypeScript, Rust). |
+| **Node Modification** | Requires adding an `accept` method to every class. | Requires zero methods inside node structures. |
+| **Flexibility** | Highly rigid; adding a new node type breaks visitors. | Flexible; unmapped node types are safely ignored. |
+
+---
+
+## Related terms (glossary cluster)
+
+### Open/Closed Principle
+
+A software design principle stating that code modules should be open for extension (adding new behaviors) but closed for modification (altering existing source files).
+
+### Double Dispatch
+
+A design mechanism where a function call is dispatched based on the runtime types of two objects: the receiver object and the argument object.
+
+### Tree Walker
+
+The underlying algorithmic loop tasked with handling the traversal mechanics across node pointers, independent of specific visitor logic.
+
+---
+
+## Complete Implementation Example
+
+The following code demonstrates a classical **GoF Double-Dispatch Visitor Pattern** implemented cleanly in TypeScript.
+
+---
+
+# 1. Elements and Visitor Interfaces (`hierarchy.ts`)
+
+```ts
+import { Node, NumericLiteral, BinaryExpression } from "./hierarchy";
+
+/**
+ * The Visitor Interface declaring a hook signature for every concrete node type.
+ */
+export interface ASTVisitor {
+  visitNumericLiteral(node: NumericLiteral): void;
+  visitBinaryExpression(node: BinaryExpression): void;
+}
+
+/**
+ * The Component Interface declaring the accept pipeline hook.
+ */
+export interface Node {
+  accept(visitor: ASTVisitor): void;
+}
+
+export class NumericLiteral implements Node {
+  constructor(public value: number) {}
+
+  public accept(visitor: ASTVisitor): void {
+    // The node explicitly dispatches the correct strongly-typed method
+    visitor.visitNumericLiteral(this);
+  }
+}
+
+export class BinaryExpression implements Node {
+  constructor(
+    public operator: string,
+    public left: Node,
+    public right: Node
+  ) {}
+
+  public accept(visitor: ASTVisitor): void {
+    visitor.visitBinaryExpression(this);
+  }
+}
+
+```
+
+---
+
+# 2. Creating Standalone Visitors (`visitors.ts`)
+
+We can now implement entirely separate algorithmic systems without altering any code in `hierarchy.ts`.
+
+```ts
+import { ASTVisitor, NumericLiteral, BinaryExpression } from "./hierarchy";
+
+/**
+ * Operation 1: A mathematical calculation evaluator engine.
+ */
+export class InterpreterVisitor implements ASTVisitor {
+  public result = 0;
+  private stack: number[] = [];
+
+  visitNumericLiteral(node: NumericLiteral): void {
+    this.stack.push(node.value);
+  }
+
+  visitBinaryExpression(node: BinaryExpression): void {
+    // Traverse down the child elements first
+    node.left.accept(this);
+    node.right.accept(this);
+
+    const rightValue = this.stack.pop()!;
+    const leftValue = this.stack.pop()!;
+
+    if (node.operator === "+") this.stack.push(leftValue + rightValue);
+    if (node.operator === "*") this.stack.push(leftValue * rightValue);
+  }
+
+  public evaluate(): number {
+    return this.stack[0] || 0;
+  }
+}
+
+/**
+ * Operation 2: A pretty-printing string formatter generator.
+ */
+export class CodePrinterVisitor implements ASTVisitor {
+  public codeString = "";
+
+  visitNumericLiteral(node: NumericLiteral): void {
+    this.codeString += node.value;
+  }
+
+  visitBinaryExpression(node: BinaryExpression): void {
+    this.codeString += "(";
+    node.left.accept(this);
+    this.codeString += ` ${node.operator} `;
+    node.right.accept(this);
+    this.codeString += ")";
+  }
+}
+
+```
+
+---
+
+# 3. Executing the System (`index.ts`)
+
+```ts
+import { BinaryExpression, NumericLiteral } from "./hierarchy";
+import { InterpreterVisitor, CodePrinterVisitor } from "./visitors";
+
+// Construct the expression tree: 5 * (10 + 2)
+const expressionTree = new BinaryExpression(
+  "*",
+  new NumericLiteral(5),
+  new BinaryExpression("+", new NumericLiteral(10), new NumericLiteral(2))
+);
+
+// Run Operation 1: Evaluation
+const interpreter = new InterpreterVisitor();
+expressionTree.accept(interpreter);
+console.log(`Computed Output: ${interpreter.evaluate()}`); // Output: 60
+
+// Run Operation 2: String Formatting
+const printer = new CodePrinterVisitor();
+expressionTree.accept(printer);
+console.log(`Generated Format: ${printer.codeString}`); // Output: (5 * (10 + 2))
+
+```
+
+---
+
+## Review
+
+Before architecting complex features for compilers or compilers extensions, keep these Visitor Pattern principles in mind:
+
+* **Separation of structure and behavior:** Nodes store the tree topology structure; visitors house the algorithmic behavior acting upon that structure.
+* **Double Dispatch sidesteps type limits:** In strictly-typed languages, passing the visitor via `node.accept(visitor)` forces the compiler to resolve the correct subclass type at runtime.
+* **Adding nodes vs. Adding operations:** The Visitor Pattern makes adding new tools and operations incredibly easy. However, if you add a *new node type* to your language, you must go back and update every single visitor class to support it. Use this pattern when your node structures are stable but your diagnostic tools change frequently.

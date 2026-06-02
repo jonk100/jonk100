@@ -74,17 +74,19 @@ const tagProps =
   /* See src/styles/variants/themes.css for theme-based styles */
   .control {
     display: inline-flex;
-    font-family: var(--body);
-    font-weight: 400;
-    transition: all 0.2s ease;
+    font-family: var(--sans);
+    letter-spacing: 0.03em;
+    font-size: var(--text-sm);
+    transition: all 0.25s ease;
     border-radius: var(--rad-sm);
     margin: var(--space-4) 0;
-    line-height: var(--lh-none);
     cursor: pointer;
     border: 1px solid transparent;
+
   }
 
   :where(.control):hover {
     border-color: var(--border-strong);
+    color: var(--surface-5);
   }
 </style>

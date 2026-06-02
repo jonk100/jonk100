@@ -8,7 +8,9 @@ imageSrc: "/writty-markdown-screenplay-formatter-editor.png"
 
 I write screenplays. I also write code. For a long time those two facts lived in separate rooms of my brain, and I was fine with that.
 
-Then I built [Writty](/projects/writty) — a personal writing workbench in Astro — and suddenly I needed my screenplay scenes to *live* inside MDX content collections. Which meant every single line of a scene looked like this:
+Then, as I built [my personal writing workbench in Astro](/projects/writty), I realised it'd be nice to just type out a scene on the fly when it comes to me. No bulky software. It could live right alongside my character and location research, my outlines, and  my beat board. I'd never seen a screenplay written in markdown before, but it seemed like a perfect fit for my workflow.
+
+The long way would be to write components for each kind of line in a screenplaym, then style the components, then write out each component each line. Courier New, 12 pt, single-spaced for the document. SceneHeadings are one and a half inches from the left edge of the paper, dialogue two and a half inches, etc. Each type of line has rules. A slugline would look like a slugline and an action like an action. But it's a lot of typing:
 
 ```mdx
 <Scene>INT. NIGEL'S OFFICE - DAY</Scene>
@@ -19,19 +21,19 @@ Then I built [Writty](/projects/writty) — a personal writing workbench in Astr
 
 Functional. Readable, even. But absolutely miserable to actually write in. I'm trying to hear the rhythm of a scene, not count angle brackets.
 
-What I wanted was to type something closer to how a real screenplay looks on the page — minimal, uncluttered — and have the tooling figure out the rest. So I built `remark-screenplay`: a custom remark plugin that transforms a terse shorthand syntax into fully-formed MDX JSX elements at parse time.
-
-This post is the story of how that went.
-
----
+What I wanted, as usual, was to just type. And to be able to see a preview of what my typing would become. Something closer to how a real screenplay looks on the page — minimal, uncluttered — and have the tooling figure out the rest. So I made a custom remark plugin that transforms a shorthand syntax I made up into fully-formed MDX / Astro components at parse time. This post is the story of that endeavor.
 
 ## 1. The Problem: Markdown Shouldn't Need a Component for Every Line
 
 Astro's content collections are genuinely great for structured creative writing. You get frontmatter, Zod validation, glob loading, and MDX rendering for free. The catch is that MDX is still just JSX-flavoured markdown — if you want a `<Character>` block, you have to type `<Character>`.
 
-For prose, that's fine. For a screenplay, where *every paragraph has a type*, it becomes noise. A two-page scene ends up being 60% component tags.
+For prose, that's fine. For a screenplay, where *every paragraph has a type*, it would become mostly noise. A two-page scene would end up being 60% component tags.
 
 My first instinct was to write a preprocessor — some Node script that ran before the build and transformed `.scene` files into proper MDX. I got about halfway through it before I realised I was reinventing the unified plugin system, badly.
+
+### Remark Plugins
+
+Unified is the ecosystem of tools that parse and transform content in JavaScript. Remark is the markdown parser in that ecosystem, and it supports plugins that can transform the markdown AST ([Abstract Syntax Tree](/glossary/abstract-syntax-tree)) at parse time. 
 
 The right answer was a remark plugin. Write it once, wire it into the Astro MDX config, and never think about it again.
 

@@ -1,0 +1,257 @@
+---
+
+title: "Code Generation (Code Gen)"
+shortDefinition: "The final phase of a compiler that translates optimized intermediate representation (IR) into executable machine code, assembly, or bytecode."
+definition: "Code Generation is the ultimate stage of the compiler backend. It takes a highly optimized, machine-agnostic Intermediate Representation (IR) or Abstract Syntax Tree (AST) as its input and maps it directly onto the physical constraints of a target architecture, producing lower-level instruction code that a hardware CPU or virtual machine can natively execute."
+categories:
+- compilers
+- programming-languages
+- computer-architecture
+tags:
+- code-generation
+- compiler-backend
+- assembly
+- machine-code
+- register-allocation
+level: advanced
+related:
+- intermediate-representation
+- compiler
+- optimization
+- machine-code
+prerequisites:
+- intermediate-representation
+- software-design-patterns
+difficultyScore: 7
+description: "Demorph the mysteries of the final compiler phase: Code Generation. Learn how abstract code turns into physical CPU instructions, registers, and assembly."
+keywords:
+- code generation
+- compiler backend
+- register allocation
+- instruction selection
+- assembly generation
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+**Code Generation** is where the rubber meets the road in compiler engineering.
+
+Up to this point, the compiler has treated your programming language as a series of elegant mathematical abstractions—tokens, trees, and single-assignment graphs. The code generation phase is responsible for shattering those abstractions and dealing with the messy, brutal realities of physical hardware.
+
+The code generator must translate clean, universal logic into explicit commands that manipulate a specific CPU chip's electrical circuits, RAM channels, and memory registers.
+
+
+## The Code Generator's Position in the Pipeline
+
+Code generation is the final step of the **compiler backend**. Once the optimizer is finished tweaking the Intermediate Representation (IR), it hands it off to the code gen engine to cross the finish line.
+
+```
+Optimized IR ──> [ Code Generator ] ──> Target Code (Assembly / Machine Code / Bytecode)
+
+```
+
+If the code generator makes a mistake, the entire program corrupts, no matter how perfectly written or optimized the earlier phases were.
+
+---
+
+## The Three Core Challenges of Code Gen
+
+Translating a flat list of IR commands into efficient machine instructions requires solving three notoriously complex computer science problems simultaneously:
+
+### 1. Instruction Selection
+
+A single logical operation in an IR can often be written in multiple ways on a physical CPU. For instance, if you want to multiply a variable by 2, the instruction selector has to choose between:
+
+* Emitting a literal multiply instruction (`MUL`).
+* Emitting an addition instruction (`ADD x, x`).
+* Emitting a bitwise left-shift instruction (`SHL`), which is mathematically identical but significantly faster on almost all silicon hardware.
+
+The compiler uses tree-rewriting or pattern-matching algorithms to choose the cheapest, fastest instructions for the specific target chip.
+
+### 2. Register Allocation (The Hardest Part)
+
+CPUs perform operations inside **registers**—ultra-fast, microscopic storage slots built directly into the processor core. However, a modern CPU might only have 16 or 32 general-purpose registers, while your source program might use hundreds of different variables.
+
+The register allocator must decide which variable gets a premium slot in a physical CPU register at any exact millisecond, and which variables must be temporarily kicked out ("spilled") into the drastically slower system RAM.
+
+To solve this efficiently, compilers model the variables as a massive network and use an advanced mathematical graph-theory algorithm known as **Chaitin's Graph Coloring** to map unlimited variables to limited registers.
+
+### 3. Instruction Scheduling
+
+Modern CPUs don't just run instructions sequentially; they feature pipelines that execute multiple instructions concurrently or even out-of-order. If Instruction B relies on the result of Instruction A, Instruction B must stall and wait for Instruction A to finish passing through the chip's circuitry.
+
+The instruction scheduler acts like an air-traffic controller. It reorders and interleaves independent assembly instructions to prevent CPU stalls, maximizing the throughput of the processor.
+
+---
+
+## Types of Output Targets
+
+Depending on what the compiler is designed for, the code generator emits one of three low-level architectures:
+
+### Native Machine Code
+
+The compiler outputs a raw stream of binary bytes (`00011011 ...`) tailored to a specific operating system and processor (like a native Windows `.exe` file for x86-64). It requires no runtime translation and executes at maximum possible speed.
+
+### Assembly Language
+
+Instead of raw binary, many compilers output human-readable text assembly (like `.s` files). They then offload the final binary translation to an external system utility called an **Assembler** (like `gas` or `nasm`).
+
+### Virtual Machine Bytecode
+
+Some languages choose to generate code for a standardized virtual hardware environment rather than a physical chip. Java compilers output `.class` files containing **JVM Bytecode**, and C# compilers output **CIL**. A runtime framework later translates this bytecode into real machine code on the fly using a **Just-In-Time (JIT) Compiler**.
+
+---
+
+## Related terms (glossary cluster)
+
+### Register Spilling
+
+The act of moving a variable's data out of a fast CPU register and writing it into slow system RAM because the compiler ran out of available physical register slots.
+
+### Graph Coloring
+
+An algorithmic approach used in register allocation where compiler variables are treated as graph nodes, and connections represent overlapping lifetimes.
+
+### Target Architecture
+
+The specific hardware processor blueprint (e.g., x86-64, ARM64, RISC-V) that the code generator is outputting code for.
+
+---
+
+## Custom Code Generation Example
+
+Below is a functional **IR-to-Assembly Code Generator in TypeScript**. It picks up directly where our previous section left off: it takes a flat array of **Three-Address Code (TAC)** instructions and generates standard, human-readable **x86-64 Assembly Language**.
+
+---
+
+# 1. The Intermediate Representation Contract (`ir.ts`)
+
+```ts
+export interface TACInstruction {
+  op: "+" | "-" | "*" | "/";
+  arg1: string;
+  arg2: string;
+  result: string;
+}
+
+```
+
+---
+
+# 2. The Assembly Generator (`codegen.ts`)
+
+This class simulates a basic register allocation model using two physical CPU registers: `RAX` and `RBX`. It maps the abstract string keys from the IR directly to physical hardware steps.
+
+```ts
+import { TACInstruction } from "./ir";
+
+export class X86CodeGenerator {
+  /**
+   * Translates a flat list of IR operations into raw x86-64 text assembly.
+   */
+  public generate(instructions: TACInstruction[]): string {
+    const assemblyLines: string[] = [];
+
+    // Emit standard assembly boilerplate headers
+    assemblyLines.push(".global _main");
+    assemblyLines.push(".text");
+    assemblyLines.push("_main:");
+
+    for (const inst of instructions) {
+      assemblyLines.push(`  ; --- Step: ${inst.result} = ${inst.arg1} ${inst.op} ${inst.arg2} ---`);
+
+      // 1. Move the first argument into the primary accumulator register (RAX)
+      assemblyLines.push(`  MOV RAX, ${this.resolveOperand(inst.arg1)}`);
+
+      // 2. Move the second argument into the secondary data register (RBX)
+      assemblyLines.push(`  MOV RBX, ${this.resolveOperand(inst.arg2)}`);
+
+      // 3. Select the correct physical CPU instruction based on the IR operator
+      switch (inst.op) {
+        case "+":
+          assemblyLines.push("  ADD RAX, RBX");
+          break;
+        case "-":
+          assemblyLines.push("  SUB RAX, RBX");
+          break;
+        case "*":
+          assemblyLines.push("  IMUL RAX, RBX");
+          break;
+        default:
+          throw new Error(`Unsupported hardware operation: ${inst.op}`);
+      }
+
+      // 4. Save the computed result out of the register back to memory variable space
+      assemblyLines.push(`  MOV [${inst.result}], RAX`);
+    }
+
+    // Emit exit sequence boilerplate
+    assemblyLines.push("  RET");
+
+    return assemblyLines.join("\n");
+  }
+
+  /**
+   * Helper to format literals vs variables correctly in x86 text syntax
+   */
+  private resolveOperand(val: string): string {
+    const isNumber = !isNaN(Number(val));
+    return isNumber ? val : `[${val}]`; // Numbers are literals, text items are memory pointers
+  }
+}
+
+```
+
+---
+
+# 3. Running the Compiler Backend (`index.ts`)
+
+```ts
+import { TACInstruction } from "./ir";
+import { X86CodeGenerator } from "./codegen";
+
+// Input: The optimized universal IR instructions generated from earlier stages
+// Represents the flat execution plan for: (a + 5) * b
+const intermediateCode: TACInstruction[] = [
+  { op: "+", arg1: "a", arg2: "5", result: "t0" },
+  { op: "*", arg1: "t0", arg2: "b", result: "t1" }
+];
+
+const codeGenEngine = new X86CodeGenerator();
+const nativeAssembly = codeGenEngine.generate(intermediateCode);
+
+console.log(nativeAssembly);
+
+```
+
+### Final Generated Output Text:
+
+```assembly
+.global _main
+.text
+_main:
+  ; --- Step: t0 = a + 5 ---
+  MOV RAX, [a]
+  MOV RBX, 5
+  ADD RAX, RBX
+  MOV [t0], RAX
+  ; --- Step: t1 = t0 * b ---
+  MOV RAX, [t0]
+  MOV RBX, [b]
+  IMUL RAX, RBX
+  MOV [t1], RAX
+  RET
+
+```
+
+---
+
+## Review
+
+As you close out your understanding of the compilation pipeline, keep these critical realities of Code Generation in mind:
+
+* **Hardware dictates the rules:** In the backend, abstract language design ends. Every strategy is entirely limited by the target hardware—its number of physical registers, memory models, and supported instruction sets.
+* **The bottleneck of registers:** Managing limited hardware register slots through allocation algorithms like graph coloring dictates how fast a program runs far more than the syntax formatting choices of the source language.
+* **The final handoff:** Once the code generator outputs its text assembly or machine byte blocks, the compiler's job is complete. The program transitions out of software synthesis and becomes a concrete sequence of physical states inside a CPU chip.

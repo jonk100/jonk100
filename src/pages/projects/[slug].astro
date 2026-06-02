@@ -10,8 +10,7 @@
 
 import { getCollection, render } from 'astro:content';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
-import Box from '../../components/ui/layout/Box.astro';
-import MDXPre from '../../components/mdx/MDXPre.astro';
+import '../../styles/markdown.css';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -32,8 +31,9 @@ const { project, nextProject } = Astro.props;
 const { Content } = await render(project);
 
 const components = {
-  pre: MDXPre,
-  Box: Box,
+  // pre: MDXPre,
+  // code: Code,
+  // Box: Box,
 };
 ---
 

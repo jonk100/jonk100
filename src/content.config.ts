@@ -45,4 +45,28 @@ const design = defineCollection({
   })
 });
 
-export const collections = { projects, blog, design };
+const glossary = defineCollection({
+  loader: glob({ pattern: "*.mdx", base: "./src/content/glossary" }),
+  schema: z.object({
+    title: z.string(),
+    shortDefinition: z.string(),
+    definition: z.string(),
+    categories: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+    level: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+    related: z.array(z.string()).optional(),
+    prerequisites: z.array(z.string()).optional(),
+    readingTime: z.number().optional(),
+    difficultyScore: z.number(),
+    description: z.string(),
+    keywords: z.array(z.string()).optional(),
+    hasCode: z.boolean().optional(),
+    hasDiagrams: z.boolean().optional(),
+    interactive: z.boolean().optional(),
+    imageSrc: z.string().optional(),
+    icon: z.string().optional(),
+    context: z.string().optional()
+  })
+});
+
+export const collections = { projects, blog, design, glossary };

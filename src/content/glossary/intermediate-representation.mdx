@@ -1,0 +1,382 @@
+---
+title: "Intermediate Representation (IR)"
+shortDefinition: "A universal, machine-independent data structure used internally by compilers to represent code between the front-end parser and the back-end code generator."
+definition: "An Intermediate Representation (IR) is a low-level, language-agnostic data structure used by compilers. After a parser validates the syntax and creates an AST, the compiler translates that tree into an IR. This allows the compiler to perform complex performance optimizations and translate code universally without worrying about the original source language or the final target hardware."
+categories:
+- compilers
+- programming-languages
+- optimization
+tags:
+- intermediate-representation
+- ir
+- llvm
+- compiler-design
+- code-optimization
+level: intermediate
+related:
+- abstract-syntax-tree
+- compiler
+- optimization
+- machine-code
+- bytecode
+prerequisites:
+- abstract-syntax-tree
+- traversal
+- compiler
+difficultyScore: 6
+description: "Discover what an Intermediate Representation is, how it solves the infamous 'M × N Compiler Problem', and how it enables advanced code optimization."
+keywords:
+- intermediate representation
+- compiler IR
+- LLVM IR
+- three address code
+- compiler optimization
+context: "compilers"
+---
+
+## hasCode: true
+hasDiagrams: true
+interactive: false
+
+An **Intermediate Representation (IR)** is the "universal translator" phase of modern compiler design.
+
+While an Abstract Syntax Tree (AST) represents how the human *wrote* the code, the IR represents how the machine will *execute* the code. It strips away high-level concepts like `for` loops, `if` statements, and classes, converting them into a simplified sequence of fundamental instructions—like jumps, branches, and simple math—without committing to a specific hardware architecture (like x86 or ARM).
+
+To understand why IR is the secret sauce of modern programming languages (like Rust, Swift, and C++), you must first understand the massive architectural problem it was invented to solve.
+
+## Before IR: The $M \times N$ Compiler Problem
+
+Imagine a world without IR. If you want to invent a new programming language, you have to write a compiler that translates your language directly into machine code.
+
+If you want your language to run on Windows PCs (x86 architecture), Apple Silicon (ARM architecture), and the Web (WebAssembly), you have to write **three completely different compilers**.
+
+Now imagine there are $M$ programming languages (C, C++, Rust, Swift) and $N$ hardware architectures (x86, ARM, RISC-V).
+To make every language work on every machine, developers would need to write $M \times N$ separate compilers.
+
+### The IR Solution: $M + N$
+
+An Intermediate Representation splits the compiler directly in half:
+
+1. **Front-end:** Translates the source language (Rust, C) into the universal IR.
+2. **Back-end:** Translates the universal IR into the target hardware (ARM, x86).
+
+Now, if you invent a new language, you *only* write a front-end that spits out IR. You immediately get to run on every architecture for free, because the existing back-ends already know how to translate IR to hardware. This reduces the workload from $M \times N$ to $M + N$.
+
+This exact architecture is what powers **LLVM**, the industry-standard compiler framework used by Apple, Google, and the Rust Foundation.
+
+---
+
+## Where IR fits in the compilation pipeline
+
+IR acts as the great divider between the language-specific steps and the hardware-specific steps.
+
+```
+--- FRONT END (Language Specific) ---
+Source Code (C++, Rust, Swift)
+    ↓
+Lexer → Tokens
+    ↓
+Parser → AST
+    ↓
+Semantic Analysis (Type Checking)
+    ↓
+--- MIDDLE END (Universal) ---
+IR Generation
+    ↓
+IR Optimization (The heavy lifting happens here)
+    ↓
+--- BACK END (Hardware Specific) ---
+Instruction Selection
+    ↓
+Register Allocation
+    ↓
+Machine Code (x86, ARM, WebAssembly)
+
+```
+
+---
+
+## Why we don't just optimize the AST
+
+You might wonder: *Why create a new format? Why not just optimize the Abstract Syntax Tree?*
+
+ASTs are great for checking syntax, but they are **terrible for optimization**.
+
+* ASTs are deeply nested 2D trees, making them computationally expensive to traverse continuously.
+* ASTs contain high-level constructs (like a `switch` statement) that don't map cleanly to CPU instructions.
+
+The IR flattens the code into a linear sequence of instructions, closely mirroring how a CPU actually thinks, but keeping variables abstract enough to manipulate safely.
+
+---
+
+## Common Forms of Intermediate Representation
+
+IR comes in several shapes depending on what the compiler needs to do. Many modern compilers use a layered approach (High-level IR $\rightarrow$ Mid-level IR $\rightarrow$ Low-level IR).
+
+### 1. Three-Address Code (TAC)
+
+A very common text-based linear IR. It breaks complex math down so that every instruction has a maximum of three operands (two inputs, one output) and relies heavily on generated "temporary" variables.
+
+**Source Code:**
+
+```js
+let result = (a + b) * c;
+
+```
+
+**Three-Address Code (TAC):**
+
+```text
+t1 = a + b
+t2 = t1 * c
+result = t2
+
+```
+
+### 2. Static Single Assignment (SSA) Form
+
+The gold standard for modern compilers (used by LLVM). In SSA, every variable is assigned a value **exactly once**. If a variable changes in the source code, the IR creates a brand new "version" of that variable.
+
+Why? Because if a variable is never reassigned, the optimization engine never has to guess what value it holds at a given time. It makes tracking data flow mathematically perfect.
+
+**Source Code:**
+
+```js
+x = 1;
+x = x + 2;
+
+```
+
+**SSA Form:**
+
+```text
+x_1 = 1
+x_2 = x_1 + 2
+
+```
+
+### 3. Control Flow Graphs (CFG)
+
+Instead of a tree (AST) or a flat list (TAC), a CFG represents code as a flowchart of connected "Basic Blocks" (straight-line code sequences with no jumps). Branches (like `if/else`) split the graph. This is essential for detecting dead code and infinite loops.
+
+---
+
+## The Magic of IR Optimization Passes
+
+Because IR is universal, compiler engineers can write incredibly powerful optimization algorithms that benefit *every* language simultaneously. These are called **passes**.
+
+* **Constant Folding:** Replaces math that can be solved at compile time. (`t1 = 5 * 10` becomes `t1 = 50`).
+* **Dead Code Elimination:** Removes branches of the CFG that can never be reached.
+* **Loop Unrolling:** Copies the inside of a loop multiple times to reduce the CPU overhead of jumping back to the start of the loop.
+* **Function Inlining:** Replaces a function call with the actual body of the function to save execution time.
+
+---
+
+## Comparisons - IR vs Related Concepts
+
+### AST vs IR
+
+| Feature | AST | IR |
+| --- | --- | --- |
+| **Shape** | Nested Tree | Flat / Linear / Graph |
+| **Focus** | Grammar & Syntax | Execution & Memory Flow |
+| **Abstraction** | High (Language specific) | Low (Machine agnostic) |
+| **Primary Use** | Type checking, Linting | Optimization, Code Gen |
+
+---
+
+### IR vs Bytecode
+
+People often confuse these.
+
+* **IR** is an internal developer data structure meant to be aggressively manipulated and optimized *during* compilation.
+* **Bytecode** (like Java `.class` files or WebAssembly) is a finalized, frozen binary format meant to be shipped to end-users and executed by a Virtual Machine at runtime.
+
+---
+
+## Related terms (glossary cluster)
+
+### LLVM
+
+The most famous open-source compiler infrastructure project in the world. Its core feature is LLVM IR, a highly optimized, SSA-based intermediate representation.
+
+### Front-end
+
+The half of the compiler that understands the source code and outputs IR.
+
+### Back-end
+
+The half of the compiler that understands the target hardware and inputs IR.
+
+### Basic Block
+
+A sequence of IR instructions with exactly one entry point and one exit point, used to build Control Flow Graphs.
+
+---
+
+## Custom IR Generator Example
+
+Below is a minimal **AST-to-IR Compiler Phase in TypeScript**. It demonstrates how to walk a nested mathematical AST and flatten it into **Three-Address Code (TAC)** using temporary variables.
+
+---
+
+# 1. AST Definition (The Input) (`ast.ts`)
+
+```ts
+// A simplified AST from our parser
+export type Expr = BinaryExpr | Identifier | Literal;
+
+export interface BinaryExpr {
+  type: "BinaryExpr";
+  operator: string;
+  left: Expr;
+  right: Expr;
+}
+
+export interface Identifier {
+  type: "Identifier";
+  name: string;
+}
+
+export interface Literal {
+  type: "Literal";
+  value: number;
+}
+
+```
+
+---
+
+# 2. IR Data Structures (`ir.ts`)
+
+```ts
+// The flat instruction format for our Intermediate Representation
+export interface TACInstruction {
+  op: string;         // e.g., "+", "*", or "ASSIGN"
+  arg1: string;       // First operand
+  arg2: string | null;// Second operand (null for assignments)
+  result: string;     // The destination register/variable
+}
+
+```
+
+---
+
+# 3. The IR Generator (The Flattener) (`generator.ts`)
+
+This class visits the deeply nested AST and unwinds it into a flat array of instructions, generating temporary variables (`t0`, `t1`) along the way.
+
+```ts
+import { Expr } from "./ast";
+import { TACInstruction } from "./ir";
+
+export class IRGenerator {
+  private instructions: TACInstruction[] = [];
+  private tempCount = 0;
+
+  /**
+   * Generates a new unique temporary variable name (e.g., t0, t1, t2)
+   */
+  private generateTemp(): string {
+    return `t${this.tempCount++}`;
+  }
+
+  /**
+   * Main entry point to convert an expression into IR
+   */
+  public generate(node: Expr): TACInstruction[] {
+    this.visit(node);
+    return this.instructions;
+  }
+
+  /**
+   * Recursively walks the AST, flattening it from the bottom up.
+   * Returns the string name of the variable holding the result.
+   */
+  private visit(node: Expr): string {
+    switch (node.type) {
+      case "Literal":
+        return node.value.toString();
+
+      case "Identifier":
+        return node.name;
+
+      case "BinaryExpr": {
+        // 1. Evaluate the left branch
+        const leftArg = this.visit(node.left);
+        // 2. Evaluate the right branch
+        const rightArg = this.visit(node.right);
+        
+        // 3. Create a temporary variable to hold this step's result
+        const resultVar = this.generateTemp();
+
+        // 4. Emit the flattened Three-Address instruction
+        this.instructions.push({
+          op: node.operator,
+          arg1: leftArg,
+          arg2: rightArg,
+          result: resultVar,
+        });
+
+        return resultVar;
+      }
+    }
+  }
+}
+
+```
+
+---
+
+# 4. Usage and Output (`index.ts`)
+
+```ts
+import { BinaryExpr } from "./ast";
+import { IRGenerator } from "./generator";
+
+// We represent the nested AST for: (a + 5) * b
+const astRoot: BinaryExpr = {
+  type: "BinaryExpr",
+  operator: "*",
+  left: {
+    type: "BinaryExpr",
+    operator: "+",
+    left: { type: "Identifier", name: "a" },
+    right: { type: "Literal", value: 5 },
+  },
+  right: { type: "Identifier", name: "b" },
+};
+
+// Pass the AST into the Middle-End
+const generator = new IRGenerator();
+const irOutput = generator.generate(astRoot);
+
+// Print the resulting Three-Address Code
+console.log("--- Generated IR (TAC) ---");
+irOutput.forEach((inst) => {
+  console.log(`${inst.result} = ${inst.arg1} ${inst.op} ${inst.arg2}`);
+});
+
+```
+
+### Execution Output:
+
+```text
+--- Generated IR (TAC) ---
+t0 = a + 5
+t1 = t0 * b
+
+```
+
+Notice how the nested, two-dimensional AST structure has been successfully reduced to a flat, easily readable sequence of single operations. This flat array is exactly what an optimization engine wants to analyze.
+
+---
+
+## Review
+
+Before moving on, commit these points to memory:
+
+* **The great bridge:** IR is the vital connective tissue that allows a single compiler front-end (like Clang for C++) to target dozens of different CPUs without rewriting the whole compiler.
+* **Flattening the curve:** IR strips away the nested complexity of the AST, replacing high-level concepts with a linear flow of flat instructions that mimic how a machine actually processes logic.
+* **The optimizer's playground:** Because IR uses concepts like Static Single Assignment (SSA) and Three-Address Code, mathematical optimization passes can safely rewrite, reorder, and aggressively simplify the code before it ever reaches the hardware.
+

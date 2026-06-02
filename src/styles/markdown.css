@@ -1,18 +1,115 @@
 
-:root {
-  .markdown-content :global(ul) {
+  .markdown-content h2 {
+    font-family: var(--display);
+    font-size: var(--text-3xl);
+    margin: var(--space-10) 0 var(--space-4);
+    font-weight: 400;
+  }
+
+  .markdown-content h3 {
+    font-family: var(--display);
+    font-size: var(--text-xl);
+    margin: var(--space-8) 0 var(--space-3);
+    font-weight: 400;
+  }
+
+  .markdown-content p {
+    font-size: var(--text-lg);
+    color: var(--text-subtle);
+    margin-bottom: var(--space-6);
+    line-height: 1.7;
+    text-align: justify;
+  }
+
+  .markdown-content ul {
     list-style-type: disc;
     padding-left: var(--space-6);
     margin-bottom: var(--space-6);
     color: var(--text-subtle);
   }
 
-  .markdown-content :global(ol) {
-    list-style-type: decimal !important;
+  .markdown-content ol {
+    list-style-type: decimal;
     padding-left: var(--space-6);
-    margin-left: var(--space-6);
     margin-bottom: var(--space-6);
     color: var(--text-subtle);
-    line-height: var(--leading-normal);
+    line-height: 1.7;
   }
-}
+
+  .markdown-content li {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-lg);
+    line-height: 1.7;
+  }
+
+  .markdown-content strong {
+    color: var(--text-4);
+    font-weight: 600;
+  }
+
+  .markdown-content .figure-container,
+  .markdown-content pre,
+  .markdown-content .code-block {
+    margin-block: var(--space-8);
+    margin-inline: var(--space-4);
+    width: auto;
+  }
+
+  .markdown-content code {
+    font-family: var(--mono);
+    margin: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    line-height: 1.7;
+  }
+
+  .markdown-content pre {
+    margin: var(--space-8) var(--space-4);
+    padding: var(--space-4);
+  }
+
+  ::view-transition-group(project-content) {
+    z-index: 20;
+  }
+
+  /* Reset Astro/Shiki code block layout */
+  /* pre.astro-code {
+    margin: 0;
+    padding: 1rem;
+    white-space: pre;
+  }
+
+  pre.astro-code code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    white-space: pre;
+    text-indent: 0;
+  } */
+
+  pre.astro-code .line {
+    display: block;
+  }
+
+  /* Block code */
+  pre,
+  .astro-code {
+    background: var(--surface-5);
+    border-radius: var(--rad-xs);
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* Inline code */
+  code:not(pre code) {
+    background: rgba(var(--secondary-rgb),.4);
+    font-family: var(--mono);
+    border-radius: var(--rad-xs);
+    font-size: var(--text-base);
+  }
+
+  .astro-code {
+    background-color: rgba(var(--surface-5-rgb),.5) !important;
+    line-height: 1.7;
+  }
+
+

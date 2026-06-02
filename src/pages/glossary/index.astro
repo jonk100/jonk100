@@ -1,0 +1,354 @@
+---
+/**
+ * src/pages/glossary/index.astro
+ * List all glossary entries with filtering and search capabilities.
+ * - Displays glossary entries organized by difficulty and category
+ * - Integrates with custom Card design components
+ * - Supports navigation to individual glossary entries
+ * @props (local): none
+ * @props (global): class, class:list
+ */
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import NavBar from '../../components/portfolio/NavBar.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Card from '../../components/ui/card/Card.astro';
+import CardHeader from '../../components/ui/card/CardHeader.astro';
+import CardContent from '../../components/ui/card/CardContent.astro';
+import CardFooter from '../../components/ui/card/CardFooter.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Icon from '../../components/ui/primitives/Icon.astro';
+
+const allEntries = await getCollection('glossary');
+const sortedEntries = allEntries.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+// Group entries by difficulty level
+const enteredByLevel = {
+  beginner: sortedEntries.filter(e => e.data.level === 'beginner'),
+  intermediate: sortedEntries.filter(e => e.data.level === 'intermediate'),
+  advanced: sortedEntries.filter(e => e.data.level === 'advanced'),
+};
+---
+
+<Layout title="Glossary | Jon Doe" description="A comprehensive glossary of web development, design, and creative technology terms.">
+  <div class="glow glow-1"></div>
+  <NavBar />
+  
+  <main class="glossary-main">
+    <Box class="container">
+      <Stack gap="xl">
+        <header class="glossary-header">
+          <Text as="h1" type="h1">Glossary</Text>
+          <Text as="p" type="lead" tone="subtle">A comprehensive reference for web development, design systems, and creative technology concepts.</Text>
+        </header>
+
+        <!-- Beginner Entries -->
+        {enteredByLevel.beginner.length > 0 && (
+          <section class="glossary-section">
+            <Stack gap="lg">
+              <header class="section-header">
+                <Text as="h2" type="h3">Beginner</Text>
+                <Text as="p" tone="subtle" type="body">Foundational concepts for those starting their journey</Text>
+              </header>
+              
+              <div class="entries-grid">
+                {enteredByLevel.beginner.map((entry, i) => (
+                  <a href={`/glossary/${entry.id}`} class="entry-link" style={`animation-delay: ${i * 0.05}s;`}>
+                    <Card layer="1" bordered class="entry-card">
+                      <div class="card-accent-bar difficulty-beginner"></div>
+                      <CardHeader class="entry-header-custom">
+                        <Inline justify="between" align="start" class="w-full">
+                          <div class="flex-1">
+                            <Text as="h3" type="h4" class="entry-title">{entry.data.title}</Text>
+                          </div>
+
+                        </Inline>
+                      </CardHeader>
+                      
+                      <CardContent class="entry-content-custom">
+                        <Text as="p" type="body" tone="subtle" class="entry-desc">{entry.data.shortDefinition}</Text>
+                      </CardContent>
+                      {(entry.data.tags && entry.data.tags.length > 0) && (
+                        <CardFooter class="entry-footer-custom">
+                          <Inline gap="lg">
+                            <Inline gap="xs" wrap>
+                              {entry.data.tags.slice(0, 2).map(tag => (
+                                <Badge theme="ghost" outlined size="sm">{tag}</Badge>
+                              ))}
+                              {entry.data.tags.length > 2 && (
+                                <Badge theme="ghost" outlined size="sm">+{entry.data.tags.length - 2}</Badge>
+                              )}
+                            </Inline>
+                            <div class="entry-arrow">
+                              <Icon name="arrow-up-right" size="var(--space-5)" />
+                            </div>
+                          </Inline>
+                        </CardFooter>
+                      )}
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            </Stack>
+          </section>
+        )}
+
+        <!-- Intermediate Entries -->
+        {enteredByLevel.intermediate.length > 0 && (
+          <section class="glossary-section">
+            <Stack gap="lg">
+              <header class="section-header">
+                <Text as="h2" type="h3">Intermediate</Text>
+                <Text as="p" tone="subtle" type="body">Intermediate concepts for developing expertise</Text>
+              </header>
+              
+              <div class="entries-grid">
+                {enteredByLevel.intermediate.map((entry, i) => (
+                  <a href={`/glossary/${entry.id}`} class="entry-link" style={`animation-delay: ${i * 0.05}s;`}>
+                    <Card layer="1" bordered class="entry-card">
+                      <div class="card-accent-bar difficulty-intermediate"></div>
+                      <CardHeader class="entry-header-custom">
+                        <Inline justify="between" align="start" class="w-full">
+                          <div class="flex-1">
+                            <Text as="h3" type="h4" class="entry-title">{entry.data.title}</Text>
+                          </div>
+                          <div class="entry-arrow">
+                            <Icon name="arrow-up-right" size="var(--space-5)" />
+                          </div>
+                        </Inline>
+                      </CardHeader>
+                      <CardContent class="entry-content-custom">
+                        <Text as="p" type="body" tone="subtle" class="entry-desc">{entry.data.shortDefinition}</Text>
+                      </CardContent>
+                      {(entry.data.tags && entry.data.tags.length > 0) && (
+                        <CardFooter class="entry-footer-custom">
+                          <Inline gap="xs" wrap>
+                            {entry.data.tags.slice(0, 2).map(tag => (
+                              <Badge theme="ghost" outlined size="sm">{tag}</Badge>
+                            ))}
+                            {entry.data.tags.length > 2 && (
+                              <Badge theme="ghost" outlined size="sm">+{entry.data.tags.length - 2}</Badge>
+                            )}
+                          </Inline>
+                        </CardFooter>
+                      )}
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            </Stack>
+          </section>
+        )}
+
+        <!-- Advanced Entries -->
+        {enteredByLevel.advanced.length > 0 && (
+          <section class="glossary-section">
+            <Stack gap="lg">
+              <header class="section-header">
+                <Text as="h2" type="h3">Advanced</Text>
+                <Text as="p" tone="subtle" type="body">Advanced topics for specialized expertise</Text>
+              </header>
+              
+              <div class="entries-grid">
+                {enteredByLevel.advanced.map((entry, i) => (
+                  <a href={`/glossary/${entry.id}`} class="entry-link" style={`animation-delay: ${i * 0.05}s;`}>
+                    <Card layer="1" bordered class="entry-card">
+                      <div class="card-accent-bar difficulty-advanced"></div>
+                      <CardHeader class="entry-header-custom">
+                        {/* <Inline justify="between" align="start" class="w-full"> */}
+                          <div class="flex-1">
+                            <Text as="h3" type="h4" class="entry-title">{entry.data.title}</Text>
+                          </div>
+                          <br />
+                          
+                        {/* </Inline> */}
+                      </CardHeader>
+                      <CardContent class="entry-content-custom">
+                        <div class="entry-arrow">
+                          <Icon name="arrow-up-right" size="var(--space-5)" />
+                        </div>
+                        <Text as="p" type="body" tone="subtle" class="entry-desc">{entry.data.shortDefinition}</Text>
+                      </CardContent>
+                      {(entry.data.tags && entry.data.tags.length > 0) && (
+                        <CardFooter class="entry-footer-custom">
+                          <Inline gap="xs" wrap>
+                            {entry.data.tags.slice(0, 2).map(tag => (
+                              <Badge theme="ghost" outlined size="sm">{tag}</Badge>
+                            ))}
+                            {entry.data.tags.length > 2 && (
+                              <Badge theme="ghost" outlined size="sm">+{entry.data.tags.length - 2}</Badge>
+                            )}
+                          </Inline>
+                        </CardFooter>
+                      )}
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            </Stack>
+          </section>
+        )}
+      </Stack>
+    </Box>
+  </main>
+</Layout>
+
+<style>
+  .glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    background: var(--accent);
+    top: -200px;
+    right: -200px;
+  }
+
+  .glossary-main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 10rem var(--space-4) var(--space-12);
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--max-width, 1280px);
+    margin: 0 auto;
+  }
+
+  .glossary-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .glossary-header h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: var(--space-4);
+  }
+
+  .glossary-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .section-header h2 {
+    margin-bottom: var(--space-2);
+  }
+
+  .entries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .entry-link {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .entry-link:hover .entry-card {
+    border-color: var(--border);
+    transform: translateY(-4px);
+  }
+
+  .entry-card {
+    position: relative;
+    transition: all 0.3s ease;
+    height: 400px;
+  }
+
+  .card-accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    border-radius: var(--rad-xs) var(--rad-xs) 0 0;
+  }
+
+  .difficulty-beginner {
+    background: linear-gradient(90deg, #10b981, #059669);
+  }
+
+  .difficulty-intermediate {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+
+  .difficulty-advanced {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+  }
+
+  .entry-header-custom {
+    padding-bottom: var(--space-2);
+  }
+
+  .entry-title {
+    margin: 0;
+    transition: color 0.2s ease;
+    height: 100px;
+  }
+
+  .entry-link:hover .entry-title {
+    color: var(--accent);
+  }
+
+  .entry-content-custom {
+    padding-top: var(--space-2);
+  }
+
+  .entry-desc {
+    margin: 0;
+    margin-top: auto;
+  }
+
+  .entry-arrow {
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .entry-link:hover .entry-arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+  }
+
+  .entry-footer-custom {
+    padding-top: var(--space-3);
+  }
+
+  @media (max-width: 768px) {
+    .entries-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .glossary-header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+  }
+</style>

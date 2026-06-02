@@ -1,0 +1,58 @@
+---
+/**
+ * Glossary Entry Page
+ *
+ * Dynamically renders a glossary entry from the content collection using GlossaryPostLayout.
+ * Uses slug-based routing, strongly typed collection access, and pagination support.
+ */
+
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import { render } from "astro:content";
+import GlossaryPostLayout from "../../layouts/GlossaryPostLayout.astro";
+
+// -------------------------
+// Types
+// -------------------------
+
+type GlossaryEntry = CollectionEntry<'glossary'>;
+
+// -------------------------
+// Params
+// -------------------------
+
+export async function getStaticPaths() {
+  const entries = await getCollection('glossary');
+  
+  // Sort by title for consistent ordering
+  const sorted = entries.sort(
+    (a, b) => a.data.title.localeCompare(b.data.title)
+  );
+
+  return sorted.map((entry, index) => {
+    const nextEntry = sorted[index + 1];
+
+    return {
+      params: { slug: entry.id },
+      props: { entry, nextEntry },
+    };
+  });
+}
+
+// -------------------------
+// Props
+// -------------------------
+
+interface Props {
+  entry: GlossaryEntry;
+  nextEntry?: GlossaryEntry;
+}
+
+const { entry, nextEntry } = Astro.props;
+
+const { Content } = await render(entry);
+---
+
+<GlossaryPostLayout entry={entry} nextEntry={nextEntry}>
+  <Content />
+</GlossaryPostLayout>

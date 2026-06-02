@@ -1,0 +1,893 @@
+---
+title: "Abstract Syntax Tree"
+shortDefinition: "A tree-structured representation of code that captures its meaning rather than its raw text form."
+definition: "An Abstract Syntax Tree (AST) is a tree-structured representation of code that captures its meaning rather than its raw text form. It is one of the central internal formats used by compilers, interpreters, linters, formatters, bundlers, and modern language tooling."
+categories:
+  - compilers
+  - programming-languages
+tags:
+  - ast
+  - parsing
+  - compiler-design
+  - syntax-tree
+  - transpilers
+level: beginner
+related:
+  - parse-tree
+  - lexer
+  - parser
+  - intermediate-representation
+  - compiler
+prerequisites:
+  - syntax
+  - variables
+  - functions
+difficultyScore: 4
+description: "Learn what an AST is, how it works, and why it powers modern compilers, linters, and code tools."
+keywords:
+  - abstract syntax tree
+  - AST
+  - compiler design
+  - parsing
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+An **Abstract Syntax Tree (AST)** is a structured, tree-shaped representation of code that describes its meaning in a way machines can reliably analyze and transform.
+
+It is one of the central internal formats used by compilers, interpreters, linters, formatters, bundlers, and modern language tooling.
+
+To understand AST properly, you need to understand what it replaces, what it improves, and why it exists at all.
+
+---
+
+## Before AST: raw text and fragile understanding
+
+Originally, programming tools worked directly with **plain text source code**.
+
+Example:
+
+```js
+let x = 1 + 2 * 3;
+```
+
+A naive program trying to understand this has to deal with:
+
+* whitespace
+* formatting differences
+* operator precedence (`*` before `+`)
+* parentheses
+* syntax ambiguity
+* comments
+* edge cases in grammar
+
+Early tools relied on:
+
+* regular expressions
+* ad-hoc string parsing
+* line-by-line heuristics
+
+This quickly breaks down for anything beyond trivial tasks.
+
+### The core problem
+
+Text is *linear*. Meaning in programming is *hierarchical*.
+
+A line of code does not express structure explicitly. Humans infer it. Machines initially could not reliably.
+
+---
+
+## Parse trees: the first real structure
+
+The first serious step away from raw text is the **parse tree** (also called a concrete syntax tree in some contexts).
+
+A parser reads code and produces a tree that represents *every syntactic detail*.
+
+For:
+
+```js
+1 + 2 * 3
+```
+
+A parse tree might represent:
+
+* expression
+
+  * operator: +
+  * left: 1
+  * right:
+
+    * expression
+
+      * operator: *
+      * left: 2
+      * right: 3
+
+This is already a huge improvement:
+
+* precedence is explicit
+* grouping is explicit
+* structure is machine-readable
+
+But it still includes *too much detail*.
+
+---
+
+## AST: abstraction of syntax
+
+An **Abstract Syntax Tree** simplifies the parse tree by removing unnecessary syntactic noise.
+
+It keeps:
+
+* semantic structure
+* meaningful relationships
+
+It removes:
+
+* punctuation
+* redundant grammar rules
+* formatting
+* sometimes even parentheses (when implied by structure)
+
+### Same example:
+
+```js
+1 + 2 * 3
+```
+
+AST:
+
+```
+   +
+  / \
+ 1   *
+    / \
+   2   3
+```
+
+Now the structure directly encodes meaning:
+
+* multiplication happens first
+* addition is the root operation
+
+No ambiguity remains.
+
+---
+
+## Why “abstract”?
+
+The word **abstract** means:
+
+> not tied to the exact written form
+
+Two different code snippets can produce the same AST:
+
+```js
+1 + 2 * 3
+```
+
+```js
+1 + (2 * 3)
+```
+
+Same AST.
+
+But these:
+
+```js
+(1 + 2) * 3
+```
+
+produce a different AST:
+
+```
+   *
+  / \
+ +   3
+/ \
+1  2
+```
+
+So AST captures **meaning**, not appearance.
+
+---
+
+## Where AST fits in the compilation pipeline
+
+A typical language toolchain looks like:
+
+```
+Source Code
+    ↓
+Lexical Analysis (Lexer / Tokenizer)
+    ↓
+Tokens
+    ↓
+Parsing
+    ↓
+AST
+    ↓
+Semantic Analysis
+    ↓
+Optimization
+    ↓
+Code Generation
+```
+
+### Key stages:
+
+#### Lexer
+
+Breaks text into tokens:
+
+```js
+let x = 1 + 2;
+```
+
+becomes:
+
+```
+LET, IDENT(x), =, NUMBER(1), +, NUMBER(2), ;
+```
+
+#### Parser
+
+Turns tokens into AST.
+
+#### Semantic analysis
+
+Checks meaning:
+
+* is `x` defined?
+* are types compatible?
+* is function call valid?
+
+#### Later stages
+
+Transform AST into:
+
+* optimized AST
+* bytecode
+* machine code
+* JavaScript bundles
+* etc.
+
+---
+
+## Why AST is so important
+
+ASTs unlock *programmatic reasoning about programs*.
+
+Once code is in AST form, tools can:
+
+### AST transforms code safely.
+
+Example: transpilers
+
+* TypeScript → JavaScript
+* JSX → JS
+* modern JS → older JS (Babel)
+
+They do not “edit text”.
+
+They:
+
+1. parse code into AST
+2. modify AST
+3. print AST back to code
+
+---
+
+### AST analyzes code (linters)
+
+Linters like ESLint:
+
+* detect unused variables
+* enforce rules
+* detect risky patterns
+
+They operate on AST nodes like:
+
+* VariableDeclaration
+* FunctionDeclaration
+* CallExpression
+
+This is far more reliable than regex.
+
+---
+
+### AST formats code (prettiers)
+
+Formatters:
+
+* ignore original formatting
+* rebuild consistent formatting from AST
+
+This is why tools like Prettier are stable:
+they don’t guess structure—they *know it*.
+
+---
+
+### AST optimizes code
+
+Compilers use AST to:
+
+* inline constants
+* remove dead code
+* simplify expressions
+* reorder computations
+
+Example:
+
+```js
+if (true) {
+  doSomething();
+}
+```
+
+becomes:
+
+```js
+doSomething();
+```
+
+---
+
+### Static analyses and type systems using AST
+
+TypeScript uses AST + additional type graphs to:
+
+* infer types
+* check correctness
+* enable IDE tooling
+
+---
+
+### Code search and indexing with AST
+
+Modern IDEs and search tools:
+
+* index AST nodes
+* allow “find all function calls to X”
+* support refactoring safely
+
+This is impossible with text-based search, and one of the most underrated uses of AST.
+
+---
+
+## Comparisons - AST vs Related Concepts
+
+### Parse Tree vs AST
+
+| Feature            | Parse Tree | AST   |
+| ------------------ | ---------- | ----- |
+| Complete syntax    | yes        | no    |
+| Abstracted         | no         | yes   |
+| Used for execution | rarely     | often |
+| Human readable     | no         | semi  |
+
+---
+
+### Token vs AST
+
+* Token = smallest unit (`if`, `x`, `+`)
+* AST = structured meaning built from tokens
+
+---
+
+### Concrete Syntax Tree (CST)
+
+A CST preserves:
+  
+* parentheses
+* commas
+* semicolons
+* formatting tokens
+
+AST removes them.
+
+Some tools use CST when exact reprinting is needed.
+
+---
+
+## What AST nodes look like
+
+A typical AST is a nested object structure.
+
+Example (JavaScript-like pseudo-AST):
+
+```json
+{
+  "type": "BinaryExpression",
+  "operator": "+",
+  "left": {
+    "type": "Literal",
+    "value": 1
+  },
+  "right": {
+    "type": "BinaryExpression",
+    "operator": "*",
+    "left": { "type": "Literal", "value": 2 },
+    "right": { "type": "Literal", "value": 3 }
+  }
+}
+```
+
+Everything is explicit:
+
+* node types
+* relationships
+* structure
+
+---
+
+## Origins and historical motivation
+
+ASTs emerged from compiler theory in the 1950s–1970s, alongside:
+
+* formal grammars (Chomsky hierarchy)
+* context-free grammars
+* early compiler construction (FORTRAN, ALGOL)
+
+The key insight:
+
+> If you separate syntax from structure, you can build far more reliable compilers.
+
+ASTs became the middle representation between:
+
+* human-readable code
+* machine-executable instructions
+
+---
+
+## Why AST replaced earlier approaches
+
+Before AST-based design:
+
+* compilers were fragile
+* each language tool reimplemented parsing logic
+* refactoring was unsafe
+* tooling was inconsistent
+
+AST standardized:
+
+* structure representation
+* transformation pipeline
+* tooling ecosystems
+
+---
+
+## Modern uses beyond compilers
+
+ASTs are now used far outside traditional compilation:
+
+* bundlers (Webpack, Vite)
+* static site generators
+* code mod tools (jscodeshift)
+* IDE autocomplete engines
+* security analyzers
+* AI code tools
+* database query planners (SQL ASTs)
+* infrastructure-as-code parsers (Terraform ASTs)
+
+Even:
+
+* template engines
+* markdown processors
+* CSS processors (PostCSS AST)
+
+---
+
+## Limitations and complexity
+
+ASTs are powerful but introduce complexity:
+
+* parsing cost
+* memory overhead
+* need for full grammar knowledge
+* AST transformations can become complex graphs of rules
+
+Also:
+
+* AST does not directly represent runtime behavior (that’s closer to IR: intermediate representation)
+* debugging AST transformations can be non-trivial
+
+---
+
+## Related terms (glossary cluster)
+
+### Token
+
+Smallest unit of meaning from source code.
+
+### Lexer
+
+Converts text → tokens.
+
+### Parser
+
+Converts tokens → AST.
+
+### Node
+
+Single element in an AST.
+
+### Traversal
+
+Walking the tree (DFS/BFS) to inspect or modify nodes.
+
+### Visitor pattern
+
+Common AST traversal strategy.
+
+### Transpiler
+
+Tool that converts AST → AST in another language.
+
+### IR (Intermediate Representation)
+
+Lower-level form between AST and machine code.
+
+### Symbol table
+
+Mapping of identifiers to meaning (variables, functions).
+
+---
+
+## Mental model summary
+
+If you compress everything:
+
+* Code is text for humans
+* AST is structure for machines
+* Machines stop “reading text” and start “understanding structure”
+
+A useful analogy:
+
+* Source code = sentence
+* AST = grammar diagram of that sentence
+* Machine code = executed meaning
+
+---
+
+## Custom AST Code Example:
+
+Below is a minimal **hand-written AST parser in TypeScript**. It is intentionally small, but still demonstrates the full pipeline:
+
+* lexer (tokenizer)
+* parser
+* AST node construction
+* precedence handling
+* traversal-ready structure
+
+It parses only simple expressions like:
+
+```js
+1 + 2 * 3
+(4 + 5) * 6
+```
+
+---
+
+# 1. AST Types (`ast.ts`)
+
+```ts
+/**
+ * AST node types for a tiny expression language.
+ */
+
+export type ASTNode = BinaryExpression | NumericLiteral;
+
+export interface NumericLiteral {
+  type: "NumericLiteral";
+  value: number;
+}
+
+export interface BinaryExpression {
+  type: "BinaryExpression";
+  operator: "+" | "-" | "*" | "/";
+  left: ASTNode;
+  right: ASTNode;
+}
+```
+
+---
+
+# 2. Tokenizer (`tokenizer.ts`)
+
+Converts raw text → tokens.
+
+```ts
+/**
+ * Tokenizer converts source code into a stream of tokens.
+ */
+
+export type Token =
+  | { type: "number"; value: number }
+  | { type: "operator"; value: "+" | "-" | "*" | "/" }
+  | { type: "paren"; value: "(" | ")" };
+
+const WHITESPACE = /\s/;
+const NUMBER = /[0-9]/;
+
+/**
+ * Tokenize an input string into tokens.
+ */
+export function tokenize(input: string): Token[] {
+  const tokens: Token[] = [];
+  let i = 0;
+
+  while (i < input.length) {
+    const char = input[i];
+
+    // Skip whitespace
+    if (WHITESPACE.test(char)) {
+      i++;
+      continue;
+    }
+
+    // Numbers
+    if (NUMBER.test(char)) {
+      let value = "";
+      while (NUMBER.test(input[i])) {
+        value += input[i++];
+      }
+
+      tokens.push({
+        type: "number",
+        value: Number(value),
+      });
+
+      continue;
+    }
+
+    // Operators
+    if ("+-*/".includes(char)) {
+      tokens.push({
+        type: "operator",
+        value: char as Token["value"],
+      });
+      i++;
+      continue;
+    }
+
+    // Parentheses
+    if (char === "(" || char === ")") {
+      tokens.push({
+        type: "paren",
+        value: char,
+      });
+      i++;
+      continue;
+    }
+
+    throw new Error(`Unexpected character: ${char}`);
+  }
+
+  return tokens;
+}
+```
+
+---
+
+# 3. Parser (`parser.ts`)
+
+This builds the AST and handles precedence.
+
+```ts
+import { ASTNode, BinaryExpression, NumericLiteral } from "./ast";
+import { Token } from "./tokenizer";
+
+/**
+ * Parser for simple arithmetic expressions.
+ */
+export class Parser {
+  private tokens: Token[];
+  private pos = 0;
+
+  constructor(tokens: Token[]) {
+    this.tokens = tokens;
+  }
+
+  /**
+   * Entry point
+   */
+  parse(): ASTNode {
+    return this.parseExpression();
+  }
+
+  /**
+   * Parse lowest-precedence expression (+, -)
+   */
+  private parseExpression(): ASTNode {
+    let node = this.parseTerm();
+
+    while (this.matchOperator("+", "-")) {
+      const operator = this.consume().value as "+" | "-";
+      const right = this.parseTerm();
+
+      node = this.createBinary(node, operator, right);
+    }
+
+    return node;
+  }
+
+  /**
+   * Parse higher precedence (*, /)
+   */
+  private parseTerm(): ASTNode {
+    let node = this.parseFactor();
+
+    while (this.matchOperator("*", "/")) {
+      const operator = this.consume().value as "*" | "/";
+      const right = this.parseFactor();
+
+      node = this.createBinary(node, operator, right);
+    }
+
+    return node;
+  }
+
+  /**
+   * Parse numbers and parenthesized expressions
+   */
+  private parseFactor(): ASTNode {
+    const token = this.peek();
+
+    if (!token) {
+      throw new Error("Unexpected end of input");
+    }
+
+    // Parentheses
+    if (token.type === "paren" && token.value === "(") {
+      this.consume(); // (
+      const expr = this.parseExpression();
+
+      if (this.peek()?.type !== "paren" || this.peek()?.value !== ")") {
+        throw new Error("Expected closing parenthesis");
+      }
+
+      this.consume(); // )
+      return expr;
+    }
+
+    // Number
+    if (token.type === "number") {
+      this.consume();
+      return this.createNumber(token.value);
+    }
+
+    throw new Error(`Unexpected token: ${JSON.stringify(token)}`);
+  }
+
+  // -------------------------
+  // Helpers
+  // -------------------------
+
+  private createNumber(value: number): NumericLiteral {
+    return {
+      type: "NumericLiteral",
+      value,
+    };
+  }
+
+  private createBinary(
+    left: ASTNode,
+    operator: BinaryExpression["operator"],
+    right: ASTNode
+  ): BinaryExpression {
+    return {
+      type: "BinaryExpression",
+      operator,
+      left,
+      right,
+    };
+  }
+
+  private matchOperator(...ops: string[]): boolean {
+    const token = this.peek();
+    return (
+      token?.type === "operator" && ops.includes(token.value)
+    );
+  }
+
+  private peek(): Token | undefined {
+    return this.tokens[this.pos];
+  }
+
+  private consume(): Token {
+    return this.tokens[this.pos++];
+  }
+}
+```
+
+---
+
+# 4. Usage (`index.ts`)
+
+```ts
+import { tokenize } from "./tokenizer";
+import { Parser } from "./parser";
+
+const input = "1 + 2 * (3 + 4)";
+
+const tokens = tokenize(input);
+const parser = new Parser(tokens);
+
+const ast = parser.parse();
+
+console.log(JSON.stringify(ast, null, 2));
+```
+
+---
+
+# 5. Example output AST
+
+For:
+
+```js
+1 + 2 * (3 + 4)
+```
+
+You get:
+
+```json
+{
+  "type": "BinaryExpression",
+  "operator": "+",
+  "left": {
+    "type": "NumericLiteral",
+    "value": 1
+  },
+  "right": {
+    "type": "BinaryExpression",
+    "operator": "*",
+    "left": {
+      "type": "NumericLiteral",
+      "value": 2
+    },
+    "right": {
+      "type": "BinaryExpression",
+      "operator": "+",
+      "left": {
+        "type": "NumericLiteral",
+        "value": 3
+      },
+      "right": {
+        "type": "NumericLiteral",
+        "value": 4
+      }
+    }
+  }
+}
+```
+
+---
+
+# 6. What this tiny parser demonstrates
+
+Even at this scale, you already get:
+
+* precedence rules (* before +)
+* recursive structure
+* nested expression trees
+* parenthesis handling
+* clean AST separation
+
+---
+
+# 7. What’s missing (intentionally)
+
+Real parsers add:
+
+* error recovery
+* full grammar systems (EBNF)
+* AST node metadata (loc, start/end positions)
+* comments handling
+* unary operators (`-x`)
+* assignment expressions
+* function calls
+* parsing performance optimizations
+* incremental parsing (IDE-level)

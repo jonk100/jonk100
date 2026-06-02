@@ -10,14 +10,15 @@
  * - anchor: ID of the DOM element that triggers and anchors the tooltip.
  * - placement: Directional positioning relative to the anchor ('top', 'bottom', 'left', 'right').
  */
-import type { FrameVariant, ImageEffect } from '/src/types/variants.types';
+import type { FrameVariant } from '/src/types/variants.types';
+import type { ComponentEffect } from '/src/types/variants.types';
 
 export interface Props {
   id: string;
   anchor: string; // The ID of the element this tooltip anchors to
   placement?: 'top' | 'bottom' | 'left' | 'right';
   frame?: FrameVariant;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;

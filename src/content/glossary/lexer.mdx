@@ -1,0 +1,270 @@
+---
+
+title: "Lexer (Lexical Analyzer)"
+shortDefinition: "A compiler component that converts a raw stream of characters into a structured sequence of tokens."
+definition: "A Lexer (short for Lexical Analyzer, or Tokenizer) is the software component in a compiler or interpreter responsible for performing lexical analysis. It reads source code character-by-character, groups them into meaningful substrings called lexemes, and categorizes them into tokens for downstream parsing."
+categories:
+- compilers
+- programming-languages
+tags:
+- lexer
+- lexical-analysis
+- tokenizer
+- compilers
+- parsing
+level: beginner
+related:
+- token
+- parser
+- abstract-syntax-tree
+- regular-expressions
+- finite-automata
+prerequisites:
+- token
+- source-code
+- strings
+difficultyScore: 3
+description: "Discover what a lexer is, how it processes raw source text under the hood, and how it translates characters into structured streams."
+keywords:
+- lexer
+- lexical analyzer
+- tokenizer
+- compiler design
+- lexical analysis
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+A **Lexer** (short for lexical analyzer, often called a tokenizer) is the front-line gatekeeper of a compiler or interpreter pipeline.
+
+Its singular responsibility is to convert a raw, flat, human-written stream of characters into a clean, structured stream of strongly typed objects called **tokens**.
+
+While a human reads code by scanning across words, a computer initially reads code character-by-character. The lexer is the mechanism that bridges this gap, transforming characters into meaningful linguistic fragments.
+
+## The Lexer's Position in the Pipeline
+
+A lexer is the very first stage of processing source code. It handles the transition from unorganized text strings into logical programming syntax.
+
+```
+Source Code (Text) ──> [ Lexer ] ──> Token Stream ──> [ Parser ] ──> AST
+
+```
+
+Without the lexer, the parser would have to deal with formatting layouts, individual space characters, and string decoding rules alongside handling complex grammatical logic.
+
+---
+
+## How a Lexer Works Under the Hood
+
+A lexer acts as a state machine. It iterates through an input string from index zero to the end, applying matching rules to extract the next valid sequence.
+
+### 1. Scanning and Buffering
+
+The lexer reads characters from a file stream. It maintains pointers in memory tracking exactly where it is:
+
+* **The Cursor / Current Position:** The character currently being examined.
+* **The Start Pointer:** The beginning of the word currently being accumulated.
+
+### 2. Lexeme Matching
+
+A **lexeme** is the raw concrete string matching a language rule. The lexer maps lexemes to abstract categories.
+
+Consider this line of code:
+
+```js
+while (x >= 10)
+
+```
+
+The lexer tracks individual character combinations sequentially:
+
+1. It reads `w`, `h`, `i`, `l`, `e`. When it hits the trailing space, it recognizes that `while` matches a built-in language **Keyword**.
+2. It encounters a space. It discards it based on whitespace-skipping rules.
+3. It encounters `(`. It immediately classifies this single character as a **Punctuation** mark.
+4. It reads `x`. Since it is followed by a space, it categorizes it as an **Identifier** (a variable name).
+5. It encounters `>`, then immediately checks the next character `=`. It matches them together as a single multi-character **Operator** token (`>=`), rather than two separate operations.
+6. It reads `1`, then `0`. It groups them into a single **Numeric Literal**.
+
+---
+
+## Lexer Construction: Hand-written vs. Generated
+
+There are two primary approaches to building a lexer in compiler production:
+
+### Automated Lexer Generators
+
+In early computer science history, engineers used tools like **Lex** or **Flex**. Developers wrote configurations using Regular Expressions alongside Context-Free Grammar rules, and the tool generated code matching those definitions using **Deterministic Finite Automata (DFA)** state machines.
+
+### Hand-Written Lexers
+
+Despite the availability of generator utilities, almost all modern production-grade compilers (like V8, Rustc, Roslyn, and Clang) use custom, **hand-written lexers**.
+
+| Feature | Generated Lexers (Lex/Flex) | Hand-Written Lexers |
+| --- | --- | --- |
+| **Development Speed** | Fast initial implementation | Slower to write from scratch |
+| **Performance** | Good, but generalized | Highly optimized and efficient |
+| **Error Recovery** | Poor; difficult to handle typos cleanly | Excellent; can skip errors gracefully |
+| **Code Readability** | Hard to debug generated state trees | Clean, readable loops and conditionals |
+
+---
+
+## Core Challenges in Lexical Analysis
+
+Writing a robust lexer requires solving several edge cases where raw characters clash with language layout constraints:
+
+### Maximize Matching (The "Maximal Munch" Rule)
+
+If a language recognizes both `=` and `==`, and the source text contains `==`, how does the lexer choose?
+
+Lexers apply the **Maximal Munch** (or longest-match) principle. The lexer will always match the longest possible valid character sequence. Thus, `==` becomes a single equality operator, not two assignment operators.
+
+### Keyword vs. Identifier Ambiguity
+
+If a developer creates a variable named `whileLoop`, the first five characters are `w-h-i-l-e`. A naive lexer might slice off `while` as a keyword and leave `Loop` as an orphan syntax error.
+
+To prevent this, the lexer reads the entire alphanumeric block (`whileLoop`) as an Identifier first, then cross-checks a lookup table of protected keywords to see if it matches something reserved.
+
+---
+
+## Comparisons - Lexer vs Related Concepts
+
+### Lexer vs Parser
+
+* **Lexer** acts on characters. It checks local spelling spelling rules (e.g., `"Is this a valid number literal?"`). It has no concept of grammatical sentence structure.
+* **Parser** acts on tokens. It evaluates macro structural design patterns (e.g., `"Does this IF statement have an accompanying conditional expression?"`).
+
+---
+
+## Related terms (glossary cluster)
+
+### Scanner
+
+Another name for the lower-level phase of a lexer that handles reading character streams and stripping whitespaces or comments.
+
+### State Machine
+
+A mathematical architecture containing states, inputs, and transitions used to implement programmatic matching loops within compilation engines.
+
+### Lookahead
+
+The act of a lexer checking characters further down the string stream (e.g., checking index `i + 1`) to determine the categorization of the current index `i` without advancing the cursor permanently.
+
+---
+
+## Custom Lexer Class Example
+
+Below is a production-style **Object-Oriented Lexer in TypeScript**. It demonstrates structural cursor tracking, lookahead scanning, and maximal-munch evaluations.
+
+---
+
+# 1. Lexer Definition (`lexer.ts`)
+
+```ts
+export type TokenType = "KEYWORD" | "IDENTIFIER" | "NUMBER" | "OPERATOR" | "EOF";
+
+export interface Token {
+  type: TokenType;
+  value: string;
+}
+
+export class Lexer {
+  private input: string;
+  private cursor = 0;
+
+  constructor(input: string) {
+    this.input = input;
+  }
+
+  /**
+   * Main entry method: retrieves tokens sequentially until EOF.
+   */
+  public nextToken(): Token {
+    this.skipWhitespace();
+
+    if (this.cursor >= this.input.length) {
+      return { type: "EOF", value: "" };
+    }
+
+    const char = this.input[this.cursor];
+
+    // Identify Multi-character or single-character operators via lookahead
+    if (char === "=") {
+      if (this.peek() === "=") {
+        this.cursor += 2; // Consume '=='
+        return { type: "OPERATOR", value: "==" };
+      }
+      this.cursor++; // Consume '='
+      return { type: "OPERATOR", value: "=" };
+    }
+
+    // Numbers
+    if (/[0-9]/.test(char)) {
+      return this.readNumber();
+    }
+
+    // Keywords or Identifiers
+    if (/[a-zA-Z_]/.test(char)) {
+      return this.readIdentifierOrKeyword();
+    }
+
+    throw new SyntaxError(`Unknown character encountered: '${char}'`);
+  }
+
+  private readNumber(): Token {
+    let start = this.cursor;
+    while (this.cursor < this.input.length && /[0-9]/.test(this.input[this.cursor])) {
+      this.cursor++;
+    }
+    return { type: "NUMBER", value: this.input.slice(start, this.cursor) };
+  }
+
+  private readIdentifierOrKeyword(): Token {
+    let start = this.cursor;
+    while (this.cursor < this.input.length && /[a-zA-Z0-9_]/.test(this.input[this.cursor])) {
+      this.cursor++;
+    }
+    const value = this.input.slice(start, this.cursor);
+    const type: TokenType = value === "if" || value === "else" ? "KEYWORD" : "IDENTIFIER";
+    return { type, value };
+  }
+
+  private peek(): string {
+    return this.cursor + 1 < this.input.length ? this.input[this.cursor + 1] : "";
+  }
+
+  private skipWhitespace(): void {
+    while (this.cursor < this.input.length && /\s/.test(this.input[this.cursor])) {
+      this.cursor++;
+    }
+  }
+}
+
+```
+
+---
+
+# 2. Execution (`index.ts`)
+
+```ts
+import { Lexer } from "./lexer";
+
+const lexer = new Lexer("if status == 10");
+let token = lexer.nextToken();
+
+while (token.type !== "EOF") {
+  console.log(token);
+  token = lexer.nextToken();
+}
+
+```
+
+---
+
+## Review
+
+Before exploring parsers and syntax logic, remember these foundational facts about Lexers:
+
+* **The Lexer is blind to grammar:** A lexer will happily tokenize line inputs like `if if if = 10 20`. It only ensures each individual word is spelled correctly; verifying whether the overall sentence makes logical sense is left to the parser.
+* **Whitespace is usually discarded:** For most languages, spaces, comments, and line indentations are discarded inside the lexer, isolating clean data patterns for downstream compilation stages.
+* **Lookahead is required:** To handle multi-character components (like telling `=` apart from `==`), lexers must implement a peek function to check upcoming characters before stepping forward.

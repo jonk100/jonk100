@@ -29,6 +29,7 @@ export interface Props extends HTMLAttributes<'img'> {
   frame?: FrameVariant;
   position?: string;
   fit?: 'cover' | 'contain' | 'fill' | 'none';
+  height?: string;
   zoomable?: boolean;
   caption?: string;
   captionPosition?: 'top' | 'bottom' | 'o-top' | 'o-bottom';
@@ -49,6 +50,7 @@ const {
   frame = 'none',
   position = 'center',
   fit = 'cover',
+  height,
   zoomable,
   caption,
   captionPosition = 'bottom',
@@ -75,6 +77,10 @@ const onLoadScript = isZoomable
   ? "this.parentElement.previousElementSibling.style.opacity = '0'" 
   : "this.previousElementSibling.style.opacity = '0'";
 
+const containerStyle = [
+  height && `height: ${height}`
+].filter(Boolean).join(';');
+
 const mergedStyle = [
   `object-position: ${position}`,
   `object-fit: ${fit}`,
@@ -86,7 +92,17 @@ const mergedStyle = [
   {caption && captionPosition === 'top' && (
     <figcaption class="image-caption caption--top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
   )}
-  <div class:list={["image-container", "base-frame", `shape--${shape}`, radius && `radius--${radius}`, frameClass, ...effectClasses]}>
+  <div
+    class:list={[
+      "image-container",
+      "base-frame",
+      `shape--${shape}`,
+      radius && `radius--${radius}`,
+      frameClass,
+      ...effectClasses
+    ]}
+    style={containerStyle}
+  >
     <div class="image-skeleton effect--shimmer" aria-hidden="true"></div>
     {isZoomable ? (
       <>

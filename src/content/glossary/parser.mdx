@@ -1,0 +1,308 @@
+---
+
+title: "Parser"
+shortDefinition: "A compiler component that takes a flat stream of tokens and builds a hierarchical tree structure representing the code's grammatical meaning."
+definition: "A parser is a software component in a compiler, interpreter, or code analysis tool that performs syntactic analysis. It processes a linear sequence of tokens produced by a lexer, validates them against the formal grammar rules of the programming language, and constructs a hierarchical representation—most commonly an Abstract Syntax Tree (AST)."
+categories:
+- compilers
+- programming-languages
+tags:
+- parser
+- parsing
+- syntax-analysis
+- compilers
+- ast
+level: beginner
+related:
+- token
+- lexer
+- abstract-syntax-tree
+- grammar
+- ambiguity
+prerequisites:
+- token
+- lexer
+- abstract-syntax-tree
+difficultyScore: 5
+description: "Learn what a parser is, how it translates flat tokens into hierarchical structural syntax trees, and how it detects syntax errors."
+keywords:
+- parser
+- parsing
+- syntax analysis
+- compiler design
+- context-free grammar
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+A **Parser** is the engine core responsible for structural understanding in a language toolchain.
+
+Its job is to take a flat, one-dimensional stream of categorized text strings (**tokens**) and reconstruct the multi-dimensional, nested grammatical tree (**Abstract Syntax Tree**) that represents the human programmer's logical intent.
+
+If a **lexer** acts as the eyes that recognize individual words, the **parser** acts as the brain that maps those words into structured sentences, checking them against the structural rules of the language.
+
+## The Parser's Position in the Pipeline
+
+The parser acts as the bridge connecting low-level character scanning with high-level code translation and evaluation.
+
+```
+Source Code ──> [ Lexer ] ──> Token Stream ──> [ Parser ] ──> AST ──> Compiler Backend
+
+```
+
+If the token stream violates the grammatical blueprints of the language, the parser halts execution instantly and fires a **Syntax Error**.
+
+---
+
+## Formal Grammars: The Parser’s Rulebook
+
+A parser needs a deterministic template to judge whether a series of tokens is legal. This template is written as a **Context-Free Grammar (CFG)**, often declared using formal notations like **Backus-Naur Form (BNF)**.
+
+For example, a miniature grammar rule rulebook for an `IfStatement` might look like this:
+
+```bnf
+<IfStatement> ::= "if" "(" <Expression> ")" <Statement>
+
+```
+
+This tells the parser:
+
+> *"If you see the keyword `if`, you must immediately find an open parenthesis, followed by a valid expression node, followed by a closing parenthesis, followed by a statement block. If any of these are missing or out of order, the program is invalid."*
+
+---
+
+## Types of Parsing Strategies
+
+Parser algorithms are broadly divided into two main operational categories based on how they evaluate grammatical node configurations:
+
+### 1. Top-Down Parsing
+
+Top-down parsers start at the highest level of abstraction (e.g., assuming the incoming token stream represents a whole `Program`) and recursively break it down into smaller sub-components (`Statements`, then `Expressions`, then `Literals`).
+
+* **Recursive Descent Parsing:** The most popular hand-written parsing technique. Every rule in the grammar map corresponds directly to an isolated function in the source code. It reads left-to-right, invoking functions recursively.
+* **LL(k) Parsers:** Parsers that read input from **L**eft-to-right, construct a **L**eftmost derivation, using $k$ tokens of lookahead.
+
+### 2. Bottom-Up Parsing
+
+Bottom-up parsers start directly with the raw individual leaf tokens and look for patterns to group them into larger structural components, working their way up to the root `Program` node.
+
+* **Shift-Reduce Parsing:** It shifts tokens onto an internal tracking stack until the stacked tokens match a known rule, then "reduces" those tokens down into a compound tree node.
+* **LR(k) Parsers:** Parsers that read input from **L**eft-to-right, construct a **R**ightmost derivation in reverse, using $k$ tokens of lookahead.
+
+---
+
+## Core Challenges in Parsing
+
+Building highly reliable parsers requires overcoming complex structural constraints within language definitions:
+
+### Operator Precedence (The Ambiguity Problem)
+
+If a parser receives the token stream for `1 + 2 * 3`, a naive sequential parser might evaluate `1 + 2` first (producing `3`), then multiply by `3` to get `9`.
+
+Parsers must implement clear precedence hierarchies to ensure math rules match expectations:
+
+```
+Correct Precedence AST:       Incorrect Precedence AST:
+         +                             *
+        / \                           / \
+       1   * +   3
+          / \                       / \
+         2   3                     1   2
+
+```
+
+### Error Recovery
+
+If a developer leaves out a semicolon or a closing bracket in a 5,000-line file, a primitive parser will crash on that exact token and refuse to process the rest of the file.
+
+Modern, production-grade parsers feature **Panic-Mode Error Recovery**. If they detect a syntax error, they note it down, skip forward to an anchor point (like the next semicolon or closing brace), and resume parsing the remainder of the file. This allows your IDE to display 10 separate syntax warnings simultaneously rather than crashing on the first typo.
+
+---
+
+## Comparisons - Parser vs Related Concepts
+
+### Lexer vs Parser vs Compiler Backend
+
+| Phase | Input | Output | Main Responsibility |
+| --- | --- | --- | --- |
+| **Lexer** | Raw Characters | Flat Token Stream | Validates text spellings. |
+| **Parser** | Flat Token Stream | Hierarchical AST | Validates structural grammar rules. |
+| **Backend** | Hierarchical AST | Machine Code / Bytecode | Code generation and performance optimization. |
+
+---
+
+## Related terms (glossary cluster)
+
+### Context-Free Grammar (CFG)
+
+The mathematical blueprint specifying how tokens can be combined to build valid statements in a language.
+
+### Lookahead Token
+
+The next available token in the stream that the parser previews to decide which structural branch to take before officially consuming it.
+
+### Syntax Error
+
+A compilation error raised explicitly by the parser when an unexpected token breaks the expected structural grammar flow.
+
+---
+
+## Custom Parser Implementation Example
+
+Below is a functional **Recursive Descent Parser in TypeScript**. It consumes a token stream and enforces operator precedence rules to build a nested `BinaryExpression` tree.
+
+---
+
+# 1. Types & Code Architecture (`parser.ts`)
+
+```ts
+export type Token =
+  | { type: "NUMBER"; value: string }
+  | { type: "PLUS"; value: "+" }
+  | { type: "MULTIPLY"; value: "*" }
+  | { type: "EOF"; value: "" };
+
+export type ASTNode =
+  | { type: "BinaryExpression"; operator: string; left: ASTNode; right: ASTNode }
+  | { type: "NumericLiteral"; value: number };
+
+export class Parser {
+  private tokens: Token[];
+  private cursor = 0;
+
+  constructor(tokens: Token[]) {
+    this.tokens = tokens;
+  }
+
+  /**
+   * Main parsing entry point.
+   */
+  public parse(): ASTNode {
+    return this.parseExpression();
+  }
+
+  /**
+   * Parse Additive Operations (Lowest Priority: +)
+   */
+  private parseExpression(): ASTNode {
+    let left = this.parseTerm();
+
+    while (this.match("PLUS")) {
+      const operator = this.consume().value;
+      const right = this.parseTerm();
+      left = { type: "BinaryExpression", operator, left, right };
+    }
+
+    return left;
+  }
+
+  /**
+   * Parse Multiplicative Operations (Higher Priority: *)
+   */
+  private parseTerm(): ASTNode {
+    let left = this.parsePrimary();
+
+    while (this.match("MULTIPLY")) {
+      const operator = this.consume().value;
+      const right = this.parsePrimary();
+      left = { type: "BinaryExpression", operator, left, right };
+    }
+
+    return left;
+  }
+
+  /**
+   * Parse Base Leaves (Literals)
+   */
+  private parsePrimary(): ASTNode {
+    const token = this.peek();
+
+    if (token && token.type === "NUMBER") {
+      this.consume();
+      return { type: "NumericLiteral", value: Number(token.value) };
+    }
+
+    throw new SyntaxError(`Parser Error: Unexpected token '${token?.value}'`);
+  }
+
+  // Helpers
+  private peek(): Token | undefined {
+    return this.tokens[this.cursor];
+  }
+
+  private match(type: Token["type"]): boolean {
+    return this.peek()?.type === type;
+  }
+
+  private consume(): Token {
+    return this.tokens[this.cursor++];
+  }
+}
+
+```
+
+---
+
+# 2. Execution Scenario (`index.ts`)
+
+```ts
+import { Parser, Token } from "./parser";
+
+// Tokenized representation of string: "1 + 2 * 3"
+const tokenStream: Token[] = [
+  { type: "NUMBER", value: "1" },
+  { type: "PLUS", value: "+" },
+  { type: "NUMBER", value: "2" },
+  { type: "MULTIPLY", value: "*" },
+  { type: "NUMBER", value: "3" },
+  { type: "EOF", value: "" }
+];
+
+const parser = new Parser(tokenStream);
+const resultAST = parser.parse();
+
+console.log(JSON.stringify(resultAST, null, 2));
+
+```
+
+---
+
+# 3. Structural Output AST
+
+Because our parser handles priority structural binding, the multiplication token (`*`) is evaluated deeper down the tree branch, ensuring proper operational nesting:
+
+```json
+{
+  "type": "BinaryExpression",
+  "operator": "+",
+  "left": {
+    "type": "NumericLiteral",
+    "value": 1
+  },
+  "right": {
+    "type": "BinaryExpression",
+    "operator": "*",
+    "left": {
+      "type": "NumericLiteral",
+      "value": 2
+    },
+    "right": {
+      "type": "NumericLiteral",
+      "value": 3
+    }
+  }
+}
+
+```
+
+---
+
+## Review
+
+Keep these key concepts in mind when working with parsers:
+
+* **Parsers turn 1D streams into 2D trees:** The input to a parser is always a flat sequence array; the output is a hierarchical tree topology (the AST).
+* **Syntax vs. Semantics:** Parsers check *syntax*, not *meaning*. A parser will accept `let x = 5 + "apple"`, because the structure follows standard grammar rules. Figuring out if you can actually add a number to a string is left to the next stage: the semantic analyzer.
+* **Precedence rules shape the branches:** Operator precedence determines how deeply operations are nested in the resulting tree structure, dictating the order of operations for execution later on.

@@ -1,0 +1,91 @@
+/* =======================================================================================
+   MAIN.CSS - Global Page Layouts & Ambient Effects - duplicated in *index.astro files
+   ======================================================================================= */
+
+/* Glow Effects - Reusable ambient gradient blurs */
+.glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.glow-1 {
+  background: var(--accent);
+  top: -200px;
+  right: -200px;
+}
+
+.glow-sidebar {
+  width: 500px;
+  height: 500px;
+  filter: blur(140px);
+  opacity: 0.08;
+  background: var(--primary);
+  top: -200px;
+  left: -200px;
+}
+
+.glow-content {
+  width: 500px;
+  height: 500px;
+  filter: blur(140px);
+  opacity: 0.08;
+  background: var(--accent);
+  bottom: -200px;
+  right: -200px;
+}
+
+/* Main Page Layouts */
+.blog-main,
+.glossary-main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-32);
+}
+
+.glossary-main {
+  padding: 10rem var(--space-4) var(--space-12);
+}
+
+.design-workspace {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+}
+
+.main-content {
+  flex-grow: 1;
+  max-width: calc(100% - 280px);
+  padding: var(--space-12) var(--space-16);
+  position: relative;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.docs-container {
+  max-width: 900px;
+}
+
+/* Container Sizing */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    max-width: 100%;
+    padding: var(--space-6) var(--space-8);
+  }
+}

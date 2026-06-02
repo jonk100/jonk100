@@ -1,22 +1,22 @@
 ---
-title: "Writty"
+title: "wReady"
 description: "A highly sophisticated creative writing environment and personal workbench built with Astro, Alpine.js, and a custom Markdown AST parser."
 category: "Web App"
 index: "01"
 tags: ["Astro", "AlpineJS", "TypeScript", "Remark"]
-imageSrc: "/writty-hmd-main-page.png"
+imageSrc: "/wready-characters.gif"
 delay: 0.1
-githubUrl: "https://github.com/jonk100/Writty"
+githubUrl: "https://github.com/jonk100/writty"
 ---
 import Image from '../../components/ui/primitives/Image.astro';
 
-Writty is a beautiful, minimal, and highly performant personal creative workbench designed to organize, write, and manage creative work across diverse formats—screenplays, songs, poems, and short stories. Leaning into a file-based, local-first workflow, all content lives as version-controlled MDX files inside Astro Content Collections, validated strictly with Zod schemas.
+wReady is a beautiful, minimal, and highly performant personal creative workbench designed to organize, write, and manage creative work across diverse formats—screenplays, songs, poems, and short stories. Leaning into a file-based, local-first workflow, all content lives as version-controlled MDX files inside Astro Content Collections, validated strictly with Zod schemas.
 
-Rather than a public blog or standard CMS, Writty is designed from the ground up as a focused, developer-centric creative writing environment, maximizing speed, design aesthetics, and offline reliability.
+Rather than a public blog or standard CMS, wReady is designed from the ground up as a focused, developer-centric creative writing environment, maximizing speed, design aesthetics, and offline reliability.
 
 <Image 
-  src="/writty-hmd-main-page.png" 
-  alt="Writty Creative Workbench Interface" 
+  src="/wready-hmd-main-page.png" 
+  alt="wReady Creative Workbench Interface" 
   shape="landscape"
   outline={true}
 />
@@ -27,7 +27,7 @@ Rather than a public blog or standard CMS, Writty is designed from the ground up
 
 When building a modern web application, developers often default to heavy, JavaScript-saturated Single Page Applications (SPAs) like React or Next.js. While these frameworks are excellent for highly dynamic dashboards, they come with a steep performance tax: shipping megabytes of client-side JavaScript that the browser must download, parse, and execute before the page becomes interactive.
 
-For Writty, I wanted to prove that **creative and editorial tools can be incredibly fast, static, and highly interactive without the bloat**. To achieve this, the architecture is built around a hybrid, static-first philosophy:
+For wReady, I wanted to prove that **creative and editorial tools can be incredibly fast, static, and highly interactive without the bloat**. To achieve this, the architecture is built around a hybrid, static-first philosophy:
 
 1. **Astro 6 (Static Engine)**: Astro acts as the compiler. At build-time, it compiles our raw markdown files, layouts, and components into pure, semantic HTML and CSS. The client receives **zero bytes of JavaScript by default**, ensuring perfect Largest Contentful Paint (LCP) and immediate layout stability.
 
@@ -44,7 +44,7 @@ To bring features like the Chord Analyzer and character filter list to life, I i
 ### What is Alpine.js?
 Alpine.js is a minimal, expressive frontend framework that provides the reactive power of major frameworks like Vue or React, but at a fraction of the cost (just **~15KB gzipped**). Instead of forcing us to build complex virtual DOM trees, write state selectors, or manage virtual state layers, Alpine allows us to write behavior **directly in our markup** using simple HTML data attributes (like `x-data`, `x-bind`, and `x-on`).
 
-In Writty, Alpine.js handles:
+In wReady, Alpine.js handles:
 * **Fretboard State**: Tracking which string and fret a user clicks in real-time.
 * **Filter Matrices**: Instantly showing or hiding scene cards based on active character selections, without triggering a server query or causing layout shifts.
 * **Dynamic Calculations**: Translating note indexes dynamically while displaying chord structures.
@@ -114,7 +114,7 @@ export const remarkScreenplay: Plugin<[], Root> = () => {
 This transforms raw Markdown files into a beautifully formatted, standardized screenplay view with an interactive current-line highlighter and a side-by-side editing canvas:
 
 <Image 
-  src="/writty-markdown-screenplay-formatter-editor.png" 
+  src="/wready-markdown-screenplay-formatter-editor.png" 
   alt="Screenplay Interactive Markdown Editor & Side-by-Side Live Formatter" 
   shape="landscape"
   frame="minimal"
@@ -127,9 +127,9 @@ This transforms raw Markdown files into a beautifully formatted, standardized sc
 
 ## Mathematical Music Theory & Diatonic Chords
 
-Writty includes a powerful suite of songwriting features designed around **music theory mathematics**.
+wReady includes a powerful suite of songwriting features designed around **music theory mathematics**.
 
-Instead of hardcoding a massive database of static guitar chord images, Writty calculates chords dynamically using **semitone intervals** (relative distances between notes). In the standard chromatic scale, there are 12 notes. By representing notes as numeric values from `0` to `11` (where C is 0, C# is 1, etc.), we can mathematically define any scale or chord formula:
+Instead of hardcoding a massive database of static guitar chord images, wReady calculates chords dynamically using **semitone intervals** (relative distances between notes). In the standard chromatic scale, there are 12 notes. By representing notes as numeric values from `0` to `11` (where C is 0, C# is 1, etc.), we can mathematically define any scale or chord formula:
 
 ```typescript
 // excerpt from src/utils/music/musicTheory.ts
@@ -154,10 +154,10 @@ export const CHORD_FORMULAS = [
 ];
 ```
 
-By querying these vectors, Writty renders interactive fretboard fingerings, translates keys, and maps diatonic chords (e.g. `I, ii, iii, IV...`) to songwriting templates, facilitating creative melody drafting.
+By querying these vectors, wReady renders interactive fretboard fingerings, translates keys, and maps diatonic chords (e.g. `I, ii, iii, IV...`) to songwriting templates, facilitating creative melody drafting.
 
 <Image 
-  src="/writty-chord-analyzer.png" 
+  src="/wready-chord-analyzer.png" 
   alt="Interactive Fretboard Chord Voicings & Music Theory Analyzer" 
   shape="landscape"
   frame="minimal"
@@ -167,10 +167,10 @@ By querying these vectors, Writty renders interactive fretboard fingerings, tran
 
 ## Plot Beat & Tension Visualization
 
-To manage pacing across complex screenplay structures, Writty stores scene descriptions and dynamic **beat arcs**. Using an interactive, custom Alpine.js charting wrapper, Writty plots an episode's emotional tension and pacing curves. This provides visual confirmation of narrative structures (such as rising action, climax, and resolution), helping to identify pacing bottlenecks before starting production drafts.
+To manage pacing across complex screenplay structures, wReady stores scene descriptions and dynamic **beat arcs**. Using an interactive, custom Alpine.js charting wrapper, wReady plots an episode's emotional tension and pacing curves. This provides visual confirmation of narrative structures (such as rising action, climax, and resolution), helping to identify pacing bottlenecks before starting production drafts.
 
 <Image 
-  src="/writty-plot-beat-tension-graph.gif" 
+  src="/wready-plot-beat-tension-graph.gif" 
   alt="Dynamic Narrative Arc and Beat Tension Graph Visualizer" 
   shape="landscape"
 />
@@ -195,7 +195,7 @@ pnpm run tmdb
 ```
 
 <Image
-  src="/writty-patriot-review.png" 
+  src="/wready-patriot-review.png" 
   alt="TMDB Enriched Film Review Dashboard layout" 
   shape="landscape"
 />
@@ -204,7 +204,7 @@ pnpm run tmdb
 
 ## 🔗 Let's Keep Exploring
 
-Creative writing and software engineering are two sides of the same coin—both are disciplines built around **structure, communication, and clear narration**. Writty is my sandbox for uniting them.
+Creative writing and software engineering are two sides of the same coin—both are disciplines built around **structure, communication, and clear narration**. wReady is my sandbox for uniting them.
 
 If you enjoyed this technical breakdown, here is where you can explore more of my work:
 * **The Creative Side**: Dive into the final screenplay scenes and character logs of my limited political satire series **[Her Majesty's Displeasure](/projects/hmd)**.

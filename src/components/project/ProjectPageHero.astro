@@ -15,17 +15,20 @@ interface Props {
 const { imageSrc, title, project, class: className = '', "class:list": classList = {} } = Astro.props;
 ---
 
-<div class="hero-section">
+<Stack class="hero-section">
   {imageSrc && (
-    <img 
+    <Image
       src={imageSrc} 
       alt={title} 
+      height="80vh"
+      position="top"
+      effects={['fade-down-hero']}
       class="hero-image" 
       style={`view-transition-name: hero-${project.id}`} 
     />
   )}
   <div class="hero-overlay"></div>
-</div>
+</Stack>
 
 <style>
   .hero-section {

@@ -109,21 +109,45 @@ const isExplicitOutlined = Astro.props.outlined !== undefined;
     padding: var(--space-3) var(--space-5);
   }
 
+  @media (max-width: 480px) {
+    .badge--xs,
+    :global(.badge-group[data-group-size="xs"]) .badge:not(.badge--explicit-size) {
+      font-size: clamp(0.5rem, .4rem + .75vw, 1rem);
+    }
+
+    .badge--sm,
+    :global(.badge-group[data-group-size="sm"]) .badge:not(.badge--explicit-size) {
+      font-size: clamp(0.55rem, .45rem + .75vw, 1rem);
+    }
+    
+    .badge--md,
+    :global(.badge-group[data-group-size="md"]) .badge:not(.badge--explicit-size) {
+      font-size: clamp(0.6rem, .5rem + .75vw, 2rem);
+      padding: var(--space-1) 4px;
+    }
+    
+    .badge--lg,
+    :global(.badge-group[data-group-size="lg"]) .badge:not(.badge--explicit-size) {
+      font-size: 0.65rem;
+    }
+  }
+
+
   /* ─────────────────────────────
      Badge Themes
   ───────────────────────────── */
   .badge--primary,
   :global(.badge-group[data-group-theme="primary"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--primary-rgb), 0.15);
-    color: var(--primary);
-    border-color: rgba(var(--primary-rgb), 0.3);
+    background: rgba(var(--primary-rgb), 0.4);
+    color: var(--text-2);
+    border-color: var(--primary);
   }
 
   .badge--secondary,
   :global(.badge-group[data-group-theme="secondary"]) .badge:not(.badge--explicit-theme) {
     background: rgba(var(--secondary-rgb), 0.15);
-    color: var(--secondary);
-    border-color: rgba(var(--secondary-rgb), 0.3);
+    color: var(--secondary-border);
+    border-color: rgba(var(--secondary-rgb), 0.7);
   }
 
   .badge--accent,

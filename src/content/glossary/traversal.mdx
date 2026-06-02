@@ -1,0 +1,275 @@
+---
+
+title: "AST Traversal"
+shortDefinition: "The process of systematically walking through every node in an Abstract Syntax Tree to analyze, modify, or transform code structure."
+definition: "AST Traversal is the algorithmic process of visiting each node within an Abstract Syntax Tree (AST) exactly once in a defined order. It serves as the core pipeline mechanism used by compilers, linters, and transpilers to inspect structural properties, verify type safety, and apply code transformations."
+categories:
+- compilers
+- programming-languages
+tags:
+- ast
+- traversal
+- tree-walk
+- visitor-pattern
+- static-analysis
+level: intermediate
+related:
+- abstract-syntax-tree
+- node
+- visitor-pattern
+- compiler
+prerequisites:
+- abstract-syntax-tree
+- node
+- recursion
+difficultyScore: 5
+description: "Learn how compilers and linters walk through syntax trees, the difference between entry and exit phases, and how to use the Visitor Pattern."
+keywords:
+- AST traversal
+- tree walking
+- visitor pattern
+- abstract syntax tree traversal
+- static analysis
+hasCode: true
+hasDiagrams: true
+interactive: false
+context: "compilers"
+---
+
+**AST Traversal** (or tree walking) is the process of navigating systematically through the nested network of an Abstract Syntax Tree.
+
+Once a parser converts a flat file of text into a structured tree of **nodes**, the compiler cannot understand or manipulate that program by reading it linearly from top to bottom. Instead, it must "walk" the branches of the tree, stepping from parent nodes to child nodes, to inspect properties or modify code safely.
+
+To master AST traversal, you must understand the algorithm used to navigate trees, the difference between entering and exiting a node, and how the **Visitor Pattern** standardizes this process.
+
+## The Traversal Strategy: Depth-First Search (DFS)
+
+Because programming syntax is deeply hierarchical and nested (e.g., functions containing blocks, containing loops, containing expressions), AST traversal almost exclusively utilizes a **Pre-order or Post-order Depth-First Search (DFS)** algorithm.
+
+When traversing an AST, the traversal engine begins at the top-level **Root Node** (usually labeled `Program`) and immediately plunges down to the deepest available child node before backtracking to process sibling branches.
+
+Consider this mathematical addition expression tree:
+
+```js
+1 + 2
+
+```
+
+The traversal engine walks this tree by following a recursive path:
+
+1. It visits the root **BinaryExpression** node (`+`).
+2. It dives down to the `left` child branch: the **NumericLiteral** node (`1`).
+3. Having hit a dead-end leaf node, it backtracks up to the parent.
+4. It dives down to the `right` child branch: the **NumericLiteral** node (`2`).
+5. It returns to the root, completing the walk.
+
+---
+
+## The Two Phases of Visiting: Enter and Exit
+
+As the traversal engine walks the tree, it passes through every single node **twice**: once on the way down into its branches, and once on the way back up out of its branches. This creates two vital operational intercept hooks for tool development:
+
+### 1. Enter Phase
+
+Triggered when the engine first discovers a node, *before* it has evaluated any of that node's children.
+
+* *Use case:* Setting up contextual scopes (e.g., tracking that the compiler has just stepped inside a new `FunctionDeclaration`).
+
+### 2. Exit Phase
+
+Triggered when the engine has finished traversing all children of the current node and is preparing to step backward up to the parent.
+
+* *Use case:* Type checking or expression evaluation (e.g., calculating the result of a math expression *after* evaluating the values of its left and right child nodes).
+
+---
+
+## Architectural Pattern: The Visitor Pattern
+
+Writing a giant, nested `if/else` switch block to handle walking a tree becomes an absolute nightmare as languages grow to support hundreds of unique node types. To solve this, compiler engineers rely on the **Visitor Pattern**.
+
+The traversal engine handles the complex algorithmic loops required to step from branch to branch behind the scenes. It exposes a simple object dictionary called a **Visitor**. You provide hook functions mapped to specific node types inside this object, and the engine executes them automatically when it encounters a match.
+
+### Example: A Token Obfuscator Visitor
+
+Imagine writing a tool that converts all variable names to generic terms. Your visitor would target `Identifier` nodes:
+
+```ts
+const obfuscatorVisitor = {
+  Identifier(node) {
+    if (node.name === "secretApiKey") {
+      node.name = "hidden_variable_xyz";
+    }
+  }
+};
+
+```
+
+---
+
+## Practical Applications of Traversal
+
+Every modern tool in your development workflow relies completely on tree traversal to function:
+
+### 1. Linters (e.g., ESLint)
+
+Linters traverse the AST looking for pattern violations. If an ESLint rule targets `DebuggerStatement`, it writes a visitor for that node type. If the engine ever hits that hook during its walk, it flags a warning line instantly.
+
+### 2. Transpilers & Bundlers (e.g., Babel, Vite)
+
+Transpilers traverse an AST and physically mutate properties or replace whole nodes on the fly. For instance, a Babel visitor can intercept modern `ArrowFunctionExpression` nodes and swap them out for legacy `FunctionDeclaration` structures during compilation.
+
+### 3. Code Formatters (e.g., Prettier)
+
+Prettier walks your code tree to ignore your manual styling choices. On the exit phase of its traversal, it reconstructs a completely uniform text string built solely out of the raw semantic node properties it encountered.
+
+---
+
+## Related terms (glossary cluster)
+
+### Backtracking
+
+The mechanical action of a traversal engine moving back up the tree layout toward a parent node after hitting a dead-end terminal leaf node.
+
+### Scope Tracking
+
+The act of recording variable availability contexts during a tree walk, typically managed by tracking states inside `BlockStatement` enter and exit hooks.
+
+### Transform / Mutation
+
+Modifying, injecting, or deleting node configurations directly inside the tree object structure mid-traversal.
+
+---
+
+## Custom Tree Traversal Implementation Example
+
+The following code implements a working **AST Traversal Engine** that walks an expression tree using the Visitor Pattern, demonstrating both `enter` and `exit` pipeline intercepts.
+
+---
+
+# 1. Defining the Nodes and Visitor Interfaces (`ast.ts`)
+
+```ts
+export type ASTNode = Program | BinaryExpression | NumericLiteral;
+
+export interface Program {
+  type: "Program";
+  body: ASTNode[];
+}
+
+export interface BinaryExpression {
+  type: "BinaryExpression";
+  operator: string;
+  left: ASTNode;
+  right: ASTNode;
+}
+
+export interface NumericLiteral {
+  type: "NumericLiteral";
+  value: number;
+}
+
+// Contracts defining what a visitor configuration looks like
+export interface Visitor {
+  Program?: { enter?: (node: Program) => void; exit?: (node: Program) => void };
+  BinaryExpression?: { enter?: (node: BinaryExpression) => void; exit?: (node: BinaryExpression) => void };
+  NumericLiteral?: { enter?: (node: NumericLiteral) => void; exit?: (node: NumericLiteral) => void };
+}
+
+```
+
+---
+
+# 2. The Traversal Engine (`traverse.ts`)
+
+```ts
+import { ASTNode, Visitor } from "./ast";
+
+export function traverse(node: ASTNode, visitor: Visitor): void {
+  // 1. Trigger the Enter Hook if defined
+  const methods = visitor[node.type] as any;
+  if (methods && methods.enter) {
+    methods.enter(node);
+  }
+
+  // 2. Recurse down into child branches based on current node layout
+  switch (node.type) {
+    case "Program":
+      for (const child of node.body) {
+        traverse(child, visitor);
+      }
+      break;
+
+    case "BinaryExpression":
+      traverse(node.left, visitor);
+      traverse(node.right, visitor);
+      break;
+
+    case "NumericLiteral":
+      // Leaf node, has no children to recurse into
+      break;
+  }
+
+  // 3. Trigger the Exit Hook if defined
+  if (methods && methods.exit) {
+    methods.exit(node);
+  }
+}
+
+```
+
+---
+
+# 3. Executing a Traversal Walk (`index.ts`)
+
+```ts
+import { Program, BinaryExpression, NumericLiteral } from "./ast";
+import { traverse } from "./traverse";
+
+// Tree representation of structural statement: "1 + 2"
+const sampleAST: Program = {
+  type: "Program",
+  body: [
+    {
+      type: "BinaryExpression",
+      operator: "+",
+      left: { type: "NumericLiteral", value: 1 },
+      right: { type: "NumericLiteral", value: 2 }
+    }
+  ]
+};
+
+// Define an analytical tracking visitor logger
+const loggingVisitor = {
+  BinaryExpression: {
+    enter(node: BinaryExpression) { console.log(`Entering: Binary (${node.operator})`); },
+    exit(node: BinaryExpression) { console.log(`Exiting: Binary (${node.operator})`); }
+  },
+  NumericLiteral: {
+    enter(node: NumericLiteral) { console.log(`Value found: ${node.value}`); }
+  }
+};
+
+// Initiate traversal walk
+traverse(sampleAST, loggingVisitor);
+
+```
+
+### Execution Log Output:
+
+```text
+Entering: Binary (+)
+Value found: 1
+Value found: 2
+Exiting: Binary (+)
+
+```
+
+---
+
+## Review
+
+Before building plugins for compilers, transpilers, or linters, lock down these core traversal insights:
+
+* **Depth-First Search dominates:** Compilers read nested structural logical blocks before stepping sideways to neighbor components, making DFS the natural engine choice for AST traversal.
+* **Nodes are intercepted twice:** You always cross a node twice during execution tracking—once entering on the way down, once exiting on the way back out.
+* **Separation of concerns:** The traversal engine handles the complex recursive logic required to navigate the tree layout safely. Your code analyzer simply registers isolated `Visitor` hooks to handle the actual nodes it cares about.

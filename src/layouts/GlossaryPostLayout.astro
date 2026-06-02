@@ -1,0 +1,246 @@
+---
+/**
+ * src/layouts/GlossaryPostLayout.astro
+ * A layout component that wraps glossary entry pages with a standard layout and styles.
+ * - Renders a full glossary entry page including fixed navigation with a back-to-glossary button.
+ * - Displays an optional full-screen hero image overlay with support for view transitions.
+ * - Presents structured metadata including difficulty level, tags, categories, and related entries.
+ * - Establishes design system aesthetics with semantic typography and spacing.
+ * @props (local): entry, nextEntry
+ * @props (global): class, class:list
+ * - entry: The current glossary entry collection entry containing content schema and metadata.
+ * - nextEntry: Optional subsequent glossary entry collection entry for pagination.
+ */
+
+import type { CollectionEntry } from 'astro:content';
+import Layout from './Layout.astro';
+import Box from '../components/ui/layout/Box.astro';
+import Stack from '../components/ui/layout/Stack.astro';
+import Inline from '../components/ui/layout/Inline.astro';
+import Text from '../components/ui/typography/Text.astro';
+import Tooltip from '../components/ui/overlay/Tooltip.astro';
+import Image from '../components/ui/primitives/Image.astro';
+import '../styles/markdown.css';
+
+export interface Props {
+  entry: CollectionEntry<'glossary'>;
+  nextEntry?: CollectionEntry<'glossary'>;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+
+const { entry, nextEntry, class: className = '', "class:list": classList = {} } = Astro.props;
+const { title, description, shortDefinition, definition, level, difficultyScore, imageSrc, tags, categories, prerequisites, related } = entry.data;
+---
+
+<Layout title={`${title} | Glossary`} description={description}>
+  <div class="glossary-page">
+    <nav class="glossary-nav">
+      <a href="/glossary" class="nav-button back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Glossary
+      </a>
+
+      {nextEntry && (
+        <div class="next-wrapper">
+          <a href={`/glossary/${nextEntry.id}`} id="next-btn" class="nav-button next-link" style="anchor-name: --next-btn;">
+            Next Entry
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <Tooltip id="next-tooltip" anchor="next-btn" placement="bottom">
+            <Stack gap="xs">
+              <span style="font-size: 10px; opacity: 0.7; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em;">Next Definition</span>
+              <span style="font-weight: 500; font-size: 14px; white-space: nowrap;">{nextEntry.data.title}</span>
+            </Stack>
+          </Tooltip>
+        </div>
+      )}
+    </nav>
+
+    {imageSrc && (
+      <Image 
+        src={imageSrc}
+        alt={title}
+        fit="none"
+        effects={["glass", "grayscale", "screen"]}
+        height="80vh"
+        effects="fade-down-hero"
+        class="entry-hero" 
+        style="view-transition-name: entry-hero;"
+      />
+    )}
+
+    <Box class="content-container" style="view-transition-name: entry-content;">
+      <Stack gap="lg" class="content">
+        <header class="entry-header">
+          {level && (
+            <Text as="span" type="label" tone="accent">{level.charAt(0).toUpperCase() + level.slice(1)} · Difficulty {difficultyScore}</Text>
+          )}
+          <Text as="h1" type="h1" class="entry-title">{title}</Text>
+          <Text as="p" type="lead" tone="subtle">{shortDefinition}</Text>
+          
+          <Stack gap="sm" class="definition-block">
+            <Text as="h3" type="label" tone="accent">Definition</Text>
+            <Text as="p" tone="muted">{definition}</Text>
+          </Stack>
+        </header>
+
+        <div class:list={["markdown-content", className, classList]}>
+          <slot />
+        </div>
+
+        <!-- Metadata blocks -->
+        <Stack gap="lg" class="metadata-blocks">
+          {tags && tags.length > 0 && (
+            <Stack gap="sm">
+              <Text as="h3" type="label" tone="accent">Tags</Text>
+              <Inline gap="sm">
+                {tags.map(tag => (
+                  <span class="tag">#{tag}</span>
+                ))}
+              </Inline>
+            </Stack>
+          )}
+
+          {categories && categories.length > 0 && (
+            <Stack gap="sm">
+              <Text as="h3" type="label" tone="accent">Categories</Text>
+              <Text as="p" tone="muted">
+                {categories.join(", ")}
+              </Text>
+            </Stack>
+          )}
+
+          {prerequisites && prerequisites.length > 0 && (
+            <Stack gap="sm">
+              <Text as="h3" type="label" tone="accent">Prerequisites</Text>
+              <Text as="p" tone="muted">
+                {prerequisites.join(", ")}
+              </Text>
+            </Stack>
+          )}
+
+          {related && related.length > 0 && (
+            <Stack gap="sm">
+              <Text as="h3" type="label" tone="accent">Related Entries</Text>
+              <Text as="p" tone="muted">
+                {related.join(", ")}
+              </Text>
+            </Stack>
+          )}
+        </Stack>
+      </Stack>
+    </Box>
+  </div>
+</Layout>
+
+<style>
+  .glossary-page {
+    min-height: 100vh;
+  }
+
+  .glossary-nav {
+    position: fixed;
+    top: var(--space-8);
+    left: var(--space-8);
+    right: var(--space-8);
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .nav-button {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text);
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--rad-full);
+    border: 1px solid var(--border-subtle);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    font-size: var(--text-sm);
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .nav-button:hover {
+    background: var(--bg-surface-0);
+    border-color: var(--border);
+  }
+
+  .back-link:hover {
+    transform: translateX(-4px);
+  }
+
+  .next-link:hover {
+    transform: translateX(4px);
+  }
+  
+  .next-wrapper {
+    position: relative;
+    pointer-events: auto;
+  }
+
+  .entry-hero {
+    max-height: 50vh;
+    object-position: center;
+  }
+
+  .content-container {
+    max-width: var(--max-width, 1280px);
+    margin: 0 auto;
+    padding: var(--space-32) var(--space-8);
+    position: relative;
+    z-index: 10;
+  }
+
+  .content {
+    max-width: 800px;
+  }
+
+  .entry-header {
+    margin-bottom: var(--space-8);
+    background: linear-gradient(to right, rgba(2,3,7,.9) 30%, var(--background) 100%);
+    padding: var(--space-4);
+    border-radius: var(--rad-xs);
+  }
+
+  .entry-title {
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    margin: var(--space-4) 0 var(--space-6);
+    line-height: 1.1;
+  }
+
+  .definition-block {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .metadata-blocks {
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-8);
+  }
+
+  .tag {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: var(--text-sm);
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    background: rgba(var(--accent-rgb, 255, 255, 255), 0.05);
+    border-radius: var(--rad-sm);
+  }
+
+  ::view-transition-group(entry-content) {
+    z-index: 20;
+  }
+</style>

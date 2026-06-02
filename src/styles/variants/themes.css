@@ -30,7 +30,7 @@
 
 /**                                          */
 /**     Ghost Variant                         */
-/**                                          */                                           
+/**                                          */
 .variant--ghost {
   background: transparent;
   color: var(--text-muted) !important;
@@ -60,13 +60,15 @@
 /**                                           */
 .variant--secondary {
   background: var(--secondary);
-  color: var(--text-inverse);
-  border-color: var(--accent);
+  color: var(--secondary-dim) !important;
+  font-weight: bold !important;
+  color: var(--text-1) !important;
+  border-color: var(--secondary-border) !important;
 }
 
 .variant--secondary:hover {
   background: var(--secondary-hover);
-  color: var(--text);
+  color: var(--text) !important;
   border-color: var(--secondary-hover);
 }
 

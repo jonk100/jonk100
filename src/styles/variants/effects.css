@@ -42,6 +42,71 @@
   animation: shimmer 1.5s infinite linear;
 }
 
+/**
+ * Fully visible at bottom,
+ * fades out toward the top.
+ */
+.effect--fade-up {
+  -webkit-mask-image: linear-gradient(
+    to top,
+    black 0%,
+    black 25%,
+    transparent 100%
+  );
+
+  mask-image: linear-gradient(
+    to top,
+    black 0%,
+    black 25%,
+    transparent 100%
+  );
+}
+
+/**
+ * Fully visible at top,
+ * fades out toward the bottom.
+ */
+.effect--fade-down {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 75%,
+    transparent 100%
+  );
+
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 75%,
+    transparent 100%
+  );
+}
+
+/**
+ * Hero-image variant.
+ * Top remains fully visible.
+ * Bottom ~40% gradually fades away.
+ */
+.effect--fade-down-hero {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 55%,
+    rgba(0, 0, 0, 0.8) 70%,
+    rgba(0, 0, 0, 0.4) 85%,
+    transparent 100%
+  );
+
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 55%,
+    rgba(0, 0, 0, 0.8) 70%,
+    rgba(0, 0, 0, 0.4) 85%,
+    transparent 100%
+  );
+}
+
 /* ─────────────────────────────
    Backdrops (Dialogs, Modals, Drawers)
 ───────────────────────────── */

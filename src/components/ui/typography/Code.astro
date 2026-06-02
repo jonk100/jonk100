@@ -50,7 +50,7 @@ const contentClass = inline ? 'code-inline' : 'code-block';
       <figcaption class="code-caption" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
     )}
     {code ? (
-      <AstroCode code={code} lang={language as any} theme="github-dark" class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} {...rest} />
+      <AstroCode code={code} lang={language as any} class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} {...rest} />
     ) : (
       <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '']} data-language={language} {...rest}><code class={`language-${language}`}><slot /></code></pre>
     )}
@@ -60,7 +60,7 @@ const contentClass = inline ? 'code-inline' : 'code-block';
   </figure>
 ) : (
   code ? (
-    <AstroCode code={code} lang={language as any} theme="github-dark" class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest} />
+    <AstroCode code={code} lang={language as any} class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} {...rest} />
   ) : (
     <pre class:list={[contentClass, frame !== 'none' ? `frame-variant--${frame}` : '', className, classList]} data-language={language} {...rest}><code class={`language-${language}`}><slot /></code></pre>
   )
@@ -70,13 +70,12 @@ const contentClass = inline ? 'code-inline' : 'code-block';
   .code-inline {
     display: inline-block;
     font-family: var(--mono);
-    font-size: var(--text-xs);
-    padding: var(--space-1) var(--space-2);
-    background: transparent;
+    font-size: var(--text-base);
     /* border: 1px solid var(--border); */
     border-radius: var(--rad-sm);
     color: var(--accent);
-    margin: var(--space-5);
+    background: var(--surface-5);
+
   }
 
   .code-figure {
@@ -84,6 +83,7 @@ const contentClass = inline ? 'code-inline' : 'code-block';
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    
   }
 
   .code-caption {
@@ -94,14 +94,12 @@ const contentClass = inline ? 'code-inline' : 'code-block';
 
   .code-block {
     font-family: var(--mono);
-    font-size: var(--text-sm);
-    padding: var(--space-4);
-    margin: 0;
+    font-size: var(--text-base);
     background: transparent;
-    /* border: 1px solid var(--border); */
-    /* border-radius: var(--rad-md); */
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--rad-md);
     overflow-x: auto;
     color: var(--text);
-    line-height: var(--leading-relaxed);
+    line-height: var(--leading-looser);
   }
 </style>

@@ -1,6 +1,7 @@
 @import './tokens.css';
 @import './variants/index.css';
 @import './utilities.css';
+@import './markdown.css';
 
 
 :root {
