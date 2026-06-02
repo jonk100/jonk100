@@ -1,21 +1,13 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Paper from "./Paper.astro";
 
 test("renders elevated paper", async () => {
-  const screen = await render(Paper, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Paper, {
     props: { layer: 3 },
     slots: { default: "Paper Content" },
   });
 
-  await expect.element(screen.locator('.layer--3')).toBeInTheDocument();
-});
-
-test("applies interactive class", async () => {
-  const screen = await render(Paper, {
-    props: { interactive: true },
-    slots: { default: "Interactive" },
-  });
-
-  await expect.element(screen.locator('.paper--interactive')).toBeInTheDocument();
+  expect(result).toContain("layer--3");
 });

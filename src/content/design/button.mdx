@@ -46,7 +46,7 @@ import ButtonGroup from '../../components/ui/controls/ButtonGroup.astro';
 
 The `Button` component is the main interaction primitive in our design system. Standardizing this component ensures visual consistency across buttons, links, and action dividers, while automating vertical alignments and layout ratios. Under the hood, it compiles dynamically as either an HTML `<button>` or a native `<a>` anchor, depending on the presence of the `href` attribute.
 
-### The Specificity Cascade Fix
+## The Specificity Cascade Fix
 In complex stylesheets, base selectors often clash with custom theme overrides. To prevent this, our button stylesheet lowers the specificity of the base hover state to `0` using the modern CSS `:where()` pseudo-class:
 ```css
 :where(.control):hover {
@@ -55,9 +55,9 @@ In complex stylesheets, base selectors often clash with custom theme overrides. 
 ```
 By enclosing `.control` inside `:where()`, the browser treats the base selector's specificity as negligible. This allows specialized themes declared in our dynamic global variants stylesheet (such as `.variant--secondary:hover` or `.variant--accent:hover`) to cascade cleanly and override visual parameters without requiring complex chaining rules.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Theme & Size Catalog
+### Common: Theme & Size Catalog
 Rather than declaring unique button parameters on every custom card, you can pass theme and size properties. This consolidates standard visual options inside a single visual preview showcase:
 
 <ComponentPreview
@@ -71,7 +71,7 @@ Rather than declaring unique button parameters on every custom card, you can pas
   </Inline>
 </ComponentPreview>
 
-#### Advanced: Animated & Loading States
+### Advanced: Animated & Loading States
 Demonstrates how to compose dynamic action triggers configured with hardware-accelerated animations or active loading indicators for asynchronous operations:
 
 <ComponentPreview
@@ -97,10 +97,10 @@ Demonstrates how to compose dynamic action triggers configured with hardware-acc
   </div>
 </ComponentPreview>
 
-### Compound Component: ButtonGroup
+## Compound Component: ButtonGroup
 The `ButtonGroup` component physically attaches multiple `Button` primitives together into a single, segmented control row. It automatically overrides the internal `border-radius` of its children to create a unified pill or block shape, while preserving the outer corner radii of the first and last elements.
 
-#### Usage: Segmented Actions
+### Usage: Segmented Actions
 Ideal for toggle-like filters or multi-choice action sets where items need to appear as a single cohesive unit:
 
 <ComponentPreview

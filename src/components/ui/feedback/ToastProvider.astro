@@ -8,6 +8,12 @@
 
 <div class="toast-container" aria-live="polite"></div>
 
+<script>
+  import { toast } from '../../../lib/toast';
+  // Attaching to window so inline onclick handlers can find it
+  (window as any).toast = toast;
+</script>
+
 <style is:global>
   .toast-container {
     position: fixed;

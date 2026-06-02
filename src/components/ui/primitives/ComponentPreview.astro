@@ -40,7 +40,7 @@ const previewId = `preview-${Math.random().toString(36).substring(2, 9)}`;
       <div class="preview-header">
         <Inline justify="between" align="center" gap="md">
           <Text as="span" type="label" tone="accent" class="preview-title">{title || 'Component Preview'}</Text>
-          <div class="preview-tabs">
+          <div class="preview-tabs" role="tablist">
             <button class="tab-btn is-active" data-tab="preview" aria-selected="true" role="tab">Preview</button>
             <button class="tab-btn" data-tab="code" aria-selected="false" role="tab">Code</button>
           </div>

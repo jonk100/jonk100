@@ -27,14 +27,11 @@ jobs:
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
       
-    - name: Run Vitest
+    - name: Run Vitest (Unit)
       run: pnpm test
       
-    - name: Build Astro
-      run: pnpm run build
-      
-    - name: Run Playwright tests
-      run: pnpm exec playwright test
+    - name: Run Playwright (E2E)
+      run: pnpm test:e2e
       
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

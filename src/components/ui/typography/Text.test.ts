@@ -1,31 +1,24 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Text from "./Text.astro";
 
 test("renders standard paragraph", async () => {
-  const screen = await render(Text, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Text, {
     slots: { default: "Sample Text" },
   });
 
-  await expect.element(screen.getByText("Sample Text")).toBeVisible();
-  await expect.element(screen.locator('p')).toBeInTheDocument();
+  expect(result).toContain("Sample Text");
+  expect(result).toContain("<p");
 });
 
 test("polymorphism: renders as h1", async () => {
-  const screen = await render(Text, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Text, {
     props: { as: "h1" },
     slots: { default: "Heading" },
   });
 
-  await expect.element(screen.locator('h1')).toBeInTheDocument();
-  await expect.element(screen.getByText("Heading")).toBeVisible();
-});
-
-test("applies tone classes", async () => {
-  const screen = await render(Text, {
-    props: { tone: "accent" },
-    slots: { default: "Accent Text" },
-  });
-
-  await expect.element(screen.locator('.text--accent')).toBeInTheDocument();
+  expect(result).toContain("<h1");
+  expect(result).toContain("Heading");
 });

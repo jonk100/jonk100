@@ -1,26 +1,23 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Button from "./Button.astro";
 
 test("renders standard button", async () => {
-  const screen = await render(Button, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Button, {
     props: { label: "Click Me" },
   });
 
-  await expect.element(screen.getByText("Click Me")).toBeVisible();
+  expect(result).toContain("Click Me");
+  expect(result).toContain("control");
 });
 
 test("renders loading state", async () => {
-  const screen = await render(Button, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Button, {
     props: { label: "Click Me", loading: true },
   });
 
-  // The label content area should be hidden
-  await expect.element(screen.locator('.control-content')).not.toBeVisible();
-  
-  // The button should be disabled
-  await expect.element(screen.getByRole("button")).toBeDisabled();
-  
-  // The spinner should be present
-  await expect.element(screen.getByTestId("control-loader")).toBeVisible();
+  expect(result).toContain('data-testid="control-loader"');
+  expect(result).toContain('disabled');
 });

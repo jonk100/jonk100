@@ -1,19 +1,14 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Card from "./Card.astro";
-import CardHeader from "./CardHeader.astro";
 
 test("card structure", async () => {
-  const screen = await render(Card, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Card, {
     props: { layer: 2 },
-    slots: {
-      default: `
-        <div class="header">Header</div>
-        <div class="content">Content</div>
-      `
-    }
+    slots: { default: "Card Content" }
   });
 
-  await expect.element(screen.locator('.card')).toBeInTheDocument();
-  await expect.element(screen.locator('.layer--2')).toBeInTheDocument();
+  expect(result).toContain("card");
+  expect(result).toContain("layer--2");
 });

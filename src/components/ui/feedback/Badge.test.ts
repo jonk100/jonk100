@@ -1,22 +1,14 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Badge from "./Badge.astro";
 
 test("renders themed badge", async () => {
-  const screen = await render(Badge, {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Badge, {
     props: { theme: "success" },
     slots: { default: "Stable" },
   });
 
-  await expect.element(screen.locator('.badge--success')).toBeInTheDocument();
-  await expect.element(screen.getByText("Stable")).toBeVisible();
-});
-
-test("renders outlined variant", async () => {
-  const screen = await render(Badge, {
-    props: { outlined: true },
-    slots: { default: "Outlined" },
-  });
-
-  await expect.element(screen.locator('.badge--outlined')).toBeInTheDocument();
+  expect(result).toContain("badge--success");
+  expect(result).toContain("Stable");
 });

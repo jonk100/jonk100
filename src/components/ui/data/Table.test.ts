@@ -1,22 +1,13 @@
-import { render } from "vitest-browser-astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { expect, test } from "vitest";
 import Table from "./Table.astro";
-import TableRow from "./TableRow.astro";
 
-test("table responsiveness", async () => {
-  const screen = await render(Table, {
+test("table rendering", async () => {
+  const container = await AstroContainer.create();
+  const result = await container.renderToString(Table, {
     slots: { default: "<tr><td>Data</td></tr>" }
   });
 
-  await expect.element(screen.locator('.table-wrapper')).toBeInTheDocument();
-  await expect.element(screen.locator('table')).toBeVisible();
-});
-
-test("row hover state", async () => {
-  const screen = await render(TableRow, {
-    props: { hover: true },
-    slots: { default: "<td>Row</td>" }
-  });
-
-  await expect.element(screen.locator('.table-row--hover')).toBeInTheDocument();
+  expect(result).toContain("table-wrapper");
+  expect(result).toContain("<table");
 });

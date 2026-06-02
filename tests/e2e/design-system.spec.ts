@@ -18,20 +18,34 @@ test('design system pages accessibility and logic', async ({ page }) => {
 test('tabs interaction', async ({ page }) => {
   await page.goto('/design/tabs');
 
-  const tab2 = page.getByRole('tab', { name: /Technical Specs/i });
+  // Target the first preview specifically
+  const preview = page.locator('.component-preview').first();
+  const tab2 = preview.getByRole('tab', { name: "Technical Specs" });
   await tab2.click();
 
-  await expect(page.getByText('System Architecture')).toBeVisible();
-  await expect(page.getByText('Project Overview')).not.toBeVisible();
+  // Verify the panel content within that specific preview
+  const panel = preview.locator('.tab-panel[data-state="active"]');
+  await expect(panel).toContainText('System Architecture');
+  
+  // Use a more specific role-based locator for the hidden text
+  const overviewHeading = preview.getByRole('heading', { name: 'Project Overview' });
+  await expect(overviewHeading).not.toBeVisible();
 });
 
 test('toast notification system', async ({ page }) => {
   await page.goto('/design/toast');
 
-  const successBtn = page.getByRole('button', { name: /Success Toast/i });
+  const successBtn = page.getByRole('button', { name: "Success Toast" });
+  await expect(successBtn).toBeVisible();
+  
   await successBtn.click();
 
+  // The toast-container should be in the DOM
+  const container = page.locator('.toast-container');
+  await expect(container).toBeAttached();
+
+  // Wait for the toast item to appear
   const toast = page.locator('.toast-item');
-  await expect(toast).toBeVisible();
+  await expect(toast).toBeVisible({ timeout: 5000 });
   await expect(toast).toContainText('Blueprint saved successfully');
 });

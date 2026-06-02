@@ -11,6 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "pnpm test && pnpm test:e2e",
     "generate:icons": "tsx src/design/scripts/generate-icons.ts"
   },
   "dependencies": {
@@ -24,13 +26,13 @@
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^8.1.2",
     "@astrojs/vue": "^6.0.1",
-    "@vitest/browser-playwright": "^4.1.8",
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.60.0",
     "chromium-bidi": "^16.0.1",
     "happy-dom": "^20.9.0",
     "playwright": "^1.60.0",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8",
-    "vitest-browser-astro": "^0.2.0"
+    "vitest": "^4.1.8"
   }
 }
