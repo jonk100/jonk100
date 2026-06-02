@@ -1,0 +1,74 @@
+---
+title: "Skeleton"
+description: "Placeholder components for loading states featuring animated hardware-accelerated shimmers and conditional grouping logic."
+category: "feedback"
+order: 4
+propsTable:
+  - name: "width"
+    type: "string"
+    defaultValue: "'100%'"
+    description: "CSS width for the placeholder block."
+  - name: "height"
+    type: "string"
+    defaultValue: "'1.5rem'"
+    description: "CSS height for the placeholder block."
+  - name: "animated"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Enables the pulsing shimmer animation."
+  - name: "loading"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Controls whether the SkeletonGroup displays the loading slot or the content slot."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Skeleton from '../../components/ui/feedback/Skeleton.astro';
+import SkeletonGroup from '../../components/ui/feedback/SkeletonGroup.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Skeleton` suite is used to construct "ghost" layouts that represent content while it is being fetched. By mimicking the geometric shape of the eventual data (like text lines or circular avatars), we reduce the user's perceived latency and eliminate distracting layout shifts as items pop into view.
+
+### Hardware-Accelerated Shimmers
+Rather than animating the background color of the element directly (which can cause expensive browser repaints), our shimmer effect utilizes a linear-gradient background moved via `background-position`. This allows the animation to be offloaded to the browser's GPU, ensuring that even pages with dozens of loading skeletons maintain a smooth 60fps frame rate without taxing the CPU.
+
+### Usage Blueprints
+
+#### Common: Content Mockups
+Compose skeletons to represent standard content blocks:
+
+<ComponentPreview
+  title="Text & Media Placeholders"
+>
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <Stack gap="sm">
+      <Skeleton width="60%" height="2rem" />
+      <Skeleton height="1rem" />
+      <Skeleton height="1rem" />
+      <Skeleton width="80%" height="1rem" />
+    </Stack>
+  </div>
+</ComponentPreview>
+
+### Compound Component: SkeletonGroup
+The `SkeletonGroup` component acts as a high-level conditional switch. It allows you to define both a "loading" state (using skeletons) and a "ready" state (the actual component) within the same block, simplifying state management in complex views.
+
+<ComponentPreview
+  title="Skeleton Conditional Switching"
+>
+  <div style="width: 100%; display: flex; justify-content: center; text-align: left;">
+    <SkeletonGroup loading={true}>
+      <Stack gap="md" slot="loading">
+        <Skeleton width="120px" height="1.5rem" />
+        <Skeleton height="3rem" />
+      </Stack>
+      <Paper layer={1} padding="md">
+        <Text type="h5">Data Loaded</Text>
+        <Text type="body-sm">This content is only visible when loading is false.</Text>
+      </Paper>
+    </SkeletonGroup>
+  </div>
+</ComponentPreview>

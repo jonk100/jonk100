@@ -1,0 +1,63 @@
+---
+title: "Text"
+description: "A polymorphic typography component that standardizes text sizes, semantic tones, and dynamically renders appropriate HTML tags."
+category: "typography"
+order: 1
+propsTable:
+  - name: "type"
+    type: "BlockType"
+    defaultValue: "'body'"
+    description: "Selects the typographic block style (e.g., 'body', 'h1', 'caption', 'label')."
+  - name: "as"
+    type: "string"
+    description: "Overrides the default HTML tag rendered for the given text type."
+  - name: "tone"
+    type: "TextTone"
+    defaultValue: "'default'"
+    description: "Specifies a semantic color tone (e.g., 'subtle', 'muted', 'accent')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+
+The `Text` component is our primary polymorphic typographic primitive. It replaces the use of raw HTML header and paragraph tags (`<h1>`, `<p>`, `<span>`) across the codebase. By routing all text rendering through a single component, we ensure that font sizes, line heights, and letter spacing perfectly adhere to our design tokens while preventing arbitrary font CSS from leaking into module stylesheets.
+
+### Polymorphic Tag Resolution
+To maintain strict accessibility standards and semantic HTML structures without forcing developers to remember token values, the component intelligently maps visual styles to appropriate HTML tags. For example, setting `type="h1"` will automatically render an `<h1>` tag with display font styling, but passing `as="span"` allows you to apply that exact visual style to an inline element if the semantic structure requires it.
+
+### Usage Blueprints
+
+#### Common: Typographic Scale Showcase
+Instead of manually declaring header classes and sizes, pass the semantic `type` property. This catalog demonstrates standard visual weights and tones available out of the box:
+
+<ComponentPreview
+  title="Typography Scale Variants"
+>
+  <div style="width: 100%; max-width: 480px; margin: 0 auto; text-align: left;">
+    <Stack gap="sm">
+      <Text type="h2">The Quick Brown Fox</Text>
+      <Text type="lead" tone="subtle">A slightly larger, slightly lighter lead paragraph text meant for introductions.</Text>
+      <Text type="body">Standard body text mapping to our base font size and normal line heights. Standard body text mapping to our base font size and normal line heights.</Text>
+      <Text type="label" tone="accent">System Label</Text>
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Composing Information Modules
+Demonstrates how to use nested Text components inside layout primitives to build dense information architectures, mapping tones to convey visual hierarchy:
+
+<ComponentPreview
+  title="Semantic Data Readout"
+>
+  <div style="width: 100%; display: flex; justify-content: center; text-align: left;">
+    <Paper layer="2" padding="md" style="width: 100%; max-width: 320px;">
+      <Stack gap="xs">
+        <Text type="label" tone="subtle" style="font-size: var(--text-xs);">Server Status</Text>
+        <Text type="h4" tone="default">Operational</Text>
+        <Text type="caption" tone="muted">Uptime: 99.98% over the last 30 days. All systems reporting nominal.</Text>
+      </Stack>
+    </Paper>
+  </div>
+</ComponentPreview>

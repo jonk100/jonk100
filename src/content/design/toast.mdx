@@ -1,0 +1,62 @@
+---
+title: "Toast"
+description: "A global notification system for triggering transient feedback and status alerts from any script."
+category: "feedback"
+order: 10
+propsTable:
+  - name: "title"
+    type: "string"
+    description: "The bold header of the notification."
+  - name: "message"
+    type: "string"
+    description: "The primary descriptive payload."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "The semantic color scheme ('success', 'danger', 'accent')."
+  - name: "duration"
+    type: "number"
+    defaultValue: "5000"
+    description: "Time in milliseconds before the toast automatically dismisses."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Button from '../../components/ui/controls/Button.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Toast` system provides a lightweight way to deliver success, error, or status feedback to users without interrupting their current workflow. Unlike persistent `Alert` components, toasts are transient and stack vertically in a fixed global container.
+
+### The Global API Strategy
+To ensure that feedback can be triggered from anywhere in the codebase—including deep within client-side logic—we expose a singleton `toast` instance on the `window` object. 
+1. **ToastProvider**: Must be included once in the root layout. It manages the fixed container and CSS stacking context.
+2. **TypeScript Registry**: The system includes a `toast.notify()` method that supports full TypeScript type safety for theme selection and durations.
+3. **Hardware Acceleration**: Entry animations utilize GPU-bound CSS transforms (`translateX`) to ensure stutter-free presentation even during heavy page loads.
+
+### Usage Blueprints
+
+#### Common: Feedback Triggers
+Use the global API to signal the results of user actions, such as saving data or copying text:
+
+<ComponentPreview
+  title="Action Feedback Showcase"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="md">
+      <Button theme="success" onclick="toast.notify({ message: 'Blueprint saved successfully.', theme: 'success' })">Success Toast</Button>
+      <Button theme="danger" onclick="toast.notify({ title: 'Critical Error', message: 'Unable to sync registry.', theme: 'danger' })">Error Toast</Button>
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Custom Durations & Accent Tones
+Demonstrates utilizing longer durations and accent themes for high-priority informational notifications:
+
+<ComponentPreview
+  title="Persistent Accent Notification"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Button theme="accent" onclick="toast.notify({ title: 'System Notice', message: 'Registry update in progress. Please do not close the window.', theme: 'accent', duration: 10000 })">
+      Important Notice
+    </Button>
+  </div>
+</ComponentPreview>

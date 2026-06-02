@@ -1,0 +1,84 @@
+---
+title: "Card"
+description: "A structured content container for grouping related information, built on the Paper primitive."
+category: "data"
+order: 1
+icon: "card"
+propsTable:
+  - name: "layer"
+    type: "ComponentLayer"
+    defaultValue: "0"
+    description: "Elevation depth from '-1' to '5'."
+  - name: "radius"
+    type: "ComponentRadius"
+    defaultValue: "'md'"
+    description: "Corner radius constraint."
+  - name: "animate"
+    type: "AnimationType"
+    defaultValue: "'none'"
+    description: "Entrance or hover animation."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Card from '../../components/ui/card/Card.astro';
+import CardHeader from '../../components/ui/card/CardHeader.astro';
+import CardContent from '../../components/ui/card/CardContent.astro';
+import CardFooter from '../../components/ui/card/CardFooter.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Button from '../../components/ui/controls/Button.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+
+The `Card` component is a high-level container designed to organize information into digestible blocks. It extends the `Paper` primitive, inheriting its elevation and framing capabilities while providing a structured internal sub-component architecture (`Header`, `Content`, `Footer`).
+
+### Composite Architecture
+To ensure layout consistency across varied content types (like project tiles, blog snippets, or user profiles), the Card uses a nested component system. This allows for rigid padding controls and semantic segmentation:
+1. **CardHeader**: Handles titles and status badges with standardized top-padding.
+2. **CardContent**: The main body area with generous horizontal gutters.
+3. **CardFooter**: A dedicated action row at the bottom, automatically aligned with flexbox.
+
+### Usage Blueprints
+
+#### Common: Feature Information Block
+Standard implementation for displaying a title, body text, and an primary action:
+
+<ComponentPreview
+  title="Standard Feature Card"
+>
+  <div style="width: 100%; max-width: 360px; margin: 0 auto;">
+    <Card layer={1} bordered>
+      <CardHeader>
+        <Text type="h5" style="margin:0;">System Diagnostic</Text>
+        <Badge theme="success" size="xs">Operational</Badge>
+      </CardHeader>
+      <CardContent>
+        <Text type="body-sm" tone="subtle">All core telemetry streams are reporting nominal. No critical failures detected in the local registry.</Text>
+      </CardContent>
+      <CardFooter>
+        <Button size="sm" theme="primary">View Logs</Button>
+        <Button size="sm" theme="ghost">Ignore</Button>
+      </CardFooter>
+    </Card>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Interactive Media Tile
+Demonstrates how to utilize the `interactive` property and custom effects to create high-fidelity gallery items:
+
+<ComponentPreview
+  title="Interactive Media Card"
+>
+  <div style="width: 100%; max-width: 360px; margin: 0 auto;">
+    <Card layer={2} interactive={true} frame="glass">
+      <div style="height: 160px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-subtle);">
+         <Text tone="muted">Media Placeholder</Text>
+      </div>
+      <CardHeader>
+        <Text type="label" tone="accent">Case Study</Text>
+        <Text type="h4" style="margin:0;">Neural Link Arch</Text>
+      </CardHeader>
+      <CardContent>
+        <Text type="caption">Exploring the intersection of human cognitive patterns and distributed network architecture.</Text>
+      </CardContent>
+    </Card>
+  </div>
+</ComponentPreview>

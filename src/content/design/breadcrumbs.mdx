@@ -1,0 +1,59 @@
+---
+title: "Breadcrumbs"
+description: "A secondary navigation component indicating the current page's hierarchy within the system."
+category: "navigation"
+order: 1
+propsTable:
+  - name: "href"
+    type: "string"
+    description: "Link destination for an individual item."
+  - name: "current"
+    type: "boolean"
+    defaultValue: "false"
+    description: "If true, indicates the current active page (non-clickable)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Breadcrumbs from '../../components/ui/navigation/Breadcrumbs.astro';
+import BreadcrumbItem from '../../components/ui/navigation/BreadcrumbItem.astro';
+
+The `Breadcrumbs` component helps users understand their location within a hierarchical site structure. It provides a trail of links back to parent sections, improving discoverability and orientation in deep documentation sets.
+
+### Semantic Nav Trails
+To ensure search engines and screen readers correctly parse the navigation path, the component follows strict ARIA standards:
+1. **Nav Wrapper**: The list is wrapped in a `<nav aria-label="Breadcrumb">` element.
+2. **Current Page Signaling**: The active page is marked with `aria-current="page"`, informing assistive technologies that this node represents the user's present location.
+3. **Rotating Dividers**: The separators use our design system's `divider` vector, rotated 90 degrees to function as semantic breadcrumb arrows.
+
+### Usage Blueprints
+
+#### Common: Site-Wide Pathing
+Standard usage for orienting users across major site sections:
+
+<ComponentPreview
+  title="Standard Navigation Trail"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Breadcrumbs>
+      <BreadcrumbItem href="/">Home</BreadcrumbItem>
+      <BreadcrumbItem href="/design">Design System</BreadcrumbItem>
+      <BreadcrumbItem current={true}>Navigation</BreadcrumbItem>
+    </Breadcrumbs>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Deep Content Hierarchy
+Demonstrates how breadcrumbs scale to handle deeply nested article structures:
+
+<ComponentPreview
+  title="Nested Article Trail"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Breadcrumbs>
+      <BreadcrumbItem href="/">Jon Doe</BreadcrumbItem>
+      <BreadcrumbItem href="/blog">Technical Blog</BreadcrumbItem>
+      <BreadcrumbItem href="/blog/arch">Architecture</BreadcrumbItem>
+      <BreadcrumbItem current={true}>AST Compilers</BreadcrumbItem>
+    </Breadcrumbs>
+  </div>
+</ComponentPreview>

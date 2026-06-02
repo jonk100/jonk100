@@ -1,0 +1,79 @@
+---
+title: "Code"
+description: "A styled component for rendering inline snippets or block-level formatted code with integrated Shiki syntax highlighting."
+category: "typography"
+order: 2
+propsTable:
+  - name: "inline"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Renders as an inline <code> tag instead of a block <pre> element."
+  - name: "language"
+    type: "string"
+    defaultValue: "'plaintext'"
+    description: "The syntax language for parsing highlighting (e.g., 'typescript', 'css')."
+  - name: "code"
+    type: "string"
+    description: "The raw code string payload to highlight using Shiki in block mode."
+  - name: "frame"
+    type: "FrameVariant"
+    defaultValue: "'none'"
+    description: "Applies a visual container shape or border styling."
+  - name: "caption"
+    type: "string"
+    description: "Text rendered in an attached `<figcaption>`."
+  - name: "captionPosition"
+    type: "'top' | 'bottom'"
+    defaultValue: "'top'"
+    description: "Controls the rendering placement of the caption."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Code from '../../components/ui/typography/Code.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Code` primitive acts as a unified typographic wrapper for rendering technical snippets and syntax displays. Standard HTML `<code>` and `<pre>` elements lack aesthetic formatting and syntax parsing. By standardizing this component, we establish a global monospace typography baseline and provide integrated capabilities for framing, captioning, and parsing syntax using Astro's built-in Shiki highlighter.
+
+### Component-Level Highlighting Delegation
+The architecture of this component conditionally delegates rendering payloads. If `inline={true}`, it outputs a lightweight, padded `<code>` node tailored for embedding within prose sentences. However, if rendering a block, it leverages Astro's `<Code>` component directly. This allows us to statically generate rich, tokenized HTML syntax coloring at build time without shipping massive client-side javascript libraries to the user's browser.
+
+### Usage Blueprints
+
+#### Common: Inline and Standard Blocks
+Combine the inline text snippets with standard block configurations to display technical references within articles:
+
+<ComponentPreview
+  title="Code Snippet States"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Stack gap="md">
+      <Text type="body">
+        To initialize the sequence, you must call the <Code inline={true}>initSequence()</Code> method on the class instance.
+      </Text>
+      <Code 
+        inline={false} 
+        language="javascript" 
+        code={`function initSequence() {\n  console.log("Sequence started.");\n  return true;\n}`}
+      />
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Framed Figures with Captions
+Demonstrates how to utilize the component's `figure` wrapping logic to construct a comprehensive code exhibit. This includes custom hardware frames, top-aligned descriptive captions, and distinct syntactic language definitions:
+
+<ComponentPreview
+  title="Framed Code Exhibit"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Code 
+      inline={false} 
+      language="css" 
+      frame="minimal"
+      caption="src/styles/variants.css"
+      captionPosition="top"
+      code={`.variant--primary {\n  background-color: var(--color-primary);\n  color: var(--color-on-primary);\n}`}
+    />
+  </div>
+</ComponentPreview>

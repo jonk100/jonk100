@@ -38,11 +38,11 @@ export const componentCategories = {
     icon: 'check-circle'
   },
 
-  overlays: {
-    title: '04 / Portal Overlays',
+  typography: {
+    title: '04 / Typography',
     description:
-      'Backdrop dialogues, popovers, and hover tooltips utilizing native Anchor systems.',
-    icon: 'alert-circle'
+      'Text, code, and prose primitives orchestrating our typographic scales and styles.',
+    icon: 'text'
   },
 
   feedback: {
@@ -50,6 +50,27 @@ export const componentCategories = {
     description:
       'Inline callout alerts, badge indicators, spinners, and loading skeleton blocks.',
     icon: 'alert-triangle'
+  },
+
+  data: {
+    title: '06 / Data Display',
+    description:
+      'Tables, cards, and data visualization primitives orchestrating our data display scales and styles.',
+    icon: 'table'
+  },
+
+  overlays: {
+    title: '07 / Portal Overlays',
+    description:
+      'Backdrop dialogues, popovers, and hover tooltips utilizing native Anchor systems.',
+    icon: 'alert-circle'
+  },
+
+  animation: {
+    title: '08 / Animation',
+    description:
+      'Motion primitives orchestrating our animation scales and styles.',
+    icon: 'animation'
   }
 } as const;
 
@@ -111,7 +132,10 @@ export const categoryVisibility: Record<ComponentCategory, {
   overlays: { public: true, showInSidebar: true },
   feedback: { public: true, showInSidebar: true },
   controls: { public: true, showInSidebar: true },
-  layouts: { public: true, showInSidebar: true }
+  layouts: { public: true, showInSidebar: true },
+  typography: { public: true, showInSidebar: true },
+  data: { public: true, showInSidebar: true },
+  animation: { public: true, showInSidebar: true }
 };
 
 /**
@@ -131,5 +155,9 @@ export const categoryIcons = {
   layouts: 'grid',
   controls: 'cursor',
   overlays: 'layers',
-  feedback: 'alert'
+  feedback: 'alert',
+  typography: 'text',
+  data: 'table',
+  animation: 'animation'
+  
 } as const;

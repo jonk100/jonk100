@@ -1,0 +1,65 @@
+---
+title: "Box"
+description: "A foundational layout primitive for applying spacing, margins, elevation, and animations without writing custom CSS."
+category: "layouts"
+order: 1
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'div'"
+    description: "The underlying HTML tag to render."
+  - name: "padding"
+    type: "SpacingScale"
+    description: "Applies inner padding using the system spacing scale."
+  - name: "margin"
+    type: "SpacingScale"
+    description: "Applies outer margin using the system spacing scale."
+  - name: "layer"
+    type: "number"
+    description: "Sets the elevation depth (-1 to 5), mapping to surface tokens."
+  - name: "animate"
+    type: "AnimationType"
+    defaultValue: "'none'"
+    description: "Applies a predefined entrance or loop animation."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Box` component is our most foundational layout primitive. It acts as a universal wrapper that binds raw HTML tags to our design system's spacing and elevation tokens. By using `Box`, developers can apply consistent gutters and surface depths directly in their markup, eliminating the need to create hundreds of one-off CSS classes for simple margin or padding resets.
+
+### Atomic Utility Delegation
+Rather than reinventing CSS, `Box` delegates all of its visual parameters to our global utility stylesheet (`src/styles/utilities.css`). When you pass `padding="md"`, the component simply appends the `.p-md` class. This architectural decision ensures that the final CSS bundle remains extremely small, as every `Box` instance on the site reuses the same few global utility selectors.
+
+### Usage Blueprints
+
+#### Common: Spacing & Elevation
+Demonstrates how to use `Box` to establish consistent padding and surface depth for content blocks:
+
+<ComponentPreview
+  title="Surface Padding & Elevation"
+>
+  <div style="width: 100%; display: flex; justify-content: center; gap: var(--space-4);">
+    <Box padding="md" layer={1} radius="md" style="width: 200px;">
+      <Text type="body-sm" style="margin: 0;">Elevated Box</Text>
+    </Box>
+    <Box padding="md" layer={-1} radius="md" style="width: 200px;">
+      <Text type="body-sm" style="margin: 0;">Recessed Box</Text>
+    </Box>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Animated Conditional Wrappers
+`Box` is frequently used as a semantic wrapper that conditionally applies hardware-accelerated animations. This example shows a box wrapping a status indicator with a subtle entrance float:
+
+<ComponentPreview
+  title="Animated Semantic Wrapper"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Box as="section" padding="lg" layer={2} radius="lg" animate="slide-up" style="max-width: 320px;">
+      <Text type="h4" tone="accent" style="margin-bottom: var(--space-2);">Update Ready</Text>
+      <Text type="caption">Your system blueprints have been successfully synchronized with the remote registry.</Text>
+    </Box>
+  </div>
+</ComponentPreview>

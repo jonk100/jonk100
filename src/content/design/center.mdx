@@ -1,0 +1,57 @@
+---
+title: "Center"
+description: "A specialized layout primitive designed to center content along horizontal, vertical, or both axes."
+category: "layouts"
+order: 4
+propsTable:
+  - name: "axis"
+    type: "'both' | 'horizontal' | 'vertical'"
+    defaultValue: "'both'"
+    description: "The dimension(s) to center content within."
+  - name: "inline"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Sets the display to inline-grid instead of full-width grid."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Center from '../../components/ui/layout/Center.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Center` primitive provides a robust, zero-effort solution for the notoriously difficult task of perfect alignment. While standard CSS requires complex flexbox or absolute positioning boilerplate to center elements, this component abstracts those rules into a single semantic tag, ensuring that both text and complex component blocks remain perfectly balanced within their parent containers.
+
+### Grid-Based Place-Items
+To achieve perfect centering with the least amount of CSS possible, `Center` utilizes a CSS Grid layout. By applying `place-items: center` to the container, the browser handles the mathematical calculations for both the horizontal and vertical axes simultaneously. This is more resilient than flexbox centering, as it does not require explicit `justify-content` and `align-items` declarations, and handles multi-line content wrapping more predictably.
+
+### Usage Blueprints
+
+#### Common: Full-Axis Balancing
+The default mode centers children perfectly in both directions, ideal for hero sections or empty state illustrations:
+
+<ComponentPreview
+  title="Absolute Central Alignment"
+>
+  <div style="width: 100%; height: 200px; background: var(--surface-1); border: 1px dashed var(--border-subtle); border-radius: var(--rad-md);">
+    <Center style="height: 100%;">
+      <Box padding="sm" layer={2} radius="md">
+        <Text style="margin: 0;">Dead Center</Text>
+      </Box>
+    </Center>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Axis-Restricted Alignment
+Demonstrates how to restrict centering to a single axis, allowing content to stretch vertically while remaining horizontally balanced, or vice-versa:
+
+<ComponentPreview
+  title="Horizontal-Only Centering"
+>
+  <div style="width: 100%; height: 160px; background: var(--surface-1); border: 1px dashed var(--border-subtle); border-radius: var(--rad-md);">
+    <Center axis="horizontal" style="height: 100%;">
+      <Box padding="sm" layer={2} radius="md" style="width: 240px; text-align: center;">
+        <Text style="margin: 0;">Horizontal Only</Text>
+      </Box>
+    </Center>
+  </div>
+</ComponentPreview>

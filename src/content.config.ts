@@ -33,7 +33,17 @@ const design = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    category: z.enum(['primitives', 'layouts', 'controls', 'overlays', 'feedback']),
+    category: z.enum([
+      'primitives',   // Icon, Image, Link, Paper, Svg, Frame
+      'layouts',       // Box, Grid, Stack, Container, Columns, etc.
+      'typography',   // Text, Code, List, Prose, SectionLabel + content/
+      'navigation',   // Breadcrumbs, etc.
+      'controls',     // Button, ButtonGroup + all of input/
+      'data',         // Table family, Card family (data display)
+      'overlays',     // Modal, Sheet, Popover, Tooltip, AlertDialog
+      'feedback',     // Alert, Badge, Skeleton, Spinner, Avatar
+      'animation'
+    ]),
     order: z.number().default(0),
     propsTable: z.array(z.object({
       name: z.string(),

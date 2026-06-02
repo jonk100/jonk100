@@ -1,0 +1,56 @@
+---
+title: "Prose"
+description: "A specialized typographic block wrapper orchestrating cascading styles for arbitrary Markdown and rich text content."
+category: "typography"
+order: 1
+propsTable:
+  - name: "class"
+    type: "string"
+    description: "Standard class appendage for overriding layout widths or container bindings."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Prose from '../../components/ui/content/Prose.astro';
+
+The `Prose` primitive acts as a critical bridge between dynamically generated content and our rigid design system. When authors write in Markdown or pull strings from a CMS, the output resolves as naked HTML (`<h1>`, `<p>`, `<strong>`). Since we do not globally style raw HTML tags to prevent component cross-contamination, those blocks render with default, often broken, browser aesthetics. `Prose` provides a designated container class that cascades our typographic scales specifically onto its raw nested children.
+
+### Long-Form Reading Architecture
+Unlike the `Text` component (which is optimized for interface density), `Prose` specifically architects itself for long-form narrative consumption:
+1. **Extended Rhythms:** It targets internal paragraphs and overrides standard padding with larger, relaxed vertical margins (`var(--space-6)`).
+2. **Reading Leading:** The line height is aggressively loosened (e.g., `line-height: 1.8`) to prevent text block fatigue during deep-dive technical articles.
+3. **Typography Scope Capture:** By strictly scoping the child selectors (e.g., `.prose h2`), it guarantees that article styling cannot bleed out and affect the broader page's navigational header elements.
+
+### Usage Blueprints
+
+#### Common: Markdown Render Block
+Demonstrates how raw, structurally unclassed HTML elements magically snap into the system's typography, list styling, and header formatting when placed inside the wrapper:
+
+<ComponentPreview
+  title="Cascading Rich Text Styles"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Prose>
+      <h2>System Architecture</h2>
+      <p>The initialization process handles loading all environmental variables. Before proceeding, ensure that you have configured the following parameters correctly inside your root <code>.env</code> file:</p>
+      <ul>
+        <li>Database connection strings</li>
+        <li>Secret payload keys</li>
+      </ul>
+      <p>Failure to provide these variables will cause a <strong>critical process halt</strong> upon boot.</p>
+    </Prose>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Integrated Content Parsing Pipeline
+In production, this component is rarely written out manually. Instead, it serves as the core bounding box for our Astro content collections and MDX rendering slots, ensuring that technical blog posts and case studies flow beautifully without explicit UI composition:
+
+<ComponentPreview
+  title="Astro Content Integration (Simulated)"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left; background: var(--surface-1); padding: var(--space-4); border-radius: var(--rad-md); border: 1px dashed var(--border-subtle);">
+    <Prose class="documentation-body">
+      <h3>1. Abstract Syntax Trees</h3>
+      <p>When compiling standard JavaScript nodes, the lexer first tokenizes the raw string. By mutating the node map prior to generation, we intercept standard procedures.</p>
+    </Prose>
+  </div>
+</ComponentPreview>

@@ -1,0 +1,86 @@
+---
+title: "List"
+description: "A semantic layout wrapper for structured lists, enforcing custom bullet styles and system-defined gap spacing."
+category: "typography"
+order: 3
+propsTable:
+  - name: "as"
+    type: "'ul' | 'ol' | 'dl'"
+    defaultValue: "'ul'"
+    description: "The underlying HTML list tag to render."
+  - name: "type"
+    type: "'disc' | 'decimal' | 'none'"
+    defaultValue: "'disc'"
+    description: "Specifies the list item marker styling."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'sm'"
+    description: "Controls the vertical spacing between sibling list items."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import List from '../../components/ui/typography/List.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Grid from '../../components/ui/layout/Grid.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `List` component is a targeted layout wrapper for unordered, ordered, and description lists. Browsers enforce unpredictable default paddings and margins on `<ul>` and `<ol>` nodes, leading to misaligned text blocks. This primitive resets those defaults, binds bullet spacing to our global tokens, and controls the internal vertical rhythms.
+
+### Global Sibling Penetration
+Rather than requiring developers to import and wrap every single bullet point inside a custom `<ListItem>` component, `List` uses CSS `:global` selectors inside its scoped stylesheet to automatically manage descendants:
+```css
+.list.gap-sm :global(li:not(:last-child)) { 
+  margin-bottom: var(--space-2); 
+}
+```
+This architectural decision drastically reduces component boilerplate in templates. It allows developers to write standard semantic `<li>` or `<dt>` elements inside the list block while guaranteeing that spacing correctly maps to the requested `gap` property.
+
+### Usage Blueprints
+
+#### Common: Ordered and Unordered Collections
+Consolidate bullet point structures and numeric sequences side-by-side to review standard text alignment and padding:
+
+<ComponentPreview
+  title="List Bullet Styles"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Grid cols={2} gap="md">
+      <Stack gap="xs">
+        <Text type="label" tone="subtle">Unordered</Text>
+        <List type="disc" gap="sm">
+          <li>Core Systems</li>
+          <li>Database Architecture</li>
+          <li>User Interfaces</li>
+        </List>
+      </Stack>
+      <Stack gap="xs">
+        <Text type="label" tone="subtle">Ordered</Text>
+        <List as="ol" type="decimal" gap="sm">
+          <li>Initialize Server</li>
+          <li>Load Configuration</li>
+          <li>Await Connections</li>
+        </List>
+      </Stack>
+    </Grid>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Expanded Description Term List
+Demonstrates how to construct a semantic `<dl>` description list with large rhythmic gaps, applying clean padding to vocabulary terms and their associated definition descriptions:
+
+<ComponentPreview
+  title="Definition List Spacing"
+>
+  <div style="width: 100%; display: flex; justify-content: center; text-align: left;">
+    <List as="dl" type="none" gap="lg" style="width: 100%; max-width: 320px;">
+      <div>
+        <dt><Text type="label">API Layer</Text></dt>
+        <dd><Text tone="subtle" type="body-sm">Handles incoming REST and GraphQL requests from the external client frontends.</Text></dd>
+      </div>
+      <div>
+        <dt><Text type="label">Cache Store</Text></dt>
+        <dd><Text tone="subtle" type="body-sm">In-memory datastore holding frequently accessed query results for rapid retrieval.</Text></dd>
+      </div>
+    </List>
+  </div>
+</ComponentPreview>

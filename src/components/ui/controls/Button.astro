@@ -76,7 +76,7 @@ const tagProps =
     {label ? <Text as="span" type="label" tone={tone}>{label}</Text> : <slot />}
   </div>
   {loading && (
-    <div class="control-loader">
+    <div class="control-loader" data-testid="control-loader">
       <Spinner size={size} tone="currentColor" />
     </div>
   )}

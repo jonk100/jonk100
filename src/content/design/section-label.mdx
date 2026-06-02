@@ -1,0 +1,71 @@
+---
+title: "Section Label"
+description: "A semantic typographic header primitive utilizing automated horizontal dividers and thematic tones to establish clear architectural boundaries."
+category: "typography"
+order: 4
+propsTable:
+  - name: "text"
+    type: "string"
+    description: "The text payload rendered inside the uppercase label block."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Sets the visual style theme (e.g., 'primary', 'accent', 'ghost')."
+  - name: "tone"
+    type: "TextTone"
+    defaultValue: "'subtle'"
+    description: "Specifies a semantic color tone override for both text and divider."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'base'"
+    description: "Scales the vertical rhythm and label dimensions."
+  - name: "animate"
+    type: "AnimationType"
+    defaultValue: "'none'"
+    description: "Applies subtle entrance or loop micro-animations."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import SectionLabel from '../../components/ui/typography/SectionLabel.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+
+The `SectionLabel` is a highly specific display primitive designed to segment page architectures cleanly. While standard headers rely exclusively on font scaling and whitespace, `SectionLabel` physically partitions layouts using high-contrast, edge-to-edge dividing rules aligned with monospace label typography.
+
+### Composed Flex Orchestration
+To achieve the fluid, responsive line rendering, the component orchestrates a composition between `Inline`, `Text`, and `Divider` primitives. By utilizing a flex-based `Inline` container, we set the label text as a fixed-width sibling and the `Divider` as a flexible child (`flex: 1`). This forces the line to consume all remaining horizontal space, ensuring it always reaches the container's edge regardless of viewport width or text length.
+
+### Usage Blueprints
+
+#### Common: Thematic Segmentation
+Pass a `theme` or `tone` to align section boundaries with the surrounding content's visual priority:
+
+<ComponentPreview
+  title="Thematic Label Variations"
+>
+  <div style="width: 100%; max-width: 480px; margin: 0 auto; text-align: left;">
+    <Stack gap="lg">
+      <SectionLabel text="Core Services" theme="primary" />
+      <SectionLabel text="Accent Highlight" tone="accent" />
+      <SectionLabel text="Muted Background" tone="muted" />
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Animated Dashboard Diagnostics
+Demonstrates how to combine hardware-accelerated animations (`animate="pulse"`) and custom scaling to build highly interactive status sections within surfaced panels:
+
+<ComponentPreview
+  title="Interactive Status Labeling"
+>
+  <div style="width: 100%; display: flex; justify-content: center; text-align: left;">
+    <Paper layer="2" padding="md" style="width: 100%; max-width: 300px;">
+      <Stack gap="md">
+        <Text type="h5">Live Diagnostics</Text>
+        <SectionLabel text="Active Stream" tone="success" animate="pulse" size="sm" style="margin-bottom: var(--space-4);" />
+        <Text tone="subtle" type="body-sm" style="font-family: var(--mono);">CPU: 12% | RAM: 4GB<br/>LATENCY: 14ms</Text>
+      </Stack>
+    </Paper>
+  </div>
+</ComponentPreview>

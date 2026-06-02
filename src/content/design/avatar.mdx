@@ -1,0 +1,67 @@
+---
+title: "Avatar"
+description: "A specialized media primitive for displaying user profiles with fallback text and real-time status indicators."
+category: "feedback"
+order: 2
+propsTable:
+  - name: "src"
+    type: "string"
+    description: "The source URL of the profile image."
+  - name: "alt"
+    type: "string"
+    description: "Alternative text for accessibility."
+  - name: "fallback"
+    type: "string"
+    description: "The text to display if the image fails to load or is missing."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "Dimensions of the avatar container."
+  - name: "status"
+    type: "'online' | 'offline' | 'busy' | 'away'"
+    description: "An optional status dot overlay."
+  - name: "shape"
+    type: "'circle' | 'square' | 'rounded'"
+    defaultValue: "'circle'"
+    description: "Geometric boundary shape."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Avatar from '../../components/ui/feedback/Avatar.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Avatar` component is a high-fidelity media primitive designed to represent users or entities. It extends standard image rendering with robust fallback logic and status signaling, ensuring that the interface remains polished even when user-provided assets are broken or missing.
+
+### Resilience and Status Signaling
+To provide a seamless experience, we implemented two key architectural features:
+1. **Double-Layer Fallback**: The component uses a client-side `onerror` script to detect broken image paths. If an error occurs, the image is hidden and the `avatar-fallback` node (containing initials) is instantly displayed, preventing a broken "missing image" icon from appearing.
+2. **Relative Status Positioning**: The status indicator dot is sized as a percentage of the parent container and absolutely positioned at the bottom-right. By using percentage-based dimensions (`width: 25%`), the status dot scales proportionally regardless of whether the avatar is 16px or 80px wide.
+
+### Usage Blueprints
+
+#### Common: Sizes & Statuses
+Showcase how avatars scale and display different availability states:
+
+<ComponentPreview
+  title="Avatar Scale & Status Catalog"
+>
+  <Inline gap="md" align="center" justify="center" style="width: 100%;">
+    <Avatar size="sm" status="online" src="/rmmblog-pp.png" alt="User A" />
+    <Avatar size="md" status="away" src="/rmmblog-pp.png" alt="User B" />
+    <Avatar size="lg" status="busy" src="/rmmblog-pp.png" alt="User C" />
+    <Avatar size="xl" status="offline" src="/rmmblog-pp.png" alt="User D" />
+  </Inline>
+</ComponentPreview>
+
+#### Advanced: Fallback Recovery & Shapes
+Demonstrates the graceful transition to text initials when an image is missing, alongside the variety of geometric boundary shapes available:
+
+<ComponentPreview
+  title="Shapes and Fallback Logic"
+>
+  <Inline gap="md" align="center" justify="center" style="width: 100%;">
+    <Avatar shape="rounded" size="lg" fallback="JD" alt="Jon Doe" />
+    <Avatar shape="square" size="lg" src="/broken-path.jpg" fallback="AB" alt="Alice Blue" />
+    <Avatar shape="circle" size="lg" fallback="?" />
+  </Inline>
+</ComponentPreview>

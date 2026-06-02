@@ -1,0 +1,61 @@
+---
+title: "Alert"
+description: "An inline callout component for displaying semantic feedback, status updates, and critical system alerts."
+category: "feedback"
+order: 1
+propsTable:
+  - name: "title"
+    type: "string"
+    description: "An optional bold header for the alert box."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Specifies the semantic color tone ('success', 'warning', 'danger', 'info')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Alert from '../../components/ui/feedback/Alert.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Alert` component provides a high-visibility container for critical system messages. Standardizing this primitive ensures that users can instantly recognize the semantic meaning of a message—such as a successful operation or a breaking system error—through consistent color coding and integrated iconography.
+
+### Semantic Icon Mapping
+To reduce boilerplate and ensure visual consistency, the component automatically maps its `theme` to a corresponding system icon. For example, setting `theme="success"` automatically injects the `check-circle` icon, while `theme="danger"` defaults to `alert-circle`. This guarantees that the visual language remains uniform across the entire application without requiring manual icon configuration for every callout.
+
+### Usage Blueprints
+
+#### Common: Feedback Tones
+Display the standard variety of semantic alerts to verify color contrast and icon alignment:
+
+<ComponentPreview
+  title="Semantic Alert Variations"
+>
+  <Stack gap="sm" style="width: 100%; max-width: 500px; margin: 0 auto;">
+    <Alert theme="success" title="Deployment Successful">
+      The production build has been successfully compiled and distributed.
+    </Alert>
+    <Alert theme="warning" title="Resource Limit Reached">
+      Your account is approaching the monthly bandwidth limit.
+    </Alert>
+    <Alert theme="danger" title="Connection Failed">
+      Unable to establish a secure handshake with the database cluster.
+    </Alert>
+  </Stack>
+</ComponentPreview>
+
+#### Advanced: Complex Body Content
+Alerts can house complex nested content beyond simple strings, including multiple paragraphs or list structures, while maintaining rigid internal layouts:
+
+<ComponentPreview
+  title="Detailed System Diagnostic"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto;">
+    <Alert theme="accent" title="Core Update Available">
+      A new firmware patch (v2.4.0) is ready for installation.
+      <ul style="margin-top: var(--space-2); font-size: var(--text-xs); opacity: 0.8;">
+        <li>Hardware-accelerated rendering fix</li>
+        <li>Improved thermal management logic</li>
+      </ul>
+    </Alert>
+  </div>
+</ComponentPreview>

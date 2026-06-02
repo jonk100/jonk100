@@ -1,0 +1,92 @@
+---
+title: "Tabs"
+description: "A high-fidelity interactive component for organizing content into switchable panels using a custom Web Component controller."
+category: "controls"
+order: 15
+propsTable:
+  - name: "defaultTab"
+    type: "string"
+    description: "The ID of the TabPanel that should be active by default."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Tabs from '../../components/ui/controls/Tabs.astro';
+import TabButton from '../../components/ui/controls/TabButton.astro';
+import TabPanel from '../../components/ui/controls/TabPanel.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Tabs` component allows for rapid switching between related content blocks without changing the page URL. It is particularly effective for technical documentation, where users may want to toggle between different code languages or between a visual preview and its source code.
+
+### Web Component State Management
+To avoid the overhead of heavy frameworks while maintaining a responsive user interface, the `Tabs` suite is powered by a Vanilla TypeScript custom element: `<tabs-controller>`. 
+1. **Zero-Framework Reactivity**: The controller manages `aria-selected` and `data-state` attributes internally, using native DOM APIs to toggle visibility.
+2. **Keyboard Accessibility**: The controller implements the standard WAI-ARIA tab pattern, supporting `ArrowRight` and `ArrowLeft` keys for rapid navigation through the list.
+3. **Hardware Acceleration**: Tab transitions utilize CSS transforms and opacity, offloading panel entrance motions to the browser's GPU.
+
+### Usage Blueprints
+
+#### Common: Content Categorization
+Group standard data blocks into labeled tabs to save vertical screen real estate:
+
+<ComponentPreview
+  title="Standard Content Tabs"
+>
+  <Tabs defaultTab="overview">
+    <div slot="tabs">
+      <TabButton target="overview">Overview</TabButton>
+      <TabButton target="specs">Technical Specs</TabButton>
+      <TabButton target="docs">Reference</TabButton>
+    </div>
+    
+    <TabPanel id="overview">
+      <Box padding="md" layer={1} radius="md">
+        <Text type="h5">Project Overview</Text>
+        <Text type="body-sm">The primary monolithic services required for operational logic. These systems must be initialized before booting the interface layer.</Text>
+      </Box>
+    </TabPanel>
+    
+    <TabPanel id="specs">
+      <Box padding="md" layer={1} radius="md">
+        <Text type="h5">System Architecture</Text>
+        <Text type="body-sm" style="font-family: var(--mono);">node_env: production<br />latency: 12ms</Text>
+      </Box>
+    </TabPanel>
+
+    <TabPanel id="docs">
+      <Box padding="md" layer={1} radius="md">
+         <Text type="body-sm">Documentation and API references are generated dynamically from the source registry.</Text>
+      </Box>
+    </TabPanel>
+  </Tabs>
+</ComponentPreview>
+
+#### Advanced: Themed Control Compositions
+`Tabs` can be nested inside other layout primitives and combined with custom themes to create high-fidelity dashboard interfaces:
+
+<ComponentPreview
+  title="Accent Themed Dashboard Tabs"
+>
+  <div style="width: 100%; max-width: 420px; margin: 0 auto; background: var(--surface-1); padding: var(--space-4); border-radius: var(--rad-lg);">
+    <Tabs defaultTab="log-1">
+      <div slot="tabs" style="justify-content: center; width: 100%;">
+        <TabButton target="log-1" style="font-size: 10px;">SYSTEM_LOG</TabButton>
+        <TabButton target="log-2" style="font-size: 10px;">NETWORK_TRAFFIC</TabButton>
+      </div>
+      
+      <TabPanel id="log-1">
+        <Text type="body-sm" tone="accent" style="font-family: var(--mono); font-size: 11px;">
+          > [INIT] Loading kernel...<br />
+          > [SUCCESS] Registry bound.
+        </Text>
+      </TabPanel>
+      
+      <TabPanel id="log-2">
+        <Text type="body-sm" tone="subtle" style="font-family: var(--mono); font-size: 11px;">
+          > RX: 42.1kb/s<br />
+          > TX: 12.8kb/s
+        </Text>
+      </TabPanel>
+    </Tabs>
+  </div>
+</ComponentPreview>

@@ -1,0 +1,77 @@
+---
+title: "Badge"
+description: "Small status indicators and label tags supporting segmented groupings and thematic transparencies."
+category: "feedback"
+order: 3
+propsTable:
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'secondary'"
+    description: "The visual color scheme."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'sm'"
+    description: "The dimension scale ('xs', 'sm', 'md', 'lg')."
+  - name: "outlined"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Renders a transparent background with a solid border."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+import BadgeGroup from '../../components/ui/feedback/BadgeGroup.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Badge` component is a lightweight typographic indicator used for tags, status labels, and count markers. Standardizing this primitive allows us to manage complex thematic transparencies and ensure that small-scale text remains legible against varied background surfaces.
+
+### RGB Transparency Architecture
+To achieve the "glassy" semi-transparent backgrounds characteristic of modern UI without hardcoding hundreds of hex values, we utilize RGB design tokens. By mapping theme colors to `--primary-rgb` and similar variables, the component can dynamically generate alpha-blended backgrounds:
+```css
+.badge--primary {
+  background: rgba(var(--primary-rgb), 0.15);
+  color: var(--primary);
+  border-color: rgba(var(--primary-rgb), 0.3);
+}
+```
+This approach ensures that badges naturally "soak up" the color of the underlying surface, maintaining a cohesive aesthetic regardless of the elevation layer they are placed upon.
+
+### Usage Blueprints
+
+#### Common: Theme & Size Showcase
+Review the standard palette of status colors and size variations:
+
+<ComponentPreview
+  title="Thematic Status Badges"
+>
+  <Stack gap="md" align="center">
+    <Inline gap="xs" justify="center">
+      <Badge theme="primary">Active</Badge>
+      <Badge theme="success">Stable</Badge>
+      <Badge theme="warning">Pending</Badge>
+      <Badge theme="danger">Halted</Badge>
+      <Badge theme="accent">New</Badge>
+    </Inline>
+    <Inline gap="xs" justify="center">
+      <Badge size="xs">Extra Small</Badge>
+      <Badge size="sm">Small</Badge>
+      <Badge size="md">Medium</Badge>
+      <Badge size="lg">Large</Badge>
+    </Inline>
+  </Stack>
+</ComponentPreview>
+
+### Compound Component: BadgeGroup
+The `BadgeGroup` component attaches multiple badges into a single segmented pill. It is frequently used for combined status readouts, such as version numbers or build results, where the relationship between the pieces of data needs to be visually explicit.
+
+<ComponentPreview
+  title="Segmented Status Pill"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <BadgeGroup theme="secondary">
+      <Badge>v2.4.0</Badge>
+      <Badge theme="success">Stable</Badge>
+    </BadgeGroup>
+  </div>
+</ComponentPreview>

@@ -1,0 +1,69 @@
+---
+title: "Search & ComboBox"
+description: "Specialized text entry controls featuring integrated icons and native datalist suggestion engines."
+category: "controls"
+order: 11
+icon: "search"
+propsTable:
+  - name: "options"
+    type: "{ value: string; label?: string }[]"
+    description: "Available suggestions for the ComboBox datalist."
+  - name: "placeholder"
+    type: "string"
+    defaultValue: "'Search...'"
+    description: "Instructional text shown inside the empty field."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Visual surface style tone."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "Vertical padding and font-size."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Search from '../../components/ui/input/Search.astro';
+import ComboBox from '../../components/ui/input/ComboBox.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import BlueprintSearchDemo from '../../components/design/BlueprintSearchDemo.astro';
+
+While the standard `Input` component handles generic text entry, specialized interactive patterns like searching and auto-completion require additional visual cues and interaction logic. We provide `Search` and `ComboBox` as first-class primitives to standardize these patterns across the platform.
+
+### Native Power & Vector Alignment
+Both components leverage native browser capabilities to ensure high performance and accessibility:
+1. **Search Reset Semantics**: The `Search` component utilizes `type="search"`. This triggers native browser behaviors, such as the OS-specific "clear" button, while our scoped CSS ensures the icon remains hardware-aligned.
+2. **Datalist Suggestion Engine**: The `ComboBox` uses a native HTML `<datalist>`. This allows for high-performance filtering of thousands of options directly in the browser's UI thread.
+
+### Usage Blueprints
+
+#### Common: Standard Discovery Controls
+Use these components for global navigation searches or localized filter bars:
+
+<ComponentPreview
+  title="Discovery & Selection Controls"
+>
+  <div style="width: 100%; max-width: 420px; margin: 0 auto; text-align: left;">
+    <Stack gap="md">
+      <Search placeholder="Filter layout blueprints..." theme="accent" />
+      <ComboBox 
+        label="Project Category" 
+        placeholder="Select or type..." 
+        options={[
+          { value: 'web', label: 'Web Application' },
+          { value: 'app', label: 'Mobile App' },
+          { value: 'design', label: 'Graphic Design' }
+        ]} 
+      />
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Practical Blueprint Search
+Demonstrates a functional search implementation that filters a list of Design System pages in real-time. This highlights how the `Search` component can be integrated with Vanilla TypeScript to build interactive directory interfaces:
+
+<ComponentPreview
+  title="Live Blueprint Directory"
+>
+  <BlueprintSearchDemo />
+</ComponentPreview>

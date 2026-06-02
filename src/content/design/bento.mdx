@@ -1,0 +1,85 @@
+---
+title: "Bento Grid"
+description: "A specialized grid primitive for creating asymmetrical, high-density layouts popularized by Apple's marketing assets."
+category: "layouts"
+order: 10
+propsTable:
+  - name: "columns"
+    type: "number | string"
+    defaultValue: "4"
+    description: "The number of base grid columns."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "Grid gutter spacing."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Bento from '../../components/ui/layout/Bento.astro';
+import BentoItem from '../../components/ui/layout/BentoItem.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Bento` component provides a robust framework for building "Bento Box" layouts—asymmetrical grids where items span different column and row counts. This pattern is ideal for dashboards, feature showcases, and media galleries where visual hierarchy is established through surface area rather than simple repetition.
+
+### Grid-Auto-Rows & Responsive Hardcoding
+To maintain an aesthetic vertical rhythm, the `Bento` grid utilizes `grid-auto-rows: minmax(100px, auto)`. This ensures that even "single-row" cells have a substantial physical presence. Additionally, the component includes built-in responsive overrides: on mobile devices, it automatically collapses complex spans and forces a 2-column or 1-column stack, ensuring your high-density dashboard remains legible on small screens without manual media query management.
+
+### Usage Blueprints
+
+#### Common: Feature Bento
+Demonstrates a standard 4-column feature grid where the primary item occupies a larger "feature" slot:
+
+<ComponentPreview
+  title="Standard Bento Layout"
+>
+  <Bento columns={4} gap="sm" style="width: 100%;">
+    <BentoItem colSpan={2} rowSpan={2}>
+      <Paper layer={2} padding="md" bordered style="height: 100%;">
+        <Text type="h4" tone="accent">Primary Feature</Text>
+        <Text type="body-sm">This item occupies a 2x2 area, drawing the user's attention first.</Text>
+      </Paper>
+    </BentoItem>
+    <BentoItem colSpan={2}>
+      <Paper layer={1} padding="sm" bordered style="height: 100%;">
+        <Text type="label">Module A</Text>
+      </Paper>
+    </BentoItem>
+    <BentoItem>
+      <Paper layer={1} padding="sm" bordered style="height: 100%;">
+        <Text type="label">B</Text>
+      </Paper>
+    </BentoItem>
+    <BentoItem>
+      <Paper layer={1} padding="sm" bordered style="height: 100%;">
+        <Text type="label">C</Text>
+      </Paper>
+    </BentoItem>
+  </Bento>
+</ComponentPreview>
+
+#### Advanced: Multi-Span Composition
+Showcases more complex spanning logic, including 3-column items and narrow vertical sidebars within the grid:
+
+<ComponentPreview
+  title="Complex Grid Spanning"
+>
+  <Bento columns={4} gap="md" style="width: 100%;">
+    <BentoItem colSpan={3}>
+      <Paper layer={1} padding="md" style="height: 100%;">
+        <Text type="h5">Wide Content Area</Text>
+      </Paper>
+    </BentoItem>
+    <BentoItem rowSpan={2}>
+      <Paper layer={2} tone="accent" padding="md" style="height: 100%; background: var(--accent); color: white;">
+        <Text type="label" style="color: inherit;">Sidebar</Text>
+      </Paper>
+    </BentoItem>
+    <BentoItem>
+       <Paper layer={1} padding="sm" style="height: 100%;"><Text type="label">D</Text></Paper>
+    </BentoItem>
+    <BentoItem colSpan={2}>
+       <Paper layer={1} padding="sm" style="height: 100%;"><Text type="label">Sub-Feature</Text></Paper>
+    </BentoItem>
+  </Bento>
+</ComponentPreview>

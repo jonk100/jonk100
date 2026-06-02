@@ -1,6 +1,6 @@
 ---
 title: "Link"
-description: "A styled anchor element supporting button-like visual variants, custom text tones, and tab security targets."
+description: "A styled anchor element supporting button-like visual variants, custom text tones, and hover-intent URL previews."
 category: "primitives"
 order: 3
 icon: "link"
@@ -22,18 +22,23 @@ propsTable:
     type: "boolean"
     defaultValue: "false"
     description: "Blocks navigation and applies aria-disabled attributes."
+  - name: "preview"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Enables an interactive hover-intent URL preview card."
 ---
 
 import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
 import Link from '../../components/ui/primitives/Link.astro';
+import LinkGroup from '../../components/ui/primitives/LinkGroup.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
 
-The `Link` primitive extends the native HTML `<a>` anchor element, providing a highly customizable visual trigger. While standard anchors have unpredictable browser-default text underlines and focus indicators, standardizing this component gives us a unified visual baseline that supports thematic variations, disabled button-like behaviors, and consistent outline indicators for keyboard navigation safety.
+The `Link` primitive extends the native HTML `<a>` anchor element, providing a highly customizable visual trigger. While standard anchors have unpredictable browser-default text underlines and focus indicators, standardizing this component gives us a unified visual baseline that supports thematic variations, disabled behaviors, and smart active-state detection.
 
-### Engineering & Security Details
-To protect users and maintain high accessibility scores, we built in two core architectural rules:
-1. **Automated Relationship Isolation**: Whenever a link specifies `target="_blank"`, the component automatically appends `rel="noopener noreferrer"` under the hood. This isolates the destination tab process, preventing external malicious scripts from hijacking the referring page window.
-2. **Accessible Disabling**: Setting `disabled={true}` removes the `href` attribute, updates tab indexing, and assigns `aria-disabled="true"`. This prevents keyboard focus and informs screen readers that the action is currently locked.
+### Smart Paths & Hover Intent
+To provide a premium navigation experience, the `Link` component includes two key architectural features:
+1. **Active State Detection**: The component automatically compares its `href` to the current page's `pathname`. If they match, it applies an `.is-active` class, allowing for automatic visual signaling in NavBars and sidebars without manual state management.
+2. **Hover Preview Logic**: Setting `preview={true}` activates a Vanilla TypeScript controller that monitors user hover intent. After a 400ms delay, it renders a fixed-position preview card containing URL metadata, helping users verify a link's destination before clicking.
 
 ### Usage Blueprints
 
@@ -42,29 +47,34 @@ Group standard text anchors and styled links inside a single visual composition 
 
 <ComponentPreview title="Themed Anchor Showcase">
   <Inline gap="md" align="center" style="width: 100%; justify-content: center; flex-wrap: wrap;">
-    {/* Theme variants are built by composing raw design tokens into reusable styles */}
     <Link href="#primary" label="Primary Link" theme="primary" />
     <Link href="#secondary" label="Secondary Link" theme="secondary" />
     <Link href="#outline" label="Outline Link" theme="outline" />
   </Inline>
 </ComponentPreview>
 
-#### Advanced: Secure External Anchor with Minimal Framing
-Demonstrates how to route links to external windows with automated security parameters, custom accent text tones, and an elegant visual matte border frame wrapper:
+#### Advanced: Smart Active States & Previews
+Demonstrates how the link responds to current page pathing and the interactive preview card logic:
 
-<ComponentPreview title="Framed External Secure Anchor">
+<ComponentPreview title="Interactive Link Intelligence">
+  <div style="width: 100%; display: flex; justify-content: center; gap: var(--space-6);">
+     {/* Note: In production, the active link will automatically underline/bold if on the correct path */}
+     <Link href="/design/link" label="Smart Active Link" preview={true} />
+     <Link href="https://astro.build" label="External Preview" preview={true} target="_blank" />
+  </div>
+</ComponentPreview>
+
+### Compound Component: LinkGroup
+The `LinkGroup` component physically attaches multiple `Link` primitives together into a single segmented pill. Like `ButtonGroup`, it overrides internal border radii to create a unified interactive block. It is particularly useful for compact navigation bars or footer link sets where actions need to appear structurally joined.
+
+<ComponentPreview
+  title="Segmented Link Navigation"
+>
   <div style="width: 100%; display: flex; justify-content: center;">
-    <Link 
-      href="https://github.com/jk/portfolio" 
-      theme="outline" 
-      tone="accent" 
-      size="lg" 
-      frame="minimal" 
-      target="_blank" 
-      aria-label="View source repository on GitHub" 
-    >
-      {/* Dev Note: target="_blank" triggers automatic rel="noopener noreferrer" injection */}
-      Explore GitHub Blueprints
-    </Link>
+    <LinkGroup>
+      <Link href="#1" label="Overview" theme="ghost" />
+      <Link href="#2" label="Documentation" theme="ghost" />
+      <Link href="#3" label="Source" theme="ghost" />
+    </LinkGroup>
   </div>
 </ComponentPreview>

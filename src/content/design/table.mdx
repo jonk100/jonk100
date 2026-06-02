@@ -1,0 +1,101 @@
+---
+title: "Table"
+description: "A semantic data layout component for displaying structured information in rows and columns."
+category: "data"
+order: 2
+icon: "table"
+propsTable:
+  - name: "hover"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Enables background highlighting on TableRow hover."
+  - name: "align"
+    type: "'left' | 'center' | 'right'"
+    defaultValue: "'left'"
+    description: "Sets the text alignment for a TableCell or TableHeading."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Table from '../../components/ui/data/Table.astro';
+import TableHead from '../../components/ui/data/TableHead.astro';
+import TableBody from '../../components/ui/data/TableBody.astro';
+import TableRow from '../../components/ui/data/TableRow.astro';
+import TableHeading from '../../components/ui/data/TableHeading.astro';
+import TableCell from '../../components/ui/data/TableCell.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Table` component family provides a robust way to render complex data sets while maintaining strict semantic HTML standards. It abstracts the boilerplate of standard `<table>` markup into a series of composable Astro components that handle consistent padding, alignment, and hover interactions.
+
+### Responsive Data Wrappers
+Tabular data is notoriously difficult to handle on small screens. The `Table` component includes a built-in `table-wrapper` that enables horizontal scrolling (`overflow-x: auto`) when the table width exceeds its parent container. This ensures that your structured data remains accessible on mobile devices without breaking the broader page layout.
+
+### Usage Blueprints
+
+#### Common: System Metadata Ledger
+Standard implementation for displaying a list of items with multiple attributes:
+
+<ComponentPreview
+  title="Standard Data Ledger"
+>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableHeading>Service</TableHeading>
+        <TableHeading>Status</TableHeading>
+        <TableHeading align="right">Latency</TableHeading>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      <TableRow>
+        <TableCell><Text type="body-sm" style="margin:0;">Database Cluster</Text></TableCell>
+        <TableCell><Badge theme="success">Active</Badge></TableCell>
+        <TableCell align="right"><code style="font-size:11px;">12ms</code></TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell><Text type="body-sm" style="margin:0;">Auth Gateway</Text></TableCell>
+        <TableCell><Badge theme="success">Active</Badge></TableCell>
+        <TableCell align="right"><code style="font-size:11px;">4ms</code></TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell><Text type="body-sm" style="margin:0;">S3 Object Store</Text></TableCell>
+        <TableCell><Badge theme="warning">Degraded</Badge></TableCell>
+        <TableCell align="right"><code style="font-size:11px;">412ms</code></TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+</ComponentPreview>
+
+#### Advanced: Dense Configuration Table
+Demonstrates utilizing custom alignments and text tones to build high-density readouts for technical specifications:
+
+<ComponentPreview
+  title="Dense Technical Specs"
+>
+  <div style="width: 100%; max-width: 600px; margin: 0 auto; background: var(--surface-1); border-radius: var(--rad-md); border: 1px solid var(--border-subtle); overflow: hidden;">
+    <Table>
+      <TableHead>
+        <TableRow hover={false}>
+          <TableHeading>Parameter</TableHeading>
+          <TableHeading>Type</TableHeading>
+          <TableHeading>Default</TableHeading>
+          <TableHeading align="right">Scope</TableHeading>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell><Text type="caption" tone="accent" style="font-family: var(--mono);">node_env</Text></TableCell>
+          <TableCell><Text type="caption" tone="muted">string</Text></TableCell>
+          <TableCell><Text type="caption">"prod"</Text></TableCell>
+          <TableCell align="right"><Badge theme="primary" size="xs">Global</Badge></TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell><Text type="caption" tone="accent" style="font-family: var(--mono);">log_level</Text></TableCell>
+          <TableCell><Text type="caption" tone="muted">enum</Text></TableCell>
+          <TableCell><Text type="caption">"error"</Text></TableCell>
+          <TableCell align="right"><Badge theme="secondary" size="xs">Local</Badge></TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </div>
+</ComponentPreview>

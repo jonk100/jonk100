@@ -1,0 +1,73 @@
+---
+title: "Accordion"
+description: "A vertical stacking component for collapsible content items using native HTML details/summary elements."
+category: "controls"
+order: 16
+propsTable:
+  - name: "multiple"
+    type: "boolean"
+    defaultValue: "true"
+    description: "If false, opening one item automatically closes the others."
+  - name: "title"
+    type: "string"
+    description: "The header text for an individual AccordionItem."
+  - name: "open"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Renders the item in an expanded state initially."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Accordion from '../../components/ui/content/Accordion.astro';
+import AccordionItem from '../../components/ui/content/AccordionItem.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Accordion` component is designed for progressively disclosing information, allowing users to expand only the content they are interested in. It is ideal for FAQ sections, technical specifications, or "Deep Dive" sections within project case studies.
+
+### Native Accessibility & Custom Icons
+To ensure maximum reliability and performance, the component utilizes the native HTML `<details>` and `<summary>` elements. 
+1. **Zero-JavaScript Foundation**: By default, the accordion works perfectly without any JavaScript, leveraging the browser's built-in toggle logic.
+2. **Accessible by Default**: Screen readers natively understand the parent-child relationship of the disclosure pattern, providing automatic state announcements.
+3. **Themed Vector Cues**: We override the browser's default list-marker (the small black arrow) with our custom SVG `chevron-down`. Using CSS `transform` on the `[open]` attribute, the icon rotates smoothly, signaling the expansion state to the user.
+
+### Usage Blueprints
+
+#### Common: Multi-Expandable List
+The standard mode allows users to keep multiple sections open at once, ideal for non-mutually exclusive data:
+
+<ComponentPreview
+  title="Independent Collapsible Items"
+>
+  <Accordion multiple={true} style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <AccordionItem title="1. Initialization Procedure">
+      <Text type="body-sm">The first phase involves loading environmental secrets and validating the local registry state.</Text>
+    </AccordionItem>
+    <AccordionItem title="2. Handshake Protocol">
+      <Text type="body-sm">A secure SSL/TLS handshake is established between the local kernel and the remote telemetry cluster.</Text>
+    </AccordionItem>
+    <AccordionItem title="3. Stream Synchronization">
+      <Text type="body-sm">Final synchronization ensures that all local blueprints match the latest distributed version.</Text>
+    </AccordionItem>
+  </Accordion>
+</ComponentPreview>
+
+#### Advanced: Exclusive Selection Mode
+By setting `multiple={false}`, the component's internal TypeScript controller intercepts clicks to ensure that only one section remains expanded at any given time, focusing the user's attention:
+
+<ComponentPreview
+  title="Exclusive Focus Accordion"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Accordion multiple={false}>
+      <AccordionItem title="Quick Setup" open={true}>
+        <Text type="body-sm">Standard configuration for rapid development prototyping.</Text>
+      </AccordionItem>
+      <AccordionItem title="Custom Implementation">
+        <Text type="body-sm">Advanced configuration for specialized monolithic architectures.</Text>
+      </AccordionItem>
+      <AccordionItem title="Enterprise Deployment">
+        <Text type="body-sm">High-availability configuration for massive distributed systems.</Text>
+      </AccordionItem>
+    </Accordion>
+  </div>
+</ComponentPreview>

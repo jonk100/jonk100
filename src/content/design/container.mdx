@@ -1,0 +1,58 @@
+---
+title: "Container"
+description: "A flexible content wrapper that organizes children into vertical stacks with standard padding and layout frames."
+category: "layouts"
+order: 2
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'div'"
+    description: "The underlying HTML tag to render."
+  - name: "frame"
+    type: "FrameVariant"
+    description: "Applies a decorative border or background matte."
+  - name: "effects"
+    type: "ComponentEffect | ComponentEffect[]"
+    description: "Applies visual filters like 'glass' or 'glow'."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Container from '../../components/ui/layout/Container.astro';
+import Text from '../../components/ui/typography/Text.astro';
+import Badge from '../../components/ui/feedback/Badge.astro';
+
+The `Container` component is a high-level layout primitive used to group related elements into distinct visual blocks. While `Box` is for atomic spacing, `Container` is designed for structural sections, defaulting to a vertical flex-stacking behavior that ensures children are evenly spaced and aligned.
+
+### Layout Framing & Matte Logic
+To support varied aesthetic styles across the portfolio—ranging from "clean" minimal designs to "glassmorphic" cyberpunk layouts—the `Container` integrates our global framing system. By passing `frame="glass"`, the component dynamically layers translucent backgrounds and backdrop filters, allowing you to create complex, multi-layered interfaces by simply nesting containers with different frame variants.
+
+### Usage Blueprints
+
+#### Common: Content Segmentation
+Use containers to wrap distinct sections of information, such as card headers or feature lists:
+
+<ComponentPreview
+  title="Standard Section Container"
+>
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <Container class="default" style="border-radius: var(--rad-md); border: 1px solid var(--border-subtle);">
+      <Badge theme="accent" size="xs">System Alert</Badge>
+      <Text type="h4" style="margin: 0;">Update Synchronized</Text>
+      <Text type="body-sm" tone="subtle">All remote registry blueprints have been successfully applied to the local architecture.</Text>
+    </Container>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Glassmorphic Panel Composition
+Demonstrates how to utilize the `effects` and `frame` props to build high-fidelity interface panels that leverage modern browser backdrop filters:
+
+<ComponentPreview
+  title="Glass Frame Composition"
+>
+  <div style="width: 100%; padding: var(--space-8); background: linear-gradient(135deg, var(--surface-1), var(--accent)); border-radius: var(--rad-lg);">
+    <Container frame="glass" effects="glow" style="border-radius: var(--rad-md); padding: var(--space-6);">
+      <Text type="h3" tone="default">Neural Link Active</Text>
+      <Text type="body-sm" tone="subtle">Connection established. Handshake latency: 1.2ms. All telemetry streams are currently operational.</Text>
+    </Container>
+  </div>
+</ComponentPreview>

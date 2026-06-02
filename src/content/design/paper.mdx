@@ -1,6 +1,6 @@
 ---
 title: "Paper"
-description: "Our core surface panel organizing elevation layers, spacing scales, border outlines, and runtime glows."
+description: "Our core surface panel organizing elevation layers, spacing scales, and interactive transitions."
 category: "primitives"
 order: 4
 icon: "paper"
@@ -9,6 +9,10 @@ propsTable:
     type: "ComponentLayer"
     defaultValue: "0"
     description: "Elevation depth from '-1' to '5', mapping background colors and drop-shadow variables."
+  - name: "interactive"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Enables hover-lifting and active-press scale transitions."
   - name: "radius"
     type: "ComponentRadius"
     defaultValue: "'md'"
@@ -17,17 +21,6 @@ propsTable:
     type: "SpacingScale"
     defaultValue: "'md'"
     description: "Inner padding sizing scale."
-  - name: "bordered"
-    type: "boolean"
-    defaultValue: "false"
-    description: "Applies a premium, high-contrast subtle outline."
-  - name: "effects"
-    type: "ComponentEffect | ComponentEffect[]"
-    description: "Visual modifiers (e.g., 'glow', 'glass', 'shimmer')."
-  - name: "animate"
-    type: "AnimationType"
-    defaultValue: "'none'"
-    description: "Micro-animations (e.g., 'slide-up', 'fade-in', 'pulse')."
 ---
 
 import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
@@ -36,59 +29,60 @@ import Grid from '../../components/ui/layout/Grid.astro';
 import Stack from '../../components/ui/layout/Stack.astro';
 import Text from '../../components/ui/typography/Text.astro';
 
-The `Paper` component is our foundational surface block, extending the standard HTML `<div>` element. When building a design system, interfaces require clear visual hierarchy. We standardized `Paper` to consolidate surface elevation variables, shadow calculations, border outlines, and container paddings into a single, cohesive modular wrapper.
+The `Paper` component is our foundational surface block, extending the standard HTML `<div>` element. When building a design system, interfaces require clear visual hierarchy. We standardized `Paper` to consolidate surface elevation variables, shadow calculations, and container paddings into a single, cohesive modular wrapper.
 
-### The Science of Elevations
-To create visual depth, `Paper` maps layers `"-1"` through `"5"` to progressive HSL custom properties. 
-- **Recessed Surface (`layer="-1"`)**: Utilizes a darker, slightly desaturated background tone. Perfect for background gutters or layout boards.
-- **Base Surface (`layer="0"`)**: Matches the global layout background.
-- **Elevated Surfaces (`layer="1"` to `"5"`)**: Progressively mix lighter values into the background HSL properties while scaling box shadows. This creates a realistic visual illusion of components floating closer to the light source, rising above background assets.
+### Elevations & Interactive Press
+To create visual depth and physical tactility, `Paper` includes two core interaction systems:
+1. **The Science of Elevations**: It maps layers `"-1"` through `"5"` to progressive HSL custom properties. Elevated layers progressively mix lighter values and scale box shadows to create a realistic visual illusion of components floating closer to the light source.
+2. **Interactive Tactility**: Setting `interactive={true}` applies high-performance GPU transitions. On hover, the surface "lifts" via a negative Y-translation and increased shadow. On press (`:active`), it subtly scales down to `0.98`, mimicking the physical resistance of a mechanical button.
 
 ### Usage Blueprints
 
 #### Common: Elevation Progression Grid
-Instead of manually declaring individual background colors and shadow offsets across your stylesheet, you can simply adjust the `layer` parameter. This consolidates standard elevations into a single visual catalog grid:
+Instead of manually declaring individual background colors and shadow offsets across your stylesheet, you can simply adjust the `layer` parameter:
 
 <ComponentPreview
   title="Progression of Elevation Surfaces"
 >
   <Grid cols={3} gap="sm" style="width: 100%;">
-    <Paper layer="-1" padding="sm" bordered={true}>
+    <Paper layer={-1} padding="sm" bordered={true}>
       <Text style="margin: 0; font-size: var(--text-xs); text-align: center;">Recessed (layer -1)</Text>
     </Paper>
-    <Paper layer="1" padding="sm" bordered={true}>
+    <Paper layer={1} padding="sm" bordered={true}>
       <Text style="margin: 0; font-size: var(--text-xs); text-align: center;">Elevated Layer 1</Text>
     </Paper>
-    <Paper layer="2" padding="sm" bordered={true}>
+    <Paper layer={2} padding="sm" bordered={true}>
       <Text style="margin: 0; font-size: var(--text-xs); text-align: center;">Elevated Layer 2</Text>
     </Paper>
   </Grid>
 </ComponentPreview>
 
-#### Advanced: Glowing Hardware-Accelerated Terminal
-For high-fidelity status readouts, you can combine dark elevations (`layer="3"`), dynamic glows (`effects="glow"`), and entrance slide-up motions.
-
-Using HSL transparency formulas within shadow offsets allows the glow to scale smoothly. The entrance motion is bound to CSS transform matrices, which offloads rendering to the GPU for high-performance animation frames:
+#### Advanced: Interactive Dashboard Surfaces
+Demonstrates how to use the `interactive` prop to create pressable cards that respond to user engagement with fluid motion:
 
 <ComponentPreview
-  title="Animated Glowing Panel"
+  title="Tactile Interaction Cards"
 >
-  <div style="width: 100%; display: flex; justify-content: center;">
+  <div style="width: 100%; display: flex; justify-content: center; gap: var(--space-4);">
     <Paper 
-      layer="3" 
-      radius="lg" 
+      layer={1} 
+      interactive={true} 
       padding="lg" 
-      effects="glow" 
-      animate="slide-up" 
-      caption="Runtime Console Diagnostics" 
-      style="width: 100%; max-width: 360px;"
+      radius="lg" 
+      style="width: 240px; text-align: center;"
     >
-      <Text as="h4" type="h4" tone="accent" style="margin: 0 0 8px 0;">Terminal Diagnostic</Text>
-      <Text style="margin: 0; font-family: var(--mono); font-size: var(--text-xs); line-height: 1.6;">
-        node_env: production<br />
-        system_status: operational<br />
-        latency: 12ms
-      </Text>
+      <Text type="h5">Press Me</Text>
+      <Text type="caption">Interactive Surface</Text>
+    </Paper>
+    <Paper 
+      layer={1} 
+      interactive={true} 
+      padding="lg" 
+      radius="lg" 
+      style="width: 240px; text-align: center;"
+    >
+      <Text type="h5">Hover Lift</Text>
+      <Text type="caption">Tactile Feedback</Text>
     </Paper>
   </div>
 </ComponentPreview>

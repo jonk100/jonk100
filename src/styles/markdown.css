@@ -48,7 +48,6 @@
   }
 
   .markdown-content .figure-container,
-  .markdown-content pre,
   .markdown-content .code-block {
     margin-block: var(--space-8);
     margin-inline: var(--space-4);
@@ -59,11 +58,11 @@
     font-family: var(--mono);
     margin: var(--space-1);
     padding: var(--space-1) var(--space-2);
-    line-height: 1.7;
+    line-height: 1.4;
   }
 
   .markdown-content pre {
-    margin: var(--space-8) var(--space-4);
+    margin: var(--space-4) var(--space-4);
     padding: var(--space-4);
   }
 
@@ -97,6 +96,7 @@
     border-radius: var(--rad-xs);
     padding: 1rem;
     border: 1px solid var(--border-subtle);
+    line-height: 1 !important;
   }
 
   /* Inline code */
@@ -109,7 +109,12 @@
 
   .astro-code {
     background-color: rgba(var(--surface-5-rgb),.5) !important;
-    line-height: 1.7;
+    line-height: 1 !important;
+  }
+
+  .astro-code .line {
+    display: block;
+    line-height: 1 !important;
   }
 
 

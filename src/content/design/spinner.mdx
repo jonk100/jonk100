@@ -1,0 +1,57 @@
+---
+title: "Spinner"
+description: "A pure SVG rotating indicator for signaling active background processes and data retrieval."
+category: "feedback"
+order: 5
+propsTable:
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "Dimensions of the spinner."
+  - name: "speed"
+    type: "'fast' | 'normal' | 'slow'"
+    defaultValue: "'normal'"
+    description: "Rotation velocity."
+  - name: "tone"
+    type: "string"
+    defaultValue: "'primary'"
+    description: "The color tone of the spinner head."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Spinner from '../../components/ui/feedback/Spinner.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Spinner` component provides a lightweight, pure-SVG visual cue for ongoing operations. Unlike GIF-based spinners, this SVG implementation remains crisp at any resolution and allows for runtime customization of colors, speeds, and dimensions using CSS variables.
+
+### SVG Stroke Animation
+To avoid the need for complex external dependencies, we utilize the native `stroke-dasharray` and `stroke-dashoffset` attributes. The rotating animation is bound to the `svg` container, while the "head" of the spinner is a partial circle stroke. This creates a high-contrast, professional rotation effect that is completely controlled by our global design tokens.
+
+### Usage Blueprints
+
+#### Common: Speed & Size Showcase
+Review the rotation velocities and scaling available:
+
+<ComponentPreview
+  title="Spinner Performance Variations"
+>
+  <Inline gap="lg" align="center" justify="center" style="width: 100%;">
+    <Spinner size="sm" speed="fast" tone="accent" />
+    <Spinner size="md" speed="normal" tone="primary" />
+    <Spinner size="lg" speed="slow" tone="secondary" />
+  </Inline>
+</ComponentPreview>
+
+#### Advanced: Inline Button Loading
+Demonstrates how the spinner's size mapping allows it to be embedded directly within interactive controls to signal asynchronous action states:
+
+<ComponentPreview
+  title="Integrated Action Loader"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <div style="padding: var(--space-2) var(--space-4); background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--rad-md); display: flex; align-items: center; gap: var(--space-2);">
+      <Spinner size="xs" speed="fast" tone="accent" />
+      <span style="font-size: var(--text-sm); font-weight: 500;">Processing Transaction...</span>
+    </div>
+  </div>
+</ComponentPreview>

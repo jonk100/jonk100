@@ -33,6 +33,7 @@ import Badge from '../../components/ui/feedback/Badge.astro';
 The `Inline` component is our core horizontal layout primitive, extending standard HTML dynamic tags (such as `<div>`, `<ul>`, or `<ol>`) through the `as` parameter. Standardizing this component eliminates the fragile practice of applying right or left margins on list items. This ensures that horizontal elements (like tags, badges, or buttons) wrap naturally and align consistently across responsive viewports without leaking styles.
 
 ### The Problem with Sideways Margins
+
 Traditional CSS layouts often manage horizontal spacing by applying `margin-right` to children, requiring complex `:last-child` overrides to prevent extra white space at the container's edge. 
 
 `Inline` completely sidesteps this by wrapping elements inside a modern CSS flex layout utilizing the standard `gap` property. This automates gutters only between siblings and respects flex boundaries, resulting in fluid spacing that perfectly accommodates varying screen widths.
@@ -40,6 +41,7 @@ Traditional CSS layouts often manage horizontal spacing by applying `margin-righ
 ### Usage Blueprints
 
 #### Common: Wrapping Tag Cloud
+
 Instead of hardcoding item offsets that cause layout breaks on small mobile viewports, you can wrap them in an `Inline` container. This handles horizontal gaps and line wrapping automatically:
 
 <ComponentPreview
@@ -56,6 +58,7 @@ Instead of hardcoding item offsets that cause layout breaks on small mobile view
 </ComponentPreview>
 
 #### Advanced: Split-Justified Header Toolbar
+
 Demonstrates how to compose a header toolbar utilizing dynamic split-justification (`justify="space-between"`), precise vertical items alignment, and no-wrap parameters inside a surfaced dashboard panel:
 
 <ComponentPreview

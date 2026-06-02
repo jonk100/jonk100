@@ -33,11 +33,16 @@ propsTable:
     type: "AnimationType"
     defaultValue: "'none'"
     description: "Applies subtle loop or hover micro-animations ('slide-up', 'slide-down', 'pulse', 'float', 'none')."
+  - name: "loading"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Disables the button and displays a centered Spinner indicator."
 ---
 
 import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
 import Button from '../../components/ui/controls/Button.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
+import ButtonGroup from '../../components/ui/controls/ButtonGroup.astro';
 
 The `Button` component is the main interaction primitive in our design system. Standardizing this component ensures visual consistency across buttons, links, and action dividers, while automating vertical alignments and layout ratios. Under the hood, it compiles dynamically as either an HTML `<button>` or a native `<a>` anchor, depending on the presence of the `href` attribute.
 
@@ -66,22 +71,46 @@ Rather than declaring unique button parameters on every custom card, you can pas
   </Inline>
 </ComponentPreview>
 
-#### Advanced: Premium Animated Floating Highlight
-Demonstrates how to compose a dynamic, framed action trigger configured with secure parameters, outline styling frames, and a hardware-accelerated looping floating transition that offloads rendering to the browser's GPU:
+#### Advanced: Animated & Loading States
+Demonstrates how to compose dynamic action triggers configured with hardware-accelerated animations or active loading indicators for asynchronous operations:
 
 <ComponentPreview
-  title="Pulsing Float Action Trigger"
+  title="Interactive Button States"
 >
-  <div style="width: 100%; display: flex; justify-content: center;">
+  <div style="width: 100%; display: flex; justify-content: center; gap: var(--space-4); flex-wrap: wrap;">
     <Button 
       href="/design" 
       theme="accent" 
       size="lg" 
       frame="minimal" 
       animate="float"
-      aria-label="Access the Design System Blueprints"
     >
       Start a Project
     </Button>
+    <Button 
+      theme="primary" 
+      size="lg" 
+      loading={true}
+    >
+      Processing
+    </Button>
+  </div>
+</ComponentPreview>
+
+### Compound Component: ButtonGroup
+The `ButtonGroup` component physically attaches multiple `Button` primitives together into a single, segmented control row. It automatically overrides the internal `border-radius` of its children to create a unified pill or block shape, while preserving the outer corner radii of the first and last elements.
+
+#### Usage: Segmented Actions
+Ideal for toggle-like filters or multi-choice action sets where items need to appear as a single cohesive unit:
+
+<ComponentPreview
+  title="Segmented Action Group"
+>
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <ButtonGroup>
+      <Button theme="default">Daily</Button>
+      <Button theme="default">Weekly</Button>
+      <Button theme="primary">Monthly</Button>
+    </ButtonGroup>
   </div>
 </ComponentPreview>

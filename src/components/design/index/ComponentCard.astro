@@ -17,9 +17,10 @@ import Icon from '../../ui/primitives/Icon.astro';
 import Svg from '../../ui/primitives/Svg.astro';
 import { icons } from '../../../design/icons';
 import type { SvgName } from '../../../design/icons';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  comp: any; // Replace with your CollectionEntry<'design'> type if available
+  comp: CollectionEntry<'design'>;
   index: number;
 }
 

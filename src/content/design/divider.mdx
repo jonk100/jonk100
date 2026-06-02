@@ -1,0 +1,51 @@
+---
+title: "Divider"
+description: "A minimalist layout primitive used to establish horizontal visual separation between content blocks."
+category: "layouts"
+order: 5
+propsTable:
+  - name: "as"
+    type: "string"
+    defaultValue: "'hr'"
+    description: "The underlying HTML tag to render (e.g., 'div', 'span')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Divider from '../../components/ui/layout/Divider.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Divider` is our most minimalist structural primitive. It wraps the standard HTML `<hr>` element, providing a semantic and accessible way to signal a conceptual break in content without introducing the visual weight of a card or a container.
+
+### Clean Border Implementation
+To ensure that dividers remain crisp and consistent across all screen resolutions, the component utilizes a `1px` high border rendered in the theme's `currentColor` or a specific border token. By defaulting to the `hr` tag, it also provides the correct semantic signals to screen readers, indicating a thematic break in the document flow.
+
+### Usage Blueprints
+
+#### Common: Content Separation
+Use the divider to separate text blocks within an article or a list:
+
+<ComponentPreview
+  title="Thematic Content Break"
+>
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left;">
+    <Stack gap="md">
+      <Text type="body">The first phase of the operation involves initializing the local registry and validating all environmental secrets.</Text>
+      <Divider />
+      <Text type="body">Once validated, the system proceeds to establish a secure handshake with the remote database cluster.</Text>
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Integrated Layout Rules
+Dividers are frequently utilized inside larger components (like `SectionLabel` or `Stack`) to create complex architectural lines. Here, we show a divider used to separate a header from its content within a constrained panel:
+
+<ComponentPreview
+  title="Panel Header Divider"
+>
+  <div style="width: 100%; max-width: 320px; margin: 0 auto; padding: var(--space-4); border: 1px solid var(--border-subtle); border-radius: var(--rad-md); background: var(--surface-1); text-align: left;">
+    <Text type="label" tone="subtle" style="margin-bottom: var(--space-2);">Diagnostics</Text>
+    <Divider style="margin-bottom: var(--space-4);" />
+    <Text type="body-sm">All core telemetry streams are reporting nominal. No critical failures detected.</Text>
+  </div>
+</ComponentPreview>

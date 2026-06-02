@@ -70,24 +70,27 @@ Instead of manually declaring labels and error wrappers for every text box, you 
   </div>
 </ComponentPreview>
 
-#### Advanced: Active Validation & Custom Search Compositions
-Demonstrates how to handle active validation alerts, integrate pre-icon `Search` controls, and compose unified `InputGroup` button attachments inside a vertical form panel:
+#### Advanced: Multi-Input Form Grid
+Demonstrates how to coordinate multiple input fields within a responsive grid, utilizing custom themes and required indicators to build structured data entry panels:
 
 <ComponentPreview
-  title="Composed Input Modules"
+  title="Structured Data Entry"
 >
-  <div style="width: 100%; max-width: 380px; margin: 0 auto;">
-    <Stack gap="md">
-      <Input 
-        label="Username" 
-        placeholder="design_guru" 
-        error="This username is already taken." 
-      />
-      <Search placeholder="Filter layout sheets..." />
-      <InputGroup>
-        <Input placeholder="Enter coupon code..." style="margin: 0;" />
-        <Button theme="primary" style="margin: 0; white-space: nowrap; height: auto; align-items: center;">Apply Code</Button>
-      </InputGroup>
-    </Stack>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Grid cols={2} gap="md">
+      <Input label="First Name" placeholder="Jon" required />
+      <Input label="Last Name" placeholder="Doe" required />
+      <Input label="Organization" placeholder="Acme Corp" theme="primary" />
+      <Input label="Department" placeholder="Engineering" theme="primary" />
+    </Grid>
   </div>
 </ComponentPreview>
+
+### Compound Components & Helpers
+
+#### InputGroup
+The `InputGroup` container physically joins an input field with trailing or leading buttons. It utilizes flex-box mechanics to ensure the input expands to fill the container while the buttons remain fixed. Like `ButtonGroup`, it overrides internal border radii to create a seamless interactive unit.
+
+#### InputIcon
+The `InputIcon` is an internal helper that absolutely positions icons inside the input frame bounds. It ensures icons remain visually centered and non-interactive (`pointer-events: none`), allowing user clicks to pass through to the underlying input text field.
+

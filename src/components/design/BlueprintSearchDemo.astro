@@ -1,0 +1,53 @@
+---
+import Stack from '../ui/layout/Stack.astro';
+import Search from '../ui/input/Search.astro';
+import Paper from '../ui/primitives/Paper.astro';
+import Link from '../ui/primitives/Link.astro';
+
+const components = [
+  { href: "/design/button", label: "Button" },
+  { href: "/design/tabs", label: "Tabs" },
+  { href: "/design/accordion", label: "Accordion" },
+  { href: "/design/bento", label: "Bento Grid" },
+  { href: "/design/breadcrumbs", label: "Breadcrumbs" },
+  { href: "/design/toast", label: "Toast" },
+  { href: "/design/link", label: "Link" },
+  { href: "/design/paper", label: "Paper" },
+  { href: "/design/svg", label: "Svg" },
+  { href: "/design/text", label: "Text" },
+];
+---
+
+<div class="blueprint-search-demo" style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+  <Stack gap="md">
+    <Search id="demo-search-input" placeholder="Search components (e.g. Button, Tabs)..." theme="primary" />
+    
+    <Paper layer={1} padding="sm" bordered style="max-height: 200px; overflow-y: auto;">
+      <ul id="blueprint-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-1);">
+        {components.map(comp => (
+          <li><Link href={comp.href} class="search-item" label={comp.label} /></li>
+        ))}
+      </ul>
+    </Paper>
+  </Stack>
+</div>
+
+<script>
+  function initBlueprintSearch() {
+    const input = document.getElementById('demo-search-input') as HTMLInputElement;
+    const listItems = document.querySelectorAll('#blueprint-list li');
+
+    if (!input || listItems.length === 0) return;
+
+    input.addEventListener('input', () => {
+      const query = input.value.toLowerCase().trim();
+
+      listItems.forEach(li => {
+        const text = li.textContent?.toLowerCase() || '';
+        (li as HTMLElement).style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initBlueprintSearch);
+</script>

@@ -1,0 +1,62 @@
+---
+title: "Markdown Heading"
+description: "A specialized typographic primitive for long-form content, supporting sticky positioning and automatic hover-anchors."
+category: "typography"
+order: 5
+propsTable:
+  - name: "level"
+    type: "1 | 2 | 3 | 4 | 5 | 6"
+    defaultValue: "2"
+    description: "The heading level (h1-h6)."
+  - name: "sticky"
+    type: "boolean"
+    defaultValue: "false"
+    description: "If true, the heading sticks to the top of the viewport on scroll."
+  - name: "id"
+    type: "string"
+    description: "Unique identifier for the heading (used for anchor links)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import MdHeading from '../../components/ui/typography/MdHeading.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `MdHeading` component is designed to solve common issues in long-form technical reading. While standard headings are static, `MdHeading` provides interactive features like automatic anchor links and sticky positioning to help users maintain context as they navigate through dense documentation.
+
+### Stickiness & Contextual Blur
+When the `sticky` prop is enabled, the heading uses `position: sticky` aligned with the global header offset. To ensure content doesn't abruptly disappear behind the header, we apply a `backdrop-filter: blur(8px)` and a linear gradient mask. This creates a professional "glass" effect where content softly fades out as it scrolls under the sticky section title.
+
+### Usage Blueprints
+
+#### Common: Interactive Header List
+Standard headings automatically reveal an anchor link on hover, allowing users to copy deep links directly to specific sections:
+
+<ComponentPreview
+  title="Anchor Link Reveal"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <MdHeading level={3} id="arch-overview">Architectural Overview</MdHeading>
+    <Text type="body-sm">Hover over the heading above to reveal the deep-link anchor (#).</Text>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Sticky Reading Context
+Demonstrates how a sticky heading maintains context within a scrollable content area:
+
+<ComponentPreview
+  title="Sticky Section Context"
+>
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; height: 300px; overflow-y: auto; border: 1px solid var(--border-subtle); border-radius: var(--rad-md); position: relative;">
+    <Box padding="md">
+      <MdHeading level={4} sticky={true} id="sticky-sample">Sticky Spec Reference</MdHeading>
+      <Stack gap="md" style="padding-bottom: 400px;">
+        <Text type="body-sm">Scroll down to see the header stick to the top of this container...</Text>
+        <Text type="body-sm">The first phase involves loading environmental secrets and validating the local registry state.</Text>
+        <Text type="body-sm">A secure SSL/TLS handshake is established between the local kernel and the remote telemetry cluster.</Text>
+        <Text type="body-sm">Final synchronization ensures that all local blueprints match the latest distributed version.</Text>
+      </Stack>
+    </Box>
+  </div>
+</ComponentPreview>

@@ -1,0 +1,61 @@
+---
+title: "Columns"
+description: "A flexible layout grid primitive for creating multi-column layouts with custom fractional ratios."
+category: "layouts"
+order: 3
+propsTable:
+  - name: "layout"
+    type: "string | number"
+    description: "A string of digits representing column ratios (e.g., '121' creates 1fr 2fr 1fr)."
+  - name: "gap"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "The gutter spacing between columns."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Columns from '../../components/ui/layout/Columns.astro';
+import C from '../../components/ui/layout/C.astro';
+import Paper from '../../components/ui/primitives/Paper.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Columns` component is a layout primitive designed for building side-by-side content structures. Unlike the `Grid` component (which is optimized for repeatable tiles), `Columns` is built for creating distinct layout regions, such as a main content area paired with a narrower sidebar.
+
+### String-to-Ratio Parsing
+To make the component easy to use without writing complex CSS strings, `Columns` features a custom ratio parser. When you pass `layout="121"`, the component's frontmatter splits the string and maps each digit to a `fr` (fractional) unit, resulting in a CSS grid template of `1fr 2fr 1fr`. This allows developers to quickly prototype layout structures using a simple numeric shorthand.
+
+### Compound Component: C (Column)
+The `C` component acts as a semantic child for the `Columns` wrapper. It automatically applies flex-column behaviors to its children, ensuring that content within a column stacks vertically and stretches to fill the available height if necessary.
+
+### Usage Blueprints
+
+#### Common: Equal-Width Splits
+If the `layout` prop is omitted, the component defaults to `grid-auto-flow: column`, which automatically sizes all children to an equal width:
+
+<ComponentPreview
+  title="Auto-Equal Column Split"
+>
+  <Columns gap="sm" style="width: 100%;">
+    <Paper layer={1} padding="sm"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Column A</Text></Paper>
+    <Paper layer={1} padding="sm"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Column B</Text></Paper>
+    <Paper layer={1} padding="sm"><Text style="margin:0; text-align: center; font-size: var(--text-xs);">Column C</Text></Paper>
+  </Columns>
+</ComponentPreview>
+
+#### Advanced: Asymmetric Layout Ratios
+Demonstrates using the numeric shorthand to create a standard sidebar-main layout (`layout="13"`) or a complex three-column structure (`layout="212"`), using the `C` child primitive to wrap column content:
+
+<ComponentPreview
+  title="Custom Fractional Ratios"
+>
+  <div style="width: 100%;">
+    <Columns layout="13" gap="md">
+      <C>
+        <Paper layer={-1} padding="xs" style="height: 100%;"><Text type="label" style="font-size: 10px;">Sidebar</Text></Paper>
+      </C>
+      <C>
+        <Paper layer={1} padding="sm"><Text type="body-sm">The primary content region consumes three times the space of the sidebar, creating a professional asymmetric balance.</Text></Paper>
+      </C>
+    </Columns>
+  </div>
+</ComponentPreview>
