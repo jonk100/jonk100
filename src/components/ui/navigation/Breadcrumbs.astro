@@ -18,11 +18,12 @@ const {
   separator = 'divider',
   class: className = '',
   "class:list": classList = {},
+  "aria-label": ariaLabel = 'Breadcrumb',
   ...rest
 } = Astro.props;
 ---
 
-<nav aria-label="Breadcrumb" class:list={['breadcrumbs', className, classList]} {...rest}>
+<nav aria-label={ariaLabel} class:list={['breadcrumbs', className, classList]} {...rest}>
   <ol class="breadcrumbs-list">
     <slot />
   </ol>

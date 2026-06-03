@@ -24,15 +24,15 @@ import Text from '../../components/ui/typography/Text.astro';
 
 The `Accordion` component is designed for progressively disclosing information, allowing users to expand only the content they are interested in. It is ideal for FAQ sections, technical specifications, or "Deep Dive" sections within project case studies.
 
-### Native Accessibility & Custom Icons
+## Native Accessibility & Custom Icons
 To ensure maximum reliability and performance, the component utilizes the native HTML `<details>` and `<summary>` elements. 
 1. **Zero-JavaScript Foundation**: By default, the accordion works perfectly without any JavaScript, leveraging the browser's built-in toggle logic.
 2. **Accessible by Default**: Screen readers natively understand the parent-child relationship of the disclosure pattern, providing automatic state announcements.
 3. **Themed Vector Cues**: We override the browser's default list-marker (the small black arrow) with our custom SVG `chevron-down`. Using CSS `transform` on the `[open]` attribute, the icon rotates smoothly, signaling the expansion state to the user.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Multi-Expandable List
+### Common: Multi-Expandable List
 The standard mode allows users to keep multiple sections open at once, ideal for non-mutually exclusive data:
 
 <ComponentPreview
@@ -51,7 +51,7 @@ The standard mode allows users to keep multiple sections open at once, ideal for
   </Accordion>
 </ComponentPreview>
 
-#### Advanced: Exclusive Selection Mode
+### Advanced: Exclusive Selection Mode
 By setting `multiple={false}`, the component's internal TypeScript controller intercepts clicks to ensure that only one section remains expanded at any given time, focusing the user's attention:
 
 <ComponentPreview

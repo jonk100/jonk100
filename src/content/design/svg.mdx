@@ -21,20 +21,15 @@ import ComponentPreview from '../../components/ui/primitives/ComponentPreview.as
 import Svg from '../../components/ui/primitives/Svg.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
 import Text from '../../components/ui/typography/Text.astro';
-import Badge from '../../design/icons/badge.svg';
-import BadgeGroup from '../../design/icons/badge-group.svg';
-import BentoGrid from '../../design/icons/bento-grid.svg';
-import Box from '../../design/icons/box.svg';
-import Zap from '../../assets/icons/zap.svg';
 
 The `Svg` component is a robust alternative to standard image-based icons. Unlike the `Icon` component (which may load icons from a folder), `Svg` is bound directly to our centralized TypeScript icon registry. This provides developers with full IDE autocomplete for icon names and ensures that every vector on the site is strictly tracked and typed.
 
-### Typed Vector Injection
+## Typed Vector Injection
 The core strength of the `Svg` primitive is its deep integration with the TypeScript type system. By importing `SvgName` from our design tokens, the component guarantees that you can never reference an icon that doesn't exist in the registry. At build time, the component fetches the corresponding SVG component and injects it directly into the HTML, ensuring the vector paths are available for CSS styling and hardware-accelerated transitions.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Scaled Iconography
+### Common: Scaled Iconography
 Demonstrates how the semantic sizing scale ensures that icons remain perfectly proportioned relative to the surrounding typography:
 
 <ComponentPreview
@@ -42,13 +37,13 @@ Demonstrates how the semantic sizing scale ensures that icons remain perfectly p
 >
   <Inline gap="md" align="center" justify="center" style="width: 100%;">
     <Svg name="badge" size="sm" />
-    <Svg name="badge-group" size="md" tone="accent" />
+    <Svg name="badge-group" size="md" />
     <Svg name="bento-grid" size="lg" />
     <Svg name="box" size="xl" stroke="var(--accent)" />
   </Inline>
 </ComponentPreview>
 
-#### Advanced: Integrated Interface Decorative
+### Advanced: Integrated Interface Decorative
 Using `Svg` as a decorative background or status highlight within a card, leveraging `currentColor` inheritance to match the surrounding text tone:
 
 <ComponentPreview
@@ -57,7 +52,7 @@ Using `Svg` as a decorative background or status highlight within a card, levera
   <div style="width: 100%; display: flex; justify-content: center;">
     <div style="padding: var(--space-4); border: 1px solid var(--border-subtle); border-radius: var(--rad-md); background: var(--surface-1); display: flex; align-items: center; gap: var(--space-3); color: var(--accent);">
       <Svg name="icon" size="lg" />
-      <Text type="h5" style="margin: 0; color: inherit;">System Charged</Text>
+      <Text type="h3" style="margin: 0; color: inherit;">System Charged</Text>
     </div>
   </div>
 </ComponentPreview>

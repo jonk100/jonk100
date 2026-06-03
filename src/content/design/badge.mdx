@@ -26,7 +26,7 @@ import Stack from '../../components/ui/layout/Stack.astro';
 
 The `Badge` component is a lightweight typographic indicator used for tags, status labels, and count markers. Standardizing this primitive allows us to manage complex thematic transparencies and ensure that small-scale text remains legible against varied background surfaces.
 
-### RGB Transparency Architecture
+## RGB Transparency Architecture
 To achieve the "glassy" semi-transparent backgrounds characteristic of modern UI without hardcoding hundreds of hex values, we utilize RGB design tokens. By mapping theme colors to `--primary-rgb` and similar variables, the component can dynamically generate alpha-blended backgrounds:
 ```css
 .badge--primary {
@@ -37,10 +37,10 @@ To achieve the "glassy" semi-transparent backgrounds characteristic of modern UI
 ```
 This approach ensures that badges naturally "soak up" the color of the underlying surface, maintaining a cohesive aesthetic regardless of the elevation layer they are placed upon.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Theme & Size Showcase
-Review the standard palette of status colors and size variations:
+### Common: Theme & Size Showcase
+Review the standard palette of status colors and size variations. We also offer an `outlined` variant for high-priority borders with minimal background weight:
 
 <ComponentPreview
   title="Thematic Status Badges"
@@ -52,6 +52,7 @@ Review the standard palette of status colors and size variations:
       <Badge theme="warning">Pending</Badge>
       <Badge theme="danger">Halted</Badge>
       <Badge theme="accent">New</Badge>
+      <Badge outlined>Outlined</Badge>
     </Inline>
     <Inline gap="xs" justify="center">
       <Badge size="xs">Extra Small</Badge>
@@ -62,7 +63,7 @@ Review the standard palette of status colors and size variations:
   </Stack>
 </ComponentPreview>
 
-### Compound Component: BadgeGroup
+## Compound Component: BadgeGroup
 The `BadgeGroup` component attaches multiple badges into a single segmented pill. It is frequently used for combined status readouts, such as version numbers or build results, where the relationship between the pieces of data needs to be visually explicit.
 
 <ComponentPreview

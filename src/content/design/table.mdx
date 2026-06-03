@@ -27,12 +27,12 @@ import Text from '../../components/ui/typography/Text.astro';
 
 The `Table` component family provides a robust way to render complex data sets while maintaining strict semantic HTML standards. It abstracts the boilerplate of standard `<table>` markup into a series of composable Astro components that handle consistent padding, alignment, and hover interactions.
 
-### Responsive Data Wrappers
+## Responsive Data Wrappers
 Tabular data is notoriously difficult to handle on small screens. The `Table` component includes a built-in `table-wrapper` that enables horizontal scrolling (`overflow-x: auto`) when the table width exceeds its parent container. This ensures that your structured data remains accessible on mobile devices without breaking the broader page layout.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: System Metadata Ledger
+### Common: System Metadata Ledger
 Standard implementation for displaying a list of items with multiple attributes:
 
 <ComponentPreview
@@ -66,7 +66,7 @@ Standard implementation for displaying a list of items with multiple attributes:
   </Table>
 </ComponentPreview>
 
-#### Advanced: Dense Configuration Table
+### Advanced: Dense Configuration Table
 Demonstrates utilizing custom alignments and text tones to build high-density readouts for technical specifications:
 
 <ComponentPreview

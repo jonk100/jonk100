@@ -19,22 +19,22 @@ import BreadcrumbItem from '../../components/ui/navigation/BreadcrumbItem.astro'
 
 The `Breadcrumbs` component helps users understand their location within a hierarchical site structure. It provides a trail of links back to parent sections, improving discoverability and orientation in deep documentation sets.
 
-### Semantic Nav Trails
+## Semantic Nav Trails
 To ensure search engines and screen readers correctly parse the navigation path, the component follows strict ARIA standards:
 1. **Nav Wrapper**: The list is wrapped in a `<nav aria-label="Breadcrumb">` element.
 2. **Current Page Signaling**: The active page is marked with `aria-current="page"`, informing assistive technologies that this node represents the user's present location.
 3. **Rotating Dividers**: The separators use our design system's `divider` vector, rotated 90 degrees to function as semantic breadcrumb arrows.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Site-Wide Pathing
+### Common: Site-Wide Pathing
 Standard usage for orienting users across major site sections:
 
 <ComponentPreview
   title="Standard Navigation Trail"
 >
   <div style="width: 100%; display: flex; justify-content: center;">
-    <Breadcrumbs>
+    <Breadcrumbs aria-label="Primary breadcrumb">
       <BreadcrumbItem href="/">Home</BreadcrumbItem>
       <BreadcrumbItem href="/design">Design System</BreadcrumbItem>
       <BreadcrumbItem current={true}>Navigation</BreadcrumbItem>
@@ -42,14 +42,14 @@ Standard usage for orienting users across major site sections:
   </div>
 </ComponentPreview>
 
-#### Advanced: Deep Content Hierarchy
+### Advanced: Deep Content Hierarchy
 Demonstrates how breadcrumbs scale to handle deeply nested article structures:
 
 <ComponentPreview
   title="Nested Article Trail"
 >
   <div style="width: 100%; display: flex; justify-content: center;">
-    <Breadcrumbs>
+    <Breadcrumbs aria-label="Secondary breadcrumb">
       <BreadcrumbItem href="/">Jon Doe</BreadcrumbItem>
       <BreadcrumbItem href="/blog">Technical Blog</BreadcrumbItem>
       <BreadcrumbItem href="/blog/arch">Architecture</BreadcrumbItem>

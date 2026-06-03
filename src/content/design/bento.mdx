@@ -22,12 +22,12 @@ import Text from '../../components/ui/typography/Text.astro';
 
 The `Bento` component provides a robust framework for building "Bento Box" layouts—asymmetrical grids where items span different column and row counts. This pattern is ideal for dashboards, feature showcases, and media galleries where visual hierarchy is established through surface area rather than simple repetition.
 
-### Grid-Auto-Rows & Responsive Hardcoding
+## Grid-Auto-Rows & Responsive Hardcoding
 To maintain an aesthetic vertical rhythm, the `Bento` grid utilizes `grid-auto-rows: minmax(100px, auto)`. This ensures that even "single-row" cells have a substantial physical presence. Additionally, the component includes built-in responsive overrides: on mobile devices, it automatically collapses complex spans and forces a 2-column or 1-column stack, ensuring your high-density dashboard remains legible on small screens without manual media query management.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Feature Bento
+### Common: Feature Bento
 Demonstrates a standard 4-column feature grid where the primary item occupies a larger "feature" slot:
 
 <ComponentPreview
@@ -58,7 +58,7 @@ Demonstrates a standard 4-column feature grid where the primary item occupies a 
   </Bento>
 </ComponentPreview>
 
-#### Advanced: Multi-Span Composition
+### Advanced: Multi-Span Composition
 Showcases more complex spanning logic, including 3-column items and narrow vertical sidebars within the grid:
 
 <ComponentPreview
@@ -67,11 +67,11 @@ Showcases more complex spanning logic, including 3-column items and narrow verti
   <Bento columns={4} gap="md" style="width: 100%;">
     <BentoItem colSpan={3}>
       <Paper layer={1} padding="md" style="height: 100%;">
-        <Text type="h5">Wide Content Area</Text>
+        <Text type="h3">Wide Content Area</Text>
       </Paper>
     </BentoItem>
     <BentoItem rowSpan={2}>
-      <Paper layer={2} tone="accent" padding="md" style="height: 100%; background: var(--accent); color: white;">
+      <Paper layer={2} tone="accent" padding="md" style="height: 100%; background: var(--accent); color: var(--neutral-0);">
         <Text type="label" style="color: inherit;">Sidebar</Text>
       </Paper>
     </BentoItem>

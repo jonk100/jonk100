@@ -31,14 +31,14 @@ import Text from '../../components/ui/typography/Text.astro';
 
 The `Paper` component is our foundational surface block, extending the standard HTML `<div>` element. When building a design system, interfaces require clear visual hierarchy. We standardized `Paper` to consolidate surface elevation variables, shadow calculations, and container paddings into a single, cohesive modular wrapper.
 
-### Elevations & Interactive Press
+## Elevations & Interactive Press
 To create visual depth and physical tactility, `Paper` includes two core interaction systems:
 1. **The Science of Elevations**: It maps layers `"-1"` through `"5"` to progressive HSL custom properties. Elevated layers progressively mix lighter values and scale box shadows to create a realistic visual illusion of components floating closer to the light source.
 2. **Interactive Tactility**: Setting `interactive={true}` applies high-performance GPU transitions. On hover, the surface "lifts" via a negative Y-translation and increased shadow. On press (`:active`), it subtly scales down to `0.98`, mimicking the physical resistance of a mechanical button.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Elevation Progression Grid
+### Common: Elevation Progression Grid
 Instead of manually declaring individual background colors and shadow offsets across your stylesheet, you can simply adjust the `layer` parameter:
 
 <ComponentPreview
@@ -57,7 +57,7 @@ Instead of manually declaring individual background colors and shadow offsets ac
   </Grid>
 </ComponentPreview>
 
-#### Advanced: Interactive Dashboard Surfaces
+### Advanced: Interactive Dashboard Surfaces
 Demonstrates how to use the `interactive` prop to create pressable cards that respond to user engagement with fluid motion:
 
 <ComponentPreview
@@ -71,7 +71,7 @@ Demonstrates how to use the `interactive` prop to create pressable cards that re
       radius="lg" 
       style="width: 240px; text-align: center;"
     >
-      <Text type="h5">Press Me</Text>
+      <Text type="h3">Press Me</Text>
       <Text type="caption">Interactive Surface</Text>
     </Paper>
     <Paper 
@@ -81,7 +81,7 @@ Demonstrates how to use the `interactive` prop to create pressable cards that re
       radius="lg" 
       style="width: 240px; text-align: center;"
     >
-      <Text type="h5">Hover Lift</Text>
+      <Text type="h3">Hover Lift</Text>
       <Text type="caption">Tactile Feedback</Text>
     </Paper>
   </div>

@@ -35,14 +35,14 @@ import Inline from '../../components/ui/layout/Inline.astro';
 
 The `Link` primitive extends the native HTML `<a>` anchor element, providing a highly customizable visual trigger. While standard anchors have unpredictable browser-default text underlines and focus indicators, standardizing this component gives us a unified visual baseline that supports thematic variations, disabled behaviors, and smart active-state detection.
 
-### Smart Paths & Hover Intent
+## Smart Paths & Hover Intent
 To provide a premium navigation experience, the `Link` component includes two key architectural features:
 1. **Active State Detection**: The component automatically compares its `href` to the current page's `pathname`. If they match, it applies an `.is-active` class, allowing for automatic visual signaling in NavBars and sidebars without manual state management.
 2. **Hover Preview Logic**: Setting `preview={true}` activates a Vanilla TypeScript controller that monitors user hover intent. After a 400ms delay, it renders a fixed-position preview card containing URL metadata, helping users verify a link's destination before clicking.
 
-### Usage Blueprints
+## Usage Blueprints
 
-#### Common: Theme Variations
+### Common: Theme Variations
 Group standard text anchors and styled links inside a single visual composition row to verify theme consistency:
 
 <ComponentPreview title="Themed Anchor Showcase">
@@ -53,7 +53,7 @@ Group standard text anchors and styled links inside a single visual composition 
   </Inline>
 </ComponentPreview>
 
-#### Advanced: Smart Active States & Previews
+### Advanced: Smart Active States & Previews
 Demonstrates how the link responds to current page pathing and the interactive preview card logic:
 
 <ComponentPreview title="Interactive Link Intelligence">
@@ -64,7 +64,7 @@ Demonstrates how the link responds to current page pathing and the interactive p
   </div>
 </ComponentPreview>
 
-### Compound Component: LinkGroup
+## Compound Component: LinkGroup
 The `LinkGroup` component physically attaches multiple `Link` primitives together into a single segmented pill. Like `ButtonGroup`, it overrides internal border radii to create a unified interactive block. It is particularly useful for compact navigation bars or footer link sets where actions need to appear structurally joined.
 
 <ComponentPreview

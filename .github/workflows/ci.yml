@@ -18,7 +18,7 @@ jobs:
         
     - uses: actions/setup-node@v4
       with:
-        node-version: 22
+        node-version: 24
         cache: 'pnpm'
         
     - name: Install dependencies
@@ -27,11 +27,8 @@ jobs:
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
       
-    - name: Run Vitest (Unit)
+    - name: Run Tests (Playwright)
       run: pnpm test
-      
-    - name: Run Playwright (E2E)
-      run: pnpm test:e2e
       
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
