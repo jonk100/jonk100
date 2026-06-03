@@ -237,7 +237,7 @@
 
 .glossary-header h1,
 .blog-header h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: var(--text-3xl);
   margin-bottom: var(--space-4);
 }
 
@@ -247,6 +247,6 @@
   }
 
   .glossary-header h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: var(--text-2xl);
   }
 }

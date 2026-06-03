@@ -7,25 +7,17 @@
 /**            Primary Variant                */
 /**                                             */
 .variant--primary {
-  background: var(--primary) !important;
-  color: var(--text-inverse) !important;
-  border-color: var(--border-subtle) !important;
+  background: var(--primary-dim) !important;
+  color: var(--text-4) !important;
+  border-color: var(--primary-border-strong) !important;
+  font-weight: bold !important;
   transition: all 0.4s ease;
 }
 
 .variant--primary:hover {
   background: var(--primary-hover) !important;
   border-color: var(--border-strong) !important;
-  color: var(--accent) !important;
-}
-
-.variant--primary:active {
-  background: var(--accent-hover);
-}
-
-.variant--primary:disabled {
-  background: var(--bg-elevated);
-  color: var(--text-muted);
+  color: var(--text-5) !important;
 }
 
 /**                                          */
@@ -33,14 +25,14 @@
 /**                                          */
 .variant--ghost {
   background: transparent;
-  color: var(--text-muted) !important;
-  border-color: var(--border-subtle) !important;
+  color: var(--neutral-150) !important;
+  border-color: var(--secondary-border) !important;
 }
 
 .variant--ghost:hover {
-  background: var(--surface-2);
-  color: var(--text-1) !important;
-  border-color: var(--border) !important;
+  background: var(--surface-1);
+  color: var(--text-3) !important;
+  border-color: var(--border-subtle) !important;
   
 }
 
@@ -66,18 +58,9 @@
 }
 
 .variant--secondary:hover {
-  background: var(--secondary-hover);
+  background: var(--secondary-dim);
   color: var(--text) !important;
-  border-color: var(--secondary-hover);
-}
-
-.variant--secondary:active {
-  background: var(--bg-elevated);
-}
-
-.variant--secondary:disabled {
-  background: var(--bg-surface);
-  color: var(--text-muted);
+  border-color: var(--secondary) !important;
 }
 
 /**                                          */
@@ -85,13 +68,16 @@
 /**                                           */
 .variant--outline {
   background: transparent;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
+  color: var(--text-3) !important;
+  border: 1px solid var(--text-0) !important;
+  outline: 2px solid var(--primary-dim) !important;
 }
 
 .variant--outline:hover {
-  background: var(--surface-5) !important;
+  background: var(--surface-0) !important;
   border-color: var(--border-strong) !important;
+  color: var(--text-5) !important;
+  outline: 2px solid var(--accent) !important;
 }
 
 .variant--outline:active {
@@ -102,15 +88,20 @@
 /**                                          */
 /**            Default Variant            */
 /**                                           */
+
 .variant--default {
-  background: var(--surface-0);
-  color: var(--text);
-  border: 1px solid var(--border) !important;
+  background: var(--surface-4) !important;
+  font-weight: bold !important;
+  color: var(--primary-border-strong) !important;
+  border-color: var(--border-strong) !important;
 }
 
 .variant--default:hover {
-  background: var(--bg-elevated);
+  background: var(--surface-5) !important;
+  color: var(--text-5) !important;
+  border: 1px solid var(--primary-border) !important;
 }
+
 
 .variant--default:active {
   background: var(--bg-elevated);
@@ -120,13 +111,14 @@
 /**            Accent Variant                */
 /**                                           */
 .variant--accent {
-  background: var(--accent);
-  color: var(--text-inverse);
-  border-color: var(--accent-border);
+  background: var(--accent-border) !important;
+  color: var(--text-0) !important;
+  border-color: var(--secondary-border-strong) !important;
 }
 
 .variant--accent:hover {
-  background: var(--accent-hover);
+  background: var(--accent-dim) !important;
+  color: var(--text-5) !important;
 }
 
 .variant--accent:active {

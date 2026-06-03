@@ -21,32 +21,44 @@
 /** [Control] Sizes - Butttons, Inputs, Selects   */
 /** ___________________________________________   */
 .control--xs {
-    font-size: var(--text-xs);
-    padding: var(--space-1) var(--space-2) !important;
-    font-weight: 500;
-    margin: var(--space-2);
+    font-size: var(--text-xxs) !important;
+    padding: var(--space-2) var(--space-1) !important;
+    font-weight: 400;
+    min-width: 80px;
   }
   
   .control--sm {
     font-size: var(--text-sm);
-    font-weight: 500;
-    padding: var(--space-2) var(--space-4) !important;
+    font-weight: 300;
+    padding: var(--space-3) var(--space-1) !important;
+    min-width: 90px;
   }
 
-  .control--base, .control--md {
+  .control--md {
+    font-size: var(--text-md);
+    padding: var(--space-3) var(--space-2) !important;
+    font-weight: 400;
+    min-width: 115px;
+  }
+  
+  .control--base {
     font-size: var(--text-base);
-    padding: var(--space-2) var(--space-5) !important;
+    padding: var(--space-4) var(--space-2) !important;
     font-weight: 500;
+    min-width: 140px;
   }
 
   .control--lg {
-    font-size: var(--text-lg);
-    padding: var(--space-3) var(--space-6) !important;
-    font-weight: 600;
+    font-size: var(--text-lg) !important;
+    padding: var(--space-5) var(--space-3) !important;
+    font-weight: 700;
+    min-width: 170px;
+
   }
 
   .control--xl {
-    font-size: var(--text-xl);
-    padding: var(--space-4) var(--space-8) !important;
+    font-size: var(--text-xl) !important;
+    padding: var(--space-6) var(--space-4) !important;
+    font-weight: 900;
+    min-width: 200px;
   }
-

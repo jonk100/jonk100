@@ -11,27 +11,28 @@
   /** ------------------------------------------------------------------------ */  
   /**                     Typography Scale                                     */
   /** ------------------------------------------------------------------------ */
-  --text-xs: clamp(0.65rem, 0.63rem + 0.08vw, 0.75rem);      /* ~10.4px → 12px  */
-  --text-sm: clamp(0.78rem, 0.74rem + 0.14vw, 0.875rem);     /* ~12.5px → 14px  */
-  --text-base: clamp(0.95rem, 0.91rem + 0.18vw, 1.0625rem);  /* ~15.2px → 17px  */
-  --text-md: clamp(1.05rem, 1rem + 0.32vw, 1.25rem);         /* ~16.8px → 20px  */
-  --text-lg: clamp(1.1rem, 1.1rem + 0.32vw, 1.25rem);         
-  --text-xl: clamp(1.25rem, 1.25rem + 0.32vw, 1.5rem);         
-  --text-2xl: clamp(1.45rem, 1.25rem + 1vw, 2rem);           /* ~23px → 32px    */
-  --text-3xl: clamp(1.8rem, 1.45rem + 1.7vw, 2.75rem);       /* ~29px → 44px    */
-  --text-4xl: clamp(2.4rem, 1.9rem + 2.8vw, 4rem);           /* ~38px → 64px    */
-  --text-5xl: clamp(3rem, 2rem + 5vw, 6rem);                 /* ~48px → 96px    */
-  --text-6xl: clamp(4rem, 2.5rem + 8vw, 8rem);               /* ~64px → 128px   */
+  --text-xxs: clamp(0.5rem, 0.5rem + 0.1vw, 0.75rem);      /* ~10.4px → 12px  */
+  --text-xs: clamp(0.65rem, 0.6rem + 0.1vw, 0.9rem);       /* ~11.2px → 13px  */
+  --text-sm: clamp(0.825rem, 0.75rem + 0.1vw, 1rem);     /* ~12.5px → 14px  */
+  --text-md: clamp(.9rem, 0.85rem + 0.1vw, 1.0125rem);  /* ~15.2px → 17px  */
+  --text-base: clamp(1.1rem, 1.1rem + 0.2vw, 1.35rem);         /* ~16.8px → 20px  */
+  --text-lg: clamp(1.25rem, 1.2rem + 0.25vw, 1.55rem);         
+  --text-xl: clamp(1.5rem, 1.4rem + 0.3vw, 2rem);         
+  --text-2xl: clamp(1.75rem, 1.7rem + .5vw, 2.25rem);
+  --text-3xl: clamp(2.25rem, 2.2rem + 1vw, 2.75rem);
+  --text-4xl: clamp(2.75rem, 2.7rem + 2vw, 4rem);
+  --text-5xl: clamp(3.5rem, 3.4rem + 3vw, 5rem);
+  --text-6xl: clamp(5rem, 4.9rem + 4vw, 7.5rem);               /* ~64px → 128px   */
 
   /** -----------------------------------------------  */
   /**                         Fluid Line Heights        */
   /** ------------------------------------------------   */
-  --leading-tightest: clamp(.9, .9 + 0.1vw, 1.05);
-  --leading-tighter: clamp(1.05, 1.05 + 0.15vw, 1.2);
-  --leading-tight: clamp(1.2, 1.2 + 0.2vw, 1.4);
-  --leading-normal: clamp(1.5, 1.5 + 0.25vw, 1.7);
-  --leading-loose: clamp(1.6, 1.5 + 0.4vw, 1.85);
-  --leading-looser: clamp(1.8, 1.8 + 0.6vw, 2);
+  --leading-tightest: clamp(1, 1 + 0.1vw, 1.2);
+  --leading-tighter: clamp(1.2, 1.2 + 0.15vw, 1.4);
+  --leading-tight: clamp(1.4, 1.4 + 0.2vw, 1.4);
+  --leading-normal: clamp(1.5, 1.5 + 0.3vw, 1.7);
+  --leading-loose: clamp(1.75, 1.7 + 0.4vw, 1.85);
+  --leading-looser: clamp(1.85, 1.8 + 0.6vw, 2);
 
   /** --------------------------  */
   /**      Semantic Aliases       */

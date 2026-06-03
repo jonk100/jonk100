@@ -70,21 +70,6 @@
     z-index: 20;
   }
 
-  /* Reset Astro/Shiki code block layout */
-  /* pre.astro-code {
-    margin: 0;
-    padding: 1rem;
-    white-space: pre;
-  }
-
-  pre.astro-code code {
-    display: block;
-    padding: 0;
-    margin: 0;
-    white-space: pre;
-    text-indent: 0;
-  } */
-
   pre.astro-code .line {
     display: block;
   }

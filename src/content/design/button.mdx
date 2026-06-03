@@ -43,6 +43,7 @@ import ComponentPreview from '../../components/ui/primitives/ComponentPreview.as
 import Button from '../../components/ui/controls/Button.astro';
 import Inline from '../../components/ui/layout/Inline.astro';
 import ButtonGroup from '../../components/ui/controls/ButtonGroup.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
 
 The `Button` component is the main interaction primitive in our design system. Standardizing this component ensures visual consistency across buttons, links, and action dividers, while automating vertical alignments and layout ratios. Under the hood, it compiles dynamically as either an HTML `<button>` or a native `<a>` anchor, depending on the presence of the `href` attribute.
 
@@ -63,12 +64,18 @@ Rather than declaring unique button parameters on every custom card, you can pas
 <ComponentPreview
   title="Button Visual Combinations"
 >
-  <Inline gap="sm" align="center" style="width: 100%; justify-content: center; flex-wrap: wrap;">
-    <Button theme="primary" size="sm">Primary Small</Button>
-    <Button theme="default">Base Default</Button>
-    <Button theme="secondary" size="lg">Secondary Large</Button>
-    <Button theme="ghost" size="xl">Ghost Extra Large</Button>
-  </Inline>
+  <Stack>
+    <Inline gap="xl">
+      <Button theme="primary" size="xs">Pri XS</Button>
+      <Button theme="accent" size="xl">Accent XL</Button>
+      <Button theme="default" size="sm">Sm Def</Button>
+    </Inline>
+    <Inline gap="xl">
+      <Button theme="outline" size="md">Md Out</Button>
+      <Button theme="secondary" size="lg">Sec Lg</Button>
+      <Button theme="ghost" size="base">Ghost</Button>
+    </Inline>
+  </Stack>  
 </ComponentPreview>
 
 ### Advanced: Animated & Loading States

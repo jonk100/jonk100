@@ -53,7 +53,7 @@
   border: 1px solid var(--border-subtle);
   font-family: var(--mono);
   text-transform: uppercase;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   letter-spacing: 0.1em;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -133,19 +133,8 @@
 .entry-title,
 .post-title,
 .project-title {
-  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-size: var(--text-3xl);
   margin: var(--space-4) 0 var(--space-6);
-  line-height: 1.1;
-}
-
-.project-title {
-  font-size: clamp(3rem, 5vw, 5rem);
-  margin: var(--space-8) 0;
-}
-
-.project-header h1 {
-  font-size: clamp(3rem, 5vw, 5rem);
-  margin: var(--space-8) 0;
   line-height: 1.1;
 }
 

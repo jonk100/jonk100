@@ -6,19 +6,33 @@
  * @props (global): class, class:list
  */
 export interface Props {
+  bg?: string;
+  tone?: string;
+  gap?: string;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
 }
 
 const {
+  bg = 'surface-1',
+  tone = 'accent',
+  gap = 'lg',
   class: className = '',
   "class:list": classList = {},
   ...rest
 } = Astro.props;
 ---
 
-<div class:list={['link-group', className, classList]} {...rest}>
+<div class:list={[
+  'link-group',
+  `text-${tone}`, 
+  `control--gap-${gap}`,
+  `background--${bg}`,
+  className, 
+  classList
+  ]} {...rest}
+>
   <slot />
 </div>
 
