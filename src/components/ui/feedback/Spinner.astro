@@ -10,12 +10,12 @@
  * - speed: Rotation animation speed preset ('fast', 'normal', 'slow').
  * - tone: Color variant of the spinner head matching theme colors.
  */
-import type { Sizes } from 'src/types/variants.types';
+import type { Sizes, TextTone } from 'src/types/variants.types';
 
 export interface Props {
   size?: Sizes;
   speed?: 'fast' | 'normal' | 'slow';
-  tone?: 'primary' | 'secondary' | 'accent' | 'text' | 'muted';
+  tone?: TextTone;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;

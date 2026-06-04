@@ -20,13 +20,17 @@ const {
   rowSpan = 1,
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
+
+const internalStyle = `grid-column: span ${colSpan}; grid-row: span ${rowSpan};`;
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <div 
   class:list={['bento-item', className, classList]} 
-  style={`grid-column: span ${colSpan}; grid-row: span ${rowSpan};`}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

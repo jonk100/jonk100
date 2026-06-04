@@ -1,0 +1,63 @@
+---
+title: "RangeSlider"
+description: "Dual-handle value range selection using overlapping inputs and a dynamic fill track."
+category: "controls"
+order: 17
+propsTable:
+  - name: "min"
+    type: "number"
+    defaultValue: "0"
+    description: "The absolute minimum value."
+  - name: "max"
+    type: "number"
+    defaultValue: "1000"
+    description: "The absolute maximum value."
+  - name: "valueLo"
+    type: "number"
+    defaultValue: "250"
+    description: "The initial lower bound value."
+  - name: "valueHi"
+    type: "number"
+    defaultValue: "750"
+    description: "The initial upper bound value."
+  - name: "step"
+    type: "number"
+    defaultValue: "1"
+    description: "The granularity of the slider."
+  - name: "label"
+    type: "string"
+    description: "An optional label for the range slider."
+  - name: "unit"
+    type: "string"
+    description: "An optional unit string appended to the values."
+  - name: "prefix"
+    type: "string"
+    description: "An optional prefix string prepended to the values (e.g., '$')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import RangeSlider from '../../components/ui/input/RangeSlider.astro';
+
+The `RangeSlider` component provides a dual-handle interface for selecting a minimum and maximum value range. It utilizes a clever CSS and JavaScript trick involving two overlapping native `<input type="range">` elements, ensuring a robust, accessible, and tactile experience.
+
+### Prevention of Crossing Handles
+The component's internal Vanilla TypeScript controller continuously monitors both inputs. It includes logic to prevent the lower handle from crossing over the upper handle (and vice versa), ensuring the selected range remains logically sound.
+
+### Usage Blueprints
+
+#### Common: Price Range Filter
+A typical e-commerce use case for filtering items within a specific price bracket:
+
+<ComponentPreview title="Price Range Selection">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <RangeSlider 
+      label="Price Range" 
+      min={0} 
+      max={1000} 
+      valueLo={120} 
+      valueHi={480} 
+      step={10} 
+      prefix="£" 
+    />
+  </div>
+</ComponentPreview>

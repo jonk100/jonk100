@@ -97,12 +97,12 @@ export default function remarkPreview() {
         return line.slice(minIndent === Infinity ? 0 : minIndent);
       });
 
-      const childCode = dedentedLines.join('\n');
+      const childCode = dedentedLines.join('\n').replace(/\n\s*\n\s*\n/g, '\n\n');
 
       // Prepend relevant imports that are used inside this preview code
       const relevantImports = getRelevantImports(childCode);
       const finalCodeBlock = relevantImports.length > 0
-        ? `---\n${relevantImports.join('\n')}\n---\n\n${childCode}`
+        ? `${relevantImports.join('\n')}\n\n${childCode}`
         : childCode;
 
       // Inject the generated code string directly into the node's 'code' attribute

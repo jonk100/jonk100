@@ -1,0 +1,191 @@
+---
+/**
+ * src/components/ui/input/RangeSlider.astro
+ * Dual-handle value range selection.
+ */
+export interface Props {
+  id?: string;
+  nameLo?: string;
+  nameHi?: string;
+  min?: number;
+  max?: number;
+  valueLo?: number;
+  valueHi?: number;
+  step?: number;
+  label?: string;
+  unit?: string;
+  prefix?: string;
+  class?: string;
+  "class:list"?: any;
+  [key: string]: any;
+}
+
+const {
+  id = `range-${Math.random().toString(36).substr(2, 9)}`,
+  nameLo = 'min',
+  nameHi = 'max',
+  min = 0,
+  max = 1000,
+  valueLo = 250,
+  valueHi = 750,
+  step = 1,
+  label,
+  unit = '',
+  prefix = '',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const pctLo = ((valueLo - min) / (max - min)) * 100;
+const pctHi = ((valueHi - min) / (max - min)) * 100;
+const width = pctHi - pctLo;
+---
+<div class:list={['range-slider-container', className, classList]}>
+  <div class="range-header">
+    {label && <label class="range-label">{label}</label>}
+    <span class="range-value" id={`${id}-display`}>{prefix}{valueLo}{unit} – {prefix}{valueHi}{unit}</span>
+  </div>
+  <div class="range-wrap">
+    <div class="range-track"></div>
+    <div class="range-fill" id={`${id}-fill`} style={`left: ${pctLo}%; width: ${width}%`}></div>
+    
+    <input 
+      type="range" 
+      id={`${id}-lo`}
+      name={nameLo}
+      min={min} 
+      max={max} 
+      value={valueLo} 
+      step={step}
+      aria-label="Minimum value"
+      class="range-input" 
+      data-group={id}
+      data-type="lo"
+      data-prefix={prefix}
+      data-unit={unit}
+      {...rest}
+    />
+    <input 
+      type="range" 
+      id={`${id}-hi`}
+      name={nameHi}
+      min={min} 
+      max={max} 
+      value={valueHi} 
+      step={step}
+      aria-label="Maximum value"
+      class="range-input" 
+      data-group={id}
+      data-type="hi"
+      data-prefix={prefix}
+      data-unit={unit}
+      {...rest}
+    />
+  </div>
+  <div class="range-readout">
+    <span class="range-bound">{prefix}{min}{unit}</span>
+    <span class="range-bound">{prefix}{max}{unit}</span>
+  </div>
+</div>
+
+<script>
+  class RangeSliderController {
+    constructor() {
+      this.init();
+    }
+    init() {
+      const inputs = document.querySelectorAll('.range-input');
+      inputs.forEach(input => {
+        input.addEventListener('input', (e) => this.handleInput(e));
+      });
+    }
+    handleInput(e: Event) {
+      const target = e.target as HTMLInputElement;
+      const groupId = target.getAttribute('data-group');
+      if (!groupId) return;
+
+      const loInput = document.getElementById(`${groupId}-lo`) as HTMLInputElement;
+      const hiInput = document.getElementById(`${groupId}-hi`) as HTMLInputElement;
+      const fill = document.getElementById(`${groupId}-fill`);
+      const display = document.getElementById(`${groupId}-display`);
+      
+      if (!loInput || !hiInput || !fill || !display) return;
+
+      let lo = parseFloat(loInput.value);
+      let hi = parseFloat(hiInput.value);
+      const min = parseFloat(loInput.min) || 0;
+      const max = parseFloat(hiInput.max) || 100;
+      
+      // Prevent handles from crossing
+      if (lo > hi) {
+        if (target.getAttribute('data-type') === 'lo') {
+          lo = hi;
+          loInput.value = lo.toString();
+        } else {
+          hi = lo;
+          hiInput.value = hi.toString();
+        }
+      }
+
+      const pctLo = ((lo - min) / (max - min)) * 100;
+      const pctHi = ((hi - min) / (max - min)) * 100;
+      
+      fill.style.left = `${pctLo}%`;
+      fill.style.width = `${pctHi - pctLo}%`;
+      
+      const prefix = target.getAttribute('data-prefix') || '';
+      const unit = target.getAttribute('data-unit') || '';
+      display.textContent = `${prefix}${lo}${unit} – ${prefix}${hi}${unit}`;
+    }
+  }
+  document.addEventListener('astro:page-load', () => new RangeSliderController());
+</script>
+
+<style>
+  .range-slider-container { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; }
+  .range-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-1); }
+  .range-label { font-size: var(--text-sm); font-weight: 500; color: var(--text); }
+  .range-value { font-family: var(--mono); font-size: var(--text-sm); color: var(--text); font-weight: 500; }
+  
+  .range-wrap { position: relative; height: 36px; display: flex; align-items: center; }
+  
+  .range-input {
+    position: absolute; width: 100%; height: 4px;
+    -webkit-appearance: none; appearance: none;
+    background: transparent; outline: none;
+    pointer-events: none;
+  }
+  
+  .range-input::-webkit-slider-thumb {
+    -webkit-appearance: none; pointer-events: all;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text);
+    border: 2px solid var(--bg-surface);
+    box-shadow: 0 0 0 1px var(--border);
+    cursor: grab;
+    transition: transform 0.1s;
+  }
+  .range-input::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.1); }
+  
+  .range-input::-moz-range-thumb {
+    pointer-events: all;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text);
+    border: 2px solid var(--bg-surface);
+    box-shadow: 0 0 0 1px var(--border);
+    cursor: grab;
+    transition: transform 0.1s;
+  }
+  .range-input::-moz-range-thumb:active { cursor: grabbing; transform: scale(1.1); }
+  .range-input::-moz-range-track { background: transparent; }
+
+  .range-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--accent); }
+  .range-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--accent); }
+  
+  .range-track { position: absolute; width: 100%; height: 4px; background: var(--border-subtle); border-radius: var(--rad-full); }
+  .range-fill { position: absolute; height: 4px; background: var(--accent); border-radius: var(--rad-full); }
+  
+  .range-readout { display: flex; justify-content: space-between; }
+  .range-bound { font-family: var(--mono); font-size: var(--text-xs); color: var(--text-muted); }
+</style>

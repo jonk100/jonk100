@@ -1,0 +1,55 @@
+---
+title: "ToggleButton"
+description: "A binary state button utilizing aria-pressed to communicate active states."
+category: "controls"
+order: 19
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "The text label for the button."
+  - name: "icon"
+    type: "string"
+    description: "An optional SVG icon name to display alongside or instead of the label."
+  - name: "pressed"
+    type: "boolean"
+    defaultValue: "false"
+    description: "The initial active state of the button."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import ToggleButton from '../../components/ui/controls/ToggleButton.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `ToggleButton` is a semantic button primitive designed specifically for on/off states. Unlike a standard button, it relies on the `aria-pressed` attribute to communicate its state to screen readers and to trigger CSS styling changes.
+
+### Uncontrolled State Management
+By default, the component includes a lightweight inline `onclick` handler that automatically toggles the `aria-pressed` attribute. This allows it to function as an uncontrolled component out of the box, requiring zero external JavaScript for visual state updates.
+
+### Usage Blueprints
+
+#### Common: Text Formatting Toolbar
+A classic use case for toggle buttons is a rich text editor toolbar:
+
+<ComponentPreview title="Formatting Toggles">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="sm">
+      <ToggleButton icon="icon" label="Bold" pressed={false} />
+      <ToggleButton icon="icon" label="Italic" pressed={true} />
+      <ToggleButton icon="icon" label="Underline" pressed={false} />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: System Settings
+Using toggle buttons for global system preferences:
+
+<ComponentPreview title="System Preferences">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="sm">
+      <ToggleButton icon="icon" label="Notifications" pressed={false} />
+      <ToggleButton icon="icon" label="Dark mode" pressed={true} />
+      <ToggleButton icon="icon" label="Private" pressed={false} />
+    </Inline>
+  </div>
+</ComponentPreview>

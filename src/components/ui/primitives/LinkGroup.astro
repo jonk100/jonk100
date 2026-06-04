@@ -17,21 +17,26 @@ export interface Props {
 const {
   bg = 'surface-1',
   tone = 'accent',
-  gap = 'lg',
+  gap = 'none',
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
+
+const internalStyle = gap !== 'none' ? `gap: var(--space-${gap === 'lg' ? '6' : gap === 'md' ? '4' : gap === 'sm' ? '2' : '0'});` : '';
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <div class:list={[
   'link-group',
   `text-${tone}`, 
-  `control--gap-${gap}`,
   `background--${bg}`,
   className, 
   classList
-  ]} {...rest}
+  ]} 
+  style={combinedStyle}
+  {...rest}
 >
   <slot />
 </div>
@@ -39,25 +44,33 @@ const {
 <style>
   .link-group {
     display: inline-flex;
+    align-items: center;
     border-radius: var(--rad-md);
+    overflow: hidden;
   }
 
-  .link-group :global(> .control),
+  /* Target the actual link elements */
+  .link-group :global(> .custom-link),
   .link-group :global(> a) {
     border-radius: 0;
+    /* Override the padding: 0 !important from Link.astro */
+    padding: var(--space-2) var(--space-4) !important;
+    text-decoration: none !important;
   }
 
-  .link-group :global(> *:first-child) {
+  /* Restore outer border radii if NO gap */
+  .link-group:not([style*="gap"]) :global(> *:first-child) {
     border-top-left-radius: var(--rad-md);
     border-bottom-left-radius: var(--rad-md);
   }
 
-  .link-group :global(> *:last-child) {
+  .link-group:not([style*="gap"]) :global(> *:last-child) {
     border-top-right-radius: var(--rad-md);
     border-bottom-right-radius: var(--rad-md);
   }
 
-  .link-group :global(> *:not(:last-child)) {
+  /* Add subtle separation lines between items if NO gap */
+  .link-group:not([style*="gap"]) :global(> *:not(:last-child)) {
     border-right: 1px solid var(--border-subtle);
   }
 </style>

@@ -1,0 +1,73 @@
+---
+// src/components/ui/layout/KeyValueList.astro
+/**
+ * Layout primitive: a definition‑list style key/value table.
+ * Uses global spacing utilities and the `variant--` colour system.
+ */
+
+export interface Props {
+  /** Optional title for the whole block */
+  title?: string;
+  /** Data shape: [{key:string, value:string|any}] */
+  items: { key: string; value: any }[];
+  /** Variant for the key text (primary, secondary, accent, etc.) */
+  keyVariant?: string;
+  /** Variant for the value text */
+  valueVariant?: string;
+  /** Global class list */
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  title,
+  items,
+  keyVariant = "primary",
+  valueVariant = "default",
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+---
+<div
+  class:list={[
+    "key-value-list",
+    "p-md",               // global spacing
+    className,
+    classList
+  ]}
+>
+  {title && <h4 class={`kv-title variant--${keyVariant}`}>{title}</h4>}
+
+  <dl class="kv-dl">
+    {items.map(item => (
+      <>
+        <dt class={`kv-key variant--${keyVariant}`}>{item.key}</dt>
+        <dd class={`kv-value variant--${valueVariant}`}>{item.value}</dd>
+      </>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .key-value-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .kv-dl {
+    display: grid;
+    grid-template-columns: minmax(120px, max-content) 1fr;
+    gap: var(--space-2) var(--space-4);
+    align-items: baseline;
+  }
+  .kv-key {
+    font-weight: 600;
+    text-align: right;
+  }
+  .kv-value {
+    margin-left: 0;
+  }
+  .kv-title {
+    margin-bottom: 0;
+    font-size: var(--text-sm);
+  }
+</style>

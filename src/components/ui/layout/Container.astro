@@ -8,12 +8,12 @@
  * - as: HTML tag to render
  */
 
-import type { FrameVariant, ImageEffect } from '/src/types/variants.types';
+import type { FrameVariant, ComponentEffect } from '/src/types/variants.types';
 
 export interface Props {
   as?: string;
   frame?: FrameVariant;
-  effects?: ImageEffect | ImageEffect[];
+  effects?: ComponentEffect | ComponentEffect[];
   class?: string;
   "class:list"?: Record<string, boolean>;
   [key: string]: any;
@@ -88,4 +88,8 @@ const classes = [
   }
 
   .container.primary {
+    background-color: color-mix(in srgb, var(--primary) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    color: var(--primary);
+  }
 </style>

@@ -35,15 +35,15 @@ Instead of applying manual CSS crop parameters to every picture on your site, yo
 <ComponentPreview
   title="Standard Aspect Ratio Showcase"
 >
-  <Grid cols={3} gap="sm" style="width: 100%;">
+  <Grid cols={2} gap="3xl" style="width: 100%;">
     <Stack gap="3xs">
       <Frame src="/cardgridview.png" alt="Landscape crop" shape="landscape" radius="md" />
-      <Text type="caption" tone="muted" style="text-align:center;">landscape (3:2)</Text>
+      <Text type="caption" tone="5">landscape (3:2)</Text>
     </Stack>
-    <Stack gap="3xs">
+    {/* <Stack gap="3xs">
       <Frame src="/rmmblog-pp.png" alt="Square crop" shape="square" radius="md" />
       <Text type="caption" tone="muted" style="text-align:center;">square (1:1)</Text>
-    </Stack>
+    </Stack> */}
     <Stack gap="3xs">
       <Frame src="/rmmblog-cardgrid.png" alt="Portrait crop" shape="portrait" radius="md" />
       <Text type="caption" tone="muted" style="text-align:center;">portrait (2:3)</Text>

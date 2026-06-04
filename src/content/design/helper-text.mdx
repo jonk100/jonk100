@@ -1,0 +1,36 @@
+---
+title: "HelperText"
+description: "A small, thematic text label used to display hints, descriptions, or error feedback underneath form controls."
+category: "controls"
+order: 22
+propsTable:
+  - name: "variant"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "Thematic color overriding ('primary', 'success', 'warning', 'danger', 'default')."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'xs'"
+    description: "Typographic scaling ('xs', 'sm', 'md')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import HelperText from '../../components/ui/input/HelperText.astro';
+import Input from '../../components/ui/input/Input.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `HelperText` component is a low-level typographic primitive utilized by higher-order components (like `Label` and `Input`) to display status messages. When `variant="danger"` is supplied, the component automatically sets `role="alert"`, ensuring that assistive technologies announce the error immediately to the user.
+
+### Usage Blueprints
+
+#### Common: Form Instructions and Alerts
+Using `HelperText` manually to build custom form interactions outside the standard `Label` wrapper:
+
+<ComponentPreview title="Contextual Input Hints">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left;">
+    <Stack gap="xs">
+      <Input placeholder="Create a master password" type="password" />
+      <HelperText variant="danger" size="xs">Password must be at least 12 characters long.</HelperText>
+    </Stack>
+  </div>
+</ComponentPreview>

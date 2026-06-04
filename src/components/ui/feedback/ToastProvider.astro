@@ -6,12 +6,88 @@
  */
 ---
 
-<div class="toast-container" aria-live="polite"></div>
+<div class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
 <script>
-  import { toast } from '../../../lib/toast';
-  // Attaching to window so inline onclick handlers can find it
-  (window as any).toast = toast;
+  import { toasts, dismiss } from '../../../design/state/toasts';
+
+  let unsubscribe: (() => void) | null = null;
+  let activeToasts = new Map<string, HTMLElement>();
+
+  function initToasts() {
+    const container = document.querySelector('.toast-container');
+    if (!container) return;
+
+    if (unsubscribe) unsubscribe();
+    
+    // Clear DOM state on re-init (Astro View Transitions)
+    activeToasts.clear();
+    container.innerHTML = '';
+
+    function renderToast(toast: import('../../../design/state/toasts').Toast) {
+      const el = document.createElement('div');
+      
+      // Map themes cleanly to design tokens
+      let mappedTheme = toast.theme || 'default';
+      if (mappedTheme === 'info' as any) mappedTheme = 'primary';
+      if (mappedTheme === 'error' as any) mappedTheme = 'danger';
+      
+      el.className = `toast-item alert variant--${mappedTheme} animate-slide-up`;
+      el.dataset.id = toast.id;
+      el.setAttribute('role', 'status');
+      el.innerHTML = `
+        <div class="alert-body">
+          ${toast.title ? `<h5 class="alert-title">${toast.title}</h5>` : ''}
+          <div class="alert-content">${toast.message}</div>
+        </div>
+        <button class="toast-dismiss" aria-label="Dismiss notification">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      `;
+
+      el.querySelector('.toast-dismiss')!.addEventListener('click', () => {
+        dismissWithAnimation(toast.id, el);
+      });
+
+      return el;
+    }
+
+    function dismissWithAnimation(id: string, el: HTMLElement) {
+      el.classList.add('animate-fade-out');
+      el.addEventListener('transitionend', () => {
+        el.remove();
+        activeToasts.delete(id);
+      }, { once: true });
+      dismiss(id);
+    }
+
+    // Subscribe — diff incoming array against active DOM nodes
+    unsubscribe = toasts.subscribe(current => {
+      const currentIds = new Set(current.map(t => t.id));
+
+      // Remove toasts no longer in state
+      for (const [id, el] of activeToasts) {
+        if (!currentIds.has(id)) {
+          dismissWithAnimation(id, el);
+        }
+      }
+
+      // Add new toasts
+      for (const toast of current) {
+        if (!activeToasts.has(toast.id)) {
+          const el = renderToast(toast);
+          container.appendChild(el);
+          activeToasts.set(toast.id, el);
+        }
+      }
+    });
+  }
+
+  // Bind to Astro lifecycle events for smooth View Transitions
+  initToasts();
+  document.addEventListener('astro:page-load', initToasts);
 </script>
 
 <style is:global>
@@ -36,17 +112,29 @@
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .toast-dismiss {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted); /* Fixed: mapped to your specific design token */
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .toast-dismiss:hover {
+    color: var(--text); /* Fixed: mapped to your specific design token */
   }
 
   @keyframes toast-in {
-    from {
-      opacity: 0;
-      transform: translateX(100px) scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-    }
+    from { opacity: 0; transform: translateX(100px) scale(0.9); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
   }
 
   .animate-fade-out {

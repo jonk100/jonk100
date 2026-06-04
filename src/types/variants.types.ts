@@ -1,24 +1,122 @@
-export type ComponentTheme = "primary" | "ghost" | "secondary" | "outline" | "accent" | "default" | "success" | "warning" | "danger";
-export type Sizes = "xs" | "sm" | "md" | "base" | "lg" | "xl" | "icon" | "icon-sm" | "icon-lg";
-export type WrapperSize = "sm" | "md" | "lg" | "xl" | "full" | "screen";
+/*_____________________________________________________________________________________________________________________________________________________________________________*/
+/*````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` */
+export type BlockType          = 'body' | 'body-sm' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'heading-1' | 'heading-2' | 'heading-3' | 'heading-4' | 'heading-5' | 'caption' | 'label' | 'lead';
+/*_______________________________________________________________________________________________________________________________________________________________________________*/
 
-export type ComponentRadius = "none" | "sm" | "md" | "lg" | "xl" | "full";
+/* ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type ComponentTheme     = "primary" | "ghost" | "secondary" | "outline" | "accent" | "default" | "success" | "warning" | "danger" ;
+/*_____________________________________________________________________________________________________________________________________*/
 
-export type BlockType = 'body' | 'body-sm' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'heading-1' | 'heading-2' | 'heading-3' | 'heading-4' | 'heading-5' | 'caption' | 'label' | 'lead';
-export type TextTone = 'default' | 'muted' | 'subtle' | 'accent' | 'primary' | 'secondary' | 'danger' | 'success';
+/* ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type ComponentEffect    = 'screen' | 'glow' | 'grayscale' | 'glass' | 'shimmer' | 'fade-up' | 'fade-down' | 'fade-down-hero' ;
+/*________________________________________________________________________________________________________________________________*/
 
-/**
- * Universal spacing scale for padding and margins.
- * `fluid` responds dynamically to container dimensions via @container queries.
- */
-export type SpacingScale = "none" | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "fluid";
+/* ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type FrameVariant       = 'light' | 'dark' | 'glass' | 'polaroid' | 'minimal' | 'accent' | 'primary' | 'secondary' | 'none' ;
+/*_______________________________________________________________________________________________________________________________*/
 
-export type FrameVariant = 'light' | 'dark' | 'glass' | 'polaroid' | 'minimal' | 'accent' | 'primary' | 'secondary' | 'none';
-export type ComponentEffect = 'screen' | 'glow' | 'grayscale' | 'glass' | 'shimmer' | 'fade-up' | 'fade-down' | 'fade-down-hero';
-export type ComponentShape = 'landscape' | 'portrait' | 'square' | 'circle' | 'none';
+/* ````````````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type SpacingScale       = "none" | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "fluid" ;
+/*_________________________________________________________________________________________________________________*/
 
-/** Options for component entrance and loop animations */
-export type AnimationType = 'slide-up' | 'slide-down' | 'fade-in' | 'pulse' | 'float' | 'spin' | 'none';
+/* ````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type AnimationType      = 'slide-up' | 'slide-down' | 'fade-in' | 'pulse' | 'float' | 'spin' | 'none' ;
+/*_________________________________________________________________________________________________________*/
+
+/* ````````````````````````````````````````````````````````````````````````````````````````````````````````*/
+export type Sizes              = "xs" | "sm" | "md" | "base" | "lg" | "xl" | "icon" | "icon-sm" | "icon-lg" ;
+/*_________________________________________________________________________________________________________*/
+
+/* ````````````````````````````````````````````````````````````````````````````````````*/
+export type ComponentShape     = 'landscape' | 'portrait' | 'square' | 'circle' | 'none' ;
+/*_____________________________________________________________________________________*/
+
+/* ```````````````````````````````````````````````````````````````````````` */
+export type WrapperSize        = "sm" | "md" | "lg" | "xl" | "full" | "screen";
+/*__________________________________________________________________________*/
+
+/* ````````````````````````````````````````````````````````````````````````*/
+export type ComponentRadius    = "none" | "sm" | "md" | "lg" | "xl" | "full" ;
+/*_________________________________________________________________________*/
+
+export type FontSize = 
+  | '0'  | 'xxs' 
+  | '1'  | 'xs' 
+  | '2'  | 'sm' 
+  | '3'  | 'md' 
+  | '4'  | 'base' 
+  | '5'  | 'lg' 
+  | '6'  | 'xl' 
+  | '7'  | '2xl' 
+  | '8'  | '3xl' 
+  | '9'  | '4xl' 
+  | '10' | '5xl' 
+  | '11' | '6xl'
+  ;
+export type ComponentLayer = 
+  | "-1" 
+  | "0" 
+  | "1" 
+  | "2" 
+  | "3" 
+  | "4" 
+  | "5"
+  ;
+export type TextTone = 
+  | '0'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'white'
+  | 'black'
+  | 'default' 
+  | 'muted' 
+  | 'subtle' 
+  | 'danger' 
+  | 'success'
+  | 'currentColor'
+  | 'inherit'
+  ;
+export type BackgroundTone = 
+  | '0' 
+  | '1' 
+  | '2' 
+  | '3' 
+  | '4' 
+  | '5' 
+  | 'primary' 
+  | 'secondary'
+  | 'accent'
+  | 'white'
+  | 'black'
+  | 'default'
+  | 'transparent'
+  | 'currentColor'
+  | 'inherit'
+  ;
+export type XAlign = 
+  | 'left'
+  | 'center'
+  | 'right'
+  | 'justify'
+  | 'start'
+  | 'end'
+  ;
+export type YAlign = 
+  | 'super'
+  | 'top'
+  | 'text-top'
+  | 'baseline'
+  | 'middle'
+  | 'bottom'
+  | 'text-bottom'
+  | 'sub'
+  ;
 
 /** Shared interface for components using flexbox properties */
 export interface FlexboxProps {
@@ -28,4 +126,4 @@ export interface FlexboxProps {
   wrap?: boolean;
 }
 
-export type ComponentLayer = "-1" | "0" | "1" | "2" | "3" | "4" | "5";
+

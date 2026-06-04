@@ -1,0 +1,81 @@
+---
+/**
+ * src/components/ui/typography/Quote.astro
+ * Blockquote with attribution, pull-quote and inline variants.
+ */
+export interface Props {
+  text?: string;
+  author?: string;
+  source?: string;
+  variant?: 'block' | 'pull';
+  class?: string;
+  "class:list"?: any;
+  [key: string]: any;
+}
+
+const {
+  text,
+  author,
+  source,
+  variant = 'block',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+<blockquote class:list={[`quote-${variant}`, className, classList]} {...rest}>
+  <p class="quote-text">{text ? text : <slot />}</p>
+  {(author || source) && (
+    <div class="quote-attribution">
+      <span class="quote-dash">—</span>
+      {author && <span class="quote-author">{author}</span>}
+      {source && <span class="quote-source">· {source}</span>}
+    </div>
+  )}
+</blockquote>
+
+<style>
+  .quote-block {
+    border-left: 2px solid var(--accent);
+    padding: var(--space-3) var(--space-4); 
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    border-radius: 0 var(--rad-md) var(--rad-md) 0;
+    margin: var(--space-6) 0;
+  }
+  
+  .quote-text { 
+    font-size: var(--text-base); 
+    line-height: 1.65; 
+    color: var(--text); 
+    font-style: italic; 
+    margin: 0;
+  }
+  
+  .quote-attribution { 
+    display: flex; align-items: center; gap: var(--space-2); 
+    margin-top: var(--space-3); 
+    flex-wrap: wrap;
+  }
+  
+  .quote-dash { font-family: var(--mono); font-size: var(--text-xs); color: var(--accent-dim); }
+  .quote-author { font-size: var(--text-sm); color: var(--text-subtle); font-weight: 500; }
+  .quote-source { font-size: var(--text-sm); color: var(--text-muted); }
+  
+  .quote-pull {
+    text-align: center; 
+    padding: var(--space-6) var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    margin: var(--space-8) 0;
+  }
+  
+  .quote-pull .quote-text { 
+    font-size: var(--text-xl); 
+    font-family: var(--display);
+    color: var(--text);
+  }
+  
+  .quote-pull .quote-attribution { 
+    justify-content: center; 
+  }
+</style>

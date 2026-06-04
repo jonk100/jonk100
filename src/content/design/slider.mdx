@@ -1,0 +1,59 @@
+---
+title: "Slider"
+description: "Native range input with custom track, thumb, and dynamic value readout."
+category: "controls"
+order: 16
+propsTable:
+  - name: "min"
+    type: "number"
+    defaultValue: "0"
+    description: "The minimum allowed value."
+  - name: "max"
+    type: "number"
+    defaultValue: "100"
+    description: "The maximum allowed value."
+  - name: "value"
+    type: "number"
+    defaultValue: "50"
+    description: "The initial value."
+  - name: "step"
+    type: "number"
+    defaultValue: "1"
+    description: "The granularity of the slider."
+  - name: "label"
+    type: "string"
+    description: "An optional label for the slider."
+  - name: "showValue"
+    type: "boolean"
+    defaultValue: "true"
+    description: "Whether to display the current value next to the label."
+  - name: "unit"
+    type: "string"
+    description: "An optional unit string appended to the value readout."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Slider from '../../components/ui/input/Slider.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Slider` component enhances the native HTML `<input type="range">` with a custom-styled track and thumb. It includes a dynamic filled-track segment and a JavaScript-powered value readout, providing a premium interactive experience while maintaining full native accessibility.
+
+### Usage Blueprints
+
+#### Common: Standard Configuration
+A basic slider with a label and default value readout:
+
+<ComponentPreview title="Standard Slider">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <Slider label="Volume" min={0} max={100} value={72} />
+  </div>
+</ComponentPreview>
+
+#### Advanced: Fractional Steps and Units
+Demonstrates a slider configured for fractional values, appending a custom unit to the readout:
+
+<ComponentPreview title="Fractional Opacity Slider">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <Slider label="Opacity" min={0} max={1} step={0.01} value={0.45} unit="px" />
+  </div>
+</ComponentPreview>

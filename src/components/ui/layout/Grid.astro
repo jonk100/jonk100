@@ -30,6 +30,7 @@ const {
   minChildWidth = '250px',
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
 
@@ -40,6 +41,9 @@ if (autoFit) {
 } else if (cols) {
   gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
 }
+
+const internalStyle = gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns};` : '';
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <Tag
@@ -49,7 +53,7 @@ if (autoFit) {
     className,
     classList
   ]}
-  style={gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns};` : undefined}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

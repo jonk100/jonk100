@@ -1,0 +1,44 @@
+---
+title: "KeyValueList"
+description: "A definition-list style key/value table using a flexible CSS grid."
+category: "data"
+order: 3
+propsTable:
+  - name: "title"
+    type: "string"
+    description: "An optional title rendered above the key/value pairs."
+  - name: "items"
+    type: "{ key: string; value: any }[]"
+    description: "An array of objects containing keys and values."
+  - name: "keyVariant"
+    type: "string"
+    defaultValue: "'primary'"
+    description: "The thematic variant applied to the keys."
+  - name: "valueVariant"
+    type: "string"
+    defaultValue: "'default'"
+    description: "The thematic variant applied to the values."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import KeyValueList from '../../components/ui/data/KeyValueList.astro';
+
+The `KeyValueList` component provides a structured, responsive grid layout for displaying key-value pairs. It leverages CSS Grid with `display: contents` to maintain definition list semantics (`<dl>`, `<dt>`, `<dd>`) while enforcing a rigid horizontal alignment.
+
+### Usage Blueprints
+
+#### Common: Standard Metadata Display
+Use `KeyValueList` for displaying properties, specifications, or metadata ledgers:
+
+<ComponentPreview title="Metadata Properties">
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <KeyValueList 
+      title="Environment Variables"
+      items={[
+        { key: "PORT", value: "8080" },
+        { key: "NODE_ENV", value: "production" },
+        { key: "DB_HOST", value: "localhost" }
+      ]}
+    />
+  </div>
+</ComponentPreview>

@@ -1,0 +1,52 @@
+---
+title: "DatePicker"
+description: "A styled wrapper for native HTML date and time input elements."
+category: "controls"
+order: 21
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "An optional text label attached to the input fields."
+  - name: "value"
+    type: "string"
+    description: "The current value (ISO string format) of the date input."
+  - name: "name"
+    type: "string"
+    description: "The form submission name attribute."
+  - name: "disabled"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Disables interaction with the fields."
+  - name: "withTime"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Renders an additional `<input type='time'>` field alongside the date."
+  - name: "variant"
+    type: "string"
+    defaultValue: "'default'"
+    description: "The thematic style applied to the control."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "The dimensional scale of the input."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import DatePicker from '../../components/ui/input/DatePicker.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `DatePicker` component leverages the powerful, built-in calendar and clock widgets provided by modern mobile and desktop browsers (via `<input type="date">` and `<input type="time">`). Rather than shipping an enormous, slow client-side calendar library, this component relies on the OS-level UI while wrapping the trigger field in our design system's cohesive input styles.
+
+### Usage Blueprints
+
+#### Common: Standard Date and Time Entry
+Using the date picker for scheduling features:
+
+<ComponentPreview title="Native OS Scheduling Forms">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left;">
+    <Stack gap="lg">
+      <DatePicker label="Project Deadline" value="2026-10-31" />
+      <DatePicker label="Meeting Start Time" withTime={true} value="2026-06-15" />
+    </Stack>
+  </div>
+</ComponentPreview>

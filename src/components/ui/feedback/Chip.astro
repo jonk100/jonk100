@@ -1,0 +1,90 @@
+---
+/**
+ * src/components/ui/feedback/Chip.astro
+ * Interactive Tag variant, dismissible, selectable state.
+ */
+import Icon from '../primitives/Icon.astro';
+
+export interface Props {
+  label: string;
+  value?: string;
+  selected?: boolean;
+  dismissible?: boolean;
+  icon?: string;
+  class?: string;
+  "class:list"?: any;
+  [key: string]: any;
+}
+
+const {
+  label,
+  value,
+  selected = false,
+  dismissible = false,
+  icon,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+<button
+  type="button"
+  class:list={['chip', { 'selected': selected }, className, classList]}
+  role="option"
+  aria-selected={selected ? "true" : "false"}
+  data-value={value || label}
+  onclick="if(!event.target.closest('.chip-dismiss')){this.classList.toggle('selected'); this.setAttribute('aria-selected', this.classList.contains('selected'));}"
+  {...rest}
+>
+  {icon && <Icon name={icon} size="sm" class="chip-icon" />}
+  <span>{label}</span>
+  {dismissible && (
+    <span 
+      class="chip-dismiss" 
+      aria-label={`Remove ${label}`}
+      onclick="event.stopPropagation(); this.parentElement.remove();"
+    >
+      &times;
+    </span>
+  )}
+</button>
+
+<style>
+  .chip {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-3); border-radius: var(--rad-full); 
+    font-size: var(--text-sm); font-family: var(--sans);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    color: var(--text-subtle); cursor: pointer;
+    transition: all 0.15s ease; user-select: none;
+    line-height: 1.5;
+  }
+  
+  .chip-icon { opacity: 0.8; }
+  
+  .chip:hover { 
+    border-color: var(--border-strong); 
+    color: var(--text); 
+    background: var(--surface-2); 
+  }
+  
+  .chip.selected { 
+    background: color-mix(in srgb, var(--accent) 15%, transparent); 
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent); 
+    color: var(--accent); 
+  }
+
+  .chip:active {
+    transform: scale(0.97);
+  }
+  
+  .chip-dismiss { 
+    font-size: 16px; margin-left: 2px; opacity: 0.6; 
+    line-height: 1; margin-top: -1px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%; width: 18px; height: 18px;
+  }
+  .chip:hover .chip-dismiss { opacity: 1; }
+  .chip-dismiss:hover { background: rgba(0,0,0,0.1); color: var(--text-danger); }
+</style>

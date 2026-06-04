@@ -32,20 +32,21 @@ const {
   /* Target the actual control elements whether they are direct children or wrapped */
   .input-group :global(.control) {
     border-radius: 0;
+    margin: 0 !important;
   }
 
   /* First element rounding */
   .input-group > :global(*:first-child) :global(.control),
   .input-group > :global(.control:first-child) {
-    border-top-left-radius: var(--rad-md);
-    border-bottom-left-radius: var(--rad-md);
+    border-top-left-radius: var(--rad-md) !important;
+    border-bottom-left-radius: var(--rad-md) !important;
   }
 
   /* Last element rounding */
   .input-group > :global(*:last-child) :global(.control),
   .input-group > :global(.control:last-child) {
-    border-top-right-radius: var(--rad-md);
-    border-bottom-right-radius: var(--rad-md);
+    border-top-right-radius: var(--rad-md) !important;
+    border-bottom-right-radius: var(--rad-md) !important;
   }
 
   /* Prevent overlapping borders (assuming 1px solid) */
@@ -60,8 +61,20 @@ const {
     z-index: 10;
   }
   
-  /* Make input wrappers flex grow so they take up remaining space */
+  /* Make input wrappers flex grow and ensure internal controls stretch */
   .input-group :global(.input-wrapper) {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-group :global(.input-wrapper > .control),
+  .input-group :global(.input-wrapper > div) {
+    flex-grow: 1;
+    display: flex;
+  }
+
+  .input-group :global(.input-wrapper .control) {
+    height: 100%;
   }
 </style>

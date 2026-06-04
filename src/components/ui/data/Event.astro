@@ -1,0 +1,101 @@
+---
+// src/components/ui/layout/Event.astro
+/**
+ * One entry inside a timeline. Renders a dot, optional badge, title & description.
+ */
+export interface Props {
+  /** ISO date string – used for the left‑hand timestamp */
+  date: string;
+  /** Short title */
+  title: string;
+  /** Optional body (can be plain text or JSX) */
+  children?: any;
+  /** Variant for the accent dot (info, success, warning, error) */
+  variant?: "info" | "success" | "warning" | "error" | "primary" | "danger";
+  /** Optional badge text (e.g. “NEW”, “Beta”) */
+  badge?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  date,
+  title,
+  children,
+  variant = "primary",
+  badge,
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+
+let mappedVariant = variant;
+if (variant === 'info') mappedVariant = 'primary';
+if (variant === 'error') mappedVariant = 'danger';
+---
+<li
+  class:list={[
+    "timeline-event",
+    `variant--${mappedVariant}`,
+    className,
+    classList
+  ]}
+>
+  <div class="event-marker" aria-hidden="true"></div>
+  <time class="event-date">{new Date(date).toLocaleDateString()}</time>
+  <div class="event-content">
+    <header class="event-header">
+      <h5 class="event-title">{title}</h5>
+      {badge && <span class="event-badge">{badge}</span>}
+    </header>
+    {children && <div class="event-body">{children}</div>}
+  </div>
+</li>
+
+<style>
+  .timeline-event {
+    position: relative;
+    display: flex;
+    gap: var(--space-3);
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-4);
+  }
+  .event-marker {
+    position: absolute;
+    left: 0;
+    top: var(--space-2);
+    width: var(--space-2);
+    height: var(--space-2);
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .event-date {
+    flex-shrink: 0;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    min-width: 5rem;
+  }
+  .event-content {
+    flex: 1;
+  }
+  .event-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+  .event-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .event-badge {
+    background: var(--accent);
+    color: var(--neutral-0);
+    border-radius: var(--rad-sm);
+    padding: 0 var(--space-2);
+    font-size: var(--text-xs);
+  }
+  .event-body {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--text);
+  }
+</style>

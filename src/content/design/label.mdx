@@ -1,0 +1,72 @@
+---
+title: "Label"
+description: "A structural form wrapper that handles input labels, required markers, helper text, and error states."
+category: "controls"
+order: 20
+propsTable:
+  - name: "for"
+    type: "string"
+    description: "The HTML ID of the associated input element."
+  - name: "label"
+    type: "string"
+    description: "The primary text label."
+  - name: "required"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Appends a red asterisk indicating a mandatory field."
+  - name: "optional"
+    type: "boolean"
+    defaultValue: "false"
+    description: "Appends a muted '(optional)' indicator if the field is not required."
+  - name: "helperText"
+    type: "string"
+    description: "Descriptive text rendered below the input slot."
+  - name: "error"
+    type: "string"
+    description: "An active error message. If present, it replaces the helper text and styles the slotted input."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Label from '../../components/ui/input/Label.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Label` component is a powerful compositional wrapper. Unlike the `Input` component (which is a monolithic wrapper around a text field), `Label` allows you to wrap *any* form control—like a custom `Multiselect` or `RangeSlider`—while automatically providing standardized labels, helper text, and error states.
+
+### CSS :has() Selector Magic
+When an `error` prop is passed, the `Label` component utilizes the modern CSS `:has()` pseudo-class to style its children.
+```css
+.label-group:has(.error-text) :global(.form-input) {
+  border-color: var(--text-danger);
+}
+```
+This means the `Label` can automatically turn the border of a slotted input red without needing to pass an error prop down into the child component itself.
+
+### Usage Blueprints
+
+#### Common: Form Field Composition
+Using the label to wrap a standard input and provide context:
+
+<ComponentPreview title="Form Label with Helpers">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left;">
+    <Stack gap="lg">
+      <Label for="demo-title" label="Episode title" required={true} helperText="Used in credits, slug, and series bible.">
+        <input class="control variant--default control--md" style="width:100%" id="demo-title" placeholder="e.g. The Long Game" />
+      </Label>
+      
+      <Label for="demo-logline" label="Logline" optional={true} helperText="Appears on the pitch deck overview page.">
+        <input class="control variant--default control--md" style="width:100%" id="demo-logline" placeholder="One-sentence premise" />
+      </Label>
+    </Stack>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Error State Handling
+Demonstrates how passing an error string overrides the helper text and applies error styling:
+
+<ComponentPreview title="Active Validation Error">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left;">
+    <Label for="demo-draft" label="Draft number" error="Must be a number (e.g. 3)">
+      <input class="control variant--default control--md" style="width:100%" id="demo-draft" value="abc" />
+    </Label>
+  </div>
+</ComponentPreview>

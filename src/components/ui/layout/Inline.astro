@@ -25,8 +25,16 @@ const {
   wrap = true,
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
+
+const internalStyle = `
+    align-items: ${align};
+    justify-content: ${justify};
+    flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
+  `;
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <Tag
@@ -36,11 +44,7 @@ const {
     className,
     classList
   ]}
-  style={`
-    align-items: ${align};
-    justify-content: ${justify};
-    flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
-  `}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

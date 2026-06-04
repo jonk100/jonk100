@@ -1,0 +1,55 @@
+---
+title: "Quote"
+description: "A semantic blockquote primitive supporting attribution and specialized pull-quote layouts."
+category: "typography"
+order: 6
+propsTable:
+  - name: "text"
+    type: "string"
+    description: "The primary quote text. Can also be provided via the default slot."
+  - name: "author"
+    type: "string"
+    description: "The name of the quoted individual."
+  - name: "source"
+    type: "string"
+    description: "The origin of the quote (e.g., a book title, year, or publication)."
+  - name: "variant"
+    type: "'block' | 'pull'"
+    defaultValue: "'block'"
+    description: "Determines the layout style. 'block' uses a left border, 'pull' centers the text with top/bottom borders."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Quote from '../../components/ui/typography/Quote.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Quote` primitive provides a standardized, aesthetically pleasing wrapper for the native HTML `<blockquote>` element. It handles the complex layout requirements of combining italicized text with structured attribution data, ensuring consistency across articles and case studies.
+
+### Usage Blueprints
+
+#### Common: Standard Blockquote
+The default variant features a heavy left border and a subtle background tint, ideal for embedding quotes within standard prose:
+
+<ComponentPreview title="Standard Blockquote">
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Quote 
+      text="We are not now that strength which in old days moved earth and heaven; that which we are, we are."
+      author="Alfred, Lord Tennyson"
+      source="Ulysses, 1842"
+    />
+  </div>
+</ComponentPreview>
+
+#### Advanced: Centered Pull-Quote
+The `pull` variant is designed to break up long sections of text by aggressively centering a key phrase with top and bottom divider lines:
+
+<ComponentPreview title="Centered Pull-Quote">
+  <div style="width: 100%; max-width: 600px; margin: 0 auto;">
+    <Quote 
+      variant="pull"
+      text="The medium is the message."
+      author="Marshall McLuhan"
+      source="Understanding Media, 1964"
+    />
+  </div>
+</ComponentPreview>

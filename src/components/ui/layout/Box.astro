@@ -41,8 +41,12 @@ const {
   effects,
   radius,
   animate = 'none',
+  style = '',
   ...rest
 } = Astro.props;
+
+const internalStyle = display ? `display: ${display};` : '';
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <Tag
@@ -58,7 +62,7 @@ const {
     effects,
     radius && `radius--${radius}`
   ]}
-  style={display ? `display: ${display};` : undefined}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

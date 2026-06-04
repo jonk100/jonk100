@@ -1,0 +1,61 @@
+---
+title: "Sparkline"
+description: "A tiny inline SVG chart for visualizing trends and data sets without the overhead of heavy charting libraries."
+category: "data"
+order: 5
+propsTable:
+  - name: "data"
+    type: "number[]"
+    description: "An array of numeric data points to plot."
+  - name: "width"
+    type: "number"
+    defaultValue: "100"
+    description: "The width of the SVG in pixels."
+  - name: "height"
+    type: "number"
+    defaultValue: "30"
+    description: "The height of the SVG in pixels."
+  - name: "strokeWidth"
+    type: "number"
+    defaultValue: "2"
+    description: "The thickness of the plotted line."
+  - name: "strokeColor"
+    type: "string"
+    defaultValue: "'var(--accent)'"
+    description: "The color of the plotted line."
+  - name: "fill"
+    type: "boolean"
+    defaultValue: "false"
+    description: "If true, renders a filled area chart beneath the line."
+  - name: "fillColor"
+    type: "string"
+    description: "The color of the filled area beneath the curve."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Sparkline from '../../components/ui/data/Sparkline.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Sparkline` component generates a lightweight, inline vector graphic directly from an array of numbers. By calculating the SVG path at compile time (or directly on the server), it avoids the massive bundle size of client-side charting libraries like Chart.js or D3, making it perfect for dashboards and data tables.
+
+### Usage Blueprints
+
+#### Common: Server Load Trends
+Using sparklines to display historical metrics within minimal UI cards:
+
+<ComponentPreview title="Minimal Metrics Readout">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="xl">
+      <Stack gap="2xs" align="start">
+        <Text type="label" tone="subtle">CPU Usage</Text>
+        <Sparkline data={[12, 14, 18, 45, 80, 65, 40, 20, 25, 30]} strokeColor="var(--text-danger)" />
+      </Stack>
+      <Stack gap="2xs" align="start">
+        <Text type="label" tone="subtle">Memory</Text>
+        <Sparkline data={[40, 41, 42, 43, 42, 44, 45, 45, 46, 46]} strokeColor="var(--text-success)" fill={true} />
+      </Stack>
+    </Inline>
+  </div>
+</ComponentPreview>

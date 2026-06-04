@@ -64,42 +64,33 @@
   .markdown-content pre {
     margin: var(--space-4) var(--space-4);
     padding: var(--space-4);
+    ::view-transition-group(project-content) {
+      z-index: 20;
+    }
   }
 
-  ::view-transition-group(project-content) {
-    z-index: 20;
-  }
-
-  pre.astro-code .line {
-    display: block;
-  }
-
-  /* Block code */
   pre,
   .astro-code {
     background: var(--surface-5);
     border-radius: var(--rad-xs);
     padding: 1rem;
     border: 1px solid var(--border-subtle);
-    line-height: 1 !important;
+    font-size: var(--text-sm);
+    line-height: 1.5;
   }
 
-  /* Inline code */
   code:not(pre code) {
     background: rgba(var(--secondary-rgb),.4);
     font-family: var(--mono);
     border-radius: var(--rad-xs);
-    font-size: var(--text-base);
+    font-size: 0.85em;
   }
 
   .astro-code {
     background-color: rgba(var(--surface-5-rgb),.5) !important;
-    line-height: 1 !important;
   }
 
   .astro-code .line {
-    display: block;
-    line-height: 1 !important;
+    min-height: 1.5em;
   }
-
-
+  

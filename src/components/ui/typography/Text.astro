@@ -4,27 +4,39 @@
  * A polymorphic typography component for consistent text styling.
  * - Renders content as variable HTML tags dynamically
  * - Standardizes font sizes, lines heights, and semantic tones
- * @props (local): type, as, tone
+ * @props (local): type, as, tone, fs (font-size 1-5), align (l/c/r) 
  * @props (global): class, class:list
  * - type: Selects the typographic block type (e.g., 'body', 'heading-1')
  * - as: The HTML tag to render the text element as
  * - tone: Specifies the text color intention
  */
-import type { BlockType, TextTone } from '/src/types/variants.types';
+import type { BlockType, TextTone, XAlign, FontSize } from '/src/types/variants.types';
 
 export interface Props {
   type?: BlockType;
   as?: keyof HTMLElementTagNameMap | string;
   tone?: TextTone;
+  align?: XAlign;
+  fs?: FontSize;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strikethrough?: boolean;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
 }
 
 const {
+  as,
   type = 'body',
   tone = 'default',
-  as,
+  align,
+  fs,
+  bold = false,
+  italic = false,
+  underline = false,
+  strikethrough = false,
   class: className = '',
   "class:list": classList = {},
   ...rest
@@ -49,13 +61,21 @@ const defaultTags: Record<string, string> = {
 };
 
 const Tag = as || defaultTags[type] || 'p';
+
+const classes = {
+  base: 'text',
+  type: type && `text--${type}`,
+  tone: tone && `text--${tone}`,
+  align: align && `align--${align}`,
+  fs: fs && `fs--${fs}`,
+  className,
+  classList
+};
 ---
 
 <Tag
   class:list={[
-    'text',
-    `text--${type}`,
-    `text--${tone}`,
+    'classes',
     className,
     classList
   ]}
@@ -73,7 +93,6 @@ const Tag = as || defaultTags[type] || 'p';
 /* ─────────────────────────────
    Variants
  ───────────────────────────── */
-
 .text--body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);

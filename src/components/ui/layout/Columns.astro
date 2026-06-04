@@ -22,6 +22,7 @@ const {
   gap = 'md',
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
 
@@ -32,11 +33,14 @@ if (layout) {
   const chars = String(layout).split('');
   gridTemplateColumns = chars.map(char => `${char}fr`).join(' ');
 }
+
+const internalStyle = gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns}` : '';
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <div 
   class:list={['columns-wrapper', `gap-${gap}`, className, classList]} 
-  style={gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns}` : undefined}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

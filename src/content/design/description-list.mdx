@@ -1,0 +1,43 @@
+---
+title: "DescriptionList"
+description: "A semantic description list `<dl>` component for rendering grouped terms and descriptions."
+category: "data"
+order: 4
+propsTable:
+  - name: "title"
+    type: "string"
+    description: "An optional title rendered above the list."
+  - name: "items"
+    type: "{ term: string; description: any }[]"
+    description: "An array of term and description pairs."
+  - name: "termVariant"
+    type: "string"
+    defaultValue: "'primary'"
+    description: "The thematic variant applied to the terms."
+  - name: "descVariant"
+    type: "string"
+    defaultValue: "'default'"
+    description: "The thematic variant applied to the descriptions."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import DescriptionList from '../../components/ui/data/DescriptionList.astro';
+
+The `DescriptionList` component is similar to `KeyValueList` but utilizes a vertical stacking layout by wrapping pairs in grouped `<div>` elements. It is ideal for displaying longer descriptions or glossary terms where a strict horizontal split is insufficient.
+
+### Usage Blueprints
+
+#### Common: Glossary Terms
+A standard implementation for defining concepts or providing detailed specs:
+
+<ComponentPreview title="Glossary Definitions">
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <DescriptionList 
+      title="Terminology"
+      items={[
+        { term: "Abstract Syntax Tree (AST)", description: "A tree representation of the abstract syntactic structure of source code." },
+        { term: "Lexical Analysis", description: "The process of converting a sequence of characters into a sequence of tokens." }
+      ]}
+    />
+  </div>
+</ComponentPreview>

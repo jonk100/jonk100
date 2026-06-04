@@ -1,0 +1,63 @@
+---
+title: "Chip"
+description: "An interactive, dismissible variant of the Tag, utilizing role='option'."
+category: "feedback"
+order: 12
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "The text content of the chip."
+  - name: "value"
+    type: "string"
+    description: "The underlying data value of the chip (defaults to label if omitted)."
+  - name: "selected"
+    type: "boolean"
+    defaultValue: "false"
+    description: "The initial selected state."
+  - name: "dismissible"
+    type: "boolean"
+    defaultValue: "false"
+    description: "If true, renders a close icon that removes the chip from the DOM."
+  - name: "icon"
+    type: "string"
+    description: "An optional prefix SVG icon."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Chip from '../../components/ui/feedback/Chip.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+
+The `Chip` component represents a complex piece of information in a compact form, such as an entity (person, place, or thing) or a piece of text. Unlike a static `Tag`, a `Chip` is interactive. It functions as a button, supports selection states, and can be dismissed (removed) by the user.
+
+### ARIA Options
+To ensure screen readers understand the interaction model, the `Chip` utilizes `role="option"` and `aria-selected`. When users click the chip, an inline script toggles the `.selected` class and updates the ARIA state automatically.
+
+### Usage Blueprints
+
+#### Common: Filter Selection
+Using chips as interactive toggle filters:
+
+<ComponentPreview title="Selectable Filter Chips">
+  <div style="width: 100%; display: flex; justify-content: center;" role="group" aria-label="Filter by genre">
+    <Inline gap="sm" wrap={true}>
+      <Chip label="Drama" />
+      <Chip label="Comedy" />
+      <Chip label="Satire" selected={true} />
+      <Chip label="Spy" selected={true} />
+      <Chip label="Historical" />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Dismissible Entities
+Using chips to represent selected entities that the user can remove:
+
+<ComponentPreview title="Dismissible Entity Chips">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="sm" wrap={true}>
+      <Chip label="Jon Doe" icon="avatar" dismissible={true} selected={true} />
+      <Chip label="Alice Blue" icon="avatar" dismissible={true} selected={true} />
+      <Chip label="Guest User" icon="avatar" dismissible={true} />
+    </Inline>
+  </div>
+</ComponentPreview>

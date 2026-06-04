@@ -69,6 +69,8 @@ const tagProps =
   Tag === "button"
     ? { type, disabled: loading, ...rest }
     : { href: loading ? undefined : href, ...rest };
+
+const currentColor = tone ? `var(--text-${tone})` : `var(--text-subtle)`;
 ---
 
 <Tag class:list={[classes, classList]} {...tagProps}>
@@ -77,7 +79,7 @@ const tagProps =
   </div>
   {loading && (
     <div class="control-loader" data-testid="control-loader">
-      <Spinner size={size} tone="currentColor" />
+      <Spinner size={size} tone={currentColor} />
     </div>
   )}
 </Tag>
@@ -92,8 +94,6 @@ const tagProps =
     letter-spacing: 0.03em;
     font-size: var(--text-sm);
     transition: all 0.25s ease;
-    border-radius: var(--rad-sm);
-    margin: var(--space-4) 0;
     cursor: pointer;
     border: 1px solid transparent;
     position: relative;

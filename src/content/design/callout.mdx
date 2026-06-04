@@ -1,0 +1,44 @@
+---
+title: "Callout"
+description: "A highlighted block for presenting informational, warning, or success messages directly within article flows."
+category: "typography"
+order: 7
+propsTable:
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "Semantic color style variant ('primary', 'success', 'warning', 'danger')."
+  - name: "title"
+    type: "string"
+    description: "An optional bold title header."
+  - name: "icon"
+    type: "string"
+    description: "An optional icon override (defaults to a theme-specific icon)."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Callout from '../../components/ui/typography/Callout.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Callout` component is a block-level alert designed for long-form reading content (like MDX articles and documentation). Unlike the `Alert` component (which is more UI-focused), `Callout` is optimized for integrating within prose to highlight tips, warnings, and contextual notes.
+
+### Usage Blueprints
+
+#### Common: Contextual Warnings and Tips
+Using callouts to deliver important information without breaking the reader's flow:
+
+<ComponentPreview title="Documentation Callouts">
+  <div style="width: 100%; text-align: left;">
+    <Stack gap="md">
+      <Callout theme="primary" title="Pro Tip">
+        You can use the <code>Ctrl + K</code> shortcut to quickly open the command palette anywhere in the application.
+      </Callout>
+      <Callout theme="warning" title="Deprecation Notice">
+        The v1 API endpoints will be officially retired on August 1st. Please migrate to v2 as soon as possible.
+      </Callout>
+      <Callout theme="danger" title="Critical Failure">
+        Do not share your master database password in public repositories.
+      </Callout>
+    </Stack>
+  </div>
+</ComponentPreview>

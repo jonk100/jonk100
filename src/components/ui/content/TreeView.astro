@@ -1,0 +1,110 @@
+---
+// src/components/ui/content/TreeView.astro
+import Icon from '../primitives/Icon.astro';
+
+export interface TreeNode {
+  label: string;
+  children?: TreeNode[];
+  icon?: string;
+}
+
+export interface Props {
+  data?: TreeNode[];   // ← add ?
+  variant?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  _node?: TreeNode;
+}
+
+const {
+  data,
+  variant = "default",
+  class: className = "",
+  "class:list": classList = {},
+  _node,
+} = Astro.props;
+
+// When called recursively, render a single node
+const node = _node;
+const hasChildren = node?.children && node.children.length > 0;
+---
+
+{node ? (
+  // <!-- Single node rendering (recursive case) -->
+  <li class="tree-node">
+    {hasChildren ? (
+      <details class="tree-branch">
+        <summary class={`tree-summary variant--${variant}`}>
+          {node.icon && <Icon name={node.icon} size="xs" class="tree-icon" />}
+          {node.label}
+        </summary>
+        <ul class="tree-children">
+          {node.children!.map(child => (
+            <Astro.self _node={child} variant={variant} />
+          ))}
+        </ul>
+      </details>
+    ) : (
+      <span class={`tree-leaf variant--${variant}`}>
+        {node.icon && <Icon name={node.icon} size="xs" class="tree-icon" />}
+        {node.label}
+      </span>
+    )}
+  </li>
+) : (
+  // <!-- Root rendering -->
+  <ul
+    class:list={["tree-view", "p-sm", className, classList]}
+  >
+    {data!.map(rootNode => (
+      <Astro.self _node={rootNode} variant={variant} />
+    ))}
+  </ul>
+)}
+
+<style>
+  .tree-view,
+  .tree-children {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tree-node {
+    margin-left: var(--space-2);
+  }
+  .tree-summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) 0;
+  }
+  .tree-leaf {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) 0;
+  }
+  .tree-icon { color: var(--text-muted); opacity: 0.8; }
+  details[open] > summary { font-weight: 600; color: var(--accent); }
+  
+  /* Details marker */
+  details > summary {
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary::before {
+    content: "▶";
+    display: inline-block;
+    width: 14px;
+    font-size: 10px;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+  }
+  details[open] > summary::before {
+    transform: rotate(90deg);
+    color: var(--accent);
+  }
+</style>

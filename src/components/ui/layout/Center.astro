@@ -23,6 +23,7 @@ const {
   axis = 'both',
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
 
@@ -39,9 +40,11 @@ if (axis === 'both') {
   styles['align-items'] = 'center';
 }
 
-const styleString = Object.entries(styles)
+const internalStyle = Object.entries(styles)
   .map(([prop, val]) => `${prop}: ${val};`)
   .join(' ');
+
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <Tag
@@ -51,7 +54,7 @@ const styleString = Object.entries(styles)
     className,
     classList
   ]}
-  style={styleString}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

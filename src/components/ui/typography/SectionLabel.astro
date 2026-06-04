@@ -13,6 +13,7 @@ import Divider from '../layout/Divider.astro';
 import type { ComponentTheme, TextTone, Sizes, AnimationType } from 'src/types/variants.types';
 
 export interface Props {
+  bg?: string;
   text?: string;
   theme?: ComponentTheme;
   tone?: TextTone;
@@ -29,6 +30,7 @@ const {
   tone = 'subtle',
   size = 'base',
   animate = 'none',
+  bg = 'transparent',
   class: cls = '',
   'class:list': classList = {},
   ...rest
@@ -37,9 +39,10 @@ const {
 const dividerColor = tone ? `var(--text-${tone})` : `var(--text-subtle)`;
 
 const classes = [
+  bg ? `bg--${bg}` : '',
+  tone ? `text--${tone}` : '',
   'section-label',
   `variant--${theme}`,
-  tone ? `text--${tone}` : '',
   `control--${size}`,
   animate !== 'none' ? `animate-${animate}` : '',
   cls,

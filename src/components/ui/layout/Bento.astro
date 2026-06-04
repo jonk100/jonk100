@@ -22,17 +22,21 @@ const {
   gap = 'md',
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
 
 const gridTemplateColumns = typeof columns === 'number' 
   ? `repeat(${columns}, minmax(0, 1fr))` 
   : columns;
+
+const internalStyle = `grid-template-columns: ${gridTemplateColumns};`;
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <div 
   class:list={['bento-grid', `gap-${gap}`, className, classList]} 
-  style={`grid-template-columns: ${gridTemplateColumns};`}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

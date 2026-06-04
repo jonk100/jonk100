@@ -1,0 +1,115 @@
+---
+/**
+ * src/components/ui/controls/IconButton.astro
+ * A specialized button component for icon-only actions.
+ * - Supports various sizes, themes, and shapes (circle/square)
+ * - Optimized for tactile feedback and accessibility
+ */
+import type { ComponentTheme, Sizes, AnimationType, FrameVariant } from 'src/types/variants.types';
+import Icon from '../primitives/Icon.astro';
+import Spinner from '../feedback/Spinner.astro';
+
+export interface Props {
+  name: string;
+  theme?: ComponentTheme;
+  size?: Sizes;
+  shape?: 'circle' | 'square' | 'rounded';
+  animate?: AnimationType;
+  loading?: boolean;
+  frame?: FrameVariant;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  href?: string;
+  "aria-label": string; // Required for accessibility
+  [key: string]: any;
+}
+
+const {
+  name,
+  theme = 'default',
+  size = 'md',
+  shape = 'rounded',
+  animate = 'none',
+  loading = false,
+  frame = 'none',
+  class: className = '',
+  "class:list": classList = {},
+  href,
+  "aria-label": ariaLabel,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+
+const sizeMap: Record<string, string> = {
+  xs: 'var(--space-6)',
+  sm: 'var(--space-8)',
+  md: 'var(--space-10)',
+  base: 'var(--space-12)',
+  lg: 'var(--space-16)',
+  xl: 'var(--space-20)'
+};
+
+const dimension = sizeMap[size] || size;
+
+const classes = [
+  'icon-button',
+  'control',
+  `variant--${theme}`,
+  `icon-button--${size}`,
+  `icon-button--shape-${shape}`,
+  frame !== 'none' ? `frame-variant--${frame}` : '',
+  animate !== 'none' ? `animate-${animate}` : '',
+  { 'control--loading': loading },
+  className,
+  classList
+];
+---
+
+<Tag
+  class:list={classes}
+  href={href}
+  aria-label={ariaLabel}
+  disabled={loading ? true : undefined}
+  style={`width: ${dimension}; height: ${dimension}; padding: 0;`}
+  {...rest}
+>
+  {!loading ? (
+    <Icon name={name} size={size === 'xs' ? 'sm' : size} />
+  ) : (
+    <Spinner size={size} />
+  )}
+</Tag>
+
+<style>
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+    line-height: 0;
+  }
+
+  .icon-button--shape-circle {
+    border-radius: 9999px;
+  }
+
+  .icon-button--shape-rounded {
+    border-radius: var(--rad-md);
+  }
+
+  .icon-button--shape-square {
+    border-radius: 0;
+  }
+
+  .icon-button:hover {
+    transform: scale(1.05);
+  }
+
+  .icon-button:active {
+    transform: scale(0.95);
+  }
+</style>

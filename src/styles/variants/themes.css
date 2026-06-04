@@ -109,20 +109,22 @@
 
 /**                                          */
 /**            Accent Variant                */
-/**                                           */
+/**                                          */
 .variant--accent {
-  background: var(--accent-border) !important;
-  color: var(--text-0) !important;
-  border-color: var(--secondary-border-strong) !important;
+  background: var(--accent) !important;
+  color: var(--neutral-0) !important;
+  border-color: var(--accent-border-strong) !important;
 }
 
 .variant--accent:hover {
-  background: var(--accent-dim) !important;
-  color: var(--text-5) !important;
+  background: var(--accent-hover) !important;
+  color: var(--neutral-0) !important;
+  border-color: var(--accent-border) !important;
 }
 
 .variant--accent:active {
-  background: var(--accent-dim);
+  background: var(--accent-dim) !important;
+  color: var(--neutral-255) !important;
 }
 
 .variant--accent:disabled {

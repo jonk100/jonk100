@@ -10,9 +10,11 @@ liveUrl: "https://hmd-bible.netlify.app/"
 ---
 import Image from '../../components/ui/primitives/Image.astro';
 
-Her Majesty's Displeasure is a 6-part limited series spec script. I wanted to create a pitch deck that would showcase the world and characters in an engaging way.
+Her Majesty's Displeasure is a six-part limited series script I wrote about a covert, completely bungled MI5 campaign authorized by an insulted Prince Philip to quietly fracture The Beatles.  
 
-The project bridges the gap between traditional screenwriting and modern digital presentation. Instead of a static PDF, I aimed for a fully responsive web application that immerses readers in the world, characters, and tone of the series.
+The script is a dark cocktail of creative influences. It leans on the soul-crushing bureaucratic melancholy of Steven Conrad, the deadpan visual symmetry of Wes Anderson, the high-velocity, linguistic panic of Armando Iannucci, and the slow, causal "residue" of Vince Gilligan and the Coen brothers.  
+
+It started with Prince Philip. In my mind, Philip has always been a genuinely strange guy—a man trapped in a gilded cage, obsessed with order but utterly powerless to stop the changing tide of culture. I was watching The Crown when I stumbled down a historical rabbit hole and discovered that John Lennon actually returned his MBE to the Palace in 1969. He included a cheeky note protesting Britain's involvement in global conflicts, ending it with a complaint about his single 'Cold Turkey' slipping down the charts. The collision of those two facts—Philip’s rigid, fragile pride and Lennon’s flippant, anti-establishment cheek—sparked the entire premise.
 
 <Image 
   src="/hmd-nigel-and-clive.png" 
@@ -20,12 +22,23 @@ The project bridges the gap between traditional screenwriting and modern digital
   shape="landscape" 
 />
 
-## Component-Driven Pitching
+## Component-Driven Storytelling
 
-To ensure visual consistency and maintainability across the complex pitch document, I treated the narrative exactly like software data. 
+When I started outlining, I thought I was writing a story about The Beatles. I figured the Fab Four would carry the narrative weight. But then Nigel Finch and Clive Barrow snuck up on me. The more I wrote, the more the comedic engine relied on the profound competence gap between them. Clive is an eccentric operative who treats surveillance as performance art. I had entirely too much fun writing scenes where he spends months trying to sabotage the Yellow Submarine movie by painting microscopic Union Jacks onto animation cels.  
 
-### Single Source of Truth
-Instead of scattering text across HTML pages, all of the narrative data (loglines, character arcs, episode summaries) flows from a single TypeScript file (`src/data/her-majestys-displeasure.ts`).
+But I ended up falling completely in love with Nigel. He isn't a villain; he is a weary civil servant who just wants to prune his prize-winning roses and collect his pension. He is a decent man trapped in an indecent system, watching his life slip away while he coordinates traffic for album covers and loses his grip on reality listening to avant-garde tape loops in a damp basement. His quiet, bureaucratic melancholy became the actual soul of the series.
+
+### Please Upgrade to the Latest Version of the Conspiracy Surrounding John Lennon's Death.
+
+Of course, to get the voices right, I had to do some research. I surprised myself by how much I genuinely enjoyed learning about the bizarre, ritualistic inner workings of the British Monarchy. It is a fascinating, absurd ecosystem of survival and PR. I couldn't get enough of it. For a time.
+
+On the flip side, I was absolutely not surprised by how much I loved watching every single clip of every Beatle, everywhere, every time, to do my best to piece together some fairly authentic dialogue. Capturing John's biting wit, Paul's diplomatic ambition, George's quiet detachment, and Ringo's grounding presence felt less like writing and more like hanging out with old friends.
+
+When the script was finally done, I couldn't just send a sterile, 250-page PDF or a few slides off into oblivion, to not be read by anyone. I wanted to make a pitch deck that felt as off-beat, deliberate, and immersive as the the show felt to create. So I started building a companion website, eventually made public at hmd-bible.netlify.app. Netlify is pretty cool.
+
+## Single Source of Truth - Narrative-as-Code with Astro Content Collections
+
+Luckily, I’d been playing around with computers long enough to know better than to scatter my brain across twelve different note-taking apps and half-filled legal pads. I wrote with a structural purpose this time. Every piece of narrative data and worldbuilding and research (outlines and loglines.. character profiles and dialogue notes and relationship arcs.. location, scene, and episode summaries) were stored in Astro Content Collections. I just wrote it all in Markdown, which let me easily visualize the relationships between the data on the fly.
 
 ```typescript
 // Excerpt from src/data/her-majestys-displeasure.ts
@@ -36,14 +49,18 @@ export const episodes: Episode[] = [
     scenes: 'Scenes 1 – 16',
     timeframe: 'Oct 1965 – Mar 1966',
     summary: "After The Beatles smoke a joint in the Buckingham Palace bathroom, John Lennon makes a flippant remark about military service that triggers Prince Philip's fury...",
-    tension: 25,
-    tensionLabel: 'Tension 2–5/10 · Low simmer',
+    tension: 4,
+    tensionLabel: '4/10 · Simmering; feels almost entirely comical and entirely safe.',
   },
   // ...
 ];
 ```
 
-This data is fed into modular Astro UI primitives, like `<CharacterCard>` or `<EpisodeTimeline>`, ensuring that a change to a character's arc in the data layer immediately updates every view across the entire site.
+Traditional pitch decks are a nightmare to maintain. You alter a character's psychological trait or tweak a subplot, and suddenly you're hunting through fifteen different layers in a static design tool, praying your typography formatting didn't shatter. With this narrative-as-code approach, the heavy lifting was essentially done the moment I finished the script. All those raw pitch assets were already sitting in a neat, validated pile on my computer, waiting to be parsed, structured, and turned into something cool.
+
+## The Visual Architecture of a Shadow War
+
+I fed the data into modular Astro components like `<CharacterCard>` and `<EpisodeTimeline>` and `<TensionBarGraph />`, and after a few days of dumb mistakes and tinkering, I had a functional, data-driven pitch deck that would update itself if I had to rewrite a scene or move some things around. I just had to write, and writing is fun for me.
 
 <Image 
   src="/hmd-satirical-core.png" 
@@ -51,8 +68,18 @@ This data is fed into modular Astro UI primitives, like `<CharacterCard>` or `<E
   shape="landscape" 
 />
 
-## Satirical Design Language
+But the real magic, for me, was translating the script’s primary thematic conflicts into code. Turning the rigid, inherited power of the state versus the chaotic, earned influence of rock 'n' roll directly into a visual system.  The layout relies on a strict aesthetic dichotomy to tell the story through screen real estate, utilizing CSS to enforce the tone.
 
-The visual architecture was explicitly designed to mirror the thematic conflict of the series. The Royal and MI5 sequences are styled with rigid symmetry, cold desaturated palettes, and sterile typography. Conversely, The Beatles' sequences employ a warm, organic, and slightly chaotic aesthetic. 
+### The Establishment Grid (The Palace & MI5)
 
-This proves that web design can be as much a storytelling tool as dialogue.
+To mirror the sterile, emotionally repressed world of Prince Philip and the Whitehall bureaucrats, these sections are styled with rigid, uncompromising symmetry. The colors are desaturated and melancholic—flat charcoal, cold stone, muted blues, and pale, dusty yellows. The typography is clean, sharp, and structured with hard borders, mimicking the feeling of a filing cabinet closing on a secret. It feels institutional, bureaucratic, and intentionally suffocating.
+
+### The Counter-Culture Groove (The Beatles)
+
+The moment the focus shifts to Abbey Road or the Indica Gallery, the design rules break. The layout adopts a warmer, organic palette. The elements are allowed to sit in a more casual, slightly fluid, and off-center composition, matching the creative friction of four lads from Liverpool reinventing popular culture in a smoke-filled room. The design itself becomes a silent narrator. 
+
+## The Ultimate Cosmic Joke
+
+The epilogue of the script exiles Nigel and Clive to a windswept office in the Falklands, where they've spent a decade processing shipping manifests, entirely erased by the institution they served. The script wraps up on December 8, 1980, with a final title card serving as a quiet shrug to fate. A random, deranged fan achieves with a single, tragic act what all the absurd, multi-million-pound machinery of the state could not. 
+
+The pitch deck was designed to leave that exact same lasting residue. By treating text, tone, and design as a singular, responsive experience, the presentation stops being an invitation to buy a script and becomes an extension of the script itself. No flashy slides reaching for the reader's attention without substance. Just a clean grid, a blue, a gold, a red, and the story of an institutional conspiracy running entirely, beautifully off the rails.

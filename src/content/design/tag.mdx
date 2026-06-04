@@ -1,0 +1,59 @@
+---
+title: "Tag"
+description: "A non-interactive semantic label with optional colored dots or icons."
+category: "feedback"
+order: 11
+propsTable:
+  - name: "label"
+    type: "string"
+    description: "The text content of the tag."
+  - name: "theme"
+    type: "ComponentTheme"
+    defaultValue: "'default'"
+    description: "The semantic color scheme ('primary', 'accent', 'success', 'warning', 'danger')."
+  - name: "dot"
+    type: "boolean"
+    defaultValue: "false"
+    description: "If true, renders a small colored dot prefix."
+  - name: "icon"
+    type: "string"
+    description: "An optional SVG icon name to prefix the label."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Tag from '../../components/ui/feedback/Tag.astro';
+import Inline from '../../components/ui/layout/Inline.astro';
+import Stack from '../../components/ui/layout/Stack.astro';
+
+The `Tag` component is a lightweight visual indicator used to categorize content or display status. Unlike the `Badge` component, which is often used for numeric counts or pill-shaped statuses, `Tag` is designed for semantic categorization and supports prefix icons or colored status dots.
+
+### Usage Blueprints
+
+#### Common: Status Dots
+Using tags with colored dots to indicate workflow stages:
+
+<ComponentPreview title="Workflow Status Tags">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="sm" wrap={true}>
+      <Tag label="Draft" dot={true} />
+      <Tag label="In Progress" theme="warning" dot={true} />
+      <Tag label="Complete" theme="success" dot={true} />
+      <Tag label="Blocked" theme="danger" dot={true} />
+      <Tag label="Review" theme="primary" dot={true} />
+    </Inline>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Icon Prefixes
+Using tags with icons to categorize file types or media formats:
+
+<ComponentPreview title="Categorization Tags">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <Inline gap="sm" wrap={true}>
+      <Tag label="Screenplay" icon="icon" />
+      <Tag label="Song" theme="warning" icon="icon" />
+      <Tag label="Featured" theme="accent" icon="icon" />
+      <Tag label="Classified" theme="danger" icon="icon" />
+    </Inline>
+  </div>
+</ComponentPreview>

@@ -1,0 +1,58 @@
+---
+// src/components/ui/layout/DescriptionList.astro
+/**
+ * Semantic `<dl>` with optional title.
+ * Mirrors `KeyValueList` but uses proper HTML definition list semantics.
+ */
+
+export interface Props {
+  title?: string;
+  items: { term: string; description: any }[];
+  termVariant?: string;
+  descVariant?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  title,
+  items,
+  termVariant = "primary",
+  descVariant = "default",
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+---
+<div
+  class:list={[
+    "description-list",
+    "p-md",
+    className,
+    classList
+  ]}
+>
+  {title && <h4 class={`dl-title variant--${termVariant}`}>{title}</h4>}
+  <dl class="dl">
+    {items.map(item => (
+      <div class="dl-group">
+        <dt class={`dl-term variant--${termVariant}`}>{item.term}</dt>
+        <dd class={`dl-desc variant--${descVariant}`}>{item.description}</dd>
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .dl { display: flex; flex-direction: column; gap: var(--space-4); }
+  .dl-group { display: flex; flex-direction: column; gap: var(--space-1); }
+  .dl-term {
+    font-weight: 600;
+  }
+  .dl-desc {
+    margin-left: 0;
+    color: var(--text-muted);
+  }
+  .dl-title {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-sm);
+  }
+</style>

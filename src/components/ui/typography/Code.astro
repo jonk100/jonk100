@@ -93,11 +93,17 @@ const contentClass = inline ? 'code-inline' : 'code-block';
 
   .code-block {
     font-family: var(--mono);
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     background: transparent;
     border: 1px solid var(--border-subtle);
     border-radius: var(--rad-md);
     overflow-x: auto;
     color: var(--text);
+    line-height: 1.5;
+  }
+  
+  /* Fix Shiki syntax highlighter line spacing */
+  .code-block :global(.line) {
+    line-height: 1.5;
   }
 </style>

@@ -1,0 +1,49 @@
+---
+title: "Spacer"
+description: "Token-mapped empty space component, axis-aware and responsive."
+category: "layouts"
+order: 11
+propsTable:
+  - name: "size"
+    type: "SpacingScale"
+    defaultValue: "'md'"
+    description: "Determines the gap spacing based on the design system tokens."
+  - name: "axis"
+    type: "'x' | 'y' | 'both'"
+    defaultValue: "'y'"
+    description: "The dimension(s) the spacer should occupy."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Spacer from '../../components/ui/layout/Spacer.astro';
+import Box from '../../components/ui/layout/Box.astro';
+import Text from '../../components/ui/typography/Text.astro';
+
+The `Spacer` component provides a semantic way to introduce whitespace into layouts without relying on ad-hoc margins. By binding to the global spacing scale, it ensures vertical and horizontal rhythms remain consistent.
+
+### Axis Awareness
+The spacer can stretch vertically (`y`), horizontally (`x`), or in both directions. This makes it versatile for pushing content apart in flex containers or creating breathing room in vertical document flows.
+
+### Usage Blueprints
+
+#### Common: Vertical Rhythm
+Using a spacer to separate two content blocks:
+
+<ComponentPreview title="Vertical Spacer">
+  <div style="width: 100%; border: 1px dashed var(--border-subtle); padding: var(--space-4);">
+    <Box layer={1} padding="sm"><Text style="margin: 0; text-align: center;">Block A</Text></Box>
+    <Spacer size="lg" axis="y" />
+    <Box layer={1} padding="sm"><Text style="margin: 0; text-align: center;">Block B</Text></Box>
+  </div>
+</ComponentPreview>
+
+#### Advanced: Horizontal Flex Separation
+Using a spacer within a flex container to push items apart:
+
+<ComponentPreview title="Horizontal Spacer">
+  <div style="width: 100%; display: flex; align-items: center; border: 1px dashed var(--border-subtle); padding: var(--space-4);">
+    <Box layer={1} padding="sm"><Text style="margin: 0;">Left Item</Text></Box>
+    <Spacer size="xl" axis="x" />
+    <Box layer={1} padding="sm"><Text style="margin: 0;">Right Item</Text></Box>
+  </div>
+</ComponentPreview>

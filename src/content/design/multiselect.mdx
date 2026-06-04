@@ -1,0 +1,52 @@
+---
+title: "Multiselect"
+description: "A custom searchable dropdown that renders selected options as dismissible chips."
+category: "controls"
+order: 18
+propsTable:
+  - name: "options"
+    type: "{ label: string; value: string }[]"
+    description: "The array of available options to display in the dropdown."
+  - name: "initialSelected"
+    type: "string[]"
+    description: "An array of values that should be selected by default."
+  - name: "label"
+    type: "string"
+    description: "An optional label for the multiselect field."
+  - name: "placeholder"
+    type: "string"
+    defaultValue: "'Select options...'"
+    description: "Placeholder text for the search input."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Multiselect from '../../components/ui/input/Multiselect.astro';
+
+The `Multiselect` component is a complex, interactive form control that combines a searchable text input with a multi-selection dropdown list. Chosen options are dynamically rendered as dismissible chips directly within the input field.
+
+### Native Form Fallback
+While the UI is entirely custom and JavaScript-driven, the component maintains a hidden `<select multiple>` element in the DOM. The controller synchronizes the chip state with this hidden select, ensuring that the component functions perfectly during standard HTML form submissions.
+
+### Usage Blueprints
+
+#### Common: Category Tagging
+A standard implementation for assigning multiple categories or tags to an item:
+
+<ComponentPreview title="Searchable Multiselect">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+    <Multiselect 
+      label="Select Genres"
+      placeholder="Filter options..."
+      initialSelected={['satire', 'spy']}
+      options={[
+        { label: 'Political Satire', value: 'satire' },
+        { label: 'Spy Thriller', value: 'spy' },
+        { label: 'Black Comedy', value: 'comedy' },
+        { label: 'Period Drama', value: 'period' },
+        { label: 'Dark Farce', value: 'farce' },
+        { label: 'Psychological', value: 'psych' },
+        { label: 'Historical Fiction', value: 'historical' }
+      ]}
+    />
+  </div>
+</ComponentPreview>

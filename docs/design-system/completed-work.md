@@ -33,6 +33,21 @@ Created 6 atomic primitive components with the goal of creating modular, useful,
 ## Log:
 
 ---
+2026-06-03 - Gemini CLI
+COMPONENTS, FIXES & DOCUMENTATION
+Audited, fixed, and documented a suite of user-created layout and data components. Resolved critical MDX rendering and AST extraction bugs.
+  `Spacer, Slider, RangeSlider, Multiselect, IconButton, ToggleButton, Tag, Chip, Quote, Label` - Created 10 new components from showcase specs.
+  `KeyValueList, DescriptionList` - Fixed CSS Grid layout issues and Astro string interpolation syntax errors.
+  `Sparkline` - Re-wrote from scratch to correctly calculate and render inline SVG data paths.
+  `Callout, TechStackList, TreeView, DatePicker, Event, Timeline, HelperText` - Fixed missing imports, mapped hardcoded variants to design tokens, and fixed syntax errors.
+  `Code.astro` / `remark-preview.mjs` - Fixed double-spacing AST extraction bug and refined Shiki line heights/font sizes.
+  `design/[slug].astro` - Implemented MDX Component Overrides (mapping `ul` to `List`, etc.) and fixed Props Table code block styling.
+  `InputGroup, Box, Grid, Center, Stack` - Fixed core style override issues where incoming `style` props erased internal component logic.
+DOCUMENTATION
+  Created 9 new `.mdx` reference pages in `src/content/design/` for the newly audited components.
+---
+
+---
 2026-06-02 - Gemini CLI
 COMPONENTS & ENHANCEMENTS
 Implemented a suite of new components and enhanced existing primitives to support high-density documentation and interactive feedback.

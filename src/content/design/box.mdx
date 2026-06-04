@@ -41,11 +41,11 @@ Demonstrates how to use `Box` to establish consistent padding and surface depth 
   title="Surface Padding & Elevation"
 >
   <div style="width: 100%; display: flex; justify-content: center; gap: var(--space-4);">
-    <Box padding="md" layer={1} radius="md" style="width: 200px;">
-      <Text type="body-sm" style="margin: 0;">Elevated Box</Text>
+    <Box padding="md" layer={2} radius="md" style="width: 200px; background: var(--surface-3);">
+      <Text type="body-sm" style="margin: 0; text-align: center;">Elevated Box</Text>
     </Box>
-    <Box padding="md" layer={-1} radius="md" style="width: 200px;">
-      <Text type="body-sm" style="margin: 0;">Recessed Box</Text>
+    <Box padding="md" layer={-1} radius="md" style="width: 200px; background: var(--surface-0);">
+      <Text type="body-sm" style="margin: 0; text-align: center;">Recessed Box</Text>
     </Box>
   </div>
 </ComponentPreview>
@@ -57,7 +57,7 @@ Demonstrates how to use `Box` to establish consistent padding and surface depth 
   title="Animated Semantic Wrapper"
 >
   <div style="width: 100%; display: flex; justify-content: center;">
-    <Box as="section" padding="lg" layer={2} radius="lg" animate="slide-up" style="max-width: 320px;">
+    <Box as="section" padding="lg" layer={2} radius="lg" animate="slide-up" style="max-width: 320px; background: var(--surface-3);">
       <Text type="h4" tone="accent" style="margin-bottom: var(--space-2);">Update Ready</Text>
       <Text type="caption">Your system blueprints have been successfully synchronized with the remote registry.</Text>
     </Box>

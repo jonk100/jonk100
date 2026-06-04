@@ -1,0 +1,56 @@
+---
+// src/components/ui/layout/HelperText.astro
+/**
+ * Small, muted helper / hint text that lives directly under an input.
+ * Variant can be “default”, “error”, “success”, “info”.
+ */
+export interface Props {
+  /** Text content */
+  children?: any;
+  /** Variant – influences colour */
+  variant?: "default" | "error" | "success" | "info" | "primary" | "danger" | "warning";
+  /** Size token for spacing */
+  size?: "xs" | "sm" | "md";
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  children,
+  variant = "default",
+  size = "xs",
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+
+let mappedVariant = variant;
+if (variant === 'error') mappedVariant = 'danger';
+if (variant === 'info') mappedVariant = 'primary';
+---
+<p
+  class:list={[
+    "helper-text",
+    `helper-text--${mappedVariant}`,
+    `text-${size}`,
+    className,
+    classList
+  ]}
+  role={mappedVariant === "danger" ? "alert" : undefined}
+>
+  <slot />
+</p>
+
+<style>
+  .helper-text {
+    margin-top: var(--space-1);
+    line-height: 1.4;
+  }
+  .text-xs { font-size: var(--text-xs); }
+  .text-sm { font-size: var(--text-sm); }
+  .text-md { font-size: var(--text-base); }
+
+  .helper-text--default { color: var(--text-muted); }
+  .helper-text--primary { color: var(--primary); }
+  .helper-text--success { color: var(--text-success); }
+  .helper-text--danger  { color: var(--text-danger); }
+  .helper-text--warning { color: var(--text-warning); }
+</style>

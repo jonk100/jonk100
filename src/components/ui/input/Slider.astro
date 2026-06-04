@@ -1,0 +1,154 @@
+---
+/**
+ * src/components/ui/input/Slider.astro
+ * Native `<input type="range">` with custom track/thumb and value readout.
+ */
+export interface Props {
+  id?: string;
+  name?: string;
+  min?: number;
+  max?: number;
+  value?: number;
+  step?: number;
+  label?: string;
+  showValue?: boolean;
+  unit?: string;
+  class?: string;
+  "class:list"?: any;
+  [key: string]: any;
+}
+
+const {
+  id = `slider-${Math.random().toString(36).substr(2, 9)}`,
+  name,
+  min = 0,
+  max = 100,
+  value = 50,
+  step = 1,
+  label,
+  showValue = true,
+  unit = '',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const percentage = ((value - min) / (max - min)) * 100;
+---
+<div class:list={['slider-container', className, classList]}>
+  {(label || showValue) && (
+    <div class="slider-header">
+      {label && <label class="slider-label" for={id}>{label}</label>}
+      {showValue && <span class="slider-value" id={`${id}-val`}>{value}{unit}</span>}
+    </div>
+  )}
+  <div class="slider-row">
+    <span class="slider-min">{min}</span>
+    <div class="slider-track-wrap">
+      <div class="slider-filled" id={`${id}-fill`} style={`width: ${percentage}%`}></div>
+      <input 
+        type="range" 
+        id={id} 
+        name={name}
+        min={min} 
+        max={max} 
+        value={value} 
+        step={step}
+        class="slider-input" 
+        data-unit={unit}
+        {...rest}
+      />
+    </div>
+    <span class="slider-max">{max}</span>
+  </div>
+</div>
+
+<script>
+  class SliderController {
+    constructor() {
+      this.init();
+    }
+    init() {
+      const inputs = document.querySelectorAll('.slider-input');
+      inputs.forEach(input => {
+        input.addEventListener('input', (e) => this.handleInput(e));
+      });
+    }
+    handleInput(e: Event) {
+      const target = e.target as HTMLInputElement;
+      const val = parseFloat(target.value);
+      const min = parseFloat(target.min) || 0;
+      const max = parseFloat(target.max) || 100;
+      const pct = ((val - min) / (max - min)) * 100;
+      
+      const fill = document.getElementById(`${target.id}-fill`);
+      if (fill) fill.style.width = `${pct}%`;
+      
+      const display = document.getElementById(`${target.id}-val`);
+      if (display) {
+        const unit = target.getAttribute('data-unit') || '';
+        // If step is fractional, format to 2 decimals, else round
+        const isFractional = target.step && parseFloat(target.step) < 1;
+        display.textContent = (isFractional ? val.toFixed(2) : Math.round(val)) + unit;
+      }
+    }
+  }
+  document.addEventListener('astro:page-load', () => new SliderController());
+</script>
+
+<style>
+  .slider-container { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; }
+  .slider-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .slider-label { font-size: var(--text-sm); font-weight: 500; color: var(--text); }
+  .slider-value { font-family: var(--mono); font-size: var(--text-sm); color: var(--text); font-weight: 500; }
+  
+  .slider-row { display: flex; align-items: center; gap: var(--space-3); }
+  .slider-min, .slider-max { font-family: var(--mono); font-size: var(--text-xs); color: var(--text-muted); }
+  
+  .slider-track-wrap { position: relative; height: 20px; display: flex; align-items: center; flex: 1; }
+  
+  .slider-input {
+    width: 100%; height: 4px;
+    -webkit-appearance: none; appearance: none;
+    background: var(--border-subtle);
+    border-radius: var(--rad-full);
+    outline: none; cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text);
+    border: 2px solid var(--bg-surface);
+    box-shadow: 0 0 0 1px var(--border);
+    cursor: grab;
+    transition: transform 0.1s;
+  }
+  .slider-input::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.1); }
+  
+  /* Firefox support */
+  .slider-input::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text);
+    border: 2px solid var(--bg-surface);
+    box-shadow: 0 0 0 1px var(--border);
+    cursor: grab;
+    transition: transform 0.1s;
+  }
+  .slider-input::-moz-range-thumb:active { cursor: grabbing; transform: scale(1.1); }
+  .slider-input::-moz-range-track { background: transparent; }
+
+  .slider-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--accent); }
+  .slider-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--accent); }
+
+  .slider-filled {
+    position: absolute; left: 0; height: 4px;
+    background: var(--accent);
+    border-radius: var(--rad-full);
+    pointer-events: none;
+    top: 50%; transform: translateY(-50%);
+    z-index: 1;
+  }
+</style>

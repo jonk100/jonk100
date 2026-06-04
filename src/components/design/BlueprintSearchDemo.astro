@@ -1,21 +1,17 @@
 ---
+import { getCollection } from 'astro:content';
 import Stack from '../ui/layout/Stack.astro';
 import Search from '../ui/input/Search.astro';
 import Paper from '../ui/primitives/Paper.astro';
 import Link from '../ui/primitives/Link.astro';
 
-const components = [
-  { href: "/design/button", label: "Button" },
-  { href: "/design/tabs", label: "Tabs" },
-  { href: "/design/accordion", label: "Accordion" },
-  { href: "/design/bento", label: "Bento Grid" },
-  { href: "/design/breadcrumbs", label: "Breadcrumbs" },
-  { href: "/design/toast", label: "Toast" },
-  { href: "/design/link", label: "Link" },
-  { href: "/design/paper", label: "Paper" },
-  { href: "/design/svg", label: "Svg" },
-  { href: "/design/text", label: "Text" },
-];
+const designEntries = await getCollection('design');
+const components = designEntries
+  .sort((a, b) => a.data.title.localeCompare(b.data.title))
+  .map(entry => ({
+    href: `/design/${entry.id}`,
+    label: entry.data.title
+  }));
 ---
 
 <div class="blueprint-search-demo" style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">

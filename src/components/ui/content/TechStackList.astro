@@ -1,0 +1,69 @@
+---
+// src/components/ui/layout/TechStackList.astro
+/**
+ * Grid of icons + labels for tech‑stack items.
+ * Each item can be a string (lookup in the design‑system `icons` map) or a custom JSX.
+ */
+import Icon from '../primitives/Icon.astro';
+
+export interface Props {
+  /** Array of tech identifiers – must match an SVG in `assets/icons/` */
+  items: string[];
+  /** Size token for the icons */
+  size?: "sm" | "md" | "lg";
+  /** Optional variant for the container background */
+  variant?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  items,
+  size = "md",
+  variant = "default",
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+---
+<ul
+  class:list={[
+    "tech-stack",
+    `gap-md`,
+    `variant--${variant}`,
+    className,
+    classList
+  ]}
+>
+  {items.map(name => (
+    <li class="tech-item">
+      <Icon name={name} size={size} class="tech-icon" />
+      <span class="tech-label">{name}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    margin: var(--space-2);
+  }
+  .tech-icon {
+    color: var(--text);
+  }
+  .tech-label {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+  /* Container variant – background only, no border */
+  .variant--default { background: transparent; }
+  .variant--surface { background: var(--bg-surface); }
+</style>

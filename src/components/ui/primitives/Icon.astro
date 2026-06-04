@@ -39,7 +39,7 @@ const sizeMap: Record<string, string> = {
 const dimension = sizeMap[size] || size;
 
 // Dynamically import all SVGs in the icons folder as raw text
-const svgs = import.meta.glob('../../../assets/icons/*.svg', { as: 'raw' });
+const svgs = import.meta.glob('../../../assets/icons/*.svg', { query: '?raw', import: 'default' });
 const iconPath = `../../../assets/icons/${name}.svg`;
 
 let innerHTML = '';

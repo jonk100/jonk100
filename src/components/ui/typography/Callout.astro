@@ -1,0 +1,88 @@
+---
+// src/components/ui/layout/Callout.astro
+/**
+ * A highlighted block for info, warning, success or error messages.
+ * Variant drives background / border colour via global `variant--*`.
+ */
+import Icon from '../primitives/Icon.astro';
+import type { ComponentTheme } from 'src/types/variants.types';
+
+export interface Props {
+  /** Variant: info | warning | success | danger */
+  theme?: ComponentTheme;
+  /** Optional title */
+  title?: string;
+  /** Optional icon name (uses the Icon primitive) */
+  icon?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  theme = "primary",
+  title,
+  icon,
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+
+// Map some common callout variants to theme
+let mappedTheme = theme;
+if ((theme as any) === 'info') mappedTheme = 'primary';
+if ((theme as any) === 'error') mappedTheme = 'danger';
+
+const defaultIcons: Record<string, string> = {
+  primary: 'info',
+  success: 'check',
+  warning: 'alert-triangle',
+  danger: 'alert-circle',
+  default: 'info'
+};
+const iconName = icon || defaultIcons[mappedTheme as string] || 'info';
+---
+<div
+  class:list={[
+    "callout",
+    `variant--${mappedTheme}`,
+    "p-sm",
+    className,
+    classList
+  ]}
+  role="region"
+  aria-live="polite"
+>
+  <div class="callout-icon">
+    <Icon name={iconName} size="md" />
+  </div>
+  <div class="callout-content">
+    {title && <h5 class="callout-title">{title}</h5>}
+    <div class="callout-body"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .callout {
+    display: flex;
+    gap: var(--space-3);
+    border-radius: var(--rad-md);
+    border: 1px solid var(--border-subtle);
+  }
+  .callout-icon {
+    flex-shrink: 0;
+    color: currentColor;
+    margin-top: 2px;
+  }
+  .callout-title {
+    margin: 0 0 var(--space-1) 0;
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .callout-body {
+    font-size: var(--text-sm);
+    color: inherit;
+    opacity: 0.9;
+  }
+  .callout-body :global(p) {
+    font-size: inherit;
+    margin: 0;
+  }
+</style>

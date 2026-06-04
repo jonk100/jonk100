@@ -86,9 +86,11 @@ const mergedStyle = [
   `object-fit: ${fit}`,
   typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')
 ].filter(Boolean).join(';');
+
+const isPolaroid = frame === 'polaroid';
 ---
 
-<figure class:list={["figure-container", className, classList]}>
+<figure class:list={["figure-container", { "figure--polaroid": isPolaroid }, className, classList]}>
   {caption && captionPosition === 'top' && (
     <figcaption class="image-caption caption--top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
   )}
@@ -139,12 +141,21 @@ const mergedStyle = [
     {caption && captionPosition === 'o-top' && (
       <figcaption class="image-caption caption--o-top" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
     )}
-    {caption && captionPosition === 'o-bottom' && (
+    {caption && captionPosition === 'o-bottom' && !isPolaroid && (
       <figcaption class="image-caption caption--o-bottom" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
     )}
   </div>
-  {caption && captionPosition === 'bottom' && (
-    <figcaption class="image-caption caption--bottom" style={`text-align: ${captionAlign};`}>{caption}</figcaption>
+  {caption && (captionPosition === 'bottom' || (isPolaroid && captionPosition === 'o-bottom')) && (
+    <figcaption 
+      class:list={[
+        "image-caption", 
+        "caption--bottom", 
+        { "caption--polaroid": isPolaroid }
+      ]} 
+      style={`text-align: ${captionAlign};`}
+    >
+      {caption}
+    </figcaption>
   )}
   <slot />
 </figure>
@@ -156,6 +167,11 @@ const mergedStyle = [
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    position: relative;
+  }
+
+  .figure--polaroid {
+    gap: 0;
   }
 
   .image-container {
@@ -170,6 +186,18 @@ const mergedStyle = [
     font-size: var(--text-sm);
     color: var(--text-muted);
     line-height: var(--leading-snug);
+  }
+
+  .caption--polaroid {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    color: #444;
+    font-family: cursive;
+    font-size: var(--text-lg);
+    padding: 0 1.5rem;
   }
 
   .caption--o-bottom {

@@ -27,8 +27,12 @@ const {
   divider = false,
   class: className = '',
   "class:list": classList = {},
+  style = '',
   ...rest
 } = Astro.props;
+
+const internalStyle = `align-items: ${align}; justify-content: ${justify};`;
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
 ---
 
 <Tag
@@ -39,7 +43,7 @@ const {
     className,
     classList
   ]}
-  style={`align-items: ${align}; justify-content: ${justify};`}
+  style={combinedStyle}
   {...rest}
 >
   <slot />

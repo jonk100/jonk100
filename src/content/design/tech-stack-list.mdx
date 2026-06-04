@@ -1,0 +1,40 @@
+---
+title: "TechStackList"
+description: "A semantic grid of icons and labels representing technologies, languages, or tools."
+category: "data"
+order: 6
+propsTable:
+  - name: "items"
+    type: "string[]"
+    description: "An array of technology names matching an SVG asset in the icons directory."
+  - name: "size"
+    type: "Sizes"
+    defaultValue: "'md'"
+    description: "The dimensional scale of the icons."
+  - name: "variant"
+    type: "string"
+    defaultValue: "'default'"
+    description: "A background variant wrapper ('default', 'surface')."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import TechStackList from '../../components/ui/content/TechStackList.astro';
+
+The `TechStackList` component provides a structured, responsive matrix of icons for project cards, resumes, or documentation. It automatically associates string identifiers with their corresponding design system SVG assets.
+
+### Usage Blueprints
+
+#### Common: Project Requirements
+A quick visualization of the technologies driving a specific project:
+
+<ComponentPreview title="Project Tooling Matrix">
+  <div style="width: 100%; display: flex; justify-content: center;">
+    {/* Note: In a real environment, you'd pass matching icon names like 'astro', 'typescript', etc. */}
+    <TechStackList 
+      items={['code', 'box', 'grid', 'image', 'link']} 
+      size="lg" 
+      variant="surface"
+      style="padding: var(--space-4); border-radius: var(--rad-md);"
+    />
+  </div>
+</ComponentPreview>

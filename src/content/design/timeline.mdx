@@ -1,0 +1,62 @@
+---
+title: "Timeline & Event"
+description: "A vertical historical graph utilizing connected Event primitives to track chronological progress."
+category: "data"
+order: 7
+propsTable:
+  - name: "events"
+    type: "EventData[]"
+    description: "An array of event objects passed to the `<Timeline>`."
+  - name: "date"
+    type: "string"
+    description: "The ISO timestamp representing the `<Event>`."
+  - name: "title"
+    type: "string"
+    description: "The primary header for an individual `<Event>`."
+  - name: "variant"
+    type: "ComponentTheme"
+    defaultValue: "'primary'"
+    description: "Sets the color of the node dot on the timeline track."
+  - name: "badge"
+    type: "string"
+    description: "An optional high-contrast tag next to the event title."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import Timeline from '../../components/ui/data/Timeline.astro';
+
+The `Timeline` component organizes chronological content into a vertical graph using `Event` child primitives. It relies on HTML `<time>` tags to preserve semantic timestamps, allowing screen readers and search engines to interpret the sequential nature of the data correctly.
+
+### Usage Blueprints
+
+#### Common: Project Changelogs and Resumes
+A standard implementation for displaying a history of updates, deployments, or life milestones:
+
+<ComponentPreview title="Chronological Activity Tracker">
+  <div style="width: 100%; max-width: 500px; margin: 0 auto; text-align: left;">
+    <Timeline 
+      title="System Updates"
+      events={[
+        {
+          date: "2026-06-03",
+          title: "Design System Overhaul",
+          variant: "primary",
+          badge: "v2.0",
+          description: "Completed the migration to AST-driven MDX preview components."
+        },
+        {
+          date: "2026-05-15",
+          title: "Supabase Migration",
+          variant: "success",
+          description: "Transitioned all user sessions and habit logs from local-storage to the cloud."
+        },
+        {
+          date: "2026-04-10",
+          title: "Critical Outage",
+          variant: "danger",
+          description: "The primary API gateway went offline due to an expired SSL certificate."
+        }
+      ]}
+    />
+  </div>
+</ComponentPreview>

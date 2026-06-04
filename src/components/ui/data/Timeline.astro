@@ -1,0 +1,69 @@
+---
+// src/components/ui/layout/Timeline.astro
+/**
+ * Vertical timeline using the `Event` primitive.
+ * Accepts an array of event data and renders them inside a Stack.
+ */
+import Event from "./Event.astro";
+import Stack from "../layout/Stack.astro";
+
+export interface EventData {
+  date: string;
+  title: string;
+  description?: any;
+  variant?: "info" | "success" | "warning" | "error" | "primary" | "danger";
+  badge?: string;
+}
+export interface Props {
+  events: EventData[];
+  /** Optional title for the whole timeline */
+  title?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+}
+const {
+  events,
+  title,
+  class: className = "",
+  "class:list": classList = {}
+} = Astro.props;
+---
+<div
+  class:list={[
+    "timeline",
+    "p-md",
+    className,
+    classList
+  ]}
+>
+  {title && <h4 class="timeline-title">{title}</h4>}
+  <ul class="timeline-list">
+    {events.map(ev => (
+      <Event
+        date={ev.date}
+        title={ev.title}
+        variant={ev.variant}
+        badge={ev.badge}
+      >
+        {ev.description}
+      </Event>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .timeline {
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline-title {
+    margin-bottom: var(--space-4);
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+  .timeline-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

@@ -1,0 +1,32 @@
+
+.text--0 { color: var(--text-0); }
+.text--1 { color: var(--text-1); }
+.text--2 { color: var(--text-2); }
+.text--3 { color: var(--text-3); }
+.text--4 { color: var(--text-4); }
+.text--5 { color: var(--text-5); }
+
+.text--white { color: white; }
+.text--black { color: black; }
+.text--default { color: currentColor; }
+.text--subtle { color: var(--text-subtle); }
+.text--muted { color: var(--text-muted); }
+.text--danger { color: var(--text-danger); }
+.text--success { color: var(--text-success); }
+.text--primary { color: var(--primary-hover); }
+.text--secondary { color: var(--secondary-hover); }
+.text--accent { color: var(--accent); }
+
+.bg--0 { background-color: var(--surface-0); }
+.bg--1 { background-color: var(--surface-1); }
+.bg--2 { background-color: var(--surface-2); }
+.bg--3 { background-color: var(--surface-3); }
+.bg--4 { background-color: var(--surface-4); }
+.bg--5 { background-color: var(--surface-5); }
+.bg--white { background-color: white; }
+.bg--black { background-color: black; }
+.bg--default { background-color: var(--background); }
+.bg--primary { background-color: var(--blue-70); }
+.bg--secondary { background-color: var(--red-70); }
+.bg--accent { background-color: var(--yellow-70); }
+.bg--transparent { background-color: transparent; }

@@ -1,0 +1,114 @@
+---
+// src/components/ui/layout/DatePicker.astro
+/**
+ * Wrapper around native `<input type="date">` (and optional `time`).
+ * Uses the global `variant--*` colour system and spacing utilities.
+ */
+export interface Props {
+  /** Label shown above the field */
+  label?: string;
+  /** Current value (ISO string) */
+  value?: string;
+  /** Name attribute for form submission */
+  name?: string;
+  /** Disable the control */
+  disabled?: boolean;
+  /** Show a time picker alongside the date */
+  withTime?: boolean;
+  /** Variant for the input border/background */
+  variant?: string;
+  /** Size token for spacing */
+  size?: "sm" | "md" | "lg";
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  /** Any other native input attributes */
+  [key: string]: any;
+}
+const {
+  label,
+  value,
+  name,
+  disabled = false,
+  withTime = false,
+  variant = "default",
+  size = "md",
+  class: className = "",
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+
+const inputId = `date-${Math.random().toString(36).substr(2, 9)}`;
+---
+<div
+  class:list={[
+    "date-picker",
+    `p-${size}`,
+    className,
+    classList
+  ]}
+>
+  {label && (
+    <label for={inputId} class={`date-label variant--${variant}`}>
+      {label}
+    </label>
+  )}
+
+  <div class="date-field">
+    <input
+      id={inputId}
+      type="date"
+      name={name}
+      value={value}
+      disabled={disabled}
+      class:list={[
+        "control",
+        `variant--${variant}`,
+        `control--${size}`,
+        "date-input"
+      ]}
+      aria-invalid={!!rest.error}
+      {...rest}
+    />
+    {withTime && (
+      <input
+        type="time"
+        class:list={[
+          "control",
+          `variant--${variant}`,
+          `control--${size}`,
+          "time-input"
+        ]}
+        disabled={disabled}
+        aria-label="Select time"
+        {...rest}
+      />
+    )}
+  </div>
+</div>
+
+<style>
+  .date-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .date-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+  .date-field {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .date-input,
+  .time-input {
+    width: 100%;
+    max-width: 12rem;
+  }
+  .date-input:focus-visible,
+  .time-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+</style>

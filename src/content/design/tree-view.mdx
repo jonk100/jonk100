@@ -1,0 +1,56 @@
+---
+title: "TreeView"
+description: "An accessible, recursive tree view utilizing native HTML details and summary elements for nested navigation."
+category: "typography"
+order: 2
+propsTable:
+  - name: "data"
+    type: "TreeNode[]"
+    description: "An array of recursively nested node objects containing a label, an optional icon, and optional children."
+  - name: "variant"
+    type: "string"
+    defaultValue: "'default'"
+    description: "Thematic variant for the node labels."
+---
+
+import ComponentPreview from '../../components/ui/primitives/ComponentPreview.astro';
+import TreeView from '../../components/ui/content/TreeView.astro';
+
+The `TreeView` component transforms a deeply nested JSON-like structure into an interactive folder hierarchy. By using native `<details>` and `<summary>` tags, it provides fully accessible keyboard navigation (using the Space or Enter keys to expand/collapse) without requiring any JavaScript event listeners.
+
+### Usage Blueprints
+
+#### Common: File System Explorer
+Using the tree view to represent directories, complex taxonomies, or organizational charts:
+
+<ComponentPreview title="Nested File Architecture">
+  <div style="width: 100%; max-width: 400px; margin: 0 auto; text-align: left; background: var(--surface-1); border-radius: var(--rad-md); border: 1px solid var(--border-subtle);">
+    <TreeView 
+      data={[
+        {
+          label: "src",
+          icon: "box",
+          children: [
+            {
+              label: "components",
+              icon: "grid",
+              children: [
+                { label: "Button.astro", icon: "code" },
+                { label: "Image.astro", icon: "code" }
+              ]
+            },
+            {
+              label: "styles",
+              icon: "frame",
+              children: [
+                { label: "global.css", icon: "text" },
+                { label: "variants.css", icon: "text" }
+              ]
+            }
+          ]
+        },
+        { label: "package.json", icon: "code" }
+      ]}
+    />
+  </div>
+</ComponentPreview>

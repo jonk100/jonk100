@@ -1,0 +1,61 @@
+---
+/**
+ * src/components/ui/layout/Spacer.astro
+ * Token-mapped empty space component, axis-aware and responsive.
+ */
+import type { SpacingScale } from '/src/types/variants.types';
+
+export interface Props {
+  size?: SpacingScale;
+  axis?: 'x' | 'y' | 'both';
+  class?: string;
+  "class:list"?: any;
+  [key: string]: any;
+}
+
+const {
+  size = 'md',
+  axis = 'y',
+  class: className = '',
+  "class:list": classList = {},
+  style = '',
+  ...rest
+} = Astro.props;
+
+const internalStyle = `--spacer-size: var(--space-${size === 'xs' ? '3' : size === 'sm' ? '4' : size === 'md' ? '6' : size === 'lg' ? '8' : size === 'xl' ? '12' : size}, var(--gap-${size}, 1rem));`;
+const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
+---
+<div
+  class:list={['spacer', `spacer--axis-${axis}`, className, classList]}
+  style={combinedStyle}
+  aria-hidden="true"
+  {...rest}
+></div>
+
+<style>
+  .spacer {
+    display: block;
+    flex-shrink: 0;
+  }
+  .spacer--axis-y {
+    height: var(--spacer-size);
+    width: 100%;
+  }
+  .spacer--axis-x {
+    width: var(--spacer-size);
+    height: 100%;
+    display: inline-block;
+  }
+  .spacer--axis-both {
+    width: var(--spacer-size);
+    height: var(--spacer-size);
+  }
+
+  /* Responsive logic via container queries if placed in a size container */
+  @container (max-width: 600px) {
+    .spacer {
+      /* Example of responsive reduction, assuming a smaller gap token exists */
+      --spacer-size: calc(var(--spacer-size) * 0.75);
+    }
+  }
+</style>
