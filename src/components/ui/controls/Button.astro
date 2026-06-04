@@ -121,4 +121,16 @@ const currentColor = tone ? `var(--text-${tone})` : `var(--text-subtle)`;
     border-color: var(--border-strong);
     color: var(--surface-5);
   }
+
+  /* Defensive override for MDX-compiled child paragraph tags */
+  .control :global(p) {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    display: inline !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+  }
 </style>

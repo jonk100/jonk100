@@ -61,25 +61,22 @@ const defaultTags: Record<string, string> = {
 };
 
 const Tag = as || defaultTags[type] || 'p';
-
-const classes = {
-  base: 'text',
-  type: type && `text--${type}`,
-  tone: tone && `text--${tone}`,
-  align: align && `align--${align}`,
-  fs: fs && `fs--${fs}`,
-  className,
-  classList
-};
 ---
 
 <Tag
   class:list={[
-    'classes',
+    'text',
+    type && `text--${type}`,
+    tone && `text--${tone}`,
+    align && `align--${align}`,
+    fs && `fs--${fs}`,
+    { 'bold': bold },
+    { 'italic': italic },
+    { 'underline': underline },
+    { 'strikethrough': strikethrough },
     className,
     classList
   ]}
-  as={defaultTags}
   {...rest}
 >
   <slot />

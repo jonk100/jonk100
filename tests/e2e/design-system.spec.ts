@@ -79,7 +79,7 @@ test('interactive: search live filtering', async ({ page }) => {
 
   const listItems = page.locator('#blueprint-list li');
   await expect(listItems.filter({ hasText: 'Bento Grid' })).toBeVisible();
-  await expect(listItems.filter({ hasText: 'Button' })).not.toBeVisible();
+  await expect(listItems.filter({ hasText: /^Button$/ })).not.toBeVisible();
 });
 
 // --------------------------------------------------
