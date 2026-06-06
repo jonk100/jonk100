@@ -1,7 +1,7 @@
 /**
  * Thome Store - stores and persists the value of the theme (light/dark) persistently.
  */
-import { createPersistedStoreStore } from '../createStore';
+import { createPersistedStore, createStore, derivedStore  } from '../createStore';
 export const theme = createPersistedStore<'light' | 'dark'>('dark', 'theme');
 
 /**

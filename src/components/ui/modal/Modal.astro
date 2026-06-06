@@ -107,9 +107,9 @@ const {
     }
   }
 
-  .modal--space-sm { max-width: 400px; }
-  .modal--space-md { max-width: 600px; }
-  .modal--space-lg { max-width: 800px; }
+  .modal--space-sm { max-width: clamp(300px, 90vw, 400px); }
+  .modal--space-md { max-width: clamp(400px, 90vw, 600px); }
+  .modal--space-lg { max-width: clamp(500px, 90vw, 800px); }
   .modal--space-full { max-width: 95vw; height: 95vh; }
 
   .modal-content {

@@ -70,31 +70,35 @@ const previewId = `preview-${Math.random().toString(36).substring(2, 9)}`;
 <script>
   class ComponentPreviewElement extends HTMLElement {
     connectedCallback() {
+      this.initTabs();
+    }
+
+    initTabs() {
       const previewId = this.dataset.id;
       if (!previewId) return;
-      
+
       const container = this.querySelector(`#${previewId}`);
       if (!container) return;
-      
+
       const tabButtons = container.querySelectorAll<HTMLButtonElement>('.tab-btn');
       const tabPanes = container.querySelectorAll<HTMLDivElement>('.tab-pane');
-      
+
       tabButtons.forEach(button => {
         button.addEventListener('click', () => {
           const tab = button.getAttribute('data-tab');
-          
+
           tabButtons.forEach(btn => {
             btn.classList.remove('is-active');
             btn.setAttribute('aria-selected', 'false');
           });
-          
+
           tabPanes.forEach(pane => {
             pane.classList.remove('is-active');
           });
-          
+
           button.classList.add('is-active');
           button.setAttribute('aria-selected', 'true');
-          
+
           const activePane = container.querySelector<HTMLDivElement>(`.tab-pane[data-pane="${tab}"]`);
           if (activePane) {
             activePane.classList.add('is-active');
@@ -103,10 +107,17 @@ const previewId = `preview-${Math.random().toString(36).substring(2, 9)}`;
       });
     }
   }
-  
+
   if (!customElements.get('component-preview-element')) {
     customElements.define('component-preview-element', ComponentPreviewElement);
   }
+
+  // Re-initialize after page transitions
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('component-preview-element').forEach(el => {
+      (el as ComponentPreviewElement).initTabs();
+    });
+  });
 </script>
 
 <style>

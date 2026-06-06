@@ -164,8 +164,56 @@
 - TimePicker: Control for selecting time values
 - FormField: Wrapper combining label, input, and validation
 - Fieldset: Grouped form controls with shared context
-- HelperText: Secondary guidance text for inputs
 
+
+
+
+
+
+
+How they fit the existing layout primitives
+
+
+
+New component
+Base primitive(s) used
+
+
+
+KeyValueList / DescriptionList
+Box (spacing) + native <dl>
+
+
+Sparkline
+Box (size) + inline SVG
+
+
+Callout
+Paper‑style container (via variant & padding)
+
+
+TechStackList
+Inline (gap) + Icon
+
+
+TreeView
+Box + native <details>
+
+
+DatePicker
+Box + Input‑style class list
+
+
+Event
+Box + Paper‑like dot
+
+
+Timeline
+Stack (vertical) + Event
+
+
+HelperText
+Pure text with spacing utilities
 --------------------------------------------------------------------------------------------
 ----------------------------------------------------------
 - Textarea: Multi-line text input field
@@ -347,3 +395,18 @@ ModelPicker: Selector for AI model variants
 - DockNavigation: Persistent dock-style navigation component
 
 ----------------------------------------------------------
+
+Given your established aesthetic — dark editorial, amber gold, IBM Plex Mono, Playfair Display — I'll build these as a cohesive component library that slots right into Writty/Her Majesty's Displeasure's design system. Let me think through each one then build the showcase.Good context. I'll build all 10 as a single Astro component library file — pure vanilla TypeScript + CSS, no frameworks, designed to match your dark editorial system.
+
+Let me think through the architecture first:
+
+- **Spacer** — CSS custom property driven, token-mapped, axis-aware, responsive via container queries
+- **Slider** — native `<input type="range">` with custom CSS track/thumb, value readout, accessible labelling
+- **RangeSlider** — dual-handle using two overlapping range inputs, clip-path trick for filled track segment
+- **Multiselect** — custom dropdown with keyboard nav, chip display of selected values, `<select multiple>` fallback
+- **IconButton** — `<button>` variant, icon-only with mandatory `aria-label`, size/variant props
+- **ToggleButton** — binary state button, `aria-pressed`, controlled or uncontrolled
+- **Tag** — non-interactive label, semantic color variants, optional dot/icon prefix
+- **Chip** — interactive Tag variant, dismissible, selectable state, `role="option"`
+- **Quote** — blockquote with attribution, pull-quote and inline variants
+- **Label** — form label with optional required marker, helper text, error stateEach section is expandable. Now here's how to implement all 10 as proper Astro components:

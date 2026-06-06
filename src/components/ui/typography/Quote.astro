@@ -2,12 +2,25 @@
 /**
  * src/components/ui/typography/Quote.astro
  * Blockquote with attribution, pull-quote and inline variants.
+ * - Reuses Text typography classes for size, tone, weight, and alignment
+ * - Only quote-specific styles (borders, attribution layout) remain scoped
+ * @props (local): text, author, source, variant
+ * @props (global): class, class:list
+ * - variant: Display style ('block' for standard quote, 'pull' for centered pull-quote)
+ * - text: Quote content (optional, slot used if not provided)
+ * - author: Attribution author name
+ * - source: Attribution source/context
  */
+import type { FontSize, TextTone } from '/src/types/variants.types';
+import Text from './Text.astro';
+
 export interface Props {
   text?: string;
   author?: string;
   source?: string;
   variant?: 'block' | 'pull';
+  size?: FontSize;
+  tone?: TextTone;
   class?: string;
   "class:list"?: any;
   [key: string]: any;
@@ -18,18 +31,22 @@ const {
   author,
   source,
   variant = 'block',
+  size = 'base',
+  tone = 'default',
   class: className = '',
   "class:list": classList = {},
   ...rest
 } = Astro.props;
 ---
 <blockquote class:list={[`quote-${variant}`, className, classList]} {...rest}>
-  <p class="quote-text">{text ? text : <slot />}</p>
+  <Text type="body" size={size} tone={tone} class="quote-text">
+    {text ? text : <slot />}
+  </Text>
   {(author || source) && (
     <div class="quote-attribution">
       <span class="quote-dash">—</span>
-      {author && <span class="quote-author">{author}</span>}
-      {source && <span class="quote-source">· {source}</span>}
+      {author && <Text type="caption" tone="subtle" class="quote-author">{author}</Text>}
+      {source && <Text type="caption" tone="muted" class="quote-source">· {source}</Text>}
     </div>
   )}
 </blockquote>
@@ -44,9 +61,6 @@ const {
   }
   
   .quote-text { 
-    font-size: var(--text-base); 
-    line-height: 1.65; 
-    color: var(--text); 
     font-style: italic; 
     margin: 0;
   }
@@ -57,9 +71,9 @@ const {
     flex-wrap: wrap;
   }
   
-  .quote-dash { font-family: var(--mono); font-size: var(--text-xs); color: var(--accent-dim); }
-  .quote-author { font-size: var(--text-sm); color: var(--text-subtle); font-weight: 500; }
-  .quote-source { font-size: var(--text-sm); color: var(--text-muted); }
+  .quote-dash { font-family: var(--mono); color: var(--accent-dim); }
+  .quote-author { font-weight: 500; }
+  .quote-source { }
   
   .quote-pull {
     text-align: center; 
@@ -70,9 +84,7 @@ const {
   }
   
   .quote-pull .quote-text { 
-    font-size: var(--text-xl); 
     font-family: var(--display);
-    color: var(--text);
   }
   
   .quote-pull .quote-attribution { 

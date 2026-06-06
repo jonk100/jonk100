@@ -23,12 +23,20 @@ import ProjectTransition from '../components/portfolio/ProjectTransition.astro';
 import Button from '../components/ui/controls/Button.astro';
 import ProjectPageHero from '../components/project/ProjectPageHero.astro';
 import ButtonGroup from '../components/ui/controls/ButtonGroup.astro';
+import Link from '../components/ui/primitives/Link.astro';
 
 export interface Props {
   project: CollectionEntry<'projects'>;
   nextProject?: CollectionEntry<'projects'>;
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
+}
+
+const components = {
+  a: Link,  
+  Button,
+  ProjectPageHero,
+  ButtonGroup,
 }
 
 const { project, nextProject, class: className = '', "class:list": classList = {} } = Astro.props;
@@ -156,10 +164,6 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     z-index: 10;
   }
 
-  .content {
-    max-width: 800px;
-  }
-
   .project-header {
     margin-bottom: var(--space-2);
     background: linear-gradient(to right, rgba(2,3,7,.7) 0%, var(--surface-0) 100%);
@@ -182,9 +186,9 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     line-height: 1.1;
   }
 
-  .project-links {
+  /* .project-links {
     margin-top: var(--space-6);
-  }
+  } */
 
   .primary-link {
     background: var(--accent);
@@ -208,5 +212,8 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     transform: translateY(-2px);
   }
 
+  .prose a {
+    color: var(--secondary);
+  }
   
 </style>

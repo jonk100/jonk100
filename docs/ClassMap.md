@@ -61,9 +61,11 @@ Each enum maps to → a recipe or token
 `design/state/`
 - **Store** `interface` — `get()`, `set()`, `update()`, `subscribe()`
 - **DerivedStore** `interface` — `get()`, `subscribe()` (read-only)
+- **preferences.ts** — centralized user preference state with system sync
 
 Concrete stores:
 - **theme** `createPersistedStore<'light'|'dark'>` → sets `data-theme` on `<html>` → drives ColorTokens
+- **reducedMotion** `createStore<boolean>` → syncs with `window.matchMedia` → conditionally suppresses AnimationRecipes
 - **isDark** `createDerived(theme)` → `boolean`
 - **sandbox** `createPersistedStore<SandboxState>` → drives accentHue, borderRadius, fontScale CSS vars
   - **accentHue** `createDerived(sandbox)` → `number`
@@ -71,7 +73,6 @@ Concrete stores:
   - **fontScale** `createDerived(sandbox)` → drives TypographyTokens
 - **toasts** `createStore<Toast[]>` → drives ToastProvider
 - **sidebarOpen** `createStore<boolean>` → drives Sidebar island
-- **reducedMotion** `createStore<boolean>` → conditionally suppresses AnimationRecipes
 
 ---
 
@@ -134,6 +135,13 @@ Table, Timeline, Sparkline, Event, DescriptionList, KeyValueList, Card
 ### Content `ui/content/`
 Accordion, TreeView, TechStackList, Prose
 - compose → Primitives, Typography
+
+### Animation `ui/animation/`
+Transition, Reveal, StaggerGroup
+- Transition → dynamic view-transition-name generation, entering/exiting animations
+- Reveal → IntersectionObserver-based scroll-triggered animations
+- StaggerGroup → list choreography with incremental --stagger-delay CSS variables
+- consume → MotionTokens, AnimationRecipes
 
 ---
 

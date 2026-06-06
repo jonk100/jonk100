@@ -190,7 +190,7 @@
   --accent-dim:                       var(--yellow-120);
   --accent-border:                    var(--yellow-180);
   --accent-border-strong:             var(--yellow-210);
-  --accent-hover:                     var(--yellow-160);
+  --accent-hover:                     rgba(var(--accent-rgb), 0.5);
   --background:                 var(--neutral-darkest);
   --background-surface:         var(--neutral-darker);
   --background-elevated:        var(--neutral-dark);

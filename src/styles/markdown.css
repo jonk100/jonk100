@@ -94,3 +94,7 @@
     min-height: 1.5em;
   }
   
+  a {
+    color: var(--accent);
+    
+  }

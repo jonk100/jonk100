@@ -34,7 +34,10 @@ const internalStyle = `
     justify-content: ${justify};
     flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
   `;
-const combinedStyle = [internalStyle, typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')].filter(Boolean).join(';');
+const combinedStyle = [
+  internalStyle, 
+  typeof style === 'string' ? style : Object.entries(style || {}).map(([k, v]) => `${k}:${v}`).join(';')
+].filter(Boolean).join(';');
 ---
 
 <Tag

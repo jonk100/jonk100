@@ -4,78 +4,89 @@
  * A polymorphic typography component for consistent text styling.
  * - Renders content as variable HTML tags dynamically
  * - Standardizes font sizes, lines heights, and semantic tones
- * @props (local): type, as, tone, fs (font-size 1-5), align (l/c/r) 
+ * @props (local): type, as, tone, fs (font-size 1-5), align (l/c/r)
  * @props (global): class, class:list
  * - type: Selects the typographic block type (e.g., 'body', 'heading-1')
  * - as: The HTML tag to render the text element as
  * - tone: Specifies the text color intention
  */
-import type { BlockType, TextTone, XAlign, FontSize } from '/src/types/variants.types';
+import type {
+  BlockType,
+  TextTone,
+  XAlign,
+  FontSize,
+  BackgroundTone,
+} from "/src/types/variants.types";
 
 export interface Props {
   type?: BlockType;
-  as?: keyof HTMLElementTagNameMap | string;
   tone?: TextTone;
+  bg?: BackgroundTone;
   align?: XAlign;
   fs?: FontSize;
+
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
   strikethrough?: boolean;
+
   class?: string;
+  as?: keyof HTMLElementTagNameMap | string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
 }
 
 const {
   as,
-  type = 'body',
-  tone = 'default',
+  type = "body",
+  tone = "default",
+  bg,
   align,
   fs,
   bold = false,
   italic = false,
   underline = false,
   strikethrough = false,
-  class: className = '',
+  class: className = "",
   "class:list": classList = {},
   ...rest
 } = Astro.props;
 
 const defaultTags: Record<string, string> = {
-  'h1': 'h1',
-  'heading-1': 'h1',
-  'h2': 'h2',
-  'heading-2': 'h2',
-  'h3': 'h3',
-  'heading-3': 'h3',
-  'h4': 'h4',
-  'heading-4': 'h4',
-  'h5': 'h5',
-  'heading-5': 'h5',
-  'body': 'p',
-  'body-sm': 'p',
-  'caption': 'span',
-  'label': 'span',
-  'lead': 'p'
+  h1: "h1",
+  "heading-1": "h1",
+  h2: "h2",
+  "heading-2": "h2",
+  h3: "h3",
+  "heading-3": "h3",
+  h4: "h4",
+  "heading-4": "h4",
+  h5: "h5",
+  "heading-5": "h5",
+  body: "p",
+  "body-sm": "p",
+  caption: "span",
+  label: "span",
+  lead: "p",
 };
 
-const Tag = as || defaultTags[type] || 'p';
+const Tag = as || defaultTags[type] || "p";
 ---
 
 <Tag
   class:list={[
-    'text',
+    "text",
     type && `text--${type}`,
-    tone && `text--${tone}`,
     align && `align--${align}`,
     fs && `fs--${fs}`,
-    { 'bold': bold },
-    { 'italic': italic },
-    { 'underline': underline },
-    { 'strikethrough': strikethrough },
+    tone && `text--${tone}`,
+    bg && `bg--${bg}`,
+    { bold: bold },
+    { italic: italic },
+    { underline: underline },
+    { strikethrough: strikethrough },
     className,
-    classList
+    classList,
   ]}
   {...rest}
 >
@@ -83,74 +94,107 @@ const Tag = as || defaultTags[type] || 'p';
 </Tag>
 
 <style>
-.text {
-  margin: 0;
-}
+  .text {
+    margin: 0;
+  }
 
-/* ─────────────────────────────
+  /* ─────────────────────────────
    Variants
  ───────────────────────────── */
-.text--body {
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-}
+  .text--body {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+  }
 
-.text--body-sm {
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
-}
+  .text--body-sm {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
 
-.text--lead {
-  font-size: var(--text-lg);
-  line-height: var(--leading-normal);
-  font-weight: 500;
-}
+  .text--lead {
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    font-weight: 500;
+  }
 
-.text--h1, .text--heading-1 {
-  font-size: var(--text-5xl);
-  line-height: var(--leading-tighter);
-  letter-spacing: -0.04em;
-  font-weight: 700;
-  font-family: var(--display);
-}
+  .text--h1,
+  .text--heading-1 {
+    font-size: var(--text-5xl);
+    line-height: var(--leading-tighter);
+    letter-spacing: -0.04em;
+    font-weight: 700;
+    font-family: var(--display);
+  }
 
-.text--h2, .text--heading-2 {
-  font-size: var(--text-4xl);
-  line-height: var(--leading-tight);
-  letter-spacing: -0.03em;
-  font-weight: 650;
-  font-family: var(--display);
-}
+  .text--h2,
+  .text--heading-2 {
+    font-size: var(--text-4xl);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.03em;
+    font-weight: 650;
+    font-family: var(--display);
+  }
 
-.text--h3, .text--heading-3 {
-  font-size: var(--text-3xl);
-  line-height: var(--leading-tight);
-  font-weight: 600;
-  font-family: var(--display);
-}
+  .text--h3,
+  .text--heading-3 {
+    font-size: var(--text-3xl);
+    line-height: var(--leading-tight);
+    font-weight: 600;
+    font-family: var(--display);
+  }
 
-.text--h4, .text--heading-4 {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-tight);
-  font-weight: 600;
-  font-family: var(--display);
-}
+  .text--h4,
+  .text--heading-4 {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    font-weight: 600;
+    font-family: var(--display);
+  }
 
-.text--h5, .text--heading-5 {
-  font-size: var(--text-xl);
-  line-height: var(--leading-tight);
-  font-weight: 600;
-  font-family: var(--display);
-}
+  .text--h5,
+  .text--heading-5 {
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+    font-weight: 600;
+    font-family: var(--display);
+  }
 
-.text--caption {
-  font-size: var(--text-xs);
-  line-height: 1.4;
-}
+  .text--caption {
+    font-size: var(--text-xs);
+    line-height: 1.4;
+  }
 
-.text--label {
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.4em;
-}
+  .text--label {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+  }
+
+  /* Responsive Typography */
+  @media (max-width: 768px) {
+    .text--h1,
+    .text--heading-1 {
+      font-size: clamp(1.75rem, 5vw, 2.25rem);
+    }
+
+    .text--h2,
+    .text--heading-2 {
+      font-size: clamp(1.5rem, 4vw, 1.75rem);
+    }
+
+    .text--h3,
+    .text--heading-3 {
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+    }
+
+    .text--h4,
+    .text--heading-4 {
+      font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+    }
+
+    .text--h5,
+    .text--heading-5 {
+      font-size: clamp(1rem, 2vw, 1.125rem);
+    }
+  }
 </style>

@@ -79,19 +79,19 @@ const {
     bottom: 0;
     right: 0;
     left: auto;
-    width: 400px;
+    width: clamp(300px, 80vw, 400px);
     max-width: 90vw;
     height: 100vh;
     border-left: 1px solid var(--border);
     transform: translateX(100%);
   }
-  
+
   .sheet--left {
     top: 0;
     bottom: 0;
     left: 0;
     right: auto;
-    width: 400px;
+    width: clamp(300px, 80vw, 400px);
     max-width: 90vw;
     height: 100vh;
     border-right: 1px solid var(--border);
@@ -104,7 +104,7 @@ const {
     left: 0;
     right: 0;
     width: 100vw;
-    height: 400px;
+    height: clamp(300px, 50vh, 400px);
     max-height: 90vh;
     border-bottom: 1px solid var(--border);
     transform: translateY(-100%);
@@ -116,7 +116,7 @@ const {
     left: 0;
     right: 0;
     width: 100vw;
-    height: 400px;
+    height: clamp(300px, 50vh, 400px);
     max-height: 90vh;
     border-top: 1px solid var(--border);
     transform: translateY(100%);

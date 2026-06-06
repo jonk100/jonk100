@@ -2,22 +2,30 @@
 /**
  * src/components/ui/animation/Transition.astro
  * A flexible wrapper component for adding CSS transitions and view transition names.
- * - Supports customizable durations, delays, and easing functions
+ * - Supports customizable durations, delays, and easing functions using motion tokens
+ * - Provides dynamic view-transition-name generation from IDs
+ * - Standardizes entering vs exiting animation behaviors
  * - Provides fallback handling for prefers-reduced-motion accessibility
- * @props (local): as, name, duration, delay, easing
+ * @props (local): as, name, id, duration, delay, easing, enter, exit
  * @props (global): class, class:list
  * - as: The HTML tag or Astro component to render
- * - name: Assigns a view-transition-name for View Transitions API
+ * - name: Explicit view-transition-name (overrides id-based generation)
+ * - id: Used to generate a unique view-transition-name automatically
  * - duration: Selects a predefined transition duration ('fast', 'normal', 'slow')
  * - delay: Selects a predefined transition delay ('none', 'short', 'long')
  * - easing: Chooses a CSS timing function (e.g., 'ease', 'bounce')
+ * - enter: Animation class for entering the DOM
+ * - exit: Animation class for leaving the DOM
  */
 export interface Props {
   as?: keyof HTMLElementTagNameMap | string;
-  name?: string; // For view-transition-name
+  name?: string; // Explicit view-transition-name
+  id?: string; // Auto-generates view-transition-name from ID
   duration?: 'fast' | 'normal' | 'slow';
   delay?: 'none' | 'short' | 'long';
   easing?: 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
+  enter?: 'fade-in' | 'slide-up' | 'slide-down' | 'zoom-in' | 'none';
+  exit?: 'fade-out' | 'slide-up' | 'slide-down' | 'zoom-out' | 'none';
   class?: string;
   "class:list"?: Record<string, boolean> | any[];
   [key: string]: any;
@@ -26,15 +34,21 @@ export interface Props {
 const {
   as = 'div',
   name,
+  id,
   duration = 'normal',
   delay = 'none',
   easing = 'ease',
+  enter = 'fade-in',
+  exit = 'none',
   class: className = '',
   "class:list": classList = {},
   ...rest
 } = Astro.props;
 
 const Tag = as;
+
+// Generate dynamic view-transition-name from ID if provided, otherwise use explicit name
+const transitionName = name || (id ? `transition-${id}` : undefined);
 ---
 
 <Tag
@@ -43,10 +57,12 @@ const Tag = as;
     `duration--${duration}`,
     `delay--${delay}`,
     `easing--${easing}`,
+    enter !== 'none' ? `animate-${enter}` : '',
+    exit !== 'none' ? `animate-${exit}` : '',
     className,
     classList
   ]}
-  style={name ? `view-transition-name: ${name};` : undefined}
+  style={transitionName ? `view-transition-name: ${transitionName};` : undefined}
   {...rest}
 >
   <slot />
@@ -58,29 +74,65 @@ const Tag = as;
     transition-property: all;
   }
 
-  /* Durations */
-  .duration--fast { transition-duration: 150ms; }
-  .duration--normal { transition-duration: 300ms; }
-  .duration--slow { transition-duration: 500ms; }
+  /* Durations - using motion tokens */
+  .duration--fast { transition-duration: var(--fast); }
+  .duration--normal { transition-duration: var(--base); }
+  .duration--slow { transition-duration: var(--slow); }
 
-  /* Delays */
+  /* Delays - using motion tokens */
   .delay--none { transition-delay: 0ms; }
-  .delay--short { transition-delay: 150ms; }
-  .delay--long { transition-delay: 300ms; }
+  .delay--short { transition-delay: var(--fast); }
+  .delay--long { transition-delay: var(--base); }
 
-  /* Easings */
-  .easing--ease { transition-timing-function: ease; }
+  /* Easings - using motion tokens */
+  .easing--ease { transition-timing-function: var(--ease-in-out); }
   .easing--linear { transition-timing-function: linear; }
-  .easing--ease-in { transition-timing-function: ease-in; }
-  .easing--ease-out { transition-timing-function: ease-out; }
-  .easing--ease-in-out { transition-timing-function: ease-in-out; }
-  .easing--bounce { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+  .easing--ease-in { transition-timing-function: var(--ease-in); }
+  .easing--ease-out { transition-timing-function: var(--ease-out); }
+  .easing--ease-in-out { transition-timing-function: var(--ease-in-out); }
+  .easing--bounce { transition-timing-function: var(--ease-out-back); }
 
-  /* Accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    .transition-wrapper {
-      transition-duration: 0.01ms !important;
-      transition-delay: 0ms !important;
-    }
+  /* Entering animations */
+  .animate-fade-in {
+    animation: fadeIn var(--base) var(--ease-out) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--base) var(--ease-out) forwards;
+  }
+
+  .animate-slide-down {
+    animation: slideDown var(--base) var(--ease-out) forwards;
+  }
+
+  .animate-zoom-in {
+    animation: zoomIn var(--base) var(--ease-out) forwards;
+  }
+
+  /* Exiting animations */
+  .animate-fade-out {
+    animation: fadeOut var(--base) var(--ease-in) forwards;
+  }
+
+  .animate-zoom-out {
+    animation: zoomOut var(--base) var(--ease-in) forwards;
+  }
+
+  /* Keyframes for exit animations */
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes zoomOut {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.95); opacity: 0; }
+  }
+
+  /* Accessibility - hook into data-reduced-motion attribute */
+  html[data-reduced-motion="true"] .transition-wrapper {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
   }
 </style>

@@ -8,15 +8,16 @@
  * @props (local): name, size, stroke
  * @props (global): class, class:list
  * - name: Design-system icon identifier
- * - size: Semantic size token or CSS length value
+ * - size: Semantic size token from design system or CSS length value
+ * - stroke: Defines the stroke color of the rendered SVG
  */
-
 import { icons } from '../../../design/icons/index';
 import type { SvgName } from '../../../design/icons/index';
+import type { Sizes } from '/src/types/variants.types';
 
 export interface Props {
   name: SvgName;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | string;
+  size?: Sizes | string;
   stroke?: string;
   class?: string;
   'class:list'?: Record<string, boolean> | any[];
@@ -39,7 +40,7 @@ const sizeMap: Record<string, string> = {
   xl: 'var(--space-24)'
 };
 
-const dimension = sizeMap[size] ?? size;
+const dimension = sizeMap[size as string] ?? (typeof size === 'string' ? size : 'var(--space-16)');
 
 const SvgComponent = icons[name];
 ---

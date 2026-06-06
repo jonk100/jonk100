@@ -1,0 +1,123 @@
+---
+/**
+ * src/components/ui/animation/StaggerGroup.astro
+ * Layout wrapper for sequential list choreography with staggered animations.
+ * - Automatically applies incremental --stagger-delay CSS variables to children
+ * - Creates "waterfall" entrance effects for lists, grids, and timelines
+ * - Configurable delay increment and starting index
+ * - Respects reduced motion preferences
+ * @props (local): delay, startFrom, animation
+ * @props (global): class, class:list
+ * - delay: Time increment between each child's animation (default 'fast')
+ * - startFrom: Index to start counting from (default 0)
+ * - animation: Animation class to apply to children (e.g., 'slide-up', 'fade-in')
+ */
+export interface Props {
+  delay?: 'xxfast' | 'xfast' | 'fast' | 'base' | 'slow' | 'xslow';
+  startFrom?: number;
+  animation?: 'fade-in' | 'slide-up' | 'slide-down' | 'zoom-in' | 'none';
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  delay = 'fast',
+  startFrom = 0,
+  animation = 'slide-up',
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'stagger-group',
+    className,
+    classList
+  ]}
+  data-delay={delay}
+  data-start-from={startFrom}
+  {...rest}
+>
+  <slot />
+</div>
+
+<script>
+  // Assign stagger indices to direct children
+  const staggerGroup = document.querySelector('.stagger-group');
+  if (staggerGroup) {
+    const startFrom = parseInt((staggerGroup as HTMLElement).dataset.startFrom || '0');
+    
+    Array.from(staggerGroup.children).forEach((child, index) => {
+      const childEl = child as HTMLElement;
+      childEl.style.setProperty('--stagger-index', String(startFrom + index));
+      childEl.classList.add('stagger-item');
+    });
+  }
+</script>
+
+<style>
+  .stagger-group {
+    display: contents;
+  }
+
+  .stagger-item {
+    opacity: 0;
+    will-change: opacity, transform;
+    animation-delay: calc(var(--stagger-index) * var(--stagger-delay, var(--fast)));
+  }
+
+  /* Animation variants */
+  .stagger-group[data-animation="slide-up"] .stagger-item {
+    transform: translateY(20px);
+    animation: slideUp var(--base) var(--ease-out) forwards;
+  }
+
+  .stagger-group[data-animation="slide-down"] .stagger-item {
+    transform: translateY(-20px);
+    animation: slideDown var(--base) var(--ease-out) forwards;
+  }
+
+  .stagger-group[data-animation="zoom-in"] .stagger-item {
+    transform: scale(0.95);
+    animation: zoomIn var(--base) var(--ease-out) forwards;
+  }
+
+  .stagger-group[data-animation="fade-in"] .stagger-item {
+    animation: fadeIn var(--base) var(--ease-out) forwards;
+  }
+
+  /* Delay increments */
+  .stagger-group[data-delay="xxfast"] {
+    --stagger-delay: var(--xxfast);
+  }
+
+  .stagger-group[data-delay="xfast"] {
+    --stagger-delay: var(--xfast);
+  }
+
+  .stagger-group[data-delay="fast"] {
+    --stagger-delay: var(--fast);
+  }
+
+  .stagger-group[data-delay="base"] {
+    --stagger-delay: var(--base);
+  }
+
+  .stagger-group[data-delay="slow"] {
+    --stagger-delay: var(--slow);
+  }
+
+  .stagger-group[data-delay="xslow"] {
+    --stagger-delay: var(--xslow);
+  }
+
+  /* Respect reduced motion */
+  html[data-reduced-motion="true"] .stagger-item {
+    opacity: 1;
+    transform: none;
+    animation-delay: 0ms;
+  }
+</style>

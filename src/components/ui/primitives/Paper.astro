@@ -84,10 +84,10 @@ const frameClass = frame !== 'none' ? `frame-variant--${frame}` : '';
   background: var(--paper-bg, var(--bg-surface));
   color: var(--text);
   transition:
-    background-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 160ms ease;
+    background-color var(--base) var(--ease-out),
+    box-shadow var(--base) var(--ease-out),
+    transform var(--base) var(--ease-out),
+    border-color var(--base) var(--ease-out);
   padding: var(--space-4) var(--space-4);
   position: relative;
 }

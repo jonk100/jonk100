@@ -19,6 +19,7 @@ import List from '../../components/ui/typography/List.astro';
 import Quote from '../../components/ui/typography/Quote.astro';
 
 import '../../styles/global.css';
+import Link from '/src/components/ui/primitives/Link.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('design');
@@ -42,6 +43,7 @@ const groupedComponents =
 const components = {
   ul: List,
   blockquote: Quote,
+  a: Link
 };
 ---
 

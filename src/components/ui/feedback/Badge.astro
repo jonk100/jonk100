@@ -2,13 +2,14 @@
 /**
  * src/components/ui/feedback/Badge.astro
  * Provides a small label or status indicator for inline items.
- * - Supports multiple predefined variants and sizes.
- * - Offers an outlined style option for lighter visuals.
- * - Semantic RGB token variables are centralized inside src/styles/tokens/colors-rgb.css
+ * - Supports multiple predefined variants and sizes using global design system
+ * - Offers an outlined style option for lighter visuals
+ * - Uses global .variant--* classes for theme styling
  * @props (local): theme, size, outlined
  * @props (global): class, class:list, frame, effects
- * - theme: Visual style theme aligning with design system themes. Defined in src/styles/variants/themes.css
- * - size: Size scaling of the badge ('xs', 'sm', 'md'). Defined in src/styles/variants/sizes.css
+ * - theme: Visual style theme aligning with design system themes
+ * - size: Size scaling of the badge
+ * - outlined: Removes background for lighter visual style
  */
 import type { ComponentTheme, Sizes, FrameVariant, ComponentEffect as ImageEffect, ComponentRadius } from '/src/types/variants.types';
 
@@ -33,22 +34,14 @@ const {
   "class:list": classList = {},
   ...rest
 } = Astro.props;
-
-console.log("Badge props:", Astro.props);
-const isExplicitTheme = Astro.props.theme !== undefined;
-const isExplicitSize = Astro.props.size !== undefined;
-const isExplicitOutlined = Astro.props.outlined !== undefined;
 ---
 
 <span
   class:list={[
     'badge',
-    `badge--${theme}`,
-    `badge--${size}`,
+    `variant--${theme}`,
+    `control--${size}`,
     { 'badge--outlined': outlined },
-    { 'badge--explicit-theme': isExplicitTheme },
-    { 'badge--explicit-size': isExplicitSize },
-    { 'badge--explicit-outlined': isExplicitOutlined },
     frame !== 'none' ? `frame-variant--${frame}` : '',
     ...([effects].flat().filter(Boolean).map(e => `effect--${e}`)),
     className,
@@ -72,116 +65,8 @@ const isExplicitOutlined = Astro.props.outlined !== undefined;
     width: fit-content;
   }
 
-  .badge--outlined,
-  :global(.badge-group[data-group-outlined="true"]) .badge:not(.badge--explicit-outlined) {
+  .badge--outlined {
     background: transparent !important;
     border: 1px solid currentColor;
-  }
-
-  /* We use custom scopes for Badge sizes since it's smaller than a standard button/control */
-  .badge--xs,
-  :global(.badge-group[data-group-size="xs"]) .badge:not(.badge--explicit-size) {
-    font-size: 0.65rem;
-    padding: var(--space-1) var(--space-2);
-  }
-
-  .badge--sm,
-  :global(.badge-group[data-group-size="sm"]) .badge:not(.badge--explicit-size) {
-    font-size: var(--text-xs);
-    padding: var(--space-1) calc(var(--space-2) + 2px);
-  }
-
-  .badge--md,
-  :global(.badge-group[data-group-size="md"]) .badge:not(.badge--explicit-size) {
-    font-size: var(--text-sm);
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .badge--lg,
-  :global(.badge-group[data-group-size="lg"]) .badge:not(.badge--explicit-size) {
-    font-size: var(--text-base);
-    padding: var(--space-2) var(--space-4);
-  }
-
-  .badge--xl,
-  :global(.badge-group[data-group-size="xl"]) .badge:not(.badge--explicit-size) {
-    font-size: var(--text-lg);
-    padding: var(--space-3) var(--space-5);
-  }
-
-  @media (max-width: 480px) {
-    .badge--xs,
-    :global(.badge-group[data-group-size="xs"]) .badge:not(.badge--explicit-size) {
-      font-size: clamp(0.5rem, .4rem + .75vw, 1rem);
-    }
-
-    .badge--sm,
-    :global(.badge-group[data-group-size="sm"]) .badge:not(.badge--explicit-size) {
-      font-size: clamp(0.55rem, .45rem + .75vw, 1rem);
-    }
-    
-    .badge--md,
-    :global(.badge-group[data-group-size="md"]) .badge:not(.badge--explicit-size) {
-      font-size: clamp(0.6rem, .5rem + .75vw, 2rem);
-      padding: var(--space-1) 4px;
-    }
-    
-    .badge--lg,
-    :global(.badge-group[data-group-size="lg"]) .badge:not(.badge--explicit-size) {
-      font-size: 0.65rem;
-    }
-  }
-
-
-  /* ─────────────────────────────
-     Badge Themes
-  ───────────────────────────── */
-  .badge--primary,
-  :global(.badge-group[data-group-theme="primary"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--primary-rgb), 0.4);
-    color: var(--text-2);
-    border-color: var(--primary);
-  }
-
-  .badge--secondary,
-  :global(.badge-group[data-group-theme="secondary"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--secondary-rgb), 0.15);
-    color: var(--secondary-border);
-    border-color: rgba(var(--secondary-rgb), 0.7);
-  }
-
-  .badge--accent,
-  :global(.badge-group[data-group-theme="accent"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--accent-rgb), 0.15);
-    color: var(--accent);
-    border-color: rgba(var(--accent-rgb), 0.3);
-  }
-
-  .badge--danger,
-  :global(.badge-group[data-group-theme="danger"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--danger-rgb), 0.15);
-    color: var(--text-danger);
-    border-color: rgba(var(--danger-rgb), 0.3);
-  }
-
-  .badge--success,
-  :global(.badge-group[data-group-theme="success"]) .badge:not(.badge--explicit-theme) {
-    background: rgba(var(--success-rgb), 0.15);
-    color: var(--text-success);
-    border-color: rgba(var(--success-rgb), 0.3);
-  }
-
-  .badge--ghost,
-  :global(.badge-group[data-group-theme="ghost"]) .badge:not(.badge--explicit-theme) {
-    background: transparent;
-    color: var(--text-secondary);
-    border-color: var(--border-strong);
-  }
-
-  .badge--default,
-  :global(.badge-group[data-group-theme="default"]) .badge:not(.badge--explicit-theme) {
-    background: var(--bg-surface);
-    color: var(--text);
-    border-color: var(--border);
   }
 </style>

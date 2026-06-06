@@ -34,9 +34,9 @@ export interface Props {
 const {
   href,
   label,
-  theme = "primary",
+  theme,
   tone,
-  size = "base",
+  size,
   frame = "none",
   class: cls = "",
   "class:list": classList = {},
@@ -50,10 +50,10 @@ const {
 const isActive = Astro.url.pathname === href || Astro.url.pathname === href + '/';
 
 const classes = [
-  "custom-link", 
-  theme ? `link--${theme}` : '', 
+  "custom-link",
+  theme ? `variant--${theme}` : '',
   tone ? `text--${tone}` : '',
-  size ? `text--${size}` : '', 
+  size ? `text--${size}` : '',
   frame !== 'none' ? `frame-variant--${frame}` : '',
   { "is-active": isActive },
   cls
@@ -180,20 +180,8 @@ const classes = [
     text-decoration: underline;
   }
 
-  /* Defensive override for MDX-compiled child paragraph tags */
-  .custom-link :global(p) {
-    margin: 0 !important;
-    padding: 0 !important;
-    color: inherit !important;
-    display: inline !important;
-    font-size: inherit !important;
-    font-family: inherit !important;
-    font-weight: inherit !important;
-    line-height: inherit !important;
-  }
-
   /* When themed, remove underline by default */
-  .custom-link[class*="link--"] {
+  .custom-link[class*="variant--"] {
     text-decoration: none;
     font-weight: 600;
   }
@@ -211,43 +199,6 @@ const classes = [
     cursor: not-allowed;
   }
 
-  /* Themes */
-  .link--primary { color: var(--primary); }
-  .link--secondary { color: var(--secondary); }
-  .link--accent { color: var(--accent); }
-  .link--danger { color: var(--text-danger); }
-  .link--success { color: var(--text-success); }
-  .link--ghost { color: var(--text-secondary); }
-  .link--outline { color: var(--text-subtle); }
-  .link--default { color: var(--text); }
-
-  /* Hover Themes */
-  .link--primary:hover { color: var(--primary-hover); }
-  .link--secondary:hover { color: var(--secondary-hover); }
-  .link--accent:hover { color: var(--accent-hover); }
-  .link--danger:hover { color: rgb(220, 70, 70); }
-  .link--success:hover { color: rgb(70, 230, 150); }
-  .link--ghost:hover { color: var(--text); }
-  .link--outline:hover { color: var(--accent); }
-  .link--default:hover { color: var(--accent); }
-
-  /* Tone Overrides */
-  .text--primary { color: var(--primary) !important; }
-  .text--secondary { color: var(--secondary) !important; }
-  .text--accent { color: var(--accent) !important; }
-  .text--danger { color: var(--text-danger) !important; }
-  .text--success { color: var(--text-success) !important; }
-  .text--muted { color: var(--text-0) !important; }
-  .text--subtle { color: var(--text-subtle) !important; }
-
-  /* Sizes */
-  .text--xs { font-size: var(--text-xs); }
-  .text--sm { font-size: var(--text-sm); }
-  .text--base { font-size: var(--text-base); }
-  .text--md { font-size: var(--text-md); }
-  .text--lg { font-size: var(--text-lg); }
-  .text--xl { font-size: var(--text-xl); }
-
   /* Framed links styling adjustment (e.g. outline/minimal framed actions) */
   .custom-link[class*="frame-variant--"] {
     padding: var(--space-2) var(--space-5);
@@ -255,10 +206,10 @@ const classes = [
     text-decoration: none;
     font-weight: 500;
   }
-  
+
   .custom-link[class*="frame-variant--"]:hover {
     text-decoration: none;
-    transform: translateY(-1px);
+    transform: translateY(1px);
     box-shadow: var(--shadow-sm);
   }
 </style>

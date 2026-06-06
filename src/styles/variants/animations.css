@@ -81,3 +81,26 @@
 .delay-3 { animation-delay: 300ms; }
 .delay-4 { animation-delay: 400ms; }
 .delay-5 { animation-delay: 500ms; }
+
+/* ─────────────────────────────
+   Motion Kill-Switch (Accessibility)
+───────────────────────────── */
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* Only suppress transitions on elements with explicit animation classes */
+html[data-reduced-motion="true"] .animate-fade-in,
+html[data-reduced-motion="true"] .animate-slide-up,
+html[data-reduced-motion="true"] .animate-slide-down,
+html[data-reduced-motion="true"] .animate-zoom-in,
+html[data-reduced-motion="true"] .animate-fade-out,
+html[data-reduced-motion="true"] .animate-zoom-out,
+html[data-reduced-motion="true"] .reveal,
+html[data-reduced-motion="true"] .stagger-item {
+  transition-duration: 0.01ms !important;
+}

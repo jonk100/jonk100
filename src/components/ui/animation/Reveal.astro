@@ -1,0 +1,139 @@
+---
+/**
+ * src/components/ui/animation/Reveal.astro
+ * Scroll-triggered animation wrapper using IntersectionObserver.
+ * - Automatically adds .is-visible class when element enters viewport
+ * - Triggers CSS animations defined in animations.css (e.g., animate-slide-up)
+ * - Respects reduced motion preferences
+ * - Configurable threshold and root margin for fine-tuned trigger points
+ * @props (local): animation, threshold, rootMargin, once
+ * @props (global): class, class:list
+ * - animation: Animation class to apply when visible (e.g., 'slide-up', 'fade-in', 'zoom-in')
+ * - threshold: Percentage of element visible before triggering (0-1, default 0.1)
+ * - rootMargin: Margin around the root element (default '0px')
+ * - once: If true, animation only triggers once (default true)
+ */
+export interface Props {
+  animation?: 'fade-in' | 'slide-up' | 'slide-down' | 'zoom-in' | 'none';
+  threshold?: number;
+  rootMargin?: string;
+  once?: boolean;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  animation = 'slide-up',
+  threshold = 0.1,
+  rootMargin = '0px',
+  once = true,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'reveal',
+    animation !== 'none' ? `animate-${animation}` : '',
+    className,
+    classList
+  ]}
+  data-threshold={threshold}
+  data-root-margin={rootMargin}
+  data-once={once}
+  {...rest}
+>
+  <slot />
+</div>
+
+<script>
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Skip observer if reduced motion is enabled
+  if (prefersReducedMotion) {
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.classList.add('is-visible');
+    });
+  } else {
+    // Set up IntersectionObserver for scroll-triggered animations
+    const observerOptions = {
+      threshold: parseFloat(document.documentElement.dataset.revealThreshold || '0.1'),
+      rootMargin: document.documentElement.dataset.revealRootMargin || '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const element = entry.target as HTMLElement;
+        const once = element.dataset.once === 'true';
+
+        if (entry.isIntersecting) {
+          element.classList.add('is-visible');
+          
+          // Unobserve after first trigger if once is true
+          if (once) {
+            observer.unobserve(element);
+          }
+        } else if (!once) {
+          // Remove class when out of view if once is false (for re-triggering)
+          element.classList.remove('is-visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all reveal elements
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+  }
+</script>
+
+<style>
+  .reveal {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+  }
+
+  /* Animation variants - these work with animations.css keyframes */
+  .reveal.animate-slide-up {
+    transform: translateY(20px);
+  }
+
+  .reveal.animate-slide-up.is-visible {
+    animation: slideUp var(--base) var(--ease-out) forwards;
+  }
+
+  .reveal.animate-slide-down {
+    transform: translateY(-20px);
+  }
+
+  .reveal.animate-slide-down.is-visible {
+    animation: slideDown var(--base) var(--ease-out) forwards;
+  }
+
+  .reveal.animate-zoom-in {
+    transform: scale(0.95);
+  }
+
+  .reveal.animate-zoom-in.is-visible {
+    animation: zoomIn var(--base) var(--ease-out) forwards;
+  }
+
+  .reveal.animate-fade-in.is-visible {
+    animation: fadeIn var(--base) var(--ease-out) forwards;
+  }
+
+  /* Respect reduced motion */
+  html[data-reduced-motion="true"] .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+</style>

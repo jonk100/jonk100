@@ -1,0 +1,85 @@
+---
+title: "The Silent Overwrite: Destructuring Astro Props the Right Way"
+description: "How a seemingly innocent `...rest` spread in Astro components silently wiped out our global `style` and `class` props across an entire design system, and how we fixed it."
+pubDate: 2026-06-05
+tags: ["Astro", "Web Development", "Design Systems", "Debugging"]
+---
+
+I was playing around with a new `<Stack>` primitive in our design system, passing it an `x="center"` alignment and a custom inline `style="min-height: 120px"`. It was a simple test, just to see if the flexbox properties were behaving correctly.
+
+But when I booted up the dev server, the alignment was completely broken. The stack component just aligned rigidly to the left, ignoring everything I had just passed to it. What gives?
+
+## Where Did My Styles Go?
+
+I opened up Chrome DevTools and started digging. I noticed the inline `style` was there in the DOM (`min-height: 120px`), but the `align-items` and `justify-content` values we were supposed to generate for centering were entirely gone. 
+
+Here was the flawed component code block for our `Stack`:
+
+````astro
+---
+// Stack.astro (The buggy version)
+const {
+  as: Tag = 'div',
+  gap = 'md',
+  x = 'stretch',
+  y = 'start',
+  ...rest
+} = Astro.props;
+
+// We build our class arrays and styles internally...
+const classes = ['stack', `justify-${x}`, `align-${y}`];
+const finalClasses = mergeClasses(classes, Astro.props);
+const finalStyles = mergeStyles('', Astro.props);
+---
+
+<Tag class:list={finalClasses} style={finalStyles} {...rest}>
+  <slot />
+</Tag>
+````
+
+Do you spot the culprit? It’s completely silent.
+
+In JSX and Astro, when you render `<Tag class:list={finalClasses} style={finalStyles} {...rest}>`, the order of the attributes defines priority. Any `style` or `class` prop hiding inside that `...rest` object will **completely overwrite** the props defined right before it. 
+
+Because we didn't explicitly pull `class`, `class:list`, and `style` out of `Astro.props`, the user's raw inline `style` prop flowed straight into `...rest`. Astro happily rendered our carefully calculated `finalStyles`, and then instantly crushed them with the raw `style` string from `...rest`.
+
+## Pre-Destructuring Globals
+
+The fix is deceptively simple, but incredibly important when building shared components. We must explicitly destructure `style`, `class`, and `class:list` out of `Astro.props` *before* collecting the `...rest` object, ensuring they never leak down to the underlying HTML tag as raw overrides.
+
+````astro
+---
+// Stack.astro (The fixed version)
+const {
+  as: Tag = 'div',
+  gap = 'md',
+  x = 'stretch',
+  y = 'start',
+  class: className,
+  'class:list': classList,
+  style,
+  ...rest
+} = Astro.props;
+
+// Now `rest` is clean! 
+const classes = ['stack', `justify-${x}`, `align-${y}`];
+const finalClasses = mergeClasses(classes, Astro.props);
+const finalStyles = mergeStyles('', Astro.props);
+---
+
+<Tag class:list={finalClasses} style={finalStyles} {...rest}>
+  <slot />
+</Tag>
+````
+
+This bug was secretly hiding in *all* of our layout primitives: `<Inline>`, `<Center>`, `<Grid>`, `<Text>`, and even `<Card>`. Fixing this one pattern immediately resolved half a dozen "weird" layout glitches we'd been chasing.
+
+## Bonus: Flexbox Quirks
+
+While we were knee-deep in layout bugs, we stumbled upon two other flexbox gotchas that are worth keeping in your back pocket:
+
+1. **The Shrinking Inline Container:** Why does `display: inline-flex` on a row container seemingly break `justify-content`? Because `inline-flex` containers shrink to fit the exact width of their contents. If the container is no wider than its children, there is zero extra space to distribute or justify! To fix it, you either need `width: 100%`, or just switch back to a standard block-level `display: flex`.
+
+2. **The Horizontal Center:** Standard flexbox defaults to `flex-direction: row`. If you build a `<Center>` component (`display: flex; justify-content: center; align-items: center;`) and put multiple text nodes inside, they will line up horizontally side-by-side. If you want them stacked centered like a neat column, you explicitly need `flex-direction: column`.
+
+Building resilient design systems means catching these silent overwrites early. Pre-destructure your globals, and always check your `...rest` objects!
