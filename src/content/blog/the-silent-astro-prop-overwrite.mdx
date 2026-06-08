@@ -5,17 +5,23 @@ pubDate: 2026-06-05
 tags: ["Astro", "Web Development", "Design Systems", "Debugging"]
 ---
 
-I was playing around with a new `<Stack>` primitive in our design system, passing it an `x="center"` alignment and a custom inline `style="min-height: 120px"`. It was a simple test, just to see if the flexbox properties were behaving correctly.
+> Where Did My Styles Go?
 
-But when I booted up the dev server, the alignment was completely broken. The stack component just aligned rigidly to the left, ignoring everything I had just passed to it. What gives?
+We were playing around with a new `<Stack>` primitive in our design system. If you're unfamiliar with the term, a "primitive" is just a small, reusable building block — the kind of component that other, more complex components are built from. `<Stack>` is about as fundamental as it gets: it wraps a flexbox container that handles spacing and alignment, so you never have to write `display: flex; gap: 1rem; align-items: center` by hand ever again.
 
-## Where Did My Styles Go?
+The test was simple. We passed it an `x="center"` alignment prop and a custom inline `style="min-height: 120px"` to give it some height to work with. The goal was just to confirm that the flexbox properties were actually responding to the props we passed. Basic smoke test stuff.
 
-I opened up Chrome DevTools and started digging. I noticed the inline `style` was there in the DOM (`min-height: 120px`), but the `align-items` and `justify-content` values we were supposed to generate for centering were entirely gone. 
+But when we booted up the dev server, the alignment was completely broken. The stack just hugged the left edge, ignoring the centering entirely.
 
-Here was the flawed component code block for our `Stack`:
+## Open 'dem DevTools
 
-````astro
+The first step is always to open Chrome DevTools (right-click the element, hit "Inspect") and look at what the browser actually received. This is the source of truth — not what you *think* you wrote, but what actually ended up in the DOM.
+
+Here's what we found: the inline `style="min-height: 120px"` was there, exactly as written. But the `align-items` and `justify-content` values that centering is supposed to generate? Gone. Not overridden — just absent, as if they were never applied.
+
+Here was the component at the time:
+
+```astro
 ---
 // Stack.astro (The buggy version)
 const {
@@ -35,51 +41,138 @@ const finalStyles = mergeStyles('', Astro.props);
 <Tag class:list={finalClasses} style={finalStyles} {...rest}>
   <slot />
 </Tag>
-````
+```
 
-Do you spot the culprit? It’s completely silent.
+Do you spot the culprit? It's completely silent. No error, no warning, no hint that anything went wrong.
 
-In JSX and Astro, when you render `<Tag class:list={finalClasses} style={finalStyles} {...rest}>`, the order of the attributes defines priority. Any `style` or `class` prop hiding inside that `...rest` object will **completely overwrite** the props defined right before it. 
+## What's Actually Happening
 
-Because we didn't explicitly pull `class`, `class:list`, and `style` out of `Astro.props`, the user's raw inline `style` prop flowed straight into `...rest`. Astro happily rendered our carefully calculated `finalStyles`, and then instantly crushed them with the raw `style` string from `...rest`.
+A quick primer if you're new to Astro components: `Astro.props` is a plain JavaScript object containing everything the parent passed to this component. When you write `const { x, y, ...rest } = Astro.props`, you're pulling out the props you care about by name, and `...rest` catches everything that's left over.
+
+That leftover `...rest` is then spread onto the rendered tag with `{...rest}`. This is a very common pattern — it lets consumers pass arbitrary HTML attributes (like `id`, `aria-label`, or `data-*` attributes) without the component needing to explicitly anticipate every one.
+
+The problem is that `style` and `class` are just regular props too. If you don't explicitly pull them out before collecting `...rest`, they end up in the bag.
+
+In Astro's template, when you write:
+
+```astro
+<Tag class:list={finalClasses} style={finalStyles} {...rest}>
+```
+
+...attribute order matters. Attributes defined later win. So `{...rest}` — which runs last — contains the user's raw `style="min-height: 120px"` string, and it silently replaces the `finalStyles` value we'd just calculated. The browser only ever sees the raw string. All our alignment logic was thrown out.
+
+Good call. Here's the section expanded with a deeper dive into those three concepts, written to give a beginner enough grounding to actually understand *why* the fix works:
+
+---
 
 ## Pre-Destructuring Globals
 
-The fix is deceptively simple, but incredibly important when building shared components. We must explicitly destructure `style`, `class`, and `class:list` out of `Astro.props` *before* collecting the `...rest` object, ensuring they never leak down to the underlying HTML tag as raw overrides.
+The fix is deceptively simple, but to really understand why it works, it helps to slow down and look at what `class`, `class:list`, and `...rest` each actually *are* — and why JavaScript treats them the way it does.
 
-````astro
+### First: why is `class` awkward?
+
+In HTML, you write `class="my-element"` without a second thought. But in JavaScript, `class` is a reserved keyword. It's the syntax used to define a JavaScript class:
+
+```js
+class Stack {
+  // ...
+}
+```
+
+Because of this, you can't use `class` as a plain variable name in JavaScript. If you tried to write:
+
+```js
+const { class } = Astro.props; // ❌ Syntax error
+```
+
+...the JavaScript parser would choke on it. It sees `class` and expects a class definition, not a destructured variable.
+
+The workaround is to rename it on the spot during destructuring using a colon:
+
+```js
+const { class: className } = Astro.props; // ✅
+```
+
+This tells JavaScript: "grab the prop called `class` from this object, and store it in a variable I'm calling `className` instead." The prop name on the left is what we're pulling out of the object. The variable name on the right is what we'll refer to it as in our code. They don't have to match — and in this case, they *can't* match, because `class` is off-limits as a variable name.
+
+### What about `class:list`?
+
+`class:list` is an Astro-specific directive. It's not standard HTML and it's not something you'd find in a React or Vue component — it's a convenience feature Astro gives you for conditionally combining class names. You can pass it an array, an object, or a mix of both:
+
+```astro
+<div class:list={['stack', isActive && 'stack--active', { 'stack--padded': hasPadding }]}>
+```
+
+Astro flattens all of that into a clean, space-separated class string at render time, filtering out any falsy values automatically. It's a nice alternative to a utility like `clsx` or `classnames`.
+
+The problem is that `class:list` contains a colon, which makes it an invalid JavaScript identifier. You can't write:
+
+```js
+const { class:list } = Astro.props; // ❌ This looks like renaming `class` to `list`
+```
+
+That's ambiguous at best, broken at worst — JavaScript would read the colon as the rename separator, not as part of the key name. The fix is to wrap the key in quotes, which tells JavaScript to treat the whole thing as a string literal rather than an identifier:
+
+```js
+const { 'class:list': classList } = Astro.props; // ✅
+```
+
+Same pattern as before: we're pulling out the prop named `'class:list'` and storing it in a local variable we're calling `classList`. The quotes are load-bearing — without them, this line doesn't parse.
+
+### And then there's `...rest`
+
+The `...rest` syntax (called a *rest element* in destructuring) is a catch-all. It collects every property from the object that wasn't explicitly named earlier in the destructuring:
+
+```js
+const { x, y, gap, ...rest } = Astro.props;
+// rest = everything in Astro.props that isn't x, y, or gap
+```
+
+This is genuinely useful in component design. If a consumer passes an `id`, an `aria-label`, a `data-testid`, or any other standard HTML attribute, you probably want those to flow through to the underlying DOM element without the component needing to explicitly declare and forward every possible attribute. The `...rest` spread handles that for free.
+
+But here's the catch: `...rest` has no opinions about what it collects. It will happily scoop up `style`, `class`, and `class:list` right along with everything else — unless you named them first. Naming a prop during destructuring is what removes it from the rest bucket. If you don't name it, it stays in the bag.
+
+So the full, correct destructuring for any layout primitive looks like this:
+
+```astro
 ---
-// Stack.astro (The fixed version)
 const {
   as: Tag = 'div',
   gap = 'md',
   x = 'stretch',
   y = 'start',
-  class: className,
-  'class:list': classList,
-  style,
-  ...rest
+  class: className,       // intercept `class` before it reaches ...rest
+  'class:list': classList, // intercept `class:list` before it reaches ...rest
+  style,                  // intercept `style` before it reaches ...rest
+  ...rest                 // now safe: only genuine HTML pass-throughs remain
 } = Astro.props;
-
-// Now `rest` is clean! 
-const classes = ['stack', `justify-${x}`, `align-${y}`];
-const finalClasses = mergeClasses(classes, Astro.props);
-const finalStyles = mergeStyles('', Astro.props);
 ---
+```
 
+By the time we get to `...rest`, the three dangerous props have already been claimed. They're sitting in their own named variables, completely inert, not going anywhere. The `...rest` object is left with only the things it should have — `id`, `aria-*`, `data-*`, and the like.
+
+Then when we spread it onto the element:
+
+```astro
 <Tag class:list={finalClasses} style={finalStyles} {...rest}>
-  <slot />
-</Tag>
-````
+```
 
-This bug was secretly hiding in *all* of our layout primitives: `<Inline>`, `<Center>`, `<Grid>`, `<Text>`, and even `<Card>`. Fixing this one pattern immediately resolved half a dozen "weird" layout glitches we'd been chasing.
+...the spread runs last, but there's nothing inside it that can overwrite `finalClasses` or `finalStyles`. The conflict is gone. Our computed values win.
 
-## Bonus: Flexbox Quirks
+## A mental model that helps
 
-While we were knee-deep in layout bugs, we stumbled upon two other flexbox gotchas that are worth keeping in your back pocket:
+Think of `Astro.props` as a single bag of everything the parent handed you. Destructuring is the act of reaching into that bag and pulling things out by name. `...rest` is whatever's left at the bottom after you've finished pulling.
 
-1. **The Shrinking Inline Container:** Why does `display: inline-flex` on a row container seemingly break `justify-content`? Because `inline-flex` containers shrink to fit the exact width of their contents. If the container is no wider than its children, there is zero extra space to distribute or justify! To fix it, you either need `width: 100%`, or just switch back to a standard block-level `display: flex`.
+The mistake — and it's an easy one to make — is assuming that `...rest` only contains "extra" stuff that you don't care about. In reality, it contains *everything you didn't explicitly claim*. `style` and `class` look like extras, but they're actually load-bearing. They need to be claimed early so you can merge and compute them properly, not left in the bag to be blindly spread onto the DOM.
 
-2. **The Horizontal Center:** Standard flexbox defaults to `flex-direction: row`. If you build a `<Center>` component (`display: flex; justify-content: center; align-items: center;`) and put multiple text nodes inside, they will line up horizontally side-by-side. If you want them stacked centered like a neat column, you explicitly need `flex-direction: column`.
+Once this clicks, the fix stops feeling like a workaround and starts feeling like the only sensible way to write a shared component.
 
-Building resilient design systems means catching these silent overwrites early. Pre-destructure your globals, and always check your `...rest` objects!
+## Bonus: Two Flexbox Gotchas Worth Keeping Handy
+
+While we were deep in layout debugging, we tripped over two other flexbox behaviors that are easy to misread:
+
+*1. The shrinking inline container.* If you set `display: inline-flex` on a row container and `justify-content` seems to do nothing, that's likely why. `inline-flex` containers shrink to fit exactly the width of their children — no wider. If there's no leftover space, there's nothing for `justify-content` to distribute. Fix it with `width: 100%`, or just use a standard block-level `display: flex`.
+
+*2. The horizontal center.* Flexbox defaults to `flex-direction: row`. If you build a `<Center>` component with `display: flex; justify-content: center; align-items: center` and drop multiple elements inside, they'll line up side-by-side, not stacked. For a proper centered column layout, you need to explicitly set `flex-direction: column`.
+
+Building a resilient design system means catching silent overwrites before they become mysterious bugs. Pre-destructure your globals, keep `...rest` clean, and when something looks off — open DevTools first.

@@ -343,12 +343,51 @@ const enteredByLevel = {
   }
 
   @media (max-width: 768px) {
-    .entries-grid {
-      grid-template-columns: 1fr;
+    .container {
+      padding: 0 var(--space-4) !important;
+    }
+
+    .glossary-main {
+      padding: var(--space-20) 0 var(--space-12) !important;
+    }
+
+    .glossary-header {
+      margin-bottom: var(--space-6) !important;
     }
 
     .glossary-header h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(2rem, 4vw, 3rem) !important;
+      margin-bottom: var(--space-2) !important;
+    }
+
+    .glossary-section {
+      margin-bottom: var(--space-8) !important;
+    }
+
+    .section-header {
+      margin-bottom: var(--space-4) !important;
+      padding-bottom: var(--space-4) !important;
+    }
+
+    .entries-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4) !important;
+    }
+
+    .entry-card {
+      height: auto !important;
+      min-height: 250px !important;
+    }
+
+    .entry-title {
+      height: auto !important;
+      margin-bottom: var(--space-2) !important;
+    }
+
+    .entry-header-custom,
+    .entry-content-custom,
+    .entry-footer-custom {
+      padding: var(--space-4) !important;
     }
   }
 </style>

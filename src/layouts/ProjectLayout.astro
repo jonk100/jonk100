@@ -216,4 +216,64 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     color: var(--secondary);
   }
   
+  @media (max-width: 768px) {
+    .project-nav {
+      top: var(--space-4) !important;
+      left: var(--space-4) !important;
+      right: var(--space-4) !important;
+    }
+
+    .content-container {
+      padding: 0 var(--space-4);
+      top: -100px; /* Pull content up less on mobile to prevent overlapping fixed top navigation */
+    }
+
+    .project-header {
+      padding: var(--space-6) var(--space-5); /* Reduce padding on mobile */
+    }
+
+    .project-title {
+      font-size: clamp(1.5rem, 7vw, 2.25rem) !important; /* Adjust title size for mobile viewports */
+      margin: var(--space-2) 0 !important;
+    }
+
+    .project-header :global(.text--lead) {
+      font-size: var(--text-base) !important;
+    }
+
+    .project-header :global(.text--label) {
+      font-size: var(--text-xs) !important;
+    }
+
+    .project-actions {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+
+    .project-actions :global(> .control),
+    .project-actions :global(> button),
+    .project-actions :global(> a) {
+      width: 100% !important;
+      border-radius: 0 !important;
+    }
+
+    .project-actions :global(> *:first-child:not(:only-child)) {
+      border-top-left-radius: var(--rad-md) !important;
+      border-top-right-radius: var(--rad-md) !important;
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
+
+    .project-actions :global(> *:last-child:not(:only-child)) {
+      border-bottom-left-radius: var(--rad-md) !important;
+      border-bottom-right-radius: var(--rad-md) !important;
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+
+    .project-actions :global(> *:only-child) {
+      border-radius: var(--rad-md) !important;
+    }
+  }
 </style>

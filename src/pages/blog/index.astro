@@ -218,4 +218,29 @@ const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
   .post-link:hover .post-title {
     color: var(--accent);
   }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 var(--space-4) !important;
+    }
+
+    .blog-main {
+      padding-top: var(--space-20) !important;
+      padding-bottom: var(--space-12) !important;
+    }
+
+    .blog-header {
+      padding-bottom: var(--space-6) !important;
+    }
+
+    .posts-list {
+      gap: var(--space-4) !important;
+    }
+
+    .post-header-custom,
+    .post-content-custom,
+    .post-footer-custom {
+      padding: var(--space-4) !important;
+    }
+  }
 </style>

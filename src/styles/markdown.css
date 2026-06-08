@@ -96,5 +96,33 @@
   
   a {
     color: var(--accent);
-    
+  }
+
+  @media (max-width: 768px) {
+    .markdown-content h2 {
+      font-size: var(--text-2xl) !important;
+      margin: var(--space-8) 0 var(--space-3) !important;
+    }
+
+    .markdown-content h3 {
+      font-size: var(--text-lg) !important;
+      margin: var(--space-6) 0 var(--space-2) !important;
+    }
+
+    .markdown-content p,
+    .markdown-content li {
+      font-size: var(--text-base) !important;
+      line-height: 1.6 !important;
+    }
+
+    .markdown-content .figure-container,
+    .markdown-content .code-block {
+      margin-block: var(--space-4) !important;
+      margin-inline: 0 !important;
+    }
+
+    .markdown-content pre {
+      margin: var(--space-2) 0 !important;
+      padding: var(--space-3) !important;
+    }
   }

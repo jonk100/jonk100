@@ -1,7 +1,9 @@
 ---
 /**
- * src/components/ui/layout/ButtonGroup.astro
+ * src/components/ui/controls/ButtonGroup.astro
  * Physically attaches multiple buttons together into a single segmented control.
+ * - Trims inner borders and corner radii of child controls
+ * - Stacks vertically on mobile viewports to prevent overflow layout issues
  * @props (local): None
  * @props (global): class, class:list
  */
@@ -50,5 +52,34 @@ const {
   /* Add subtle separation lines between items */
   .button-group :global(> *:not(:last-child)) {
     /* border-right: 1px solid var(--border-subtle); */
+  }
+
+  /* Stacking on mobile viewports */
+  @media (max-width: 768px) {
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .button-group :global(> .control),
+    .button-group :global(> button),
+    .button-group :global(> a) {
+      width: 100%;
+    }
+
+    .button-group :global(> *:first-child:not(:only-child)) {
+      border-bottom-left-radius: 0;
+      border-top-right-radius: var(--rad-md);
+    }
+
+    .button-group :global(> *:last-child:not(:only-child)) {
+      border-top-right-radius: 0;
+      border-bottom-left-radius: var(--rad-md);
+    }
+
+    .button-group :global(> *:only-child) {
+      border-radius: var(--rad-md);
+    }
   }
 </style>

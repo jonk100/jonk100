@@ -243,4 +243,46 @@ const { title, description, shortDefinition, definition, level, difficultyScore,
   ::view-transition-group(entry-content) {
     z-index: 20;
   }
+
+  @media (max-width: 768px) {
+    .glossary-nav {
+      top: var(--space-8);
+      left: var(--space-4);
+      right: var(--space-4);
+    }
+
+    .entry-hero {
+      margin: 0 !important;
+      max-height: 35vh !important;
+      width: 100% !important;
+    }
+
+    .content-container {
+      padding: var(--space-12) var(--space-4) var(--space-6) !important;
+    }
+
+    .entry-header {
+      padding: var(--space-6) var(--space-4) !important;
+      margin-bottom: var(--space-4) !important;
+    }
+
+    .entry-title {
+      font-size: clamp(1.75rem, 8vw, 2.25rem) !important;
+      margin: var(--space-2) 0 !important;
+    }
+
+    .entry-header :global(.text--lead) {
+      font-size: var(--text-base) !important;
+    }
+
+    .definition-block {
+      margin-top: var(--space-4) !important;
+      padding-top: var(--space-4) !important;
+    }
+
+    .metadata-blocks {
+      padding-top: var(--space-6) !important;
+      margin-top: var(--space-6) !important;
+    }
+  }
 </style>

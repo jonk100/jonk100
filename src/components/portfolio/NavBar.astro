@@ -69,4 +69,18 @@ import Link from '../ui/primitives/Link.astro';
   ::view-transition-group(main-nav) {
     z-index: 100;
   }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0 var(--space-4) !important;
+    }
+
+    .nav-links {
+      gap: var(--space-3) !important;
+    }
+
+    .nav-link :global(.text) {
+      font-size: var(--text-xs) !important;
+    }
+  }
 </style>
