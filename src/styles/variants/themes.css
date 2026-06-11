@@ -9,8 +9,7 @@
 .variant--primary {
   background: var(--primary-dim) !important;
   color: var(--text-4) !important;
-  border-color: var(--primary-border-strong) !important;
-  font-weight: bold !important;
+  border-color: var(--primary-border) !important;
   transition: all 0.4s ease;
 }
 
@@ -32,7 +31,7 @@
 .variant--ghost:hover {
   background: var(--surface-1);
   color: var(--text-3) !important;
-  border-color: var(--border-subtle) !important;
+  border-color: var(--border-strong) !important;
   
 }
 
@@ -53,7 +52,6 @@
 .variant--secondary {
   background: var(--secondary);
   color: var(--text-4) !important;
-  font-weight: bold !important;
   border-color: var(--secondary-border) !important;
 }
 

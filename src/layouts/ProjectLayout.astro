@@ -74,7 +74,7 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
         <header class="project-header">
           <Text as="span" type="label" tone="accent">{category}</Text>
           <Text as="h1" type="h1" class="project-title">{title}</Text>
-          <Text as="p" type="lead" tone="subtle">{description}</Text>
+          <Text as="p" type="lead" class="project-description" tone="subtle">{description}</Text>
           
           <Inline gap="md">
             <ButtonGroup class="project-actions">
@@ -186,6 +186,15 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     line-height: 1.1;
   }
 
+  .project-description {
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xl);
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+    font-style: italic;
+  }
+
   /* .project-links {
     margin-top: var(--space-6);
   } */
@@ -215,6 +224,8 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
   .prose a {
     color: var(--secondary);
   }
+
+
   
   @media (max-width: 768px) {
     .project-nav {

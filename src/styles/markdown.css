@@ -1,4 +1,9 @@
 
+  .markdown-content p, ol, li, ul {
+    letter-spacing: .02em;
+    line-height: 1.8;
+  }
+  
   .markdown-content h2 {
     font-family: var(--display);
     font-size: var(--text-3xl);
@@ -57,7 +62,7 @@
   .markdown-content code {
     font-family: var(--mono);
     margin: var(--space-1);
-    padding: var(--space-1) var(--space-2);
+    padding: 4px var(--space-2);
     line-height: 1.4;
   }
 
@@ -76,13 +81,13 @@
     padding: 1rem;
     border: 1px solid var(--border-subtle);
     font-size: var(--text-sm);
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   code:not(pre code) {
-    background: rgba(var(--secondary-rgb),.4);
+    background: rgba(var(--primary-rgb),.5);
     font-family: var(--mono);
-    border-radius: var(--rad-xs);
+    border-radius: 0;
     font-size: 0.85em;
   }
 
@@ -100,19 +105,13 @@
 
   @media (max-width: 768px) {
     .markdown-content h2 {
-      font-size: var(--text-2xl) !important;
+      font-size: var(--text-3xl) !important;
       margin: var(--space-8) 0 var(--space-3) !important;
     }
 
     .markdown-content h3 {
-      font-size: var(--text-lg) !important;
+      font-size: var(--text-xl) !important;
       margin: var(--space-6) 0 var(--space-2) !important;
-    }
-
-    .markdown-content p,
-    .markdown-content li {
-      font-size: var(--text-base) !important;
-      line-height: 1.6 !important;
     }
 
     .markdown-content .figure-container,

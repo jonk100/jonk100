@@ -5,6 +5,8 @@
 
 
 :root {
+  --mono: 'JetBrains Mono', monospace;
+
   *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
