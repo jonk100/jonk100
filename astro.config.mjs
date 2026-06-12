@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import alpinejs from '@astrojs/alpinejs';
 import { defineConfig } from 'astro/config';
-import { remarkScreenplay } from './src/plugins/remark-screenplay.ts';
+import path from 'path';
 
 import netlify from '@astrojs/netlify';
 
@@ -14,11 +14,17 @@ export default defineConfig({
 
   integrations: [
       alpinejs(),
-      mdx({
-          remarkPlugins: [remarkScreenplay],
-      }), 
+      mdx(),
       sitemap()
 	],
 
   adapter: netlify(),
+
+  vite: {
+    resolve: {
+      alias: {
+        '@writty': path.resolve('./writty/src'),
+      }
+    }
+  }
 });

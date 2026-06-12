@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Songs - wReady Showcase" description="Original songs with chord charts and music theory analysis">
+  <section class="songs-hero">
+    <div class="container">
+      <h1>Songs</h1>
+      <p class="intro">
+        Original songs with interactive chord charts, lyrics, and music theory analysis. 
+        Each song includes key, tempo, chord progressions, and playable chord diagrams.
+      </p>
+    </div>
+  </section>
+
+  <section class="songs-list">
+    <div class="container">
+      <h2>Sample Songs</h2>
+      
+      <div class="songs-grid">
+        
+        <article class="song-card">
+          <div class="song-header">
+            <h3>Think for Yourself</h3>
+            <span class="song-meta">D Major · 120 BPM</span>
+          </div>
+          <p class="song-description">
+            A folk-rock anthem about independent thinking and questioning authority. 
+            Features a driving acoustic rhythm with electric lead accents.
+          </p>
+          <div class="song-features">
+            <span class="feature-tag">🎸 Guitar</span>
+            <span class="feature-tag">📝 Lyrics</span>
+            <span class="feature-tag">🎵 Chord Chart</span>
+          </div>
+          <a href="/wready/songs/think-for-yourself" class="song-link">View Song →</a>
+        </article>
+
+        <article class="song-card">
+          <div class="song-header">
+            <h3>Almost There</h3>
+            <span class="song-meta">G Major · 95 BPM</span>
+          </div>
+          <p class="song-description">
+            An introspective ballad about perseverance and the journey toward goals. 
+            Gentle fingerpicking pattern with emotional vocal delivery.
+          </p>
+          <div class="song-features">
+            <span class="feature-tag">🎸 Guitar</span>
+            <span class="feature-tag">📝 Lyrics</span>
+            <span class="feature-tag">🎵 Chord Chart</span>
+          </div>
+          <a href="/wready/songs/almost-there" class="song-link">View Song →</a>
+        </article>
+
+        <article class="song-card">
+          <div class="song-header">
+            <h3>Holy Water</h3>
+            <span class="song-meta">A Minor · 110 BPM</span>
+          </div>
+          <p class="song-description">
+            A haunting meditation on redemption and spiritual cleansing. 
+            Minor key progression with atmospheric production elements.
+          </p>
+          <div class="song-features">
+            <span class="feature-tag">🎸 Guitar</span>
+            <span class="feature-tag">📝 Lyrics</span>
+            <span class="feature-tag">🎵 Chord Chart</span>
+          </div>
+          <a href="/wready/songs/holy-water" class="song-link">View Song →</a>
+        </article>
+
+      </div>
+
+      <div class="more-songs">
+        <p>Additional songs available: Animal Inside, Cochranton, Crashed Mummy, Save the World Kids</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chord-analyzer-section">
+    <div class="container">
+      <h2>Interactive Chord Analyzer</h2>
+      <p class="section-intro">
+        wReady includes a powerful chord analysis tool that lets you explore chord voicings, 
+        fingerings, and music theory relationships.
+      </p>
+      
+      <div class="analyzer-features">
+        <div class="analyzer-feature">
+          <h3>🎸 Multiple Instruments</h3>
+          <p>Support for guitar (standard and drop tunings) and ukulele</p>
+        </div>
+        <div class="analyzer-feature">
+          <h3>🎵 Chord Library</h3>
+          <p>Extensive library of major, minor, seventh, and extended chords</p>
+        </div>
+        <div class="analyzer-feature">
+          <h3>📊 Visual Diagrams</h3>
+          <p>Interactive chord diagrams with finger positions and fret markers</p>
+        </div>
+        <div class="analyzer-feature">
+          <h3>🔄 Voicing Options</h3>
+          <p>Multiple voicings for each chord with difficulty ratings</p>
+        </div>
+      </div>
+
+      <a href="/wready/chords" class="cta-button">Explore Chord Library →</a>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="container">
+      <h2>Song Management Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>📝 Lyrics & Chords</h3>
+          <p>Integrated lyrics with inline chord notation, formatted for easy reading and playing.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🎼 Music Theory</h3>
+          <p>Automatic key detection, chord progression analysis, and scale relationships.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🎸 Chord Diagrams</h3>
+          <p>Interactive chord diagrams with multiple voicings and fingering suggestions.</p>
+        </div>
+        <div class="feature-card">
+          <h3>📊 Metadata</h3>
+          <p>Track tempo, time signature, capo position, and recording status.</p>
+        </div>
+        <div class="feature-card">
+          <h3>💿 Album Organization</h3>
+          <p>Group songs into albums with track ordering and release information.</p>
+        </div>
+        <div class="feature-card">
+          <h3>🔗 Cross-References</h3>
+          <p>Link songs to themes, projects, and other creative work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .songs-hero {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .songs-hero h1 {
+    margin-bottom: 1rem;
+    font-size: var(--text-4xl);
+  }
+
+  .intro {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 700px;
+    line-height: 1.6;
+  }
+
+  .songs-list {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    margin-bottom: 2rem;
+    font-size: var(--text-2xl);
+  }
+
+  .songs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .song-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--bg);
+    transition: all var(--transition-normal);
+  }
+
+  .song-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+    transform: translateY(-2px);
+  }
+
+  .song-header {
+    margin-bottom: 1rem;
+  }
+
+  .song-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-xl);
+    color: var(--accent);
+  }
+
+  .song-meta {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .song-description {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+
+  .song-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-tag {
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .song-link {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .song-link:hover {
+    transform: translateX(4px);
+  }
+
+  .more-songs {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--bg-secondary);
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .more-songs p {
+    margin: 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .chord-analyzer-section {
+    padding: 3rem 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-intro {
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  .analyzer-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .analyzer-feature h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .analyzer-feature p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+  }
+
+  .cta-button:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+  }
+
+  .features-section {
+    padding: 3rem 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+  }
+
+  .feature-card h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .feature-card p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 720px) {
+    .songs-hero h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .songs-grid,
+    .analyzer-features,
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

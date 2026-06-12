@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import PostSeriesCard from '../../components/collection-cards/PostSeriesCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 // Get all post-series
@@ -36,7 +35,11 @@ const sortedSeries = seriesWithCounts.sort((a, b) => {
 
     <div class="series-grid">
       {sortedSeries.map(({ series, postCount }) => (
-        <PostSeriesCard series={series} postCount={postCount} />
+        <a href={`/post-series/${series.id}`} class="series-card">
+          <h2>{series.data.title}</h2>
+          {series.data.description && <p class="description">{series.data.description}</p>}
+          <p class="post-count">{postCount} {postCount === 1 ? 'post' : 'posts'}</p>
+        </a>
       ))}
     </div>
 
@@ -79,6 +82,38 @@ const sortedSeries = seriesWithCounts.sort((a, b) => {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: var(--space-6);
     margin-bottom: var(--space-12);
+  }
+
+  .series-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-normal);
+  }
+
+  .series-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .series-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+    font-size: var(--text-xl);
+  }
+
+  .series-card .description {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .series-card .post-count {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
   }
 
   .empty-state {

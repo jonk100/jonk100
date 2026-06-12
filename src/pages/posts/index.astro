@@ -4,24 +4,91 @@
  *
  * Posts hub — shows post-series as cards. Each card links to a
  * series page that lists all posts in that series.
- *
- * Individual posts are accessed through their series, not directly
- * from this page — consistent with how Projects works.
  */
 
 import { getCollection } from "astro:content";
-import IndexLayout from "../../layouts/IndexLayout.astro";
-import CardGrid from "../../components/CardGrid.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const postSeries = await getCollection("post-series");
+const posts = await getCollection("posts");
 
 const sorted = postSeries.sort((a, b) => a.data.title.localeCompare(b.data.title));
 ---
 
-<IndexLayout
+<BaseLayout
   title="Posts"
-  count={sorted.length}
   description="Essays, reviews, courses, and other writing."
 >
-  <CardGrid collectionName="post-series" entries={sorted} columns={3} />
-</IndexLayout>
+  <section class="posts-hub">
+    <div class="container">
+      <h1>Posts</h1>
+      <p class="intro">{sorted.length} post series</p>
+
+      <div class="series-grid">
+        {sorted.map(series => {
+          const seriesPosts = posts.filter(p => p.data.postSeries?.id === series.id);
+          return (
+            <a href={`/post-series/${series.id}`} class="series-card">
+              <h2>{series.data.title}</h2>
+              {series.data.description && <p class="description">{series.data.description}</p>}
+              <p class="post-count">{seriesPosts.length} posts</p>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .posts-hub {
+    padding: 4rem 0;
+  }
+
+  .posts-hub h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .series-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-normal);
+  }
+
+  .series-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .series-card h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+    font-size: var(--text-xl);
+  }
+
+  .series-card .description {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .series-card .post-count {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+</style>

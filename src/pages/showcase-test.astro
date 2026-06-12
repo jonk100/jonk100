@@ -1,0 +1,28 @@
+---
+/**
+ * Test page for showcase components
+ * Temporary page to verify submodule imports work
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ChordAnalyserDemo from '../components/showcase/ChordAnalyserDemo.astro';
+---
+
+<BaseLayout title="Showcase Test" description="Testing Writty showcase components">
+  <main>
+    <h1>Writty Showcase Test</h1>
+    <ChordAnalyserDemo />
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: 2rem;
+  }
+</style>

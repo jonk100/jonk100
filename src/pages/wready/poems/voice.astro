@@ -1,0 +1,393 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Voice - wReady Showcase" description="Original poem exploring authenticity and creative expression">
+  <article class="poem-detail">
+    
+    <!-- Hero Section -->
+    <section class="poem-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="/wready">wReady</a> / <a href="/wready/poems">Poems</a> / Voice
+        </div>
+        <h1>Voice</h1>
+        <div class="poem-meta">
+          <span class="meta-item"><strong>Form:</strong> Free Verse</span>
+          <span class="meta-item"><strong>Status:</strong> Published</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Poem Content -->
+    <section class="poem-content">
+      <div class="container">
+        <div class="poem-text">
+          <div class="stanza">
+            <p>
+              The voice that speaks through silence<br>
+              carries weight the shouting never could—<br>
+              a whisper in the margins,<br>
+              ink bleeding through the page.
+            </p>
+          </div>
+
+          <div class="stanza">
+            <p>
+              We mistake volume for truth,<br>
+              confuse the echo with the source,<br>
+              but the real work happens<br>
+              in the quiet spaces between words.
+            </p>
+          </div>
+
+          <div class="stanza">
+            <p>
+              Listen for what isn't said—<br>
+              the pause before the answer,<br>
+              the breath held back,<br>
+              the sentence left unfinished.
+            </p>
+          </div>
+
+          <div class="stanza">
+            <p>
+              That's where meaning lives,<br>
+              where authenticity hides<br>
+              from the performance,<br>
+              waiting to be found.
+            </p>
+          </div>
+
+          <div class="stanza">
+            <p>
+              Your voice is not the loudest one—<br>
+              it's the one that sounds like you<br>
+              when no one else is listening,<br>
+              when you've forgotten to pretend.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analysis -->
+    <section class="analysis-section">
+      <div class="container">
+        <h2>About This Poem</h2>
+        
+        <div class="analysis-grid">
+          <div class="analysis-card">
+            <h3>Theme</h3>
+            <p>
+              An exploration of authenticity and the power of restraint in creative expression. 
+              The poem examines how genuine voice emerges not from volume or performance, 
+              but from careful attention to the spaces between words.
+            </p>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Form & Structure</h3>
+            <p>
+              Free verse with five stanzas of four lines each. The consistent structure 
+              creates a meditative rhythm while the lack of rhyme scheme allows the 
+              natural voice to emerge without constraint.
+            </p>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Key Images</h3>
+            <ul>
+              <li><strong>Silence vs. Shouting:</strong> The central contrast between authentic quiet and performative noise</li>
+              <li><strong>Margins & Ink:</strong> Writing as a physical, intimate act</li>
+              <li><strong>Spaces Between Words:</strong> The importance of what's unsaid</li>
+              <li><strong>Listening:</strong> Active engagement rather than passive reception</li>
+            </ul>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Related Themes</h3>
+            <p>
+              This poem connects to broader themes of authenticity in creative work, 
+              the relationship between artist and audience, and the tension between 
+              performance and genuine expression—themes that also appear in the 
+              Her Majesty's Displeasure screenplay project.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Features -->
+    <section class="technical-section">
+      <div class="container">
+        <h2>wReady Poetry Features</h2>
+        <p class="section-intro">
+          This poem demonstrates wReady's poetry management capabilities:
+        </p>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <h3>📝 Form Analysis</h3>
+            <p>Track poetic forms, meter, rhyme schemes, and structural elements</p>
+          </div>
+
+          <div class="feature-item">
+            <h3>🎨 Thematic Connections</h3>
+            <p>Link poems to themes and cross-reference with other creative work</p>
+          </div>
+
+          <div class="feature-item">
+            <h3>📊 Collection Organization</h3>
+            <p>Group poems into collections with ordering and publication status</p>
+          </div>
+
+          <div class="feature-item">
+            <h3>🔗 Cross-References</h3>
+            <p>Connect poems to related songs, themes, and narrative projects</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>More Poems</h2>
+          <p>Explore other original poetry with form analysis and thematic connections.</p>
+          <a href="/wready/poems" class="cta-button">← Back to Poems</a>
+        </div>
+      </div>
+    </section>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .poem-detail {
+    width: 100%;
+  }
+
+  .container {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+
+  /* Hero */
+  .poem-hero {
+    padding: 3rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    margin: 0 0 1rem 0;
+    font-size: var(--text-4xl);
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .poem-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: var(--text-sm);
+  }
+
+  .meta-item {
+    color: var(--text-secondary);
+  }
+
+  .meta-item strong {
+    color: var(--text);
+  }
+
+  /* Poem Content */
+  .poem-content {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .poem-text {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .stanza {
+    margin-bottom: 2.5rem;
+  }
+
+  .stanza:last-child {
+    margin-bottom: 0;
+  }
+
+  .stanza p {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: var(--text-lg);
+    line-height: 1.9;
+    color: var(--text);
+  }
+
+  /* Analysis */
+  .analysis-section {
+    padding: 3rem 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    margin: 0 0 2rem 0;
+    font-size: var(--text-2xl);
+  }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .analysis-card {
+    padding: 2rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+  }
+
+  .analysis-card h3 {
+    margin: 0 0 1rem 0;
+    font-size: var(--text-lg);
+    color: var(--accent);
+  }
+
+  .analysis-card p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .analysis-card ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    list-style: disc;
+  }
+
+  .analysis-card li {
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .analysis-card strong {
+    color: var(--text);
+  }
+
+  /* Technical Features */
+  .technical-section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-intro {
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-item h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .feature-item p {
+    margin: 0;
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 3rem 0;
+  }
+
+  .cta-box {
+    padding: 3rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .cta-box h2 {
+    margin: 0 0 1rem 0;
+  }
+
+  .cta-box p {
+    margin: 0 0 2rem 0;
+    color: var(--text-secondary);
+  }
+
+  .cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+  }
+
+  .cta-button:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 720px) {
+    .container {
+      padding: 0 var(--space-4);
+    }
+
+    h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .poem-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .analysis-grid,
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-box {
+      padding: 2rem;
+    }
+  }
+</style>

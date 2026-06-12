@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="wReady Showcase" description="A showcase of the wReady creative tooling platform">
+  <section class="showcase-hero">
+    <div class="container">
+      <h1>wReady</h1>
+      <p class="intro">
+        A personal creative workbench for managing screenplays, songs, poems, and the connections between them.
+        Built with Astro, TypeScript, and a content-first architecture.
+      </p>
+    </div>
+  </section>
+
+  <section class="showcase-categories">
+    <div class="container">
+      <h2>Explore</h2>
+      <div class="category-grid">
+        
+        <a href="/wready/projects" class="category-card">
+          <div class="category-icon">📝</div>
+          <h3>Projects</h3>
+          <p>Screenplay series with episodes, scenes, characters, and locations</p>
+          <span class="example">Example: Her Majesty's Displeasure</span>
+        </a>
+
+        <a href="/wready/songs" class="category-card">
+          <div class="category-icon">🎵</div>
+          <h3>Songs</h3>
+          <p>Original songs with chord charts, lyrics, and music theory analysis</p>
+          <span class="example">Interactive chord analyzer included</span>
+        </a>
+
+        <a href="/wready/poems" class="category-card">
+          <div class="category-icon">✍️</div>
+          <h3>Poems</h3>
+          <p>Poetry collection with form analysis and thematic connections</p>
+          <span class="example">Sample poems from various forms</span>
+        </a>
+
+        <a href="/wready/chords" class="category-card">
+          <div class="category-icon">🎸</div>
+          <h3>Chord Library</h3>
+          <p>Interactive chord diagrams with multiple voicings and fingerings</p>
+          <span class="example">Guitar and ukulele support</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="showcase-features">
+    <div class="container">
+      <h2>Key Features</h2>
+      <div class="features-list">
+        <div class="feature">
+          <h3>Content Collections</h3>
+          <p>Type-safe content management with Astro's content collections API</p>
+        </div>
+        <div class="feature">
+          <h3>Screenplay Formatting</h3>
+          <p>Custom MDX plugin for industry-standard screenplay formatting</p>
+        </div>
+        <div class="feature">
+          <h3>Music Theory Tools</h3>
+          <p>Chord analysis, tension graphing, and interactive chord diagrams</p>
+        </div>
+        <div class="feature">
+          <h3>Relational Data</h3>
+          <p>Cross-reference characters, locations, themes, and plot threads</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="showcase-tech">
+    <div class="container">
+      <h2>Built With</h2>
+      <div class="tech-tags">
+        <span class="tech-tag">Astro</span>
+        <span class="tech-tag">TypeScript</span>
+        <span class="tech-tag">MDX</span>
+        <span class="tech-tag">Vanilla CSS</span>
+        <span class="tech-tag">Content Collections</span>
+        <span class="tech-tag">Remark Plugins</span>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .showcase-hero {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .showcase-hero h1 {
+    margin-bottom: 1rem;
+    font-size: var(--text-4xl);
+  }
+
+  .intro {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 700px;
+    line-height: 1.6;
+  }
+
+  .showcase-categories,
+  .showcase-features,
+  .showcase-tech {
+    padding: 3rem 0;
+  }
+
+  .showcase-categories {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .showcase-features {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    margin-bottom: 2rem;
+    font-size: var(--text-2xl);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .category-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-normal);
+    background: var(--bg);
+  }
+
+  .category-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+    transform: translateY(-2px);
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .category-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+    font-size: var(--text-xl);
+  }
+
+  .category-card p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+
+  .category-card .example {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-lg);
+    color: var(--accent);
+  }
+
+  .feature p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .tech-tag {
+    padding: 0.5rem 1rem;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 720px) {
+    .showcase-hero h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .category-grid,
+    .features-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

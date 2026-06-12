@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import PostCard from '../../components/collection-cards/PostCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { cardConfig } from '../../collections.config';
 
 export async function getStaticPaths() {
   // Get all post-series and posts
@@ -67,9 +67,17 @@ const sortedPosts = posts.sort((a, b) => {
     </header>
 
     <div class="posts-grid">
-      {sortedPosts.map(post => (
-        <PostCard post={post} />
-      ))}
+      {sortedPosts.map(post => {
+        const card = cardConfig.posts(post);
+        return (
+          <a href={card.href} class="post-card">
+            <h2>{card.title}</h2>
+            {card.subtitle && <p class="excerpt">{card.subtitle}</p>}
+            {card.meta && <time class="date">{card.meta}</time>}
+            {card.badge && <span class="badge">{card.badge}</span>}
+          </a>
+        );
+      })}
     </div>
 
     {posts.length === 0 && (
@@ -119,6 +127,50 @@ const sortedPosts = posts.sort((a, b) => {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: var(--space-6);
     margin-bottom: var(--space-12);
+  }
+
+  .post-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .post-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .post-card h2 {
+    margin: 0;
+    font-size: var(--text-xl);
+  }
+
+  .post-card .excerpt {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    flex-grow: 1;
+  }
+
+  .post-card .date {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .post-card .badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: var(--text-xs);
+    border-radius: 0.25rem;
+    background: var(--status-draft);
+    color: white;
+    align-self: flex-start;
   }
 
   .empty-state {

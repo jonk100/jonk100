@@ -1,0 +1,3 @@
+[submodule "writty"]
+	path = writty
+	url = https://github.com/jonk100/Writty

@@ -1,0 +1,354 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ChordAnalyserDemo from '../../../components/showcase/ChordAnalyserDemo.astro';
+---
+
+<BaseLayout title="Chords - wReady Showcase" description="Interactive chord library and analyzer">
+  <section class="chords-hero">
+    <div class="container">
+      <h1>Chord Library</h1>
+      <p class="intro">
+        An extensive library of guitar and ukulele chords with interactive diagrams, 
+        multiple voicings, and music theory analysis. Built for songwriters and musicians.
+      </p>
+    </div>
+  </section>
+
+  <section class="analyzer-section">
+    <div class="container">
+      <h2>Interactive Chord Analyzer</h2>
+      <p class="section-intro">
+        Explore chord voicings, fingerings, and relationships. Select an instrument, 
+        choose a chord, and see all available voicings with interactive diagrams.
+      </p>
+      
+      <ChordAnalyserDemo />
+    </div>
+  </section>
+
+  <section class="library-section">
+    <div class="container">
+      <h2>Chord Library Features</h2>
+      
+      <div class="library-grid">
+        <div class="library-card">
+          <h3>🎸 Multiple Instruments</h3>
+          <p>Support for guitar (standard tuning, drop D, and more) and ukulele with accurate fretboard layouts.</p>
+        </div>
+        
+        <div class="library-card">
+          <h3>🎵 Extensive Collection</h3>
+          <p>Major, minor, seventh, suspended, augmented, diminished, and extended chords across all keys.</p>
+        </div>
+        
+        <div class="library-card">
+          <h3>📊 Multiple Voicings</h3>
+          <p>Each chord includes multiple voicing options with difficulty ratings and position markers.</p>
+        </div>
+        
+        <div class="library-card">
+          <h3>🖐️ Fingering Diagrams</h3>
+          <p>Clear visual diagrams showing finger positions, open strings, and muted strings.</p>
+        </div>
+        
+        <div class="library-card">
+          <h3>🎼 Music Theory</h3>
+          <p>Interval analysis, scale degrees, and chord function information for each voicing.</p>
+        </div>
+        
+        <div class="library-card">
+          <h3>🔗 Song Integration</h3>
+          <p>Chords link directly to songs that use them, showing real-world applications.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="examples-section">
+    <div class="container">
+      <h2>Sample Chords</h2>
+      <p class="section-intro">
+        The library includes hundreds of chord voicings. Here are a few examples:
+      </p>
+      
+      <div class="chord-examples">
+        <div class="chord-example">
+          <h3>C Major</h3>
+          <p class="chord-notes">C - E - G</p>
+          <p class="chord-info">3 voicings available</p>
+          <span class="chord-tag">Open position</span>
+          <span class="chord-tag">Barre chord</span>
+        </div>
+        
+        <div class="chord-example">
+          <h3>D Minor</h3>
+          <p class="chord-notes">D - F - A</p>
+          <p class="chord-info">2 voicings available</p>
+          <span class="chord-tag">Open position</span>
+        </div>
+        
+        <div class="chord-example">
+          <h3>G7</h3>
+          <p class="chord-notes">G - B - D - F</p>
+          <p class="chord-info">Multiple voicings</p>
+          <span class="chord-tag">Open position</span>
+          <span class="chord-tag">Jazz voicing</span>
+        </div>
+        
+        <div class="chord-example">
+          <h3>Am7</h3>
+          <p class="chord-notes">A - C - E - G</p>
+          <p class="chord-info">Multiple voicings</p>
+          <span class="chord-tag">Open position</span>
+          <span class="chord-tag">Barre chord</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="technical-section">
+    <div class="container">
+      <h2>Technical Implementation</h2>
+      <div class="technical-grid">
+        <div class="technical-card">
+          <h3>Content Collections</h3>
+          <p>Chords are managed as Astro content collections with type-safe schemas for notes, fingerings, and metadata.</p>
+        </div>
+        
+        <div class="technical-card">
+          <h3>SVG Diagrams</h3>
+          <p>Chord diagrams are dynamically generated SVG graphics with responsive sizing and accessibility features.</p>
+        </div>
+        
+        <div class="technical-card">
+          <h3>Music Theory Utils</h3>
+          <p>TypeScript utilities for chord analysis, interval calculation, and scale relationships.</p>
+        </div>
+        
+        <div class="technical-card">
+          <h3>Interactive Filtering</h3>
+          <p>Client-side filtering by root note, chord type, instrument, and difficulty level.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="use-cases-section">
+    <div class="container">
+      <h2>Use Cases</h2>
+      <div class="use-cases">
+        <div class="use-case">
+          <h3>📝 Songwriting</h3>
+          <p>Quickly reference chord voicings while writing songs, with instant access to alternatives and variations.</p>
+        </div>
+        
+        <div class="use-case">
+          <h3>🎓 Learning</h3>
+          <p>Study chord construction, compare voicings, and understand music theory relationships.</p>
+        </div>
+        
+        <div class="use-case">
+          <h3>🎸 Practice</h3>
+          <p>Print-friendly chord sheets and diagrams for practice sessions and performance.</p>
+        </div>
+        
+        <div class="use-case">
+          <h3>📊 Analysis</h3>
+          <p>Analyze chord progressions in existing songs and explore harmonic relationships.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .chords-hero {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chords-hero h1 {
+    margin-bottom: 1rem;
+    font-size: var(--text-4xl);
+  }
+
+  .intro {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    max-width: 700px;
+    line-height: 1.6;
+  }
+
+  .analyzer-section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: var(--text-2xl);
+  }
+
+  .section-intro {
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  .library-section {
+    padding: 3rem 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .library-card {
+    padding: 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+  }
+
+  .library-card h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .library-card p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .examples-section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chord-examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .chord-example {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--bg);
+    transition: all var(--transition-normal);
+  }
+
+  .chord-example:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+  }
+
+  .chord-example h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-xl);
+    color: var(--accent);
+  }
+
+  .chord-notes {
+    margin: 0 0 0.5rem 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .chord-info {
+    margin: 0 0 1rem 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .chord-tag {
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .technical-section {
+    padding: 3rem 0;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .technical-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .technical-card {
+    padding: 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+  }
+
+  .technical-card h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: var(--text-lg);
+    color: var(--accent);
+  }
+
+  .technical-card p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .use-cases-section {
+    padding: 3rem 0;
+  }
+
+  .use-cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .use-case h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .use-case p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 720px) {
+    .chords-hero h1 {
+      font-size: var(--text-3xl);
+    }
+
+    .library-grid,
+    .chord-examples,
+    .technical-grid,
+    .use-cases {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
