@@ -47,6 +47,15 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
         <div class="status-divider" aria-hidden="true"></div>
         <Text as="span" type="label" tone="muted" class="status-text">open to collaboration</Text>
       </Inline>
+
+      <!-- Featured Banner -->
+      <a href="https://cssmen.jonkrausejams.workers.dev/" class="featured-banner animate-slide-up delay-6" target="_blank" rel="noopener noreferrer">
+        <img src="/cssmen-hero.png" alt="CSSMen Interactive Grid Tool" class="featured-banner-image" />
+        <div class="featured-banner-overlay">
+          <Text as="span" type="label" class="banner-title">EXPLORE CSSMEN</Text>
+          <Text as="span" type="caption" class="banner-subtitle">Interactive Grid Layout Tool</Text>
+        </div>
+      </a>
     </Stack>
   </Box>
 </section>
@@ -113,6 +122,56 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.3; transform: scale(0.75); }
+  }
+
+  .featured-banner {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 140px;
+    border-radius: var(--rad-lg);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    border: 1px solid var(--border);
+    margin-top: var(--space-4);
+  }
+
+  .featured-banner:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -10px var(--shadow);
+  }
+
+  .featured-banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .featured-banner:hover .featured-banner-image {
+    transform: scale(1.05);
+  }
+
+  .featured-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--space-4);
+  }
+
+  .banner-title {
+    color: white !important;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .banner-subtitle {
+    color: rgba(255,255,255,0.8) !important;
   }
 
   @media (max-width: 600px) {
