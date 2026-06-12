@@ -129,13 +129,13 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     position: relative;
     width: 100%;
     max-width: 600px;
-    height: 140px;
+    height: 220px;
     border-radius: var(--rad-lg);
     overflow: hidden;
     text-decoration: none;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
     border: 1px solid var(--border);
-    margin-top: var(--space-4);
+    margin-top: calc(var(--space-6) * -1);
   }
 
   .featured-banner:hover {
@@ -147,6 +147,7 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top;
     transition: transform 0.5s ease;
   }
 
