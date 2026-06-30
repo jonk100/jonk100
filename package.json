@@ -15,23 +15,24 @@
     "generate:icons": "tsx src/design/scripts/generate-icons.ts"
   },
   "dependencies": {
-    "@astrojs/mdx": "^6.0.0",
-    "astro": "^6.4.2",
+    "@astrojs/mdx": "^6.0.3",
+    "astro": "^6.4.8",
+    "dezign8": "link:../dezign8/src/design",
     "slugify": "^1.6.9"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/react": "^5.0.6",
+    "@astrojs/react": "^5.0.7",
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/svelte": "^8.1.2",
     "@astrojs/vue": "^6.0.1",
-    "@axe-core/playwright": "^4.11.3",
-    "@playwright/test": "^1.60.0",
+    "@axe-core/playwright": "^4.12.1",
+    "@playwright/test": "^1.61.1",
     "chromium-bidi": "^16.0.1",
-    "happy-dom": "^20.9.0",
-    "playwright": "^1.60.0",
-    "tsx": "^4.22.3",
+    "happy-dom": "^20.10.6",
+    "playwright": "^1.61.1",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }

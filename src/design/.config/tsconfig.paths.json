@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../../..",
+    "paths": {
+      "~/*": [
+        "src/design/*"
+      ],
+      "~sh/*": [
+        "src/design/shared/*"
+      ],
+      "~st/*": [
+        "src/design/styles/*"
+      ],
+      "~l/*": [
+        "src/design/layout/*"
+      ],
+      "~ty/*": [
+        "src/design/typography/*"
+      ],
+      "~tr/*": [
+        "src/design/triggers/*"
+      ],
+      "~a/*": [
+        "src/design/assets/*"
+      ],
+      "~f/*": [
+        "src/design/forms/*"
+      ],
+      "@/*": [
+        "src/*"
+      ],
+      "~/assets_/*": [
+        "src/design/assets/components/*"
+      ],
+      "~/data_/*": [
+        "src/design/data/components/*"
+      ],
+      "~/feedback_/*": [
+        "src/design/feedback/components/*"
+      ],
+      "~/forms_/*": [
+        "src/design/forms/components/*"
+      ],
+      "~/layout_/*": [
+        "src/design/layout/components/*"
+      ],
+      "~/nav_/*": [
+        "src/design/nav/components/*"
+      ],
+      "~/overlays_/*": [
+        "src/design/overlays/components/*"
+      ],
+      "~/shared_/*": [
+        "src/design/shared/components/*"
+      ],
+      "~/surfaces_/*": [
+        "src/design/surfaces/components/*"
+      ],
+      "~/triggers_/*": [
+        "src/design/triggers/components/*"
+      ],
+      "~/typography_/*": [
+        "src/design/typography/components/*"
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "shared/skeleton": [
+    {
+      "name": "variant",
+      "type": "string | number | symbol",
+      "optional": true,
+      "description": "The shape preset.\n\n- `text`    — single text line (~1em tall). Use `lines` for a block.\n- `heading` — taller, narrower width. For title placeholders.\n- `avatar`  — circular. Diameter set by `height` (default 2.5rem).\n- `button`  — pill shape. For CTA placeholders.\n- `image`   — rectangle with `ratio` aspect-ratio. For media.\n- `block`   — no default size. Set `width` + `height` explicitly.",
+      "from": "SkeletonProps",
+      "wired": true,
+      "default": "\"block\""
+    },
+    {
+      "name": "lines",
+      "type": "number",
+      "optional": true,
+      "description": "Number of text lines to render.\nOnly applies to `variant=\"text\"`. Renders stacked lines with the\nlast one at 65% width — a realistic paragraph placeholder.",
+      "from": "SkeletonProps",
+      "wired": true,
+      "default": "1"
+    },
+    {
+      "name": "width",
+      "type": "string",
+      "optional": true,
+      "description": "Explicit CSS width. Overrides the variant's default.\nAny valid CSS length: `\"200px\"` | `\"100%\"` | `\"12rem\"`.",
+      "from": "SkeletonProps",
+      "wired": true
+    },
+    {
+      "name": "height",
+      "type": "string",
+      "optional": true,
+      "description": "Explicit CSS height. Overrides the variant's default.\nAny valid CSS length. For `avatar`, this also sets the width\n(avatar is always square before border-radius rounds it).",
+      "from": "SkeletonProps",
+      "wired": true
+    },
+    {
+      "name": "ratio",
+      "type": "string",
+      "optional": true,
+      "description": "CSS aspect-ratio for `variant=\"image\"`.",
+      "from": "SkeletonProps",
+      "wired": true,
+      "default": "\"16/9\""
+    },
+    {
+      "name": "radius",
+      "type": "string | number | symbol",
+      "optional": true,
+      "description": "Border radius. Overrides the per-variant default.\nUseful when the skeleton must match the shape it replaces.\n`avatar` ignores this — it is always a circle.",
+      "from": "SkeletonProps",
+      "wired": true
+    },
+    {
+      "name": "animated",
+      "type": "boolean",
+      "optional": true,
+      "description": "Whether the shimmer animation runs.\nSet to `false` to show a static placeholder (e.g. in tests,\nor when reduced-motion is handled at a higher level).",
+      "from": "SkeletonProps",
+      "wired": true,
+      "default": "true"
+    }
+  ]
+}

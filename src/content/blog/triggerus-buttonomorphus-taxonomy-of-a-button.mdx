@@ -1,0 +1,149 @@
+---
+title: "Triggerus Buttonomorphus Fragmentum: or Button Taxonomy 102 in Design Systems"
+description: "How a seemingly innocent `...rest` spread in Astro components silently wiped out our global `style` and `class` props across an entire design system, and how we fixed it."
+pubDate: 2026-06-05
+tags: ["Astro", "Web Development", "Design Systems", "Debugging"]
+---
+
+# The Anatomy of a Click: A Tale of Genus, Species, and Seven Files
+
+I stare at the file tree on my monitor. 
+
+`design/triggers/button/button.hook.ts` 
+
+I blink. They're right. It's sitting right there inside the trigger folder. The chassis is parked inside the paint shop. I rub my temples.
+
+You caught me. You are entirely correct. The file tree doesn't lie, and Button is nested squarely inside the triggers directory.
+
+If we look at the architecture from a 10,000-foot view, Trigger is the genus, and Button is the species. In the taxonomy of this design system, "Trigger" isn't just an abstract visual concept; it is the overarching category for anything the user can click, tap, or interact with to cause an action.
+
+- A dropdown toggle is a trigger.
+- An accordion header is a trigger.
+- A standard `<button>` is a trigger.
+
+So, why go through the trouble of separating the trigger files from the button files if they live in the exact same neighborhood?
+
+I’ve just finished authoring seven different files. Their collective purpose? To put a button on a screen...
+
+We wrote seven files so someone can click a rectangle on the internet. I could have been writing that scene in my head where the 17th-century duke invents the pyramid scheme. Instead, I am staring at `--trigger--color-vivid`. 
+
+Why do we do this to ourselves?
+
+## Decoupling? In more ways than one, guy.
+
+This is `Button.astro` - it is beautifully (aggressively?) simple:
+
+```astro
+---
+import type { ButtonProps } from "./button.props";
+import { useButton } from "./button.hook";
+import "../../trigger.css";
+import "./button.css";
+const { Tag, props } = useButton(Astro.props as ButtonProps);
+---
+
+<Tag {...props}><slot /></Tag>
+```
+
+Two lines of logic. A dynamic HTML tag. A slot. That’s it. But beneath the surface of this tranquil Astro component lies a roaring engine of **coupling** and **decoupling**. A fancy cocktail of casting, spreads and **inheritance**.
+
+Let's break down how this architecture actually works, why it's built this way, and what these scary computer words actually mean in practice.
+
+---
+
+### Act I: The Seduction of Coupling (Or, The Monolith)
+
+In software design, **coupling** refers to how much one piece of code depends on another. High coupling means things are tangled together.
+
+If we built a highly coupled button, we’d write one massive CSS file and one massive component. It would look something like this: `<button class="bg-blue text-white rounded padding-4 hover:bg-dark-blue">`. Everything—the size, the color, the HTML tag, the hover state—is smashed into one specific instance.
+
+> *I mean... that sounds fine? It's right there. You want a blue button, you say "make it blue." When did a button stop being just a button? When I play guitar, if I want an Em chord, I just hold down the A and D strings on the second fret and strum. I don't build a "Strum Abstraction Protocol."*
+
+Here's the problem with tight coupling: What happens when you need an anchor link `<a>` that *looks* exactly like a button?
+
+If your visual styles (blue background, rounded corners) are tightly coupled to the `<button>` HTML element, you have to duplicate all that CSS for your `<a>` tag. And what about a dropdown toggle? What about an icon-only button? Suddenly, you are managing fifty variations of "blue rectangle." It becomes a maintenance nightmare.
+
+---
+
+### Act II: Taxonomy and Inheritance
+
+This brings us back to the file tree. Why is `Button` nested squarely inside the `triggers` directory? If we look at the architecture from a 10,000-foot view, **Trigger is the genus, and Button is the species.** In the taxonomy of this design system, "Trigger" isn't just an abstract visual concept; it is the overarching category for *anything* the user can click, tap, or interact with to cause an action.
+
+* A dropdown toggle is a trigger.
+* An accordion header is a trigger.
+* A standard `<button>` is a trigger.
+
+The base `trigger` files (`trigger.css`, `trigger.tokens.ts`) act like a generic parent class. They define the universal laws of physics for all clickable things in the app: how they transition, how their colors shift when hovered, and what happens when they are disabled.
+
+The `button` files are a specific, concrete implementation of those laws. The Button says: *"I am a Trigger, yes. Give me your colors and your hover states. But I am specifically the kind of Trigger that needs spatial geometry, font-sizes, and inline-flex alignment."*
+
+---
+
+### Act III: The Art of Decoupling (The Great Divide)
+
+**Decoupling** is the process of breaking apart responsibilities. By separating the files, you draw a distinct line in the sand between two concepts.
+
+#### 1. The `Trigger`: The Paint Job
+
+The `trigger` files know *nothing* about layout, padding, or typography. It handles purely visual concepts:
+
+* Background colors (`--trigger--color-base`)
+* Border radiuses (`--trigger--radius`)
+* Variants (`solid`, `outlined`, `ghost`, `soft`)
+* Interactive states (hover, active, disabled)
+
+#### 2. The `Button`: The Chassis
+
+The `button` files know *nothing* about color. It handles pure spatial geometry:
+
+* Padding (`--button--p`, `--button--pi`)
+* Min-height (`--button--h`)
+* Font size (`--button--fs`)
+* Display properties (`inline-flex`, `align-items: center`)
+
+> *Okay, wait. Let me get this straight. The "Trigger" is the soul—the vibe, the aesthetic, the emotional state of the button. The "Button" is just the physical meat-suit it wears? This is starting to sound like visual storytelling. The Coen brothers would appreciate this. You separate the character's motivation (the Trigger) from their physical blocking in the scene (the Button).*
+
+Exactly. By decoupling the visual layer (Trigger) from the structural layer (Button), we achieve ultimate flexibility.
+
+---
+
+### Act IV: The Logic Layer (Hooks and Tokens)
+
+So, how do we stitch the soul and the meat-suit back together? Through TypeScript hooks and design tokens.
+
+If you inspect `button.hook.ts`, you'll see this beautiful orchestration:
+
+```typescript
+const { triggerClass, triggerStyle, triggerAttrs, disabled, loading, rest, size } 
+  = useTrigger(triggerProps);
+
+```
+
+The `useButton` hook delegates all visual logic to `useTrigger`. It says, "Hey Trigger, figure out the CSS classes for this 'primary, solid' aesthetic."
+
+Then, `useButton` handles the structural reality:
+
+* **Is this a link?** If it has an `href`, render an `<a>` tag. Otherwise, render a `<button>`.
+* **Is it full width?** Apply the `button--full-width` class.
+* **How big is it?** It queries `resolveButtonSize(size)` from `button.tokens.ts` to get the exact CSS variables for padding and height.
+
+We even decouple the raw data from the component using tokens. In `button.tokens.ts`, the sizes are mapped cleanly:
+
+* `md: { p: "var(--space-in--sm)", pi: "var(--space-in--md)", ... }`
+
+No hardcoded pixels. Everything flows down from a central theme. We keep the DOM clean. Just elegant, structured variables.
+
+> *I guess I see the beauty in it. It’s like setting up a complex, multi-episode satirical drama. It takes ages to write the series bible, establish the rules of the universe, and figure out exactly who everyone is. But once you do, the characters practically write their own dialogue. The Astro component is just the final script page—the result of all the underlying character work.*
+
+---
+
+### The Grand Conclusion
+
+This seven-file architecture is a masterclass in **high cohesion and low coupling**.
+
+* **Low Coupling:** The Trigger doesn't care if it's styling a Button, a Link, or a Menu Item. The Button doesn't care if it's primary blue or danger red.
+* **High Cohesion:** Everything related to *how a trigger looks* is in one place. Everything related to *how a button is shaped* is in one place.
+
+It might seem like overkill to a beginner. But when your application scales, when your design team decides to change the border-radius of every interactive element in the system, you won't be hunting down 500 isolated `<button>` tags. You'll change one token in `trigger.tokens.ts`, rebuild, and go pour yourself a coffee.
+
+> *Or pick up the guitar and finally nail that progression. Yeah. Okay. I’ll admit it. The seven files make sense. Just don't ask me to write an eighth.*

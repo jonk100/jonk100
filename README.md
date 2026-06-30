@@ -1,43 +1,40 @@
-# Astro Starter Kit: Minimal
+# Jon Krause — Portfolio & Creative Lab
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+Welcome to the source code for my personal portfolio, blog, glossary, and design system playground. I enjoy building tools and systems that help me write, teach, and create more efficiently.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🚀 Tech Stack
 
-## 🚀 Project Structure
+- **Framework**: [Astro](https://astro.build/)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS (Custom Design System with tokens and variants)
+- **Content**: Markdown / MDX via Astro Content Collections
+- **Testing**: Playwright & Vitest
 
-Inside of your Astro project, you'll see the following folders and files:
+## ✨ Features
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+- **Custom Design System**: A meticulously crafted, utility-free design system separated into tokens (primitives) and variants (semantic classes).
+- **Smooth Page Transitions**: Leverages Astro's View Transitions API for app-like navigation and shared element transitions across pages.
+- **Accessible Components**: Custom built UI primitives (like CheckboxGroups, Multiselects, and Dialogs) ensuring keyboard and screen-reader accessibility.
+- **Optimized SEO**: Fully configured for discoverability with Open Graph tags, Schema.org JSON-LD, automated sitemaps, and strict canonical URLs.
+- **Dynamic Content Architecture**: Separate content collections for Projects, Blog Posts, Design Documentation, and Glossary Terms.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🛠️ Local Development
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+All commands are run from the root of the project:
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Command | Action |
+| :--- | :--- |
+| `pnpm install` | Installs dependencies |
+| `pnpm dev` | Starts local dev server at `localhost:4321` |
+| `pnpm build` | Builds the production site to `./dist/` |
+| `pnpm preview` | Previews your build locally |
+| `pnpm test` | Runs Playwright tests |
 
-## 🧞 Commands
+## 📁 Project Structure
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `src/components/`: Reusable Astro components (UI primitives, portfolio sections).
+- `src/content/`: MDX and Markdown files for blogs, projects, and design documentation.
+- `src/layouts/`: Base page layouts containing global SEO metadata.
+- `src/styles/`: The core design system architecture (tokens, variants, global styles).
+- `src/pages/`: Astro routing pages.
+- `public/`: Static assets like images and `robots.txt`.

@@ -1,0 +1,49 @@
+---
+/**
+ * src/components/ui/input/CheckboxGroup.astro
+ * Groups multiple checkboxes together logically and visually.
+ * @props (local): legend
+ * @props (global): class, class:list
+ */
+export interface Props {
+  legend?: string;
+  class?: string;
+  "class:list"?: Record<string, boolean> | any[];
+  [key: string]: any;
+}
+
+const {
+  legend,
+  class: className = '',
+  "class:list": classList = {},
+  ...rest
+} = Astro.props;
+---
+
+<fieldset class:list={['checkbox-group', className, classList]} {...rest}>
+  {legend && <legend class="checkbox-legend">{legend}</legend>}
+  <div class="checkbox-options">
+    <slot />
+  </div>
+</fieldset>
+
+<style>
+  .checkbox-group {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .checkbox-legend {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: var(--space-3);
+  }
+
+  .checkbox-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+</style>

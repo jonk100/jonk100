@@ -9,30 +9,84 @@
   --mono:    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', monospace; 
 
   /** ------------------------------------------------------------------------ */  
-  /**                     Typography Scale                                     */
+  /**                     Typography Scales                                 */
   /** ------------------------------------------------------------------------ */
-  --text-xxs: clamp(0.5rem, 0.6rem + 0.15vw, 0.7rem);      /* ~9.6px → 11.2px  */
-  --text-xs: clamp(0.6rem, 0.7rem + 0.25vw, 0.85rem);       /* ~11.2px → 13.6px  */
-  --text-sm: clamp(0.7rem, 0.85rem + 0.35vw, 0.95rem);     /* ~12.8px → 15.2px  */
-  --text-md: clamp(0.85rem, 1rem + 0.5vw, 1.05rem);  /* ~14.4px → 16.8px  */
-  --text-base: clamp(1rem, 1.1rem + 0.5vw, 1.15rem);         /* ~15.2px → 18.4px  */
-  --text-lg: clamp(1.1rem, 1.2rem + 0.5vw, 1.5rem);         
-  --text-xl: clamp(1.25rem, 1.3rem + 0.6vw, 1.6rem);         
-  --text-2xl: clamp(1.3rem, 1.4rem + 0.75vw, 1.85rem);
+
+  /*.                   fluid scale */
+
+  /* Viewport fluidity window      */
+  --viewport-min: 20rem; /* 320px  */
+  --viewport-max: 90rem; /* 1440px */
+
+  /* Base interpolation (0 → 1)    */
+  --fluid: clamp(
+    0,
+    (100vw - var(--viewport-min)) /
+      ( var(--viewport-max) - var(--viewport-min) ),
+    1
+  );
+
+  /* linear curves */
+  --fluid-xslow: calc(var(--fluid) * 0.25);
+  --fluid-slow:  calc(var(--fluid) * 0.5);
+  --fluid:       var(--fluid);
+  --fluid-fast:  calc(var(--fluid) * 1.5);
+  --fluid-xfast: calc(var(--fluid) * 2);
+
+  /* ease curves */
+  --fluid-ease-in: calc(var(--fluid) * var(--fluid));
+  --fluid-ease-out: calc(1 - (1 - var(--fluid)) * (1 - var(--fluid)));
+  --fluid-ease-in-out: calc(var(--fluid) * var(--fluid) * (2 - var(--fluid)));
+
+  /*.                                                    text-size-fluid            */
+  --text-xxs: clamp(0.5rem, 0.6rem + 0.15vw, 0.7rem);   
+  --text-xs: clamp(0.55rem, 0.7rem + 0.25vw, 0.85rem);  
+  --text-sm: clamp(0.6rem, 0.8rem + 0.35vw, 0.95rem);    
+  --text-md: clamp(0.65rem, .9rem + 0.5vw, 1.05rem);   
+  --text-base: clamp(.8rem, .9rem + .6vw, 1.4rem);    
+  --text-lg: clamp(1rem, 1.2rem + 0.7vw, 1.6rem);         
+  --text-xl: clamp(1.1rem, 1.2rem + 0.75vw, 1.75rem);         
+  --text-2xl: clamp(1.3rem, 1.4rem + 0.75vw, 2rem);
   --text-3xl: clamp(1.4rem, 1.6rem + 1vw, 2.25rem);
-  --text-4xl: clamp(2rem, 1.75rem + 1.5vw, 3rem);
-  --text-5xl: clamp(2.5rem, 2.2rem + 2vw, 4rem);
-  --text-6xl: clamp(3.5rem, 3rem + 3vw, 5.5rem);               /* ~56px → 88px   */
+  --text-4xl: clamp(2rem, 1.75rem + 2vw, 3rem);
+  --text-5xl: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  --text-6xl: clamp(3.5rem, 3rem + 3vw, 5.5rem);
+  
+  /* text scale */
+  /* --text-xxs: calc(0.5rem + var(--fluid-xslow) * 0.2rem);  0.5 → 0.7 */
+  /* --text-xs:  calc(0.55rem + var(--fluid-xslow) * 0.3rem); 0.55 → 0.85 */
+  /* --text-sm:  calc(0.6rem + var(--fluid-slow) * 0.7rem);   0.6 → 0.95 */
+  /* --text-md:  calc(0.65rem + var(--fluid-slow) * 0.8rem);  0.65 → 1.05 */
+  /* --text-base: calc(0.8rem + var(--fluid) * 0.6rem);       0.8 → 1.4 */
+  /* --text-lg:  calc(1rem + var(--fluid) * 0.5rem);          1 → 1.5 */
+  /* --text-xl:  calc(1.25rem + var(--fluid) * 0.35rem);      1.25 → 1.6 */
+  /* --text-2xl: calc(1.3rem + var(--fluid-fast) * 0.3667rem);1.3 → 1.85 */
+  /* --text-3xl: calc(1.4rem + var(--fluid-fast) * 0.5667rem);1.4 → 2.25 */
+  /* --text-4xl: calc(2rem + var(--fluid-fast) * 0.6667rem);  2 → 3 */
+  /* --text-5xl: calc(2.5rem + var(--fluid-fast) * 1rem);     2.5 → 4 */
+  /* --text-6xl: calc(3.5rem + var(--fluid-fast) * 1.3333rem);3.5 → 5.5~56px → 88px   */
 
   /** -----------------------------------------------  */
   /**                         Fluid Line Heights        */
   /** ------------------------------------------------   */
   --leading-tightest: clamp(1, 1 + 0.1vw, 1.2);
-  --leading-tighter: clamp(1.2, 1.2 + 0.15vw, 1.4);
-  --leading-tight: clamp(1.4, 1.4 + 0.2vw, 1.4);
-  --leading-normal: clamp(1.5, 1.5 + 0.3vw, 1.7);
-  --leading-loose: clamp(1.75, 1.7 + 0.4vw, 1.85);
-  --leading-looser: clamp(1.85, 1.8 + 0.6vw, 2);
+  --leading-tighter:  clamp(1.2, 1.2 + 0.15vw, 1.4);
+  --leading-tight:    clamp(1.4, 1.4 + 0.2vw, 1.4);
+  --leading-normal:   clamp(1.5, 1.5 + 0.3vw, 1.7);
+  --leading-loose:    clamp(1.75, 1.7 + 0.4vw, 1.85);
+  --leading-looser:   clamp(1.85, 1.8 + 0.6vw, 2);
+  --leading-loosest:  clamp(2, 2 + 0.8vw, 2.2);
+
+  /** -------------------------- */
+  /**      Leading Scale        */
+  /** -------------------------- */
+  --letter-sp-tightest: -.06em;
+  --letter-sp-tighter: -.04em;
+  --letter-sp-tight: -.02em;
+  --letter-sp-normal: 0;
+  --letter-sp-wide: .02em;
+  --letter-sp-wider: .04em;
+  --letter-sp-widest: .06em;
 
   /** --------------------------  */
   /**      Semantic Aliases       */

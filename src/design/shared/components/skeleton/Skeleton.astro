@@ -1,0 +1,95 @@
+---
+/**
+ * Skeleton
+ *
+ * A loading placeholder that signals content is on its way.
+ * Purely visual — aria-hidden and role="presentation" so screen
+ * readers skip it entirely.
+ *
+ * @example Single shapes
+ * ```astro
+ * <Skeleton variant="avatar" />
+ * <Skeleton variant="heading" />
+ * <Skeleton variant="button" />
+ * <Skeleton variant="image" ratio="16/9" />
+ * <Skeleton variant="text" />
+ * ```
+ *
+ * @example Multi-line text block
+ * ```astro
+ * <Skeleton variant="text" lines={3} />
+ * ```
+ *
+ * @example Explicit size
+ * ```astro
+ * <Skeleton width="200px" height="1em" />
+ * <Skeleton variant="avatar" height="4rem" />
+ * ```
+ *
+ * @example Custom radius
+ * ```astro
+ * <!-- Match a card image with rounded corners -->
+ * <Skeleton variant="image" ratio="4/3" radius="lg" />
+ * ```
+ *
+ * @example Static (no animation)
+ * ```astro
+ * <Skeleton variant="text" animated={false} />
+ * ```
+ *
+ * @example Composing a card skeleton
+ * ```astro
+ * <div style="display: flex; gap: 1rem; align-items: center;">
+ *   <Skeleton variant="avatar" />
+ *   <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+ *     <Skeleton variant="heading" />
+ *     <Skeleton variant="text" lines={2} />
+ *   </div>
+ * </div>
+ * ```
+ *
+ * REPLACING TABLE / LIST INLINE SKELETONS
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Table and List currently have inline skeleton CSS. On the cleanup pass,
+ * replace their loading state renders with <Skeleton /> instances:
+ *
+ * Table skeleton cell:
+ * ```astro
+ * <td><Skeleton /></td>
+ * ```
+ *
+ * List skeleton item:
+ * ```astro
+ * <li class="list__item">
+ *   <Skeleton variant="text" />
+ * </li>
+ * ```
+ *
+ * @see skeleton.hook.ts    — useSkeleton
+ * @see skeleton.props.ts   — SkeletonProps
+ * @see skeleton.tokens.ts  — SKELETON_TOKENS, variants, defaults
+ * @see skeleton.css        — shimmer animation, variant shapes
+ */
+
+import type { SkeletonProps } from "./skeleton.props";
+import { useSkeleton }        from "./skeleton.hook";
+import "./skeleton.css";
+
+type Props = SkeletonProps;
+
+const { variant, lines, props } = useSkeleton(Astro.props as SkeletonProps);
+---
+
+{variant === "text" && lines > 1
+  ? (
+    <div {...props} class:list={[props.class, "skeleton--multi"]}>
+      {Array.from({ length: lines }).map((_, i) => (
+        <span class:list={[
+          "skeleton__line",
+          i === lines - 1 && "skeleton__line--last",
+        ]} />
+      ))}
+    </div>
+  )
+  : <div {...props} />
+}

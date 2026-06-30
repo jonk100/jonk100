@@ -1,0 +1,66 @@
+/* ============================================================
+   button.css
+   ─────────────────────────────────────────────────────────────
+   Spatial styles for the Button component.
+   Visual styles (color, variant, focus, states) come from
+   triggers.css via the .trigger class.
+
+   Reads --button--* channels written by resolveButtonSize.
+   ============================================================ */
+
+
+.button,
+[data-visual="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--button--p) * 0.75);
+  padding-block:  var(--button--p, var(--button-group--p, var(--space-in--md)));
+  padding-inline: var(--button--pi, var(--button-group--pi, var(--space-in--md)));
+  min-height:     var(--button--h, var(--button-group--h, var(--ui-height--md)));
+  font-size:      var(--button--fs, var(--button-group--fs, var(--fs--sm)));
+  font-weight:    var(--weight--medium);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+
+/* ─── MODIFIERS ───────────────────────────────────────────── */
+
+.button--icon-only {
+  padding-inline: var(--button--p);
+  aspect-ratio: 1;
+}
+
+.button--full-width {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ─── REDUCED MOTION ──────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button:active {
+    transform: none;
+  }
+}
+
+.button.trigger--solid {
+  border: 1px solid var(--border--default);
+}
+
+.button.trigger--primary {
+  border: 2px solid var(--border--strong);
+}
+
+.button.trigger--solid:hover:not([data-disabled]):not([data-loading]) {
+  border-color: var(--border--strong);
+}
+
+.trigger--solid:active:not([data-disabled]):not([data-loading]) {
+  
+}

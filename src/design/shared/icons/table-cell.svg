@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round">
+  <rect x="4" y="5" stroke-width="1" width="16" height="14" rx="1.5"/>
+  <path d="M4 10h16" stroke-width="1" />
+  <path d="M9 5v14" stroke-width="1" />
+  <path d="M15 5v14" stroke-width="1" />
+  <path d="M4 14.5h16" stroke-width="1" />
+  <rect x="15.5" y="14.5" width="4" height="4" stroke-width="1" stroke-linecap="miter" fill="currentColor" opacity=".8" /> 
+</svg>

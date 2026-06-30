@@ -1,0 +1,26 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+
+    <!-- Lid -->
+    <path d="M3 8h18v3H3z"/>
+
+    <!-- Box -->
+    <path d="M4 11h16v9H4z"/>
+
+    <!-- Ribbon -->
+    <path d="M12 8v12"/>
+    <path d="M3 11h18"/>
+
+    <!-- Bow -->
+    <path d="M12 8c0-2-1.5-3-3-3-1.3 0-2 .8-2 1.8C7 8 8.3 8 12 8z"/>
+    <path d="M12 8c0-2 1.5-3 3-3 1.3 0 2 .8 2 1.8C17 8 15.7 8 12 8z"/>
+
+</svg>

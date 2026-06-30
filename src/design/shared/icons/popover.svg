@@ -1,0 +1,8 @@
+<!-- src/assets/icons/popover.svg -->
+<!-- Popover - Slide-on panel. -->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round">
+  <rect x="6" y="4" width="12" height="9" rx="1.5"/>
+  <path d="M12 13v3"/>
+  <path d="M10 16l2 3 2-3"/>
+</svg>

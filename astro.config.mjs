@@ -1,3 +1,4 @@
+import { dezign8 } from 'dezign8';
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
@@ -8,6 +9,7 @@ import remarkPreview from './src/plugins/remark-preview.mjs';
 export default defineConfig({
   site: 'https://jonk100.netlify.app',
   integrations: [
+    dezign8(), 
     mdx({
       remarkPlugins: [remarkProps, remarkPreview],
     }),

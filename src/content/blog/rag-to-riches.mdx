@@ -1,0 +1,225 @@
+---
+title: "RAG to Riches: Vector Similarities, RAG, and helping your AI companion help you."
+description: "Vector similarities, RAG, and helping your AI companion help you. "
+pubDate: 2026-05-29
+tags: ["Astro", "Web Development", "RAG", "AI", "Ollama"]
+---
+
+There's a specific kind of frustration that hits when you've been working in a large codebase long enough that you've forgotten what you put in it. You know the answer is *in there somewhere* — some utility function, some config pattern, some component you built three months ago — but you can't remember what you named it or exactly where it lives. You grep. You scroll. You open files you're pretty sure aren't right but check anyway.
+
+*There has to be a better way to ask my own code a question.*
+
+That's where this starts. Not with a grand architectural vision, but with a practical problem and the nagging feeling that language models — the same ones you've been using to write code — ought to be able to help you read it back. The technique that makes this possible is called **Retrieval-Augmented Generation**, or RAG, and building a local version of it from scratch is one of the most clarifying projects you can take on as a developer. By the end, you don't just have a useful tool. You understand, concretely, what embeddings actually are, why vector similarity works, and how modern AI assistants give answers that feel grounded in real information rather than hallucinated.
+
+This is the story of building that pipeline, the questions I asked along the way, and what I'd do differently if I started over.
+
+---
+
+## Section 1: What Even Is RAG, and Why Should I Care?
+
+### 1.1 The problem: LLMs don't know your code
+
+Large language models are trained on enormous datasets — billions of tokens scraped from the internet, books, documentation, code repositories. That training produces a model that knows an astonishing amount about general programming, common patterns, popular libraries, and language semantics.
+
+What it does not know is your code.
+
+*Why can't I just paste my whole codebase into the prompt?*
+
+You can, sometimes. Context windows have grown dramatically. But a real project — even a medium-sized one — quickly overwhelms what a model can hold in a single prompt. A reasonably built Astro project with a design system, routing, content collections, and a handful of apps might span hundreds of files and tens of thousands of lines. More importantly, the model doesn't improve with repetition: if you paste your entire codebase every single time you ask a question, you're paying a context cost for a lot of information that isn't relevant to the question at hand.
+
+What you really want is selective, intelligent retrieval. You want the model to see only the parts of your codebase that are relevant to what you're asking — and you want a system that can figure out what "relevant" means without you having to specify it every time.
+
+That's the problem RAG solves.
+
+### 1.2 The solution: retrieval-augmented generation, plain English
+
+Here's the idea in plain English. Before you ask a question, you pre-process your codebase into a searchable form. Not keyword-searchable — *semantically* searchable. You convert each chunk of code into a vector: a list of numbers that encodes the meaning of that chunk in high-dimensional space. You store all those vectors in an index.
+
+When you ask a question, the same process happens to your question. It becomes a vector. You then find the stored vectors that are closest to your question vector — the chunks of code whose meaning is most similar to the meaning of what you're asking. Those chunks get pulled out and handed to a language model as context. The model reads them and answers your question.
+
+The "retrieval" part is the vector search. The "augmented generation" part is feeding that retrieved context to the model before it answers. You're not asking the model to know your code from memory. You're showing it the relevant parts on demand, every time.
+
+*So the model isn't doing the searching — it's doing the answering. Something else does the searching.*
+
+Exactly. And once that clicks, the whole system starts to make sense. There are really two separate jobs: a **retrieval system** that finds relevant chunks, and a **completion model** that reads those chunks and answers questions. They can be completely different models. In fact, they often are.
+
+---
+
+## Section 2: The Stack — Ollama, `nomic-embed-text`, and a Local Completion Model
+
+### 2.1 Why run it locally instead of using OpenAI embeddings
+
+The obvious path is to use OpenAI's API for everything. Their `text-embedding-ada-002` model is well-understood, their GPT-4 completions are powerful, and there are a dozen libraries that wrap the whole RAG pattern in a tidy interface. You could have something running in an afternoon.
+
+But there are real reasons to go local.
+
+**Privacy.** Your codebase contains your architecture decisions, your proprietary logic, your half-finished ideas. Sending it to a third-party API means it leaves your machine. For personal projects this might be fine. For anything professional, it's worth thinking carefully about.
+
+**Cost at scale.** Embedding a large codebase isn't free. If you're chunking 400+ pieces of code, re-embedding when files change, and paying per token, costs accumulate. A local model runs on your hardware, indefinitely, for free.
+
+**Latency and offline use.** A local pipeline works without internet. For a developer utility, that matters.
+
+**Learning.** Running it locally forces you to understand every layer. You can't hide behind an abstraction. When something breaks, you have to know what it is.
+
+[Ollama](https://ollama.com) is the tool that makes all of this practical. It's a runtime for local language models — it handles downloading, serving, and querying models through a simple HTTP API and CLI. You run `ollama pull nomic-embed-text` and thirty seconds later you have a production-quality embedding model running on your machine. Same for your completion model: `ollama pull gemma3` or whichever model you want to use for answering questions.
+
+The interface is clean and consistent. Every model gets served at `localhost:11434` and responds to the same API shape. This means your pipeline code doesn't need to change when you swap models.
+
+### 2.2 What each piece actually does (embedder vs. completion model)
+
+This distinction is worth dwelling on because it's where most introductions to RAG get vague.
+
+**The embedding model** — in this case `nomic-embed-text` — has one job: take a piece of text (a chunk of code, a question, a sentence) and return a vector. It is *not* a conversational model. You don't ask it questions. You don't read its output as prose. Its output is a list of numbers, typically 768 or more dimensions depending on the model. These numbers are meaningless to a human but encode something rich about the semantic content of the input text.
+
+`nomic-embed-text` is purpose-built for this. It's small, fast, and good — particularly at technical and code content. It's not a general-purpose chatbot squeezed into an embedding role. It was designed to produce vectors you can meaningfully compare.
+
+**The completion model** — `gemma3`, `llama3`, `mistral`, or whatever you prefer — has a different job: read a prompt and write a response. When we do retrieval, we're constructing that prompt programmatically. We take the user's question, append the retrieved chunks as context, and send the whole thing to the completion model. It reads the context and answers as if it had been briefed.
+
+*Wait — so the completion model doesn't "know" about the search? It just gets handed the results?*
+
+Right. The completion model has no awareness of the vector store, the embeddings, or the retrieval step. From its perspective, it received a prompt that happens to contain some code, and it was asked a question about that code. The intelligence of the RAG system isn't in the completion model — it's in the retrieval layer making sure the right code ends up in that prompt.
+
+---
+
+## Section 3: Chunking, Indexing, and Embedding — The Boring Part That Makes Everything Work
+
+### 3.1 How to chunk a codebase without destroying context
+
+Before you can embed anything, you have to decide how to slice your codebase into pieces. This step is less glamorous than training a model or running a query, but it has more impact on the quality of your results than almost anything else. Bad chunking produces a retrieval system that returns misleading context. Good chunking produces a retrieval system that feels almost magical.
+
+*How do I split up my code? By file? By function? By line count?*
+
+There's no single right answer, but here are the tradeoffs:
+
+**By file** is the simplest approach. Each file is one chunk. This works reasonably well for small files but breaks down when files are large — an embedding of a 500-line component is going to average out semantic content across too many topics, making it hard to retrieve precisely. On the other hand, a file-level chunk preserves the full context of import relationships, scoping, and module structure.
+
+**By function or logical block** is more precise. If you can parse your code into meaningful units — functions, classes, component definitions — each unit becomes a chunk. Retrieval becomes more targeted. The downside is implementation complexity and the edge cases that always appear when parsing real-world code.
+
+**By token count with overlap** is the pragmatic middle ground. You split text into windows of roughly N tokens (say, 400–800), with each window overlapping the previous one by some amount (say, 100 tokens). The overlap ensures that a concept that spans a boundary isn't lost. This approach doesn't require understanding the code structure — it's just a sliding window over text.
+
+A good addition, regardless of chunking strategy, is **prepending metadata** to each chunk before embedding: the file path, the filename, the language. This gives the embedding model richer context and makes your results more interpretable. When a chunk surfaces in retrieval, you know exactly where it came from.
+
+The pipeline we built reached 444+ embedded chunks this way — a real codebase, sliced, indexed, and ready to query.
+
+### 3.2 What an embedding actually is (and why cosine similarity works)
+
+An embedding is a point in high-dimensional space. That's the whole idea, and everything else follows from it.
+
+When you embed the phrase "React component with local state," you get a vector — say, 768 numbers — that places that phrase at a specific location in a 768-dimensional space. When you embed "useState hook managing form input," you get a different vector, but it lands nearby in that space because the two phrases describe semantically similar things. When you embed "SQL JOIN across foreign keys," you get a vector that lands far away, because the semantic content is unrelated.
+
+*How does the model learn where to put things? And what does "nearby" even mean in 768 dimensions?*
+
+The model learns by training on enormous amounts of text, where it's taught to produce vectors such that semantically similar texts produce similar vectors and dissimilar texts produce dissimilar ones. The geometry of the resulting space isn't random — it has structure. Synonyms cluster together. Related concepts cluster nearby. Code patterns that appear in similar contexts land near each other.
+
+**Cosine similarity** is how we measure "nearby" in this space. Unlike Euclidean distance (straight-line distance between points), cosine similarity measures the *angle* between two vectors. This is better for embeddings because the magnitude of a vector — how far it is from the origin — tends to be less meaningful than its direction. Two vectors pointing in almost exactly the same direction have a cosine similarity near 1.0. Two vectors pointing in completely different directions have a cosine similarity near 0. Two vectors pointing in opposite directions have a cosine similarity near -1.0.
+
+In practice: when you embed a query, you compute its cosine similarity against every stored chunk embedding. You sort by similarity. The top results are your retrieved context. The math is simple; the magic is in what the embedding model learned.
+
+---
+
+## Section 4: The Search and Ask Loop — Putting It Together
+
+### 4.1 How a query becomes a vector becomes a ranked list of chunks
+
+Once your codebase is chunked and embedded, the runtime loop is straightforward. Here's what happens when you run something like `ask.ts "Where do I handle autosave state?"`:
+
+**Step 1: Embed the query.** Your question gets sent to the same embedding model you used to embed the chunks — `nomic-embed-text`. It returns a vector.
+
+**Step 2: Score every chunk.** You compute cosine similarity between your query vector and every stored chunk vector. With 444 chunks this is fast — even a naive brute-force scan over a few hundred vectors takes milliseconds.
+
+**Step 3: Rank and select.** Sort chunks by descending similarity score. Take the top K — maybe 5, maybe 10, depending on how much context you want to feed the completion model. There's a tradeoff: more chunks means more potentially relevant context, but also more noise and a larger prompt.
+
+**Step 4: Assemble the prompt.** Construct a prompt that includes the question and the top-K chunks as context. Something like:
+
+```
+You are a helpful assistant with access to the following code from a codebase.
+Use only this context to answer the question.
+
+--- CONTEXT ---
+[chunk 1]
+[chunk 2]
+...
+
+--- QUESTION ---
+Where do I handle autosave state?
+```
+
+**Step 5: Send to the completion model.** The assembled prompt goes to your local completion model (via Ollama). It reads the context, identifies the relevant code, and answers.
+
+*Is the order of the chunks in the prompt important?*
+
+Somewhat. Research suggests that language models tend to perform better when the most relevant information appears near the beginning or end of a long context, rather than buried in the middle — a phenomenon sometimes called the "lost in the middle" problem. For practical purposes with a small number of chunks, the effect is minor, but if you're pulling 10–15 chunks it's worth putting the highest-similarity ones first.
+
+### 4.2 Prompting the completion model with retrieved context
+
+Prompt construction is where you have the most control over output quality. A few principles that make a real difference:
+
+**Be explicit about the scope.** Telling the model "use only this context" discourages it from filling gaps with hallucinated information. Without that instruction, a capable model will often blend retrieved context with its general training knowledge — sometimes helpfully, sometimes confusingly.
+
+**Include file paths in the context.** When the model tells you "this is handled in `src/apps/write/autosave.ts`, around the `createAutosaveMachine` function," that's useful. When it just says "this is handled somewhere in your code," that's not. Metadata in your chunks makes grounded, specific answers possible.
+
+**Ask for citations.** You can instruct the model to quote or reference the specific chunk it's drawing from. This makes the answer verifiable — you can check the source rather than trusting the summary.
+
+**Handle the no-answer case.** If the retrieved chunks don't contain relevant information, you'd rather the model say so than confabulate. An instruction like "if the context does not contain enough information to answer, say so clearly" keeps the system honest.
+
+The completion model in this setup is less like an oracle and more like a very capable reader. You're showing it evidence and asking it to reason. The quality of the answer is bounded by the quality of the evidence — which is why retrieval quality matters more than completion quality in most RAG systems.
+
+---
+
+## Section 5: What Breaks, What Surprises You, and What You'd Do Differently
+
+### 5.1 The 444-chunk milestone and what it revealed about chunk quality
+
+Reaching 444 embedded chunks felt like a milestone. The index was real. The codebase was in there. You could run a query and get back actual file paths and actual code.
+
+Then you run a few real queries and discover something: **the hardest part of RAG isn't the retrieval math. It's the chunking.**
+
+Some queries return exactly the right code on the first try. You ask "where is the Modal component defined" and the top result is your Modal component. That's satisfying in a way that's almost unsettling.
+
+Other queries return plausible-but-wrong results. You ask "how does the toast notification get dismissed" and get back a chunk about the Toast component's props interface — technically related, but not the code that handles dismissal. The cosine similarity was high because the chunk contained the word "toast" and related vocabulary, even though it didn't contain the logic you wanted.
+
+*Why does this happen? Wasn't the embedding supposed to capture meaning?*
+
+It does capture meaning, but "meaning" in an embedding sense is a proxy for semantic similarity, not functional relevance. Two chunks can be semantically close (both about Toast components) without one being the answer to your question. The embedding doesn't know what you're *trying to do* — it only knows what the text is *about*.
+
+A few things help:
+
+**Smaller chunks with tighter scope.** A chunk that is specifically about the dismissal handler will embed closer to a question about dismissal than a chunk that includes the dismissal handler buried alongside twenty other things.
+
+**Query expansion.** Instead of embedding the raw question, generate two or three paraphrases and embed all of them, then merge the result sets. This hedges against vocabulary mismatch between your question and the codebase's terminology.
+
+**Re-ranking.** Use the completion model itself to do a second pass: given the top-20 retrieved chunks, ask it to rank them by relevance to the question. Return only the top 5. This is slower but dramatically improves precision.
+
+### 5.2 Where local RAG beats cloud RAG — and where it doesn't
+
+**Where local wins:**
+
+Private code stays private. No tokens sent to third-party APIs. You can embed your proprietary logic, your unreleased features, your work-in-progress without concern.
+
+Iteration is free and fast. You can re-chunk the entire codebase and re-embed it in minutes on a development machine. Experimenting with chunk size, overlap, and metadata is cheap. With a cloud API, every experiment has a dollar cost.
+
+The whole system is inspectable. You can print the raw vectors. You can log every similarity score. You can read the exact prompt being sent to the completion model. Nothing is hidden behind an API boundary.
+
+**Where cloud wins:**
+
+Model quality. `nomic-embed-text` is excellent for a local model, but OpenAI's embedding models and GPT-4 for completion are genuinely more capable in ways that surface on hard queries. For simple retrieval over a personal codebase, local is fine. For a production system where answer quality is critical, cloud models still have an edge.
+
+Scale. If your codebase has millions of chunks, running cosine similarity against all of them on local hardware becomes slow. Cloud providers run approximate nearest-neighbor search over enormous indices at millisecond latency. For a developer personal tool, this doesn't matter. For a system serving thousands of users against a large corpus, it does.
+
+Maintenance. A local RAG system is a system you own and operate. When Ollama updates, you update it. When models improve, you re-evaluate. The cloud API handles that for you, at the cost of control.
+
+*So which should I build?*
+
+Build the local one first. Not because it's always the right choice in production, but because building it teaches you everything the cloud version hides. Once you've manually computed cosine similarity, assembled a prompt by hand, and watched a 444-chunk index answer your first real question about your own code — the cloud abstractions become tools you understand rather than magic you depend on.
+
+---
+
+## What's Next
+
+A local RAG pipeline over your codebase is a useful tool, but it's also a foundation. Once the pieces are in place, natural extensions suggest themselves: automatic re-indexing when files change (a file watcher that triggers the embed script), integration with your editor so queries happen inline, hybrid search that combines vector similarity with keyword matching for better precision, or a web interface that lets you browse retrieved chunks alongside the answer.
+
+More interesting is what the pattern enables beyond code Q&A. The same pipeline — chunk, embed, retrieve, prompt — applies to documentation, research notes, meeting transcripts, design decisions, or any corpus of text you want to query intelligently. The local RAG system you built for your Astro codebase is, with minimal modification, the same architecture used by enterprise knowledge bases, legal research tools, and AI-assisted writing systems.
+
+The math is simple. The concept is elegant. The hard part — as always — is the data.
+
+

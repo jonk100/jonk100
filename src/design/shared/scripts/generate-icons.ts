@@ -7,23 +7,23 @@
  * - Produces a safe SvgName union type
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
 
 const ROOT = process.cwd();
-const ICON_DIR = path.join(ROOT, 'src/design/icons');
-const OUTPUT_FILE = path.join(ICON_DIR, 'index.ts');
+const ICON_DIR = path.join(ROOT, "src/design/shared/icons");
+const OUTPUT_FILE = path.join(ICON_DIR, "index.ts");
 
 const files = fs
   .readdirSync(ICON_DIR)
-  .filter(f => f.endsWith('.svg'))
+  .filter((f: string) => f.endsWith(".svg"))
   .sort();
 
 const imports: string[] = [];
 const entries: string[] = [];
 
 for (const file of files) {
-  const name = file.replace('.svg', '');
+  const name = file.replace(".svg", "");
 
   /**
    * Convert kebab-case filename into a safe internal import name.
@@ -33,19 +33,15 @@ for (const file of files) {
    * card-header → IconCardHeader
    */
   const importName = name
-    .split('-')
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
+    .split("-")
+    .map((part: string) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("");
 
   const safeImportName = `Icon${importName}`;
 
-  imports.push(
-    `import ${safeImportName} from './${file}';`
-  );
+  imports.push(`import ${safeImportName} from './${file}';`);
 
-  entries.push(
-    `  '${name}': ${safeImportName}`
-  );
+  entries.push(`  '${name}': ${safeImportName}`);
 }
 
 const output = `/**
@@ -58,7 +54,7 @@ const output = `/**
  * This file defines the public icon contract for the design system.
  *
  * Architecture:
- * - SVG files are stored in /src/design/icons as the source of truth
+ * - SVG files are stored in /src/design/shared/icons as the source of truth
  * Each SVG is transformed into an importable Astro SVG component
  * - Internal component names are prefixed with "Icon" to avoid collision
  *   with UI components (e.g. CardHeader, TableRow)
@@ -78,21 +74,21 @@ const output = `/**
  * Rules:
  * - Do not manually edit this file
  * - Treat this file as read-only output of the icon generation process
- * - Add new icons only by adding SVG files to /src/design/icons
+ * - Add new icons only by adding SVG files to /src/design/shared/icons
  * - Run the generator script to update this registry
  */
 
 import type { SvgComponent } from 'astro/types';
 
-${imports.join('\n')}
+${imports.join("\n")}
 
 export const icons = {
-${entries.join(',\n')}
+${entries.join(",\n")}
 } satisfies Record<string, SvgComponent>;
 
 export type SvgName = keyof typeof icons;
 `;
 
-fs.writeFileSync(OUTPUT_FILE, output, 'utf8');
+fs.writeFileSync(OUTPUT_FILE, output, "utf8");
 
 console.log(`Generated ${files.length} icons`);

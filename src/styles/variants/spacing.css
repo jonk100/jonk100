@@ -15,12 +15,12 @@
   --gap-32: var(--space-32);
 
 
-  --gap-2xs: --gap-1;
-  --gap-xs: --gap-2;
-  --gap-sm: --gap-4;
-  --gap-md: --gap-6;
-  --gap-base: --gap-8;
-  --gap-lg: --gap-12;
-  --gap-xl: --gap-16;
-  --gap-2xl: --gap-20;
+  --gap-2xs: var(--gap-1);
+  --gap-xs: var(--gap-2);
+  --gap-sm: var(--gap-4);
+  --gap-md: var(--gap-6);
+  --gap-base: var(--gap-8);
+  --gap-lg: var(--gap-12);
+  --gap-xl: var(--gap-16);
+  --gap-2xl: var(--gap-20);
 }

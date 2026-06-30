@@ -20,7 +20,7 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     <Stack gap="xl">
       <!-- Eyebrow -->
       <Text as="p" type="label" class="hero-eyebrow animate-slide-up delay-1">
-        Available for work &nbsp;·&nbsp; Youngstown, OH
+        down to build &nbsp;·&nbsp; somewhere, earth
       </Text>
 
       <!-- Name -->
@@ -35,11 +35,11 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
       </BadgeGroup>   
       <!-- Tagline -->
       <Text as="p" type="body" tone="subtle" class="hero-tagline animate-slide-up delay-4">
-        <strong>I enjoy building stuff</strong> that helps me write and teach more efficiently -- usually with Astro and TypeScript. Check out what I'm working on and hit me up!
+        <strong>I like to write stuff</strong> and build things that help me write more efficiently -- usually with Astro and TypeScript. Check out what I'm working on.
       </Text>
 
       <!-- Status -->
-      <Inline align="center" gap="sm" class="hero-status animate-slide-up delay-5">
+      <Inline align="center" gap="sm" class="hero-status animate-slide-up delay-5" id="hero-status-container" style="transition: opacity 0.3s ease;">
         <Inline align="center" gap="xs">
           <div class="status-dot" aria-hidden="true"></div>
           <Text as="span" type="label" tone="secondary" size="base" class="status-text">Currently writing</Text>
@@ -82,10 +82,10 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
 
   .hero-name {
     font-family: var(--display);
-    font-size: clamp(4rem, 10vw, 7.5rem);
+    font-size: clamp(3rem, 3rem + 10vw, 10rem);
     font-weight: 300;
     line-height: 1.1;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
     color: var(--text);
   }
 
@@ -147,12 +147,13 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
-    transition: transform 0.5s ease;
+    object-position: center 10%;
+    transition: object-position 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .featured-banner:hover .featured-banner-image {
-    transform: scale(1.05);
+    object-position: center 35%;
+    transform: scale(1.03);
   }
 
   .featured-banner-overlay {
@@ -185,9 +186,9 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
       padding-bottom: var(--space-12) !important;
     }
 
-    .hero-name {
+    /* .hero-name {
       font-size: clamp(3rem, 12vw, 4.5rem) !important;
-    }
+    } */
 
     .hero-status {
       flex-direction: column !important;

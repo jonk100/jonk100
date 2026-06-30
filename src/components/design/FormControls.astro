@@ -23,6 +23,7 @@ import Switch from '../ui/input/Switch.astro';
 import Checkbox from '../ui/input/Checkbox.astro';
 import Radio from '../ui/input/Radio.astro';
 import RadioGroup from '../ui/input/RadioGroup.astro';
+import CheckboxGroup from '../ui/input/CheckboxGroup.astro';
 import Button from '../ui/controls/Button.astro';
 import Tooltip from '../ui/overlay/Tooltip.astro';
 import Paper from '../ui/primitives/Paper.astro';
@@ -70,10 +71,11 @@ const formBlueprint = `
         
         <Switch label="Dynamic UI Motion Effects" checked />
         
-        <Stack gap="sm">
-          <Checkbox label="Accept license agreement" checked />
-          <Checkbox label="Notify me on release candidate builds" />
-        </Stack>
+        <CheckboxGroup legend="Communication Preferences">
+          <Checkbox name="prefs" value="newsletter" label="Weekly Newsletter" checked />
+          <Checkbox name="prefs" value="releases" label="Release Candidate Builds" />
+          <Checkbox name="prefs" value="security" label="Security Advisories" checked disabled />
+        </CheckboxGroup>
         
         <RadioGroup legend="Hosting Package Tier" name="hosting-tier">
           <Radio name="hosting-tier" value="community" label="Community Cloud (Free)" checked />

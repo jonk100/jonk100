@@ -24,6 +24,7 @@ import Button from '../components/ui/controls/Button.astro';
 import ProjectPageHero from '../components/project/ProjectPageHero.astro';
 import ButtonGroup from '../components/ui/controls/ButtonGroup.astro';
 import Link from '../components/ui/primitives/Link.astro';
+import Icon from 'dezign8/assets/components/icon/Icon.astro';
 
 export interface Props {
   project: CollectionEntry<'projects'>;
@@ -48,17 +49,16 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
   <div class="project-page">
     <nav class="project-nav">
       <a href="/" class="nav-button back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        Back to Home
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="btn-text">Back to Home</span>
       </a>
 
       {nextProject && (
         <div class="next-wrapper">
           <a href={`/projects/${nextProject.id}`} id="next-btn" class="nav-button next-link" style="anchor-name: --next-btn;">
-            Next Project
+            <span class="btn-text">Next Project</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </a>
-          
         </div>
       )}
     </nav>
@@ -100,6 +100,32 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
   </div>
 </Layout>
 
+<script>
+  function setupScrollAnimation() {
+    const nav = document.querySelector('.project-nav');
+    if (!nav) return;
+    
+    const onScroll = () => {
+      // Collapse when scrolled down far enough
+      if (window.scrollY > 200) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    };
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // initial state
+    
+    // Cleanup if view transition happens
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('scroll', onScroll);
+    }, { once: true });
+  }
+
+  // Setup on initial load and after view transitions
+  document.addEventListener('astro:page-load', setupScrollAnimation);
+</script>
 
 <style>
   .project-page {
@@ -108,7 +134,7 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
 
   .project-nav {
     position: fixed;
-    top: var(--space-8);
+    top: var(--space-24);
     left: var(--space-8);
     right: var(--space-8);
     z-index: 100;
@@ -134,7 +160,32 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     font-size: var(--text-sm);
     letter-spacing: 0.1em;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .btn-text {
+    display: inline-flex;
+    align-items: center;
+    max-width: 200px;
+    white-space: nowrap;
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Scrolled state */
+  .project-nav.scrolled .nav-button {
+    gap: 0;
+    padding: var(--space-3);
+  }
+
+  .project-nav.scrolled .btn-text {
+    max-width: 0;
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
   }
 
   .nav-button:hover {
@@ -169,30 +220,46 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
     background: linear-gradient(to right, rgba(2,3,7,.7) 0%, var(--surface-0) 100%);
     padding: var(--space-16);
     border-radius: var(--rad-xs);
-    
-    
   }
-
-  .project-header h1 {
-    font-size: clamp(3rem, 5vw, 5rem);
-    margin: var(--space-8) 0;
-    line-height: 1.1;
-  }
-
 
   .project-title {
-    font-size: clamp(3rem, 5vw, 5rem);
-    margin: var(--space-4) 0;
+    font-size: var(--text-5xl);
+    margin: var(--space-8) 0;
     line-height: 1.1;
+    
+    @media (width <= 768px) {
+      font-size: var(--text-4xl);
+      margin: var(--space-6) 0;
+    }
+    @media (width <= 500px) {
+      font-size: var(--text-3xl);
+      margin: var(--space-4) 0;
+    }
+    @media (width <= 400px) {
+      font-size: var(--text-2xl);
+      margin: var(--space-2) 0;
+    }
   }
 
   .project-description {
-    line-height: 1.5;
-    margin-bottom: var(--space-4);
+    line-height: var(--leading-loose);
+    max-width: 750px;
+    margin: 0 auto;
+    margin-bottom: var(--space-12);
     font-size: var(--text-xl);
     color: var(--text-secondary);
-    letter-spacing: 0.01em;
-    font-style: italic;
+    letter-spacing: 0.03em;
+    font-style: oblique;
+    
+    @media (width <= 650px) {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-8);
+    }
+    @media (width <= 500px) {
+      font-size: var(--text-base);
+      margin-bottom: var(--space-6);
+      font-weight: 400;
+    }
   }
 
   /* .project-links {
@@ -229,7 +296,7 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
   
   @media (max-width: 768px) {
     .project-nav {
-      top: var(--space-4) !important;
+      top: var(--space-20) !important;
       left: var(--space-4) !important;
       right: var(--space-4) !important;
     }
@@ -241,11 +308,6 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
 
     .project-header {
       padding: var(--space-6) var(--space-5); /* Reduce padding on mobile */
-    }
-
-    .project-title {
-      font-size: clamp(1.5rem, 7vw, 2.25rem) !important; /* Adjust title size for mobile viewports */
-      margin: var(--space-2) 0 !important;
     }
 
     .project-header :global(.text--lead) {

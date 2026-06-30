@@ -1,0 +1,139 @@
+/* ============================================================
+   skeleton.css
+   ─────────────────────────────────────────────────────────────
+   Loading placeholder animation shared across all data and
+   feedback components. Import this file in any component that
+   renders a <Skeleton />.
+
+   The shimmer animation is defined once here. Components that
+   previously had inline skeleton CSS (Table, List) should import
+   this file and use <Skeleton /> instead.
+
+   SHIMMER
+   ──────────────────────────────────────────────────────────────
+   A gradient sweep from right to left across the element.
+   Uses semantic surface tokens so it adapts to light/dark mode
+   automatically with no extra rules.
+
+   STRUCTURE (single shape)
+   ──────────────────────────────────────────────────────────────
+   <div class="skeleton skeleton--avatar" />
+
+   STRUCTURE (text lines)
+   ──────────────────────────────────────────────────────────────
+   <div class="skeleton skeleton--text skeleton--multi">
+     <span class="skeleton__line" />
+     <span class="skeleton__line" />
+     <span class="skeleton__line skeleton__line--last" />
+   </div>
+   ============================================================ */
+
+/* ─── ANIMATION ─────────────────────────────────────────────── */
+
+@keyframes skeleton--shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ─── BASE ───────────────────────────────────────────────────── */
+
+.skeleton {
+  display:    block;
+  background: linear-gradient(
+    90deg,
+    var(--bg--2) 25%,
+    var(--bg--3) 50%,
+    var(--bg--2) 75%
+  );
+  background-size: 200% 100%;
+  animation:  skeleton--shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--skeleton--radius, var(--radius--sm));
+}
+
+/* Multi-line text container */
+.skeleton--multi {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.5em;
+  /* Container itself has no shimmer — lines do */
+  background:     none;
+  animation:      none;
+}
+
+/* ─── LINES ──────────────────────────────────────────────────── */
+
+.skeleton__line {
+  display:    block;
+  height:     1em;
+  width:      100%;
+  background: linear-gradient(
+    90deg,
+    var(--bg--2) 25%,
+    var(--bg--3) 50%,
+    var(--bg--2) 75%
+  );
+  background-size: 200% 100%;
+  animation:  skeleton--shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--skeleton--radius, var(--radius--sm));
+}
+
+.skeleton__line--last {
+  width: 65%;
+}
+
+/* ─── VARIANTS ───────────────────────────────────────────────── */
+
+.skeleton--text {
+  height:        1em;
+  width:         100%;
+  border-radius: var(--skeleton--radius, var(--radius--sm));
+}
+
+.skeleton--heading {
+  height:        1.5em;
+  width:         60%;
+  border-radius: var(--skeleton--radius, var(--radius--sm));
+}
+
+.skeleton--avatar {
+  width:         2.5rem;
+  height:        2.5rem;
+  border-radius: 50%;   /* always circle — radius prop has no effect */
+  flex-shrink:   0;
+}
+
+.skeleton--button {
+  height:        2.5rem;
+  width:         6rem;
+  border-radius: var(--skeleton--radius, var(--radius--md));
+}
+
+.skeleton--image {
+  width:         100%;
+  aspect-ratio:  16 / 9;  /* overridden by ratio prop inline style */
+  border-radius: var(--skeleton--radius, var(--radius--sm));
+}
+
+.skeleton--block {
+  /* No defaults — fully controlled by width + height props */
+}
+
+/* ─── STATIC (no animation) ──────────────────────────────────── */
+
+.skeleton--static,
+.skeleton--static .skeleton__line {
+  animation:       none;
+  background-image: none;
+  background-color: var(--bg--2);
+}
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .skeleton__line {
+    animation:        none;
+    background-image: none;
+    background-color: var(--bg--2);
+  }
+}

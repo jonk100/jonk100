@@ -1,0 +1,12 @@
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1"
+  stroke-linecap="square"
+  stroke-linejoin="miter"
+>
+  <path d="M4 10.5L12 4L20 10.5" />
+  <path d="M6 9.5V20H18V9.5" />
+  <path d="M10 20V14H14V20" />
+</svg>

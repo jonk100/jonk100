@@ -1,0 +1,335 @@
+/* ============================================================
+   motion.css  —  Dezign8 animation keyframes
+   ─────────────────────────────────────────────────────────────
+   Keyframe naming:   m-{phase}-{name}
+   Phases:            enter  exit  idle
+   Applied via:       inline animation: style set by useBaseCompose
+                      when the m prop is present
+   Import once in:    src/design/styles/global.css
+   ============================================================ */
+
+
+/* ── REDUCED MOTION ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── SCROLL ANIMATIONS ─────────────────────────────────────── */
+
+[data-m-hidden="true"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  SLIDE                                                       */
+/*  Direction = direction the element moves                     */
+/*  enter: moves FROM that direction TO rest position           */
+/*  exit:  moves FROM rest position IN that direction           */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-slideUp {
+  from { transform: translateY(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1)));  opacity: 0; }
+  to   { transform: translateY(0);       opacity: 1; }
+}
+@keyframes m-enter-slideDown {
+  from { transform: translateY(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1) * -1)); opacity: 0; }
+  to   { transform: translateY(0);       opacity: 1; }
+}
+@keyframes m-enter-slideLeft {
+  from { transform: translateX(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1)));  opacity: 0; }
+  to   { transform: translateX(0);       opacity: 1; }
+}
+@keyframes m-enter-slideRight {
+  from { transform: translateX(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1) * -1)); opacity: 0; }
+  to   { transform: translateX(0);       opacity: 1; }
+}
+
+@keyframes m-exit-slideUp {
+  from { transform: translateY(0);        opacity: 1; }
+  to   { transform: translateY(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1) * -1));  opacity: 0; }
+}
+@keyframes m-exit-slideDown {
+  from { transform: translateY(0);       opacity: 1; }
+  to   { transform: translateY(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1)));  opacity: 0; }
+}
+@keyframes m-exit-slideLeft {
+  from { transform: translateX(0);        opacity: 1; }
+  to   { transform: translateX(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1) * -1));  opacity: 0; }
+}
+@keyframes m-exit-slideRight {
+  from { transform: translateX(0);       opacity: 1; }
+  to   { transform: translateX(calc(var(--m--dist, 1.5rem) * var(--m--scale, 1)));  opacity: 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  FADE                                                        */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes m-exit-fadeOut  { from { opacity: 1; } to { opacity: 0; } }
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  STRETCH                                                     */
+/*  Direction = direction the element grows toward (enter)      */
+/*           or collapses toward (exit)                         */
+/*  transform-origin pins the anchor at the opposite edge       */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-stretchUp {
+  from { transform: scaleY(0); transform-origin: center bottom; }
+  to   { transform: scaleY(1); transform-origin: center bottom; }
+}
+@keyframes m-enter-stretchDown {
+  from { transform: scaleY(0); transform-origin: center top; }
+  to   { transform: scaleY(1); transform-origin: center top; }
+}
+@keyframes m-enter-stretchLeft {
+  from { transform: scaleX(0); transform-origin: right center; }
+  to   { transform: scaleX(1); transform-origin: right center; }
+}
+@keyframes m-enter-stretchRight {
+  from { transform: scaleX(0); transform-origin: left center; }
+  to   { transform: scaleX(1); transform-origin: left center; }
+}
+
+@keyframes m-exit-stretchUp {
+  from { transform: scaleY(1); transform-origin: center top; }
+  to   { transform: scaleY(0); transform-origin: center top; }
+}
+@keyframes m-exit-stretchDown {
+  from { transform: scaleY(1); transform-origin: center bottom; }
+  to   { transform: scaleY(0); transform-origin: center bottom; }
+}
+@keyframes m-exit-stretchLeft {
+  from { transform: scaleX(1); transform-origin: left center; }
+  to   { transform: scaleX(0); transform-origin: left center; }
+}
+@keyframes m-exit-stretchRight {
+  from { transform: scaleX(1); transform-origin: right center; }
+  to   { transform: scaleX(0); transform-origin: right center; }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  SPIN                                                        */
+/*  spinIn/spinOut — pure spin + scale                          */
+/*  directional — spins in/out while flying from a direction    */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-spinIn {
+  from { transform: scale(0) rotate(-1turn); opacity: 0; }
+  to   { transform: scale(1) rotate(0turn);  opacity: 1; }
+}
+@keyframes m-exit-spinOut {
+  from { transform: scale(1) rotate(0turn);  opacity: 1; }
+  to   { transform: scale(0) rotate(1turn);  opacity: 0; }
+}
+
+@keyframes m-enter-spinUp {
+  from { transform: translateY(2rem)  rotate(-0.5turn) scale(0.5); opacity: 0; }
+  to   { transform: translateY(0)     rotate(0turn)    scale(1);   opacity: 1; }
+}
+@keyframes m-enter-spinDown {
+  from { transform: translateY(-2rem) rotate(0.5turn)  scale(0.5); opacity: 0; }
+  to   { transform: translateY(0)     rotate(0turn)    scale(1);   opacity: 1; }
+}
+@keyframes m-enter-spinLeft {
+  from { transform: translateX(2rem)  rotate(0.5turn)  scale(0.5); opacity: 0; }
+  to   { transform: translateX(0)     rotate(0turn)    scale(1);   opacity: 1; }
+}
+@keyframes m-enter-spinRight {
+  from { transform: translateX(-2rem) rotate(-0.5turn) scale(0.5); opacity: 0; }
+  to   { transform: translateX(0)     rotate(0turn)    scale(1);   opacity: 1; }
+}
+
+@keyframes m-exit-spinUp {
+  from { transform: translateY(0)     rotate(0turn)    scale(1);   opacity: 1; }
+  to   { transform: translateY(-2rem) rotate(0.5turn)  scale(0.5); opacity: 0; }
+}
+@keyframes m-exit-spinDown {
+  from { transform: translateY(0)    rotate(0turn)    scale(1);   opacity: 1; }
+  to   { transform: translateY(2rem) rotate(-0.5turn) scale(0.5); opacity: 0; }
+}
+@keyframes m-exit-spinLeft {
+  from { transform: translateX(0)     rotate(0turn)    scale(1);   opacity: 1; }
+  to   { transform: translateX(-2rem) rotate(-0.5turn) scale(0.5); opacity: 0; }
+}
+@keyframes m-exit-spinRight {
+  from { transform: translateX(0)    rotate(0turn)   scale(1);   opacity: 1; }
+  to   { transform: translateX(2rem) rotate(0.5turn) scale(0.5); opacity: 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  SHAKE                                                       */
+/* ════════════════════════════════════════════════════════════ */
+
+/* enter: bursts in excitedly, shakes, settles */
+@keyframes m-enter-shakeIn {
+  0%   { transform: translateX(0)    scale(0.9);  opacity: 0; }
+  20%  { transform: translateX(-8px) scale(1.05); opacity: 1; }
+  40%  { transform: translateX(8px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(3px); }
+  100% { transform: translateX(0)    scale(1); }
+}
+
+/* exit: trembles then dissolves */
+@keyframes m-exit-shakeOut {
+  0%   { transform: translateX(0);    opacity: 1; }
+  20%  { transform: translateX(-8px); }
+  40%  { transform: translateX(8px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(3px); }
+  100% { transform: translateX(0) scale(0.9); opacity: 0; }
+}
+
+/* idle: constant subtle vibration */
+@keyframes m-idle-shakeInfinite {
+  0%,  100% { transform: translateX(0); }
+  25%        { transform: translateX(-3px); }
+  75%        { transform: translateX(3px); }
+}
+
+/* idle: burst of shaking, then pause, repeats (restless energy) */
+@keyframes m-idle-shakeOnOff {
+  0%, 35%, 100% { transform: translateX(0); }
+  5%   { transform: translateX(-6px); }
+  10%  { transform: translateX(6px); }
+  15%  { transform: translateX(-4px); }
+  20%  { transform: translateX(4px); }
+  25%  { transform: translateX(-2px); }
+  30%  { transform: translateX(0); }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  BLINK                                                       */
+/*  Strobe flicker — blinks into/out of existence              */
+/*  Directional: strobe + flies in from named direction        */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-blinkIn {
+  0%, 20%, 40%, 60% { opacity: 0; }
+  10%, 30%, 50%, 100% { opacity: 1; }
+}
+@keyframes m-exit-blinkOut {
+  0%, 20%, 40%, 60%   { opacity: 1; }
+  10%, 30%, 50%, 100% { opacity: 0; }
+}
+
+@keyframes m-enter-blinkUp {
+  0%   { transform: translateY(1rem); opacity: 0; }
+  25%  { transform: translateY(0);    opacity: 1; }
+  40%  { opacity: 0; }
+  60%  { opacity: 1; }
+  80%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes m-enter-blinkDown {
+  0%   { transform: translateY(-1rem); opacity: 0; }
+  25%  { transform: translateY(0);     opacity: 1; }
+  40%  { opacity: 0; }
+  60%  { opacity: 1; }
+  80%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes m-enter-blinkLeft {
+  0%   { transform: translateX(1rem); opacity: 0; }
+  25%  { transform: translateX(0);    opacity: 1; }
+  40%  { opacity: 0; }
+  60%  { opacity: 1; }
+  80%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes m-enter-blinkRight {
+  0%   { transform: translateX(-1rem); opacity: 0; }
+  25%  { transform: translateX(0);     opacity: 1; }
+  40%  { opacity: 0; }
+  60%  { opacity: 1; }
+  80%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  BOUNCE                                                      */
+/*  enter: overshoots rest position, springy settle            */
+/*  idle: bounceInPlace floats; shakeInPlace wiggles           */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-bounceUp {
+  0%   { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1)));    opacity: 0; }
+  60%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.2)); opacity: 1; }
+  80%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.1)); }
+  90%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.05)); }
+  100% { transform: translateY(0); }
+}
+@keyframes m-enter-bounceDown {
+  0%   { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -1));  opacity: 0; }
+  60%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.2)); opacity: 1; }
+  80%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.1)); }
+  90%  { transform: translateY(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.05)); }
+  100% { transform: translateY(0); }
+}
+@keyframes m-enter-bounceLeft {
+  0%   { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1)));    opacity: 0; }
+  60%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.2)); opacity: 1; }
+  80%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.1)); }
+  90%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.05)); }
+  100% { transform: translateX(0); }
+}
+@keyframes m-enter-bounceRight {
+  0%   { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -1));  opacity: 0; }
+  60%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.2)); opacity: 1; }
+  80%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * -0.1)); }
+  90%  { transform: translateX(calc(var(--m--dist, 2rem) * var(--m--scale, 1) * 0.05)); }
+  100% { transform: translateX(0); }
+}
+
+/* idle: gentle float */
+@keyframes m-idle-bounceInPlace {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* idle: restless jitter */
+@keyframes m-idle-shakeInPlace {
+  0%, 100% { transform: translateX(0)    rotate(0deg); }
+  25%      { transform: translateX(-4px) rotate(-3deg); }
+  75%      { transform: translateX(4px)  rotate(3deg); }
+}
+
+
+/* ════════════════════════════════════════════════════════════ */
+/*  APPEAR / DISAPPEAR                                          */
+/*  Subtle scale pop — no movement, just presence              */
+/* ════════════════════════════════════════════════════════════ */
+
+@keyframes m-enter-appear {
+  from { transform: scale(0.88); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@keyframes m-exit-disappear {
+  from { transform: scale(1);    opacity: 1; }
+  to   { transform: scale(0.88); opacity: 0; }
+}
+
+/* ── DOCS UTILS ────────────────────────────────────────────── */
+.restore-btn-wrapper {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.exit-wrapper:has([data-dismissed="true"]) .restore-btn-wrapper {
+  opacity: 1;
+  pointer-events: auto;
+}

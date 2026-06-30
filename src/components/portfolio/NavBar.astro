@@ -4,37 +4,116 @@
  * Navigation bar component for the portfolio site.
  * - Displays the site logo and navigation links
  * - Fixed at the top of the viewport with a glass effect
+ * - Mobile-responsive with hamburger menu
  * @props (local): None
  * @props (global): class, class:list, frame, effects
  */
+
 import Box from '../ui/layout/Box.astro';
 import Inline from '../ui/layout/Inline.astro';
 import Text from '../ui/typography/Text.astro';
 import Link from '../ui/primitives/Link.astro';
+import Icon from '../ui/primitives/Icon.astro';
+import { Image } from 'astro:assets';
+import logo from '@/assets/jonk100-white.png';
 ---
 
 <header class="navbar effect--glass" style="view-transition-name: main-nav;">
   <Box class="container">
-    <Inline justify="between" align="center" class="nav-inner">
-      <Link href="/" class="nav-logo">
-        <Text as="span" tone="subtle" class="logo-text">jon</Text>
-      </Link>
+    <Inline justify="space-between" align="center" class="nav-inner">
+      <div style="position: relative; display: flex; align-items: center;">
+        <Link href="/" class="nav-logo">
+          { logo ? (
+            <Image src={logo} alt="jonk100" width={128} class="logo-image" id="nav-logo-image" style="transition: transform 0.1s ease-out; transform-origin: left center;" />
+          ) : ( 
+            <Text as="span" tone="subtle" class="logo-text">jon</Text>
+          )}
+        </Link>
+        <Text as="span" type="label" id="nav-status">Currently writing</Text>
+      </div>
       
-      <Inline gap="md" as="nav" class="nav-links">
-        <Link href="#work" label="work" tone="subtle" class="nav-link" />
-        <Link href="/blog" label="blog" tone="subtle" class="nav-link" />
-        <Link href="/glossary" label="glossary" tone="subtle" class="nav-link" />
-        <Link href="#writing" label="writing" tone="subtle" class="nav-link" />
-        <Link href="#about" label="about" tone="subtle" class="nav-link" />
-        <Link href="/design" label="design" tone="subtle" class="nav-link" />
-        
-        <a href="https://buymeacoffee.com/jonk100" class="coffee-btn" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
-        </a>
-      </Inline>
+      <button class="mobile-menu-btn" aria-label="Toggle menu" id="mobile-menu-toggle">
+        <Icon name="menu" size="md" stroke="currentColor" />
+      </button>
+      
+      <div class="nav-links-wrapper" id="nav-links-wrapper">
+        <Inline gap="lg" as="nav" class="nav-links" id="nav-links">
+          <Link href="#work" label="work" tone="subtle" class="nav-link" />
+          <Link href="/blog" label="blog" tone="subtle" class="nav-link" />
+          <Link href="/glossary" label="glossary" tone="subtle" class="nav-link" />
+          <Link href="#writing" label="writing" tone="subtle" class="nav-link" />
+          <Link href="#about" label="about" tone="subtle" class="nav-link" />
+          <Link href="/design" label="design" tone="subtle" class="nav-link" />
+          
+          <a href="https://soundcloud.com/user-276954779" class="soundcloud-btn" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
+            <Icon name="soundcloud" size="md" stroke="currentColor" />
+          </a>
+          
+          <a href="https://buymeacoffee.com/jonk100" class="coffee-btn" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
+          </a>
+        </Inline>
+      </div>
     </Inline>
   </Box>
 </header>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const navLinksWrapper = document.getElementById('nav-links-wrapper');
+    
+    if (mobileToggle && navLinksWrapper) {
+      mobileToggle.addEventListener('click', () => {
+        navLinksWrapper.classList.toggle('mobile-open');
+      });
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const viewportWidth = window.innerWidth;
+      const heroStatus = document.getElementById('hero-status-container');
+      const navStatus = document.getElementById('nav-status');
+      const logoImage = document.getElementById('nav-logo-image');
+
+      if (viewportWidth > 970) {
+        if (logoImage) {
+           logoImage.style.transform = 'none';
+        }
+        
+        if (heroStatus && navStatus) {
+          const heroRect = heroStatus.getBoundingClientRect();
+          if (heroRect.bottom < 64) {
+            navStatus.classList.add('is-visible');
+            heroStatus.style.opacity = '0';
+          } else {
+            navStatus.classList.remove('is-visible');
+            heroStatus.style.opacity = '1';
+          }
+        }
+      } else {
+        if (navStatus) {
+          navStatus.classList.remove('is-visible');
+        }
+        if (heroStatus) {
+           heroStatus.style.opacity = '1';
+        }
+
+        if (logoImage) {
+          const maxScroll = 250;
+          const progress = Math.min(scrollY / maxScroll, 1);
+          const scale = 1 - (progress * 0.35); // Shrink down to 0.65 max
+          
+          logoImage.style.transform = `scale(${scale})`;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    setTimeout(handleScroll, 100);
+  });
+</script>
 
 <style>
   .navbar {
@@ -59,18 +138,38 @@ import Link from '../ui/primitives/Link.astro';
     width: 100%;
   }
 
-  .logo-text, .nav-link :global(.text) {
+  .logo-text, .nav-link {
     font-family: var(--mono);
-    letter-spacing: var(--tracking-wider);
+    letter-spacing: var(--letter-sp-tightest);
     transition: color 0.2s ease-out;
   }
 
+  @media (min-width: 1024px) {
+    .logo-text, .nav-link {
+      letter-spacing: var(--letter-sp-widest);
+      font-size: var(--text-md)
+    }
+  };
   .nav-logo:hover .logo-text,
-  .nav-link:hover :global(.text) {
+  .nav-link:hover {
     color: var(--accent) !important;
   }
 
   .coffee-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--rad-full);
+    color: var(--text);
+    transition: all 0.2s ease-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .soundcloud-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -79,28 +178,118 @@ import Link from '../ui/primitives/Link.astro';
     border-radius: var(--rad-full);
     color: var(--text);
     transition: all 0.2s ease-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+
   }
 
-  .coffee-btn:hover {
+  .coffee-btn:hover, .soundcloud-btn:hover {
     color: var(--accent);
     transform: translateY(-2px);
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    color: var(--text);
+    transition: color 0.2s ease-out;
+  }
+
+  .mobile-menu-btn:hover {
+    color: var(--accent);
   }
 
   ::view-transition-group(main-nav) {
     z-index: 100;
   }
 
-  @media (max-width: 600px) {
-    .container {
-      padding: 0 var(--space-4) !important;
+  #nav-status {
+    color: var(--accent);
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    position: absolute;
+    left: 100%;
+    margin-left: 16px;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  #nav-status.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  .nav-links-wrapper {
+    display: contents;
+  }
+
+  @media (max-width: 808px) {
+    .mobile-menu-btn {
+      display: flex;
+    }
+
+    .nav-links-wrapper {
+      display: block;
+      position: absolute;
+      top: 4rem;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    .nav-links-wrapper.mobile-open {
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .nav-links {
-      gap: var(--space-3) !important;
+      position: relative;
+      top: 0;
+      flex-direction: column;
+      align-items: flex-end !important;
+      background: rgba(var(--neutral-10-rgb), 0.92);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      padding: var(--space-4);
+      gap: var(--space-4) !important;
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      transition: transform 0.3s ease-out;
     }
 
-    .nav-link :global(.text) {
-      font-size: var(--text-xs) !important;
+    .nav-links-wrapper.mobile-open .nav-links {
+      transform: translateY(0);
+      gap: var(--space-4);
+    }
+
+    .nav-link {
+      width: 100%;
+      text-align: right;
+      justify-content: flex-end;
+    }
+
+    .coffee-btn, .soundcloud-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0 var(--space-4) !important;
     }
   }
 </style>
