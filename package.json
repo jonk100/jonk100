@@ -17,7 +17,8 @@
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
     "astro": "^6.4.8",
-    "dezign8": "link:../dezign8/src/design",
+    "dezign8": "file:./src/design",
+    "sharp": "^0.35.2",
     "slugify": "^1.6.9"
   },
   "devDependencies": {

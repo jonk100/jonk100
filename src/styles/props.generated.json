@@ -86,7 +86,7 @@
     },
     {
       "name": "bg",
-      "type": "ColorRole",
+      "type": "\"primary\" | \"secondary\" | \"tertiary\" | \"accent\" | \"danger\" | \"warning\" | \"success\" | \"info\" | \"neutral\"",
       "optional": true,
       "description": "",
       "from": "BaseComponentProps",

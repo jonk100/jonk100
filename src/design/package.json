@@ -1,0 +1,12 @@
+{
+  "name": "dezign8",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./integration.ts",
+    "./components": "./index.ts",
+    "./styles": "./styles.ts",
+    "./*": "./*"
+  }
+}

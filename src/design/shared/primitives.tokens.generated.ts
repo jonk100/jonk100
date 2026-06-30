@@ -23,7 +23,7 @@ export const SPACE = scale({
   "6xl": "var(--space-in--6xl)",
 });
 
-export type Space = Extract<keyof typeof SPACE, string>;
+export type Space = keyof typeof SPACE;
 
 export const SPACE_OUT = scale({
   none:  "0",
@@ -41,7 +41,7 @@ export const SPACE_OUT = scale({
   "6xl": "var(--space-out--6xl)",
 });
 
-export type SpaceOut = Extract<keyof typeof SPACE_OUT, string>;
+export type SpaceOut = keyof typeof SPACE_OUT;
 
 export const RADIUS = scale({
   none:  "var(--radius--none)",
@@ -60,7 +60,7 @@ export const RADIUS = scale({
   full:  "var(--radius--full)",
 });
 
-export type Radius = Extract<keyof typeof RADIUS, string>;
+export type Radius = keyof typeof RADIUS;
 
 export const TEXT_SIZE = scale({
   "3xs": "var(--fs--3xs)",
@@ -77,7 +77,7 @@ export const TEXT_SIZE = scale({
   "6xl": "var(--fs--6xl)",
 });
 
-export type TextSize = Extract<keyof typeof TEXT_SIZE, string>;
+export type TextSize = keyof typeof TEXT_SIZE;
 
 export const TEXT_SIZE_FIXED = scale({
   "3xs": "var(--fsf--3xs)",
@@ -94,7 +94,7 @@ export const TEXT_SIZE_FIXED = scale({
   "6xl": "var(--fsf--6xl)",
 });
 
-export type TextSizeFixed = Extract<keyof typeof TEXT_SIZE_FIXED, string>;
+export type TextSizeFixed = keyof typeof TEXT_SIZE_FIXED;
 
 export const LABEL_SIZE = scale({
   "3xs": "var(--label--3xs)",
@@ -111,7 +111,7 @@ export const LABEL_SIZE = scale({
   "6xl": "var(--label--6xl)",
 });
 
-export type LabelSize = Extract<keyof typeof LABEL_SIZE, string>;
+export type LabelSize = keyof typeof LABEL_SIZE;
 
 export const WEIGHT = scale({
   thin:     "var(--weight--thin)",
@@ -123,7 +123,7 @@ export const WEIGHT = scale({
   black:    "var(--weight--black)",
 });
 
-export type Weight = Extract<keyof typeof WEIGHT, string>;
+export type Weight = keyof typeof WEIGHT;
 
 export const FAMILY = scale({
   sans:  "var(--family--sans)",
@@ -131,7 +131,7 @@ export const FAMILY = scale({
   mono:  "var(--family--mono)",
 });
 
-export type Family = Extract<keyof typeof FAMILY, string>;
+export type Family = keyof typeof FAMILY;
 
 export const LEADING = scale({
   none:    "var(--leading--none)",
@@ -142,7 +142,7 @@ export const LEADING = scale({
   loose:   "var(--leading--loose)",
 });
 
-export type Leading = Extract<keyof typeof LEADING, string>;
+export type Leading = keyof typeof LEADING;
 
 export const TRACKING = scale({
   tight:  "var(--tracking--tight)",
@@ -152,7 +152,7 @@ export const TRACKING = scale({
   caps:   "var(--tracking--caps)",
 });
 
-export type Tracking = Extract<keyof typeof TRACKING, string>;
+export type Tracking = keyof typeof TRACKING;
 
 export const COLOR_ROLE = scale({
   primary:   null,
@@ -166,7 +166,7 @@ export const COLOR_ROLE = scale({
   neutral:   null,
 });
 
-export type ColorRole = Extract<keyof typeof COLOR_ROLE, string>;
+export type ColorRole = keyof typeof COLOR_ROLE;
 
 export const VARIANT = scale({
   solid:    null,
@@ -176,7 +176,7 @@ export const VARIANT = scale({
   dashed:   null,
 });
 
-export type Variant = Extract<keyof typeof VARIANT, string>;
+export type Variant = keyof typeof VARIANT;
 
 export const TEXT_COLOR = scale({
   primary:    "var(--text--primary)",
@@ -193,7 +193,7 @@ export const TEXT_COLOR = scale({
   info:       "var(--info--text)",
 });
 
-export type TextColor = Extract<keyof typeof TEXT_COLOR, string>;
+export type TextColor = keyof typeof TEXT_COLOR;
 
 export const ICON_COLOR = scale({
   primary:    "var(--primary--deep)",
@@ -210,7 +210,7 @@ export const ICON_COLOR = scale({
   info:       "var(--info--deep)",
 });
 
-export type IconColor = Extract<keyof typeof ICON_COLOR, string>;
+export type IconColor = keyof typeof ICON_COLOR;
 
 export const ALIGN = scale({
   start:    "flex-start",
@@ -220,7 +220,7 @@ export const ALIGN = scale({
   baseline: "baseline",
 });
 
-export type Align = Extract<keyof typeof ALIGN, string>;
+export type Align = keyof typeof ALIGN;
 
 export const JUSTIFY = scale({
   start:   "flex-start",
@@ -231,4 +231,4 @@ export const JUSTIFY = scale({
   evenly:  "space-evenly",
 });
 
-export type Justify = Extract<keyof typeof JUSTIFY, string>;
+export type Justify = keyof typeof JUSTIFY;
