@@ -2,7 +2,7 @@
   "shared/skeleton": [
     {
       "name": "variant",
-      "type": "string | number | symbol",
+      "type": "\"text\" | \"heading\" | \"avatar\" | \"button\" | \"image\" | \"block\"",
       "optional": true,
       "description": "The shape preset.\n\n- `text`    — single text line (~1em tall). Use `lines` for a block.\n- `heading` — taller, narrower width. For title placeholders.\n- `avatar`  — circular. Diameter set by `height` (default 2.5rem).\n- `button`  — pill shape. For CTA placeholders.\n- `image`   — rectangle with `ratio` aspect-ratio. For media.\n- `block`   — no default size. Set `width` + `height` explicitly.",
       "from": "SkeletonProps",
@@ -45,7 +45,7 @@
     },
     {
       "name": "radius",
-      "type": "string | number | symbol",
+      "type": "\"none\" | \"3xs\" | \"2xs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | \"6xl\" | \"full\"",
       "optional": true,
       "description": "Border radius. Overrides the per-variant default.\nUseful when the skeleton must match the shape it replaces.\n`avatar` ignores this — it is always a circle.",
       "from": "SkeletonProps",
@@ -59,6 +59,334 @@
       "from": "SkeletonProps",
       "wired": true,
       "default": "true"
+    },
+    {
+      "name": "class",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "SkeletonProps",
+      "wired": true
+    },
+    {
+      "name": "style",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "bg",
+      "type": "ColorRole",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "motion",
+      "type": "string",
+      "optional": true,
+      "description": "`motion` drives enter, exit, and idle animations on any component.\n\nSyntax: `{phase}:{name}[/{duration}[/{delay}]][,…][ …]`",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "mDistance",
+      "type": "string",
+      "optional": true,
+      "description": "`mDistance` sets the travel distance for motion animations like slide, bounce.\n\n- accepts a value (e.g. `100px`, `50vw`) or a multiplier (`x2`, `x3`)\nof the default prop.",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "action",
+      "type": "string",
+      "optional": true,
+      "description": "`action` triggers a declarative action (defined in ./actions)\n   based on something like a click (e.g., 'replay-motion', 'toggle-theme').",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "target",
+      "type": "string",
+      "optional": true,
+      "description": "`target` targets the action to a specific element \n   (e.g., '#my-id', 'closest .container').",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "loading",
+      "type": "boolean",
+      "optional": true,
+      "description": "`loading` if the component is in a loading state.\n- emits `data-loading=\"true\"` on the root element via useBaseCompose.\n- each component implements its own loading UI — typically <Skeleton />.\n- Badge, Button, Avatar etc. can render a skeleton shape of themselves.",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "testId",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "v",
+      "type": "undefined",
+      "optional": true,
+      "description": "",
+      "from": "BaseComponentProps",
+      "wired": true
+    },
+    {
+      "name": "p",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding, all sides.",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "px",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding, inline axis (l/r).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "py",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding, block axis (t/b).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "pt",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding top (block-start).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "pr",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding right (inline-end).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "pb",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding bottom (block-end).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "pl",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Padding left (inline-start).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "m",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin, all sides.",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "mx",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin, inline axis (l/r).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "my",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin, block axis (t/b).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "mt",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin top (block-start).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "mr",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin right (inline-end).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "mb",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin bottom (block-end).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "ml",
+      "type": "SpaceValue",
+      "optional": true,
+      "description": "Margin left (inline-start).",
+      "from": "SpacingProps",
+      "wired": false
+    },
+    {
+      "name": "aria-label",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-labelledby",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-describedby",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-description",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-details",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-roledescription",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-keyshortcuts",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-hidden",
+      "type": "boolean | \"false\" | \"true\"",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-current",
+      "type": "boolean | \"false\" | \"true\" | \"page\" | \"step\" | \"location\" | \"date\" | \"time\"",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-controls",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-owns",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-flowto",
+      "type": "string",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-live",
+      "type": "\"off\" | \"polite\" | \"assertive\"",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-atomic",
+      "type": "boolean | \"false\" | \"true\"",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
+    },
+    {
+      "name": "aria-relevant",
+      "type": "\"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"all\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\"",
+      "optional": true,
+      "description": "",
+      "from": "AriaProps",
+      "wired": true
     }
   ]
 }

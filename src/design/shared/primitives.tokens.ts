@@ -135,7 +135,7 @@ export function resolveColorChannels(
   role: ColorRole,
   prefix: string,
 ): string[] {
-  const steps = COLOR_STEPS[role];
+  const steps = COLOR_STEPS[role as keyof typeof COLOR_STEPS];
   return (Object.entries(steps) as [keyof ColorSteps, string][])
     .map(([step, value]) => `--${prefix}--color-${step}: ${value}`);
 }

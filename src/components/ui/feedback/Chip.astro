@@ -46,7 +46,7 @@ const {
   role="option"
   aria-selected={selected ? "true" : "false"}
   data-value={value || label}
-  onclick="if(!event.target.closest('.chip-dismiss')){this.classList.toggle('control--selected'); this.setAttribute('aria-selected', this.classList.contains('control--selected'));}"
+  onclick="((e) => { if(!e.target.closest('.chip-dismiss')){this.classList.toggle('control--selected'); this.setAttribute('aria-selected', this.classList.contains('control--selected'));} })(event)"
   {...rest}
 >
   {icon && <Icon name={icon} size="sm" class="chip-icon" />}
@@ -55,7 +55,7 @@ const {
     <span
       class="chip-dismiss"
       aria-label={`Remove ${label}`}
-      onclick="event.stopPropagation(); this.parentElement.remove();"
+      onclick="((e) => { e.stopPropagation(); this.parentElement.remove(); })(event)"
     >
       &times;
     </span>

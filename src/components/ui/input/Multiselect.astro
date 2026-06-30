@@ -18,7 +18,7 @@ export interface Props {
 }
 
 const {
-  id = `ms-${Math.random().toString(36).substr(2, 9)}`,
+  id = `ms-${Math.random().toString(36).slice(2, 11)}`,
   name,
   label,
   placeholder = "Select options...",
@@ -94,7 +94,7 @@ const {
 
       this.trigger.addEventListener('click', (e) => {
         // Don't toggle if clicking a chip remove button
-        if ((e.target as HTMLElement).closest('.ms-chip-remove')) return;
+        if (e.target && e.target instanceof Element && e.target.closest('.ms-chip-remove')) return;
         this.toggleDropdown();
       });
 

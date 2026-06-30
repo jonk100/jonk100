@@ -1,7 +1,7 @@
 {
   "extends": [
     "astro/tsconfigs/strict", 
-    "dezign8/.config/tsconfig.paths.json"
+    "./src/design/.config/tsconfig.paths.json"
   ],
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist"],
@@ -20,7 +20,7 @@
     "paths": {
       "/src/*": ["src/*"],
       "@/*": ["src/*"],
-      "~/*": ["dezign8/*"]
+      "~/*": ["src/design/*"]
     }
   }
 }

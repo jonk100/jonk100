@@ -10,7 +10,7 @@ import { createStore, createPersistedStore, createDerived } from './store';
  * Theme preference store (light/dark)
  * Persists to localStorage and can be manually toggled by user
  */
-export const theme = createPersistedStore<'light' | 'dark'>('dark', 'theme');
+export const theme = createPersistedStore<'light' | 'dark'>('theme', 'dark');
 
 /**
  * Reduced motion preference store
@@ -41,7 +41,8 @@ export const reducedMotion = (() => {
       mediaQuery.addEventListener('change', handleChange);
     } 
     // Legacy fallback
-    else if (mediaQuery.addListener) {
+    else if ('addListener' in mediaQuery) {
+      // @ts-ignore
       mediaQuery.addListener(handleChange);
     }
   }

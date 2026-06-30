@@ -62,4 +62,5 @@ export interface SkeletonProps extends BaseComponentProps {
    * @default true
    */
   animated?: boolean;
+  class?: string;
 }

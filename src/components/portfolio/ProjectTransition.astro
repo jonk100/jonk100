@@ -14,10 +14,10 @@
       document.documentElement.classList.add('project-to-project');
       
       // Remove unique transition names so these elements merge into the root slide transition
-      const hero = document.querySelector('.hero-image');
+      const hero = document.querySelector('.hero-image') as HTMLElement;
       if (hero) hero.style.viewTransitionName = 'none';
       
-      const content = document.querySelector('.content-container');
+      const content = document.querySelector('.content-container') as HTMLElement;
       if (content) content.style.viewTransitionName = 'none';
     } else {
       document.documentElement.classList.remove('project-to-project');
@@ -30,10 +30,10 @@
       // Keep the class on the new document so CSS applies during the transition
       e.newDocument.documentElement.classList.add('project-to-project');
       
-      const hero = e.newDocument.querySelector('.hero-image');
+      const hero = e.newDocument.querySelector('.hero-image') as HTMLElement;
       if (hero) hero.style.viewTransitionName = 'none';
       
-      const content = e.newDocument.querySelector('.content-container');
+      const content = e.newDocument.querySelector('.content-container') as HTMLElement;
       if (content) content.style.viewTransitionName = 'none';
     }
   });

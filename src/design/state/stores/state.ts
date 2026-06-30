@@ -21,5 +21,5 @@ export const motion = createStore(true);
 export const sandbox = createPersistedStore({
   active: false,
   code: '',
-});
+}, 'sandbox');
 

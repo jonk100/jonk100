@@ -45,6 +45,12 @@ export const componentCategories = {
     icon: 'text'
   },
 
+  navigation: {
+    title: '04.5 / Navigation',
+    description: 'Breadcrumbs, navbars, and pagination controls.',
+    icon: 'compass'
+  },
+
   feedback: {
     title: '05 / Visual Feedback',
     description:
@@ -114,6 +120,7 @@ export function getCategory(
 export const categoryOrder: ComponentCategory[] = [
   'primitives',
   'layouts',
+  'navigation',
   'controls',
   'overlays',
   'feedback'
@@ -131,6 +138,7 @@ export const categoryVisibility: Record<ComponentCategory, {
   primitives: { public: true, showInSidebar: true },
   overlays: { public: true, showInSidebar: true },
   feedback: { public: true, showInSidebar: true },
+  navigation: { public: true, showInSidebar: true },
   controls: { public: true, showInSidebar: true },
   layouts: { public: true, showInSidebar: true },
   typography: { public: true, showInSidebar: true },
@@ -153,6 +161,7 @@ export const categoryGroupLabels = {
 export const categoryIcons = {
   primitives: 'zap',
   layouts: 'grid',
+  navigation: 'compass',
   controls: 'cursor',
   overlays: 'layers',
   feedback: 'alert',

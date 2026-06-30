@@ -79,7 +79,7 @@ const currentColor = tone ? `var(--text-${tone})` : `var(--text-subtle)`;
   </div>
   {loading && (
     <div class="control-loader" data-testid="control-loader">
-      <Spinner size={size} tone={currentColor} />
+      <Spinner size={size} tone={tone as TextTone | undefined} />
     </div>
   )}
 </Tag>
