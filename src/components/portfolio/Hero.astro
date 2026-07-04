@@ -66,12 +66,7 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
     padding-bottom: var(--space-20);
   }
 
-  .container {
-    width: 100%;
-    max-width: var(--max-width, 1280px);
-    margin: 0 auto;
-    padding: 0 var(--space-8);
-  }
+
 
   .hero-eyebrow {
     color: var(--accent) !important;
@@ -177,18 +172,15 @@ import BadgeGroup from '../ui/feedback/BadgeGroup.astro';
   }
 
   @media (max-width: 600px) {
-    .container {
-      padding: 0 var(--space-4) !important;
-    }
 
     .hero {
       padding-top: calc(4rem + var(--space-12)) !important;
       padding-bottom: var(--space-12) !important;
     }
 
-    /* .hero-name {
+    .hero-name {
       font-size: clamp(3rem, 12vw, 4.5rem) !important;
-    } */
+    }
 
     .hero-status {
       flex-direction: column !important;

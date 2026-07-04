@@ -301,6 +301,18 @@ const { title, category, description, imageSrc, githubUrl, liveUrl } = project.d
       right: var(--space-4) !important;
     }
 
+    .project-nav .nav-button {
+      gap: 0;
+      padding: var(--space-3);
+    }
+
+    .project-nav .btn-text {
+      max-width: 0;
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+    }
+
     .content-container {
       padding: 0 var(--space-4);
       top: -100px; /* Pull content up less on mobile to prevent overlapping fixed top navigation */

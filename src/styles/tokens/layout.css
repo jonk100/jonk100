@@ -6,6 +6,12 @@
   --gutter:      var(--space-8); 
 }
 
+@media (max-width: 600px) {
+  :root {
+    --gutter: var(--space-4);
+  }
+}
+
 /* ─────────────────────────────────────────────
   BASE UTILITY CLASSES
   Keep these minimal — prefer component styles
